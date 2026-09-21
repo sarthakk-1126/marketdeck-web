@@ -1,0 +1,46 @@
+name: Deploy MarketDeck Web
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: marketdeck-web-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to production
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Configure SSH key
+        shell: bash
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s
+' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/marketdeck_web_deploy
+          chmod 600 ~/.ssh/marketdeck_web_deploy
+
+      - name: Trust VPS host key
+        shell: bash
+        run: |
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy MarketDeck
+        shell: bash
+        run: |
+          ssh \
+            -i ~/.ssh/marketdeck_web_deploy \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}"
+
+      - name: Remove SSH key
+        if: always()
+        shell: bash
+        run: rm -f ~/.ssh/marketdeck_web_deploy
