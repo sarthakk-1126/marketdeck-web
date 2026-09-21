@@ -21,8 +21,7 @@ jobs:
         shell: bash
         run: |
           install -m 700 -d ~/.ssh
-          printf '%s
-' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/marketdeck_web_deploy
+          printf '%s\\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/marketdeck_web_deploy
           chmod 600 ~/.ssh/marketdeck_web_deploy
 
       - name: Trust VPS host key
@@ -34,10 +33,10 @@ jobs:
       - name: Deploy MarketDeck
         shell: bash
         run: |
-          ssh \
-            -i ~/.ssh/marketdeck_web_deploy \
-            -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes \
+          ssh \\
+            -i ~/.ssh/marketdeck_web_deploy \\
+            -o BatchMode=yes \\
+            -o StrictHostKeyChecking=yes \\
             "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}"
 
       - name: Remove SSH key
