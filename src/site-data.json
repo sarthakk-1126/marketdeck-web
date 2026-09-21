@@ -1,0 +1,262 @@
+{
+  "brand": {
+    "name": "MarketDeck",
+    "url": "https://marketdeck.in/",
+    "tagline": "Indian markets. A bigger perspective."
+  },
+  "products": [
+    {
+      "id": "stockproof",
+      "name": "StockProof",
+      "category": "Fundamental research",
+      "url": "/screener/",
+      "icon": "fundamentals",
+      "color": "blue",
+      "short": "Go beyond the numbers. Find the evidence.",
+      "headline": "Conviction starts with better research.",
+      "description": "Explore Indian companies, compare fundamentals, and bring financial filings into your research workflow. Build a clearer picture of the business behind the stock.",
+      "features": [
+        "Company research",
+        "Fundamental screening",
+        "Peer comparisons"
+      ],
+      "action": "Explore StockProof"
+    },
+    {
+      "id": "charting",
+      "name": "Charting",
+      "category": "Charts & technicals",
+      "url": "/charts/",
+      "icon": "chart",
+      "color": "teal",
+      "short": "A clearer view of price, trend, and context.",
+      "headline": "See the market from a sharper angle.",
+      "description": "Put price history in context. Explore Indian equities with charts, technical tools, and a focused workspace for your next research question.",
+      "features": [
+        "Price history",
+        "Technical analysis",
+        "Market exploration"
+      ],
+      "action": "Explore Charting"
+    },
+    {
+      "id": "fno",
+      "name": "F&O",
+      "category": "Options & derivatives",
+      "url": "/futures-and-options/",
+      "icon": "layers",
+      "color": "violet",
+      "short": "Understand the structure behind the strategy.",
+      "headline": "Make complexity easier to explore.",
+      "description": "Explore option chains, study strategies, and understand possible outcomes in a dedicated derivatives workspace. Bring structure to your analysis before making a decision.",
+      "features": [
+        "Option chains",
+        "Strategy analysis",
+        "Risk & payoff exploration"
+      ],
+      "action": "Explore F&O"
+    },
+    {
+      "id": "commentary",
+      "name": "Commentary",
+      "category": "Market intelligence",
+      "url": null,
+      "icon": "message",
+      "color": "amber",
+      "short": "Follow the conversation. Find the context.",
+      "headline": "Connect what is said with what matters.",
+      "description": "Explore market commentary, company conversations, and research perspectives. Find context around the themes shaping Indian markets.",
+      "features": [
+        "Market narratives",
+        "Company conversations",
+        "Research context"
+      ],
+      "action": "Explore Commentary"
+    },
+    {
+      "id": "crypto",
+      "name": "Crypto World",
+      "category": "Digital asset research",
+      "url": null,
+      "icon": "hexagon",
+      "color": "cyan",
+      "short": "Global digital assets. An India-aware lens.",
+      "headline": "A wider world. A considered perspective.",
+      "description": "Bring global digital assets into your research with an India-aware perspective. Explore crypto markets, research themes, and the context behind the ecosystem.",
+      "features": [
+        "Digital asset markets",
+        "Research perspectives",
+        "Indian context"
+      ],
+      "action": "Explore Crypto World"
+    }
+  ],
+  "community": [
+    {
+      "id": "social",
+      "name": "Social & stories",
+      "label": "Ideas that travel.",
+      "description": "Market perspectives, visual explainers, and conversations. Built for the places you already spend time.",
+      "icon": "broadcast",
+      "platforms": [
+        {
+          "name": "YouTube",
+          "url": null
+        },
+        {
+          "name": "Instagram",
+          "url": null
+        },
+        {
+          "name": "Facebook",
+          "url": null
+        },
+        {
+          "name": "X",
+          "url": null
+        },
+        {
+          "name": "Threads",
+          "url": null
+        },
+        {
+          "name": "Snapchat",
+          "url": null
+        },
+        {
+          "name": "LinkedIn",
+          "url": null
+        },
+        {
+          "name": "Pinterest",
+          "url": null
+        },
+        {
+          "name": "Bluesky",
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "bharat",
+      "name": "Bharat & regional",
+      "label": "More voices. A wider India.",
+      "description": "A place for financial learning across regional communities, local conversations, and new audiences.",
+      "icon": "globe",
+      "platforms": [
+        {
+          "name": "ShareChat",
+          "url": null
+        },
+        {
+          "name": "Moj",
+          "url": null
+        },
+        {
+          "name": "Josh",
+          "url": null
+        },
+        {
+          "name": "Dailyhunt",
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "finance",
+      "name": "Finance & community",
+      "label": "Better questions, together.",
+      "description": "Spaces for thoughtful discussion, shared learning, and research conversations with other market participants.",
+      "icon": "people",
+      "platforms": [
+        {
+          "name": "Reddit",
+          "url": null
+        },
+        {
+          "name": "Quora",
+          "url": null
+        },
+        {
+          "name": "Telegram",
+          "url": null
+        },
+        {
+          "name": "WhatsApp Business",
+          "url": null
+        },
+        {
+          "name": "WhatsApp Channel",
+          "url": null
+        },
+        {
+          "name": "Discord",
+          "url": null
+        },
+        {
+          "name": "TradingView community",
+          "url": null
+        },
+        {
+          "name": "ValuePickr / investing forums",
+          "url": null
+        }
+      ]
+    },
+    {
+      "id": "reading",
+      "name": "Long-form & discovery",
+      "label": "Room to go deeper.",
+      "description": "Longer reads, learning notes, and considered perspectives. An expanding home for your market curiosity.",
+      "icon": "book",
+      "platforms": [
+        {
+          "name": "MarketDeck blog / learning",
+          "url": null
+        },
+        {
+          "name": "Medium",
+          "url": null
+        },
+        {
+          "name": "Substack / newsletter",
+          "url": null
+        },
+        {
+          "name": "Google Search / SEO",
+          "url": null
+        }
+      ]
+    }
+  ],
+  "newsletter": {
+    "url": null
+  },
+  "contact": [
+    {
+      "id": "general",
+      "name": "Say hello",
+      "description": "Questions, ideas, or feedback. Start a conversation with MarketDeck.",
+      "icon": "message",
+      "url": null
+    },
+    {
+      "id": "partnerships",
+      "name": "Build with us",
+      "description": "For media, education, communities, and potential partnerships.",
+      "icon": "people",
+      "url": null
+    },
+    {
+      "id": "support",
+      "name": "Find support",
+      "description": "A dedicated place for help with the MarketDeck product suite.",
+      "icon": "support",
+      "url": null
+    }
+  ],
+  "legal": {
+    "privacy": null,
+    "terms": null
+  }
+}
