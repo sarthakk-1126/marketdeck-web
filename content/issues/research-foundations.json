@@ -1,0 +1,92 @@
+{
+  "sources": [
+    {"id":"S1","title":"SEBI Investor: Investment in Securities Market","url":"https://investor.sebi.gov.in/securities-stockmarket.html","publicationDate":"Not stated on page","reviewedAt":"2026-09-22"},
+    {"id":"S2","title":"SEBI Investor: What You Need to Start Investing","url":"https://investor.sebi.gov.in/securities-trading.html","publicationDate":"Not stated on page","reviewedAt":"2026-09-22"},
+    {"id":"S3","title":"NSE: Corporate Filings - Financial Results","url":"https://www.nseindia.com/companies-listing/corporate-filings-financial-results","publicationDate":"Dynamic exchange directory","reviewedAt":"2026-09-22"},
+    {"id":"S4","title":"NSE: Corporate Filings - Corporate Actions","url":"https://www.nseindia.com/companies-listing/corporate-filings-actions","publicationDate":"Dynamic exchange directory","reviewedAt":"2026-09-22"},
+    {"id":"S5","title":"SEBI Investor: Understanding Derivatives","url":"https://investor.sebi.gov.in/understanding_derivatives.html","publicationDate":"Not stated on page","reviewedAt":"2026-09-22"},
+    {"id":"S6","title":"SEBI Investor: Key Risks in Investing","url":"https://investor.sebi.gov.in/securities-risks_trade_derivatives.html","publicationDate":"Not stated on page","reviewedAt":"2026-09-22"}
+  ],
+  "pages": [
+    {
+      "kicker":"THE MARKETDECK BRIEF / FIELDNOTES 01",
+      "title":"Start with the evidence",
+      "intro":"A small field guide to asking better questions about Indian markets.",
+      "sections":[
+        {"title":"Research is a sequence of checks","text":"A useful research session does not need to begin with a prediction. Begin with one question, identify the source that can answer it, and record the limits of the answer. This issue offers a repeatable way to move from a market observation to a note another person can understand and revisit."},
+        {"title":"Inside this issue","items":["02 / Market mechanics: separate the company, the exchange and the account.","03 / Company filings: preserve the period, scope and source of every figure.","04 / Chart context: describe the view before interpreting a pattern.","05 / Risk and derivatives: identify obligations before studying a payoff.","06 / The evidence checklist: keep an auditable record of what you know."]},
+        {"title":"How to use these fieldnotes","text":"Read one page alongside your own research notes. The prompts are editorial workflow suggestions, not screening rules or investment signals. The source references support the factual background; they do not endorse MarketDeck. Keep observations, interpretations and unanswered questions in separate columns."}
+      ],
+      "callout":"EDITORIAL DRAFT / Pending owner approval. Educational material only. No security recommendations, return forecasts or current market statistics.",
+      "sourceIds":[]
+    },
+    {
+      "kicker":"01 / KNOW THE MECHANISM",
+      "title":"A market is more than a price",
+      "intro":"Before looking at a company or contract, identify the activity you are actually studying.",
+      "sections":[
+        {"title":"New issuance and existing securities","text":"SEBI distinguishes the primary market, where issuers offer new securities, from the secondary market, where investors trade securities with one another. An exchange quotation and an offer document answer different questions. Record which market activity your source describes. [S1]"},
+        {"title":"Accounts have different jobs","text":"SEBI's introductory material separates a demat account, which holds securities electronically, a trading account with a registered broker, and a bank account for payments. These roles should not be confused with an information or research website. [S2]"},
+        {"title":"A practical research map","items":["Instrument: write the full name, identifier and exchange or venue.","Activity: distinguish a new issue, a secondary-market transaction, a company disclosure and a research opinion.","Time: record the date of the event as well as the time the source was retrieved.","Evidence: save the relevant official document reference, rather than a cropped headline alone."]},
+        {"title":"Try it on paper","text":"Hypothetical exercise: you see a headline about an unnamed company raising capital. Write two questions before opening its price chart: Is this a new security issue or a sale of existing holdings? Which original filing explains the terms? Leave the answer blank until the document supports it. A blank field is more useful than a confident guess."},
+        {"title":"Keep the boundary clear","text":"A research note can explain what you observed and what you still need to verify. It cannot establish that a transaction is suitable for a particular person. This guide stops at understanding and documentation; execution and personal financial decisions require their own checks."}
+      ],
+      "callout":"Your output: a one-line description of the instrument, market activity, source and observation date.",
+      "sourceIds":["S1","S2"]
+    },
+    {
+      "kicker":"02 / FOLLOW THE FILING",
+      "title":"Give every number an address",
+      "intro":"A figure becomes more useful when you can return to the exact document and understand its context.",
+      "sections":[
+        {"title":"Start at the exchange directory","text":"NSE's Financial Results directory provides company and period-ended filters, with result and download tools. Use it as a route to the original company material. A search result or exported cell should be the start of your trace, not the end. [S3]"},
+        {"title":"Build a source card","items":["Identity: company name, identifier, document title and original URL.","Period: quarter or year, period ended, filing date and retrieval date.","Scope: standalone or consolidated; currency and scale as printed.","Location: page, table, line item and the label used by the issuer.","Qualifications: notes, restatements, auditor observations and unresolved questions."]},
+        {"title":"Read the surrounding explanation","text":"Our suggested workflow is to copy the label before the value. Then read the adjacent notes and the report's basis of preparation. When comparing periods, check whether the presentation and scope are consistent. Do not silently substitute a definition from a different company or a screen's shorthand label."},
+        {"title":"A deliberately incomplete example","text":"Hypothetical note: 'Revenue changed between two reporting periods.' Before calculating anything, mark the comparison incomplete until both source documents, reporting scopes and units have been checked. Write down any adjustment you choose to make and preserve the unadjusted figures separately. This is a documentation exercise, not a company assessment."},
+        {"title":"Ask what would change your reading","text":"List the missing evidence beside your current interpretation. A later clarification may alter the conclusion; your note should make that revision easy. If a source is unavailable or ambiguous, record the gap rather than filling it with an estimate presented as a fact."}
+      ],
+      "callout":"Your output: one figure, one exact source location, one interpretation, and one open question.",
+      "sourceIds":["S3"]
+    },
+    {
+      "kicker":"03 / SET THE FRAME",
+      "title":"Read the chart's context first",
+      "intro":"The picture is an observation tool. A clear description comes before a story about why it moved.",
+      "sections":[
+        {"title":"Write the view's settings","text":"Record the instrument, venue, interval, date range, time zone and data source. Note whether a series is described as adjusted or unadjusted. If that definition is not available, mark it unknown. These are editorial research prompts, not an assertion about how any particular chart vendor calculates its data."},
+        {"title":"Check the event record","text":"NSE maintains a Corporate Actions directory with company and purpose filters. Consult the relevant official event record when a price history raises a question about a corporate action. Do not infer an event or its effect from the shape of a chart alone. [S4]"},
+        {"title":"Use three columns","items":["Observed: a plain description of the visible series within the selected window.","Inferred: your proposed explanation, explicitly marked as a hypothesis.","To verify: the filing, event record or data definition that could support or weaken it."]},
+        {"title":"Change one setting at a time","text":"Hypothetical exercise: an unnamed series looks different when its interval is changed. Save both views with their settings. Describe what each view includes before deciding that they disagree. This exercise has no price values and offers no trading signal; its purpose is to make your observation reproducible."},
+        {"title":"Bring the question back to the business","text":"A useful next step may be a company filing or a source conversation, rather than another indicator. Write a sentence that connects the chart question to evidence you can inspect. Avoid treating a visually striking pattern as a complete explanation. Keep the original view alongside any later interpretation."}
+      ],
+      "callout":"Your output: a saved view with explicit settings and a separate, testable interpretation.",
+      "sourceIds":["S4"]
+    },
+    {
+      "kicker":"04 / UNDERSTAND THE OBLIGATION",
+      "title":"Risk before the payoff shape",
+      "intro":"A neat diagram cannot replace an understanding of the instrument and its conditions.",
+      "sections":[
+        {"title":"Start with the contract","text":"SEBI describes derivatives as instruments whose value is linked to an underlying. Futures and options have different contractual structures; an option buyer pays a premium for a right rather than an obligation to exercise. SEBI also warns that relatively small initial amounts can magnify gains and losses. [S5]"},
+        {"title":"Ask beyond direction","text":"SEBI's risk guide distinguishes market, liquidity, business, volatility, inflation and currency risks. A view on price direction is therefore only one part of a risk discussion. Liquidity concerns include whether a position can be bought or sold promptly. [S6]"},
+        {"title":"Questions for a contract worksheet","items":["What is the underlying, contract identifier and expiry?", "What rights or obligations attach to the side of the contract being studied?", "Which official specifications describe settlement and the applicable contract size?", "What assumptions, costs or constraints does the displayed scenario leave out?", "Which adverse scenario have you not yet considered?"]},
+        {"title":"Read labels on analytical tools","text":"Our editorial prompt is to distinguish a displayed expiry payoff from a valuation at another time. Read the tool's own definitions and assumptions before interpreting either. A simulation or illustrative surface is an educational representation under stated conditions; it is not evidence of an executable price or a promised outcome."},
+        {"title":"Keep uncertainty visible","text":"Hypothetical exercise: a strategy diagram appears to have a bounded loss. Before accepting the description, list the assumptions that would need verification in the contract and the tool documentation. If you cannot explain them, retain the question as unresolved. This is a literacy exercise, not a proposed trade."}
+      ],
+      "callout":"Your output: a contract worksheet with explicit assumptions, open questions and source references.",
+      "sourceIds":["S5","S6"]
+    },
+    {
+      "kicker":"05 / LEAVE A TRAIL",
+      "title":"The evidence checklist",
+      "intro":"Use this page before closing a research session. An incomplete note can still be an honest, useful note.",
+      "sections":[
+        {"title":"Five checks to carry forward","items":["Identity - did I verify the issuer, instrument, venue and original document?", "Time - did I distinguish the event date, reporting period and retrieval date?", "Definition - did I preserve units, scope and the source's terminology?", "Interpretation - can another reader separate observation from hypothesis?", "Uncertainty - have I recorded missing evidence and what would change my reading?"]},
+        {"title":"A reusable note format","text":"Question / Source and location / Date and scope / Observation / Interpretation / Open question / Next verification step. Keep the source reference attached when you share a note. When a source changes, retain the old version's date so later readers can understand why your interpretation changed."},
+        {"title":"Sources and editorial scope","text":"The six primary sources below were reviewed on 22 September 2026. SEBI page publication dates are not stated; NSE directories are dynamic. No current statistics from those pages are reproduced. Workflow prompts and hypothetical exercises are original editorial material, not regulator-approved instructions. Source citations are not endorsements."}
+      ],
+      "callout":"DRAFT / Review factual accuracy, scope and suitability for publication before owner approval. This issue is research education, not personal financial advice.",
+      "sourceIds":["S1","S2","S3","S4","S5","S6"]
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+# PDFs must retain byte offsets; never apply automatic newline conversion.
+*.pdf binary
+*.webp binary
+# Generated vendor bundle contains intentional GLSL whitespace. Preserve its bytes.
+public/assets/globe.js -text -whitespace linguist-generated=true

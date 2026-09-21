@@ -14,13 +14,16 @@
       "color": "blue",
       "short": "Go beyond the numbers. Find the evidence.",
       "headline": "Conviction starts with better research.",
-      "description": "Explore Indian companies, compare fundamentals, and bring financial filings into your research workflow. Build a clearer picture of the business behind the stock.",
+      "description": "Go beyond the numbers. Find the evidence.",
       "features": [
         "Company research",
         "Fundamental screening",
         "Peer comparisons"
       ],
-      "action": "Explore StockProof"
+      "action": "Explore StockProof",
+      "preview": "/assets/products/stockproof.webp",
+      "thumbnail": "/assets/products/stockproof-small.webp",
+      "previewKind": "Historical interface capture"
     },
     {
       "id": "charting",
@@ -31,13 +34,16 @@
       "color": "teal",
       "short": "A clearer view of price, trend, and context.",
       "headline": "See the market from a sharper angle.",
-      "description": "Put price history in context. Explore Indian equities with charts, technical tools, and a focused workspace for your next research question.",
+      "description": "A clearer view of price, trend, and context.",
       "features": [
         "Price history",
         "Technical analysis",
         "Market exploration"
       ],
-      "action": "Explore Charting"
+      "action": "Explore Charting",
+      "preview": "/assets/products/charting.webp",
+      "thumbnail": "/assets/products/charting-small.webp",
+      "previewKind": "Historical interface capture"
     },
     {
       "id": "fno",
@@ -48,13 +54,16 @@
       "color": "violet",
       "short": "Understand the structure behind the strategy.",
       "headline": "Make complexity easier to explore.",
-      "description": "Explore option chains, study strategies, and understand possible outcomes in a dedicated derivatives workspace. Bring structure to your analysis before making a decision.",
+      "description": "Understand the structure behind the strategy.",
       "features": [
         "Option chains",
         "Strategy analysis",
         "Risk & payoff exploration"
       ],
-      "action": "Explore F&O"
+      "action": "Explore F&O",
+      "preview": "/assets/products/fno.webp",
+      "thumbnail": "/assets/products/fno-small.webp",
+      "previewKind": "Local interface capture · illustrative payoff"
     },
     {
       "id": "commentary",
@@ -65,13 +74,16 @@
       "color": "amber",
       "short": "Follow the conversation. Find the context.",
       "headline": "Connect what is said with what matters.",
-      "description": "Explore market commentary, company conversations, and research perspectives. Find context around the themes shaping Indian markets.",
+      "description": "Follow the conversation. Find the context.",
       "features": [
         "Market narratives",
         "Company conversations",
         "Research context"
       ],
-      "action": "Explore Commentary"
+      "action": "Explore Commentary",
+      "preview": "/assets/products/commentary.webp",
+      "thumbnail": "/assets/products/commentary-small.webp",
+      "previewKind": "Product artwork · representative preview"
     },
     {
       "id": "crypto",
@@ -82,13 +94,16 @@
       "color": "cyan",
       "short": "Global digital assets. An India-aware lens.",
       "headline": "A wider world. A considered perspective.",
-      "description": "Bring global digital assets into your research with an India-aware perspective. Explore crypto markets, research themes, and the context behind the ecosystem.",
+      "description": "Global digital assets. An India-aware lens.",
       "features": [
         "Digital asset markets",
         "Research perspectives",
         "Indian context"
       ],
-      "action": "Explore Crypto World"
+      "action": "Explore Crypto World",
+      "preview": "/assets/products/crypto.webp",
+      "thumbnail": "/assets/products/crypto-small.webp",
+      "previewKind": "Product artwork · representative preview"
     }
   ],
   "community": [
@@ -101,39 +116,111 @@
       "platforms": [
         {
           "name": "YouTube",
-          "url": null
+          "url": null,
+          "label": "YouTube",
+          "group": "social",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "youtube"
         },
         {
           "name": "Instagram",
-          "url": null
+          "url": null,
+          "label": "Instagram",
+          "group": "social",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "instagram"
         },
         {
           "name": "Facebook",
-          "url": null
+          "url": null,
+          "label": "Facebook",
+          "group": "social",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "facebook"
         },
         {
           "name": "X",
-          "url": null
+          "url": null,
+          "label": "X",
+          "group": "social",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "x"
         },
         {
           "name": "Threads",
-          "url": null
+          "url": null,
+          "label": "Threads",
+          "group": "social",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "threads"
         },
         {
           "name": "Snapchat",
-          "url": null
+          "url": null,
+          "label": "Snapchat",
+          "group": "social",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "snapchat"
         },
         {
           "name": "LinkedIn",
-          "url": null
+          "url": null,
+          "label": "LinkedIn",
+          "group": "social",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": null
         },
         {
           "name": "Pinterest",
-          "url": null
+          "url": null,
+          "label": "Pinterest",
+          "group": "social",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "pinterest"
         },
         {
           "name": "Bluesky",
-          "url": null
+          "url": null,
+          "label": "Bluesky",
+          "group": "social",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "bluesky"
         }
       ]
     },
@@ -146,19 +233,51 @@
       "platforms": [
         {
           "name": "ShareChat",
-          "url": null
+          "url": null,
+          "label": "ShareChat",
+          "group": "bharat",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": null
         },
         {
           "name": "Moj",
-          "url": null
+          "url": null,
+          "label": "Moj",
+          "group": "bharat",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": null
         },
         {
           "name": "Josh",
-          "url": null
+          "url": null,
+          "label": "Josh",
+          "group": "bharat",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": null
         },
         {
           "name": "Dailyhunt",
-          "url": null
+          "url": null,
+          "label": "Dailyhunt",
+          "group": "bharat",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": null
         }
       ]
     },
@@ -171,60 +290,156 @@
       "platforms": [
         {
           "name": "Reddit",
-          "url": null
+          "url": null,
+          "label": "Reddit",
+          "group": "finance",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "reddit"
         },
         {
           "name": "Quora",
-          "url": null
+          "url": null,
+          "label": "Quora",
+          "group": "finance",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "quora"
         },
         {
           "name": "Telegram",
-          "url": null
+          "url": null,
+          "label": "Telegram",
+          "group": "finance",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "telegram"
         },
         {
           "name": "WhatsApp Business",
-          "url": null
+          "url": null,
+          "label": "WhatsApp Business",
+          "group": "finance",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "whatsapp"
         },
         {
           "name": "WhatsApp Channel",
-          "url": null
+          "url": null,
+          "label": "WhatsApp Channel",
+          "group": "finance",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "whatsapp"
         },
         {
           "name": "Discord",
-          "url": null
+          "url": null,
+          "label": "Discord",
+          "group": "finance",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "discord"
         },
         {
           "name": "TradingView community",
-          "url": null
+          "url": null,
+          "label": "TradingView community",
+          "group": "finance",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "tradingview"
         },
         {
           "name": "ValuePickr / investing forums",
-          "url": null
+          "url": null,
+          "label": "ValuePickr / investing forums",
+          "group": "finance",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": null
         }
       ]
     },
     {
       "id": "reading",
-      "name": "Long-form & discovery",
+      "name": "Reading & learning",
       "label": "Room to go deeper.",
       "description": "Longer reads, learning notes, and considered perspectives. An expanding home for your market curiosity.",
       "icon": "book",
       "platforms": [
         {
-          "name": "MarketDeck blog / learning",
-          "url": null
+          "name": "MarketDeck Intelligence",
+          "url": "/intelligence/",
+          "label": "MarketDeck Intelligence",
+          "group": "reading",
+          "type": "internal",
+          "confirmed": true,
+          "enabled": true,
+          "joinable": false,
+          "status": "available",
+          "icon": null
+        },
+        {
+          "name": "StockProof learning / blog",
+          "url": null,
+          "label": "StockProof learning / blog",
+          "group": "reading",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": null
         },
         {
           "name": "Medium",
-          "url": null
+          "url": null,
+          "label": "Medium",
+          "group": "reading",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "medium"
         },
         {
           "name": "Substack / newsletter",
-          "url": null
-        },
-        {
-          "name": "Google Search / SEO",
-          "url": null
+          "url": null,
+          "label": "Substack / newsletter",
+          "group": "reading",
+          "type": "external",
+          "confirmed": false,
+          "enabled": false,
+          "joinable": true,
+          "status": "planned",
+          "icon": "substack"
         }
       ]
     }
@@ -235,21 +450,21 @@
   "contact": [
     {
       "id": "general",
-      "name": "Say hello",
+      "name": "General",
       "description": "Questions, ideas, or feedback. Start a conversation with MarketDeck.",
       "icon": "message",
       "url": null
     },
     {
       "id": "partnerships",
-      "name": "Build with us",
+      "name": "Partnerships",
       "description": "For media, education, communities, and potential partnerships.",
       "icon": "people",
       "url": null
     },
     {
       "id": "support",
-      "name": "Find support",
+      "name": "Support",
       "description": "A dedicated place for help with the MarketDeck product suite.",
       "icon": "support",
       "url": null
@@ -258,5 +473,8 @@
   "legal": {
     "privacy": null,
     "terms": null
+  },
+  "editorial": {
+    "manifest": "content/briefs.json"
   }
 }

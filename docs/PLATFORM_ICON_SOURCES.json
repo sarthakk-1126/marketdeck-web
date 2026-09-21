@@ -1,0 +1,119 @@
+{
+  "package": "simple-icons@15.20.0",
+  "packageLicense": "CC0-1.0",
+  "note": "Package license does not replace underlying trademark rights. Icons identify platforms; planned entries do not imply official MarketDeck accounts or partnerships.",
+  "icons": [
+    {
+      "slug": "bluesky",
+      "title": "Bluesky",
+      "source": "https://bsky.social/about/blog/press-faq",
+      "guidelines": "https://bsky.social/about/blog/press-faq",
+      "license": null
+    },
+    {
+      "slug": "discord",
+      "title": "Discord",
+      "source": "https://discord.com/branding",
+      "guidelines": "https://discord.com/branding",
+      "license": null
+    },
+    {
+      "slug": "facebook",
+      "title": "Facebook",
+      "source": "https://about.meta.com/brand/resources/facebook/logo",
+      "guidelines": "https://about.meta.com/brand/resources/facebook/logo",
+      "license": null
+    },
+    {
+      "slug": "instagram",
+      "title": "Instagram",
+      "source": "https://about.meta.com/brand/resources/instagram",
+      "guidelines": "https://about.meta.com/brand/resources/instagram",
+      "license": null
+    },
+    {
+      "slug": "medium",
+      "title": "Medium",
+      "source": "https://medium.design/logos-and-brand-guidelines-f1a01a733592",
+      "guidelines": "https://medium.design/logos-and-brand-guidelines-f1a01a733592",
+      "license": null
+    },
+    {
+      "slug": "pinterest",
+      "title": "Pinterest",
+      "source": "https://business.pinterest.com/en/brand-guidelines",
+      "guidelines": "https://business.pinterest.com/en/brand-guidelines",
+      "license": null
+    },
+    {
+      "slug": "quora",
+      "title": "Quora",
+      "source": "https://www.quora.com",
+      "guidelines": null,
+      "license": null
+    },
+    {
+      "slug": "reddit",
+      "title": "Reddit",
+      "source": "https://www.redditinc.com/brand",
+      "guidelines": "https://www.redditinc.com/brand",
+      "license": null
+    },
+    {
+      "slug": "snapchat",
+      "title": "Snapchat",
+      "source": "https://www.snapchat.com/brand-guidelines",
+      "guidelines": "https://www.snapchat.com/brand-guidelines",
+      "license": null
+    },
+    {
+      "slug": "substack",
+      "title": "Substack",
+      "source": "https://on.substack.com",
+      "guidelines": null,
+      "license": null
+    },
+    {
+      "slug": "telegram",
+      "title": "Telegram",
+      "source": "https://telegram.org/tour/screenshots",
+      "guidelines": null,
+      "license": null
+    },
+    {
+      "slug": "threads",
+      "title": "Threads",
+      "source": "https://about.meta.com/brand/resources/instagram/threads",
+      "guidelines": "https://about.meta.com/brand/resources/instagram/threads",
+      "license": null
+    },
+    {
+      "slug": "tradingview",
+      "title": "TradingView",
+      "source": "https://www.tradingview.com/media-kit",
+      "guidelines": null,
+      "license": null
+    },
+    {
+      "slug": "whatsapp",
+      "title": "WhatsApp",
+      "source": "https://about.meta.com/brand/resources/whatsapp/whatsapp-brand",
+      "guidelines": "https://about.meta.com/brand/resources/whatsapp/whatsapp-brand",
+      "license": null
+    },
+    {
+      "slug": "x",
+      "title": "X",
+      "source": "https://x.com",
+      "guidelines": "https://about.x.com/en/who-we-are/brand-toolkit",
+      "license": null
+    },
+    {
+      "slug": "youtube",
+      "title": "YouTube",
+      "source": "https://www.youtube.com/howyoutubeworks/resources/brand-resources/#logos-icons-and-colors",
+      "guidelines": "https://www.youtube.com/howyoutubeworks/resources/brand-resources/#logos-icons-and-colors",
+      "license": null
+    }
+  ]
+}

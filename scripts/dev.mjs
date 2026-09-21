@@ -2,7 +2,7 @@ import { createServer } from 'node:http';
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { resolve, extname, sep } from 'node:path';
 
-const root = resolve('public');
+const root = resolve(process.argv.includes('--review')?'.preview/review':'public');
 const portFlag = process.argv.indexOf('--port');
 const port = Number(portFlag > -1 ? process.argv[portFlag + 1] : 4173);
 const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.png': 'image/png', '.mp4': 'video/mp4', '.xml': 'application/xml', '.txt': 'text/plain', '.woff2': 'font/woff2' };
@@ -11,13 +11,14 @@ createServer((req, res) => {
   let pathname;
   try { pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname); }
   catch { res.writeHead(400).end(); return; }
-  const file = resolve(root, `.${pathname === '/' ? '/index.html' : pathname}`);
+  let file = resolve(root, `.${pathname === '/' ? '/index.html' : pathname}`);
+  if(file.startsWith(root+sep)&&existsSync(file)&&statSync(file).isDirectory())file=resolve(file,'index.html');
   if (!file.startsWith(root + sep) || !existsSync(file) || !statSync(file).isFile()) {
     res.writeHead(404, { 'Content-Type': 'text/plain' }).end('Not found. Product applications are served by the production gateway.');
     return;
   }
   const size = statSync(file).size;
-  const headers = { 'Content-Type': types[extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Accept-Ranges': 'bytes' };
+  const headers = { 'Content-Type': extname(file)==='.pdf'?'application/pdf':types[extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Accept-Ranges': 'bytes', 'X-Robots-Tag':'noindex, nofollow' };
   const range = req.headers.range?.match(/^bytes=(\d+)-(\d*)$/);
   if (range) {
     const start = Number(range[1]);

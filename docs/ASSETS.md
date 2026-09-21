@@ -1,3 +1,5 @@
+> This document records the approved V1 assets. V2 adds licensed Earth textures, sanitized product previews and platform marks; see [V2_ASSETS.md](V2_ASSETS.md).
+
 # Homepage asset provenance
 
 Both raster illustrations were created for this homepage with the built-in Image Gen tool. They are original editorial illustrations, not satellite measurements or documentary photographs. The supplied screenshots and video were used as visual references only; no source screenshots or video are shipped. No personal information from the supplied product screenshots is included.

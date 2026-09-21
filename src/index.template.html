@@ -18,9 +18,9 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" as="image" href="/assets/india-earth.webp" imagesrcset="/assets/india-earth-small.webp 1000w, /assets/india-earth.webp 1920w" imagesizes="100vw" fetchpriority="high">
-  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/home.css"><noscript><style>img[data-preview-src]{display:none}</style></noscript>
   <script type="application/ld+json">{{SCHEMA}}</script>
-  <script src="/home.js" defer></script>
+  <script src="/home.js" type="module"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -33,7 +33,7 @@
     </div>
   </header>
   <main id="main" tabindex="-1">
-    <section class="hero" aria-labelledby="hero-heading">
+    <div class="market-story"><div class="story-stage"><section class="hero" aria-labelledby="hero-heading">
       <div class="earth-scene" aria-hidden="true"><picture><source media="(max-width: 700px)" srcset="/assets/india-earth-small.webp"><img class="earth-image" src="/assets/india-earth.webp" width="1920" height="1201" alt="" fetchpriority="high"></picture><div class="earth-shade"></div><div class="earth-coordinates"><span class="coordinate-dot"></span><span>INDIA<br> <small>A WORLD OF POSSIBILITY</small></span></div><div class="earth-caption">GLOBAL PERSPECTIVE <span></span> INDIAN CONTEXT</div></div>
       <div class="container hero-content">
         <p class="eyebrow hero-eyebrow"><span class="status-dot"></span> INDIAN MARKETS. A BIGGER PERSPECTIVE.</p>
@@ -45,18 +45,20 @@
       </div>
       <div class="hero-bottom container"><a href="#products" class="scroll-cue"><span class="scroll-track"></span> SCROLL TO DISCOVER</a><button class="motion-toggle" type="button" aria-pressed="false" aria-label="Pause ambient motion" hidden><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#pause"></use></svg><span>Pause motion</span></button><span class="hero-index">01 <span>/</span> THE BIGGER PICTURE</span></div>
     </section>
-    <nav class="product-rail" aria-label="Discover the five MarketDeck products"><div class="container">{{PRODUCT_NAV}}</div></nav>
 
-    <section id="products" class="section products-section" aria-labelledby="products-heading">
+
+    <div id="products" class="story-gallery container" aria-labelledby="products-heading">        <div class="section-heading"><div><p class="eyebrow">THE MARKETDECK SUITE</p><h2 id="products-heading">Five lenses. <span class="muted-heading">A fuller picture.</span></h2></div><p class="section-intro">Every market question deserves the right tools.<br> Move between perspectives, with purpose.</p></div>
+        <div class="product-tabs" aria-label="Choose a product">{{PRODUCT_TABS}}</div></div></div></div>
+    <div class="product-showcase"><nav class="product-rail" aria-label="Discover the five MarketDeck products"><div class="container">{{PRODUCT_NAV}}</div></nav>
+    <section class="section products-section" aria-labelledby="products-heading">
       <div class="container">
-        <div class="section-heading reveal"><div><p class="eyebrow">THE MARKETDECK SUITE</p><h2 id="products-heading">Five lenses.<br> <span class="muted-heading">A fuller picture.</span></h2></div><p class="section-intro">Every market question deserves the right tools.<br> Move between perspectives, with purpose.</p></div>
-        <div class="product-tabs" aria-label="Choose a product">{{PRODUCT_TABS}}</div>
+
         <div class="product-panels">{{PRODUCT_PANELS}}</div>
         <div class="suite-footnote"><span><span class="status-dot"></span> PURPOSE-BUILT FOR YOUR RESEARCH</span><p>From the first question to a more informed view.</p></div>
       </div>
     </section>
 
-    <section id="approach" class="section approach-section" aria-labelledby="approach-heading">
+    </div><section id="approach" class="section approach-section" aria-labelledby="approach-heading">
       <div class="container">
         <div class="approach-intro reveal"><div><p class="eyebrow">THE THINKING BEHIND THE TOOLS</p><h2 id="approach-heading">A brighter investing India<br> begins with <span>better insight.</span></h2></div><p>Markets are connected.<br> Your research should be, too.<br> <span>We’re building a place to bring it together.</span></p></div>
         <div class="principles">
@@ -68,27 +70,7 @@
       </div>
     </section>
 
-    <section id="community" class="section community-section" aria-labelledby="community-heading">
-      <div class="container">
-        <div class="section-heading reveal"><div><p class="eyebrow">BEYOND THE PLATFORM</p><h2 id="community-heading">Good insights<br> <span class="muted-heading">belong everywhere.</span></h2></div><p class="section-intro">An ecosystem of ideas, learning, and conversation.<br> Find your way into the MarketDeck community.</p></div>
-        <div class="community-layout">
-          <div class="community-network" data-active="social" aria-hidden="true">
-            <svg class="orbit-art" viewBox="0 0 520 460" fill="none">
-              <circle class="orbit-line" cx="260" cy="230" r="87"/><circle class="orbit-line" cx="260" cy="230" r="144"/><circle class="orbit-line" cx="260" cy="230" r="206"/>
-              <path class="orbit-axis" d="M25 230h470M260 12v436"/><circle class="orbit-highlight" cx="260" cy="230" r="144" stroke-dasharray="170 740" transform="rotate(-45 260 230)"/>
-              <g class="orbit-node social"><circle cx="148" cy="140" r="23"/><use href="/assets/icons.svg#broadcast" x="138" y="130" width="20" height="20"/><text x="112" y="106">SOCIAL</text></g>
-              <g class="orbit-node bharat"><circle cx="392" cy="111" r="23"/><use href="/assets/icons.svg#globe" x="382" y="101" width="20" height="20"/><text x="420" y="91">BHARAT</text></g>
-              <g class="orbit-node finance"><circle cx="395" cy="278" r="23"/><use href="/assets/icons.svg#people" x="385" y="268" width="20" height="20"/><text x="393" y="323">COMMUNITY</text></g>
-              <g class="orbit-node reading"><circle cx="184" cy="359" r="23"/><use href="/assets/icons.svg#book" x="174" y="349" width="20" height="20"/><text x="99" y="402">DEEPER READING</text></g>
-              <g class="orbit-satellites"><circle cx="74" cy="318" r="4"/><circle cx="260" cy="24" r="3"/><circle cx="441" cy="134" r="3"/><circle cx="295" cy="310" r="3"/><circle cx="229" cy="92" r="4"/><circle cx="325" cy="426" r="3"/><circle cx="55" cy="210" r="3"/></g>
-            </svg>
-            <div class="network-core"><svg class="brand-icon" aria-hidden="true"><use href="/assets/icons.svg#brand"></use></svg><strong>MarketDeck</strong><span>ONE CONNECTED WORLD</span></div>
-            <div class="network-footnote"><span class="status-dot"></span> MANY CONVERSATIONS. ONE PERSPECTIVE.</div>
-          </div>
-          <div class="community-directory"><div class="community-tabs" aria-label="Community categories">{{COMMUNITY_TABS}}</div><div class="community-panels">{{COMMUNITY_PANELS}}</div></div>
-        </div>
-      </div>
-    </section>
+    <section id="community" class="section community-section" aria-labelledby="community-heading"><div class="container"><div class="section-heading"><div><p class="eyebrow">BEYOND THE PLATFORM</p><h2 id="community-heading">MarketDeck,<br><span class="muted-heading">wherever you are.</span></h2></div><p class="section-intro">Ideas travel further together.<br> A growing home for research, learning, and conversation.</p></div><div class="community-field">{{COMMUNITY_PANELS}}</div><p class="community-legend">{{COMMUNITY_LEGEND}} Platform names identify intended channels, not partnerships.</p></div></section>
 
     <section id="intelligence" class="section intelligence-section" aria-labelledby="intelligence-heading">
       <div class="container">
@@ -103,9 +85,9 @@
 
     <section class="brief-section" aria-labelledby="brief-heading"><div class="container brief-inner"><div class="brief-icon"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#mail"></use></svg></div><div class="brief-copy"><p class="eyebrow">A LITTLE PERSPECTIVE IN YOUR INBOX</p><h2 id="brief-heading">The MarketDeck Brief.</h2><p>Research ideas, product updates, and thoughtful market learning.</p></div><div class="brief-action">{{NEWSLETTER}}{{NEWSLETTER_NOTE}}</div></div></section>
 
-    <section id="contact" class="section contact-section" aria-labelledby="contact-heading"><div class="container"><div class="section-heading reveal"><div><p class="eyebrow">LET’S MOVE THE CONVERSATION FORWARD</p><h2 id="contact-heading">A smarter market journey<br> <span class="muted-heading">starts with a connection.</span></h2></div><a class="button button-outline" href="#products">Find your perspective <svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow-up"></use></svg></a></div><div class="contact-grid">{{CONTACTS}}</div></div></section>
+    <section id="contact" class="contact-compact container" aria-labelledby="contact-heading"><div><h2 id="contact-heading">Keep the conversation going.</h2><p>Official contact channels have not been announced yet.</p></div><div class="contact-destinations">{{CONTACTS}}</div></section>
   </main>
-  <footer class="site-footer"><div class="container"><div class="footer-main"><div class="footer-brand"><a href="/" class="brand" aria-label="MarketDeck home"><svg class="brand-icon" aria-hidden="true"><use href="/assets/icons.svg#brand"></use></svg><span>MarketDeck<span class="brand-period">.</span></span></a><p>Indian markets. A bigger perspective.<br> A brighter investing India.</p><span class="made-in">BUILT WITH INDIA AT THE CENTRE.</span></div><div class="footer-column"><h2>The product suite</h2><ul>{{FOOTER_PRODUCTS}}</ul></div><div class="footer-column"><h2>Explore</h2><ul><li><a href="#approach">Our approach</a></li><li><a href="#intelligence">Intelligence & learning</a></li><li><a href="#community">Community</a></li><li><a href="#contact">Connect with us</a></li></ul></div><div class="footer-message"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#globe"></use></svg><p>One market.<br> More perspective.<br> <span>Your next question.</span></p><a href="#products" class="text-link">Explore MarketDeck <svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow"></use></svg></a></div></div><div class="footer-bottom"><span>© 2026 MarketDeck. All rights reserved.</span><span class="footer-disclaimer">Research and education. Not investment advice.</span><div class="legal-links">{{LEGAL}}</div></div></div></footer>
+  <footer class="site-footer"><div class="container"><div class="footer-main"><div class="footer-brand"><a href="/" class="brand" aria-label="MarketDeck home"><svg class="brand-icon" aria-hidden="true"><use href="/assets/icons.svg#brand"></use></svg><span>MarketDeck<span class="brand-period">.</span></span></a><p>Indian markets. A bigger perspective.<br> A brighter investing India.</p><span class="made-in">BUILT WITH INDIA AT THE CENTRE.</span></div><div class="footer-column"><h2>The product suite</h2><ul>{{FOOTER_PRODUCTS}}</ul></div><div class="footer-column"><h2>Explore</h2><ul><li><a href="#approach">Our approach</a></li><li><a href="#intelligence">Intelligence & learning</a></li><li><a href="#community">Community</a></li><li><a href="#contact">Connect with us</a></li></ul></div><div class="footer-message"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#globe"></use></svg><p>One market.<br> More perspective.<br> <span>Your next question.</span></p><a href="#products" class="text-link">Explore MarketDeck <svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow"></use></svg></a></div></div><div class="footer-bottom"><span>© 2026 MarketDeck. All rights reserved.</span><span class="footer-disclaimer">Research and education. Not investment advice.</span><div class="legal-links"><a href="/credits/">Asset credits</a>{{LEGAL}}</div></div></div></footer>
   <dialog class="article-dialog" aria-labelledby="reader-title"><div class="reader-toolbar"><span>MARKETDECK INTELLIGENCE</span><button type="button" class="reader-close" aria-label="Close article"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#close"></use></svg></button></div><div class="reader-content"></div></dialog>
 </body>
 </html>

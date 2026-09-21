@@ -1,0 +1,18 @@
+{
+  "issues": [
+    {
+      "id": "research-foundations-01",
+      "title": "Start with the evidence",
+      "slug": "research-foundations",
+      "edition": "Fieldnotes 01 · Research foundations",
+      "summary": "A practical reading companion for Indian markets: understand the market, trace company filings, frame a chart, and ask better questions about risk.",
+      "cover": "/intelligence/issues/research-foundations/cover.webp",
+      "pdfPath": "/intelligence/issues/research-foundations/marketdeck-brief.pdf",
+      "pageCount": 6,
+      "sourceReviewedAt": "2026-09-22",
+      "publicationStatus": "draft",
+      "source": "content/issues/research-foundations.json",
+      "assets": "content/issues/research-foundations"
+    }
+  ]
+}

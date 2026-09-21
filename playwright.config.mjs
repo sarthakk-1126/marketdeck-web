@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'tests/browser',fullyParallel:false,workers:1,timeout:30000,expect:{timeout:15000},outputDir:'.preview/v2/test-results',reporter:[['list'],['json',{outputFile:'.preview/v2/browser-results.json'}]],use:{baseURL:'http://127.0.0.1:4173',viewport:{width:1440,height:900},headless:true,launchOptions:{args:['--enable-unsafe-swiftshader']},trace:'retain-on-failure'},webServer:{command:'node scripts/dev.mjs --port 4174',url:'http://127.0.0.1:4174',reuseExistingServer:true}});

@@ -1,55 +1,48 @@
 # MarketDeck Web
 
-The public MarketDeck homepage, deployed as static files behind the central Caddy gateway at https://marketdeck.in/.
+The MarketDeck homepage is a static site. The existing deployment contract remains the committed contents of `public/`; no server build, framework migration, product routing change, or backend is required.
 
-This repository does not own authentication or the product applications. This implementation adds no backend, database, framework, analytics service, or runtime dependency.
+## Local authoring
 
-## Develop and validate
-
-Use Node.js 20 or later. No package installation is required.
+Use Node.js 20+:
 
 ```sh
+npm ci
 npm run build
-npm run dev
-npm run check
+npm run build:review
+npm run dev:review
 ```
 
-Open http://127.0.0.1:4173. The server binds to loopback only. `npm run dev -- --port 4180` selects another port. Reload the browser after changes.
+Open http://127.0.0.1:4173. Review mode serves `.preview/review` on loopback and includes unpublished editorial drafts with `noindex`. `npm run dev` serves the production `public/` build, which excludes drafts. Choose another port with `-- --port 4180`. These servers intentionally do not implement product applications.
 
-`npm run build` produces `public/index.html`. Deploy the entire `public/` directory through the existing static deployment workflow. The generated HTML is committed, so the current deployment model needs no build or routing changes. Do not deploy the repository root.
+```sh
+npm run check
+npx playwright install chromium
+npm run test:browser
+node scripts/capture-review.mjs
+```
 
-## One place for destinations
+Browser tests need the review server running. They start a separate production server on 4174. The recording command uses isolated Chromium and writes screenshots, diagnostics and an actual-site video under `.preview/v2/`, excluded from Git and production assets.
 
-Edit `src/site-data.json`, then run `npm run build` and commit both the source and regenerated HTML.
+## Destinations
 
-- Products: `products[].url`
-- Community/social: `community[].platforms[].url`
-- Newsletter: `newsletter.url`
-- General contact, partnerships, support: `contact[].url`
-- Legal documents: `legal.privacy` and `legal.terms`
+`src/site-data.json` owns product, platform, contact, newsletter and legal destinations. Use only confirmed URLs. `null` renders readable pending content, with no fake anchor or action. Community links also need `confirmed` and `enabled`; only external, joinable, confirmed, enabled, deduplicated destinations count as communities. An internal reading page is not counted as an external community.
 
-Use confirmed root-relative paths, HTTPS URLs, or a confirmed `mailto:` destination. A `null` URL renders readable, non-interactive pending content. Never substitute `#` or a guessed profile. The build rejects unsupported destination protocols.
+Confirmed product routes remain `/screener/`, `/charts/`, `/futures-and-options/`. Commentary and Crypto World destinations are pending. The local server's response is not verification of production reverse-proxy routing.
 
-The three confirmed production paths are `/screener/`, `/charts/`, and `/futures-and-options/`. They are owned by other applications; the local static server intentionally returns 404 for these paths. Commentary and Crypto World remain pending until their URLs are supplied. No contact email, social account, newsletter service, or form submission endpoint has been invented.
+## Content and editorial
 
-## Files
+See [the editorial workflow](docs/EDITORIAL_WORKFLOW.md). The six-page first Brief remains a local draft pending owner approval. All three learning notes have static HTML URLs. Reading works without JavaScript. No email collection or publishing service is added.
 
-- `src/index.template.html`: semantic homepage content and three original learning notes.
-- `src/site-data.json`: product descriptions and all configurable destinations.
-- `scripts/build.mjs`: small dependency-free static renderer; produces crawlable HTML.
-- `public/home.css`: responsive homepage styles, scoped components, motion preferences.
-- `public/home.js`: progressively enhanced tabs, article reader, mobile navigation, and subtle ambient motion.
-- `public/assets/`: optimized original illustrations, icon sprite, and favicon.
-- `tests/homepage.test.mjs`: route, pending-state, SEO, asset, no-JavaScript content, and destination validation checks.
-- `docs/ASSETS.md`: artwork provenance and generation prompts.
-- `docs/HOMEPAGE_REPORT.md`: implementation and verification report.
+## Implementation
 
-## Behaviour and accessibility
+- `src/index.template.html`, `src/site-data.json`: homepage source and central configuration.
+- `src/globe.js`: actual Three.js sphere, self-hosted mapped textures, lighting and geographic network.
+- `public/experience.js`: one animation clock and shared native-scroll progress for globe and the same five HTML panels.
+- `public/home.js`: progressive product selection, on-demand full previews and navigation.
+- `scripts/build.mjs`, `scripts/editorial.mjs`: production/review static generation.
+- `content/briefs.json`: issue metadata; `content/issues/`: editable issue source and generated PDF/cover.
+- `docs/V2_REPORT.md`: implementation, checks, measurements and limitations.
+- `docs/V2_ASSETS.md`: V2 asset provenance; `docs/ASSETS.md`: retained V1 artwork provenance.
 
-All meaningful text, product links, community destinations, and learning notes are in the initial HTML. Without JavaScript, product and community panels remain visible, anchor links work, the mobile menu uses native details, and learning notes expand inline. With JavaScript, tabs support arrow keys, Home/End, and roving focus. Articles use a native modal dialog with Escape dismissal and focus restoration.
-
-The hero is an optimized raster Earth with subtle layered motion. It requires no WebGL or video download. The OS reduced-motion preference disables animation, and an explicit pause control stores only a session-scoped preference. Animation pauses when the document is hidden; hero and orbit animations also pause offscreen. No live prices, user statistics, ratings, or source citations are fabricated.
-
-## Follow-up configuration
-
-When destinations are finalized, update the JSON and rebuild. Add a real newsletter or contact destination only after its receiving service exists. Future blog pages can use the existing editorial structure; this change does not invent a blog route or add a CMS.
+HTML, poster, copy and actions render before WebGL. Mobile and data-saving connections use the poster; reduced motion defaults to a static scene and ordinary gallery. The visible motion control also governs pointer and scroll choreography; a visitor can explicitly override the OS default for this tab. Hidden/offscreen rendering pauses. Renderer failure restores the poster. No product logic, authentication, database, APIs or live market data are implemented here.
