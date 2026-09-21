@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MarketDeck Design System v1 Preview</title>
+  <link rel="stylesheet" href="/assets/css/marketdeck-shell.css">
+  <style>
+    .preview-main{max-width:1180px;margin:0 auto;padding:32px 24px 64px}
+    .preview-kicker{color:var(--md-primary-hover);font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+    .preview-title{font-size:40px;line-height:1.08;letter-spacing:-.03em;margin:10px 0 12px}
+    .preview-copy{max-width:720px;color:var(--md-text-secondary);font-size:15px}
+    .preview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+    .preview-card{padding:20px}
+    .preview-card h3{margin:0 0 8px;font-size:18px}
+    .preview-card p{margin:0;color:var(--md-text-muted)}
+    .preview-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+    .preview-form{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:24px;max-width:720px}
+    .preview-status{display:flex;gap:18px;margin-top:24px;color:var(--md-text-secondary)}
+    @media(max-width:760px){.preview-main{padding:24px 16px 48px}.preview-title{font-size:32px}.preview-grid{grid-template-columns:1fr}.preview-form{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="md-shell">
+  <header class="md-global-header">
+    <a class="md-brand" href="/">MarketDeck</a>
+    <nav class="md-product-nav" aria-label="MarketDeck products">
+      <a class="md-product-link" href="/screener/">Screener</a>
+      <a class="md-product-link" href="/charts/">Charting</a>
+      <a class="md-product-link" href="/futures-and-options/">F&amp;O</a>
+      <a class="md-product-link" href="#" aria-current="page">Commentary</a>
+      <a class="md-product-link" href="#">Crypto World</a>
+    </nav>
+    <div class="md-header-actions">
+      <a class="md-btn" href="#">Sign in</a>
+      <a class="md-btn md-btn--primary" href="#">Create account</a>
+    </div>
+  </header>
+  <nav class="md-mobile-product-rail" aria-label="MarketDeck products mobile">
+    <a class="md-mobile-product-link" href="/screener/">Screener</a>
+    <a class="md-mobile-product-link" href="/charts/">Charting</a>
+    <a class="md-mobile-product-link" href="/futures-and-options/">F&amp;O</a>
+    <a class="md-mobile-product-link" href="#" aria-current="page">Commentary</a>
+    <a class="md-mobile-product-link" href="#">Crypto World</a>
+  </nav>
+  <main class="preview-main">
+    <div class="preview-kicker">MarketDeck UI foundation</div>
+    <h1 class="preview-title">One operating system.<br>Multiple research workspaces.</h1>
+    <p class="preview-copy">This page is a non-production shell preview for MarketDeck Design System v1. It demonstrates the locked palette, compact Linear-like controls, product navigation, responsive mobile product rail, cards, inputs and semantic states.</p>
+    <div class="preview-form">
+      <input class="md-input" placeholder="Search companies, indices, commentary or tools">
+      <button class="md-btn md-btn--primary">Search</button>
+    </div>
+    <div class="preview-row">
+      <button class="md-btn md-btn--primary">Primary action</button>
+      <button class="md-btn">Secondary action</button>
+      <button class="md-btn">Compact, quiet, precise</button>
+    </div>
+    <div class="preview-grid">
+      <section class="md-card preview-card"><h3>StockProof</h3><p>Research, screening and source-linked company analysis.</p></section>
+      <section class="md-card preview-card"><h3>Charting</h3><p>Technical charts, scans, watchlists and market context.</p></section>
+      <section class="md-card preview-card"><h3>F&amp;O</h3><p>Option chains, strategies, backtests and derivatives analytics.</p></section>
+    </div>
+    <div class="preview-status">
+      <span class="md-positive">Positive +1.24%</span>
+      <span class="md-negative">Negative -0.86%</span>
+      <span class="md-warning">Warning</span>
+      <span class="md-muted">Muted metadata</span>
+    </div>
+  </main>
+</div>
+</body>
+</html>
