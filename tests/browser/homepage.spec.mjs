@@ -1,4 +1,20 @@
 import {test,expect} from '@playwright/test';
+test('refined Earth shaders compile and respect a limited texture device',async({page})=>{
+  const errors=[],maps=[];
+  page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+  page.on('request',r=>{if(r.url().includes('/assets/earth/'))maps.push(r.url());});
+  await page.addInitScript(()=>{
+    const original=WebGL2RenderingContext.prototype.getParameter;
+    WebGL2RenderingContext.prototype.getParameter=function(key){return key===this.MAX_TEXTURE_SIZE?2048:original.call(this,key)};
+  });
+  await page.goto('/');
+  await expect(page.locator('.hero')).toHaveAttribute('data-renderer','webgl');
+  await expect(page.locator('canvas')).toHaveAttribute('data-material','earth-photographic');
+  await expect(page.locator('canvas')).toHaveAttribute('data-texture-tier','2k');
+  expect(maps.some(u=>u.endsWith('/cloud-ocean-2k.webp'))).toBe(true);
+  expect(maps.some(u=>u.includes('4k'))).toBe(false);
+  expect(errors).toEqual([]);
+});
 test('full product previews load on demand and the selected image is real',async({page})=>{
   const requests=[];page.on('request',r=>{if(/\/assets\/products\/[^/]+\.webp$/.test(r.url())&&!r.url().includes('-small'))requests.push(r.url());});
   await page.goto('/');await expect(page.locator('.hero')).toHaveAttribute('data-renderer','webgl');

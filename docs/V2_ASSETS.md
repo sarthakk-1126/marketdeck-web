@@ -1,3 +1,5 @@
+> The hero texture/material entries below record V2. The subsequent globe-quality pass replaces the day maps and adds clouds/ocean reflectivity; current sources and transformations are in [GLOBE_POLISH.md](GLOBE_POLISH.md).
+
 # V2 asset and dependency manifest
 
 All runtime visual assets are self-hosted. No external texture, platform icon, font, PDF or product application is fetched by the homepage. `/credits/` provides public attribution; it is linked from the footer. This manifest supplements the original V1 `ASSETS.md`.
