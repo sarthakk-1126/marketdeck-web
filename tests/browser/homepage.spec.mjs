@@ -95,7 +95,7 @@ test('slow initialization times out to a functional poster story',async({page})=
   await page.getByRole('link',{name:'Explore the suite',exact:true}).click();await expect.poll(()=>progress(page)).toBe('1.000');
   await page.locator('#tab-fno').click();await expect(page.locator('#product-fno')).toBeVisible();
 });
-test('five selections, keyboard roving focus, configured and pending destinations',async({page})=>{
+test('five selections, keyboard roving focus and configured destinations',async({page})=>{
   await page.goto('/#products');await expect.poll(()=>progress(page)).toBe('1.000');
   for(const id of ['stockproof','charting','fno','commentary','crypto']){
     await page.getByRole('link',{name:'The product suite',exact:true}).click();
@@ -109,7 +109,8 @@ test('five selections, keyboard roving focus, configured and pending destination
   await page.locator('#tab-crypto').focus();await page.keyboard.press('Home');await expect(page.locator('#tab-stockproof')).toBeFocused();
   await page.keyboard.press('ArrowRight');await expect(page.locator('#tab-charting')).toBeFocused();
   await expect(page.locator('#product-charting a')).toHaveAttribute('href','/charts/');
-  expect(await page.locator('#product-commentary a').count()).toBe(0);expect(await page.locator('#product-crypto a').count()).toBe(0);
+  await expect(page.locator('#product-commentary a')).toHaveAttribute('href','/commentary/');
+  await expect(page.locator('#product-crypto a')).toHaveAttribute('href','/crypto/');
 });
 test('deep anchors, resize and history keep the selected product readable',async({page})=>{
   await page.goto('/#product-fno');await expect(page.locator('#product-fno')).toBeVisible();

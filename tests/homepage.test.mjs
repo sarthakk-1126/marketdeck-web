@@ -11,13 +11,13 @@ const data = JSON.parse(readFileSync(new URL('../src/site-data.json', import.met
 const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
 const hrefs = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map(match => match[1]);
 
-test('only confirmed application routes are emitted; pending channels are not links', () => {
-  assert.deepEqual([...new Set(hrefs.filter(href => /^\/(charts|screener|futures-and-options)\//.test(href)))].sort(), ['/charts/', '/futures-and-options/', '/screener/'].sort());
-  assert.equal(data.products.filter(product => product.url == null).length, 2);
-  for (const product of data.products.filter(product => product.url == null)) {
+test('all five confirmed application routes are emitted; pending channels are not links', () => {
+  assert.deepEqual([...new Set(hrefs.filter(href => /^\/(charts|screener|futures-and-options|commentary|crypto)\//.test(href)))].sort(), ['/charts/', '/commentary/', '/crypto/', '/futures-and-options/', '/screener/'].sort());
+  assert.equal(data.products.filter(product => product.url == null).length, 0);
+  for (const product of data.products) {
     const panel = html.match(new RegExp(`<article[^>]+id="product-${product.id}"[\\s\\S]*?</article>`))[0];
-    assert.equal(/<a\b/.test(panel), false);
-    assert.match(panel, /Destination link pending/);
+    assert.match(panel, new RegExp(`<a\\b[^>]+href="${product.url}"`));
+    assert.doesNotMatch(panel, /Destination link pending/);
   }
   assert.equal(hrefs.includes('#'), false);
   assert.equal(/mailto:|<form\b|type="email"/.test(html), false);
@@ -82,7 +82,7 @@ test('deferred globe maps and real product preview assets are self-hosted',()=>{
 test('all local visual and script dependencies exist; no third-party runtime requests', () => {
   for (const match of html.matchAll(/\b(?:src|href)="(\/[^"#]+)(?:#[^"]*)?"/g)) {
     const path = match[1];
-    if (['/screener/', '/charts/', '/futures-and-options/'].includes(path)) continue;
+    if (['/screener/', '/charts/', '/futures-and-options/', '/commentary/', '/crypto/'].includes(path)) continue;
     assert.ok(existsSync(resolve('public', `.${path}`)), `Missing asset ${path}`);
   }
   assert.equal(/<script[^>]+src="https?:/.test(html), false);
