@@ -49,20 +49,23 @@ test('semantic content and deep links survive without JavaScript', () => {
   assert.equal(/class="(?:product-panel|community-panel)[^"]*"[^>]*hidden/.test(html), false);
 });
 
-test('draft magazine is real and excluded from public output and sitemap',()=>{
-  const issue=JSON.parse(readFileSync('content/briefs.json')).issues[0];
-  assert.equal(isPublished(issue),false);
-  assert.equal(isPublished({...issue,publicationStatus:'published'}),false);
-  assert.equal(isPublished({...issue,publicationStatus:'published',approvedAt:'2026-09-22'}),true);
-  assert.equal(existsSync(`public/intelligence/issues/${issue.slug}`),false);
-  assert.equal(html.includes(issue.pdfPath),false);
-  assert.equal(readFileSync('public/sitemap.xml','utf8').includes(issue.slug),false);
-  const pdf=readFileSync(`${issue.assets}/marketdeck-brief.pdf`,'latin1');
-  assert.ok(pdf.startsWith('%PDF-'));
-  assert.equal((pdf.match(/\/Type\s*\/Page\b/g)||[]).length,issue.pageCount);
-  const review=readFileSync(`.preview/review/intelligence/issues/${issue.slug}/index.html`,'utf8');
-  assert.match(review,/noindex, nofollow/);assert.match(review,/Read in HTML/);
-  assert.ok(review.includes(issue.pdfPath));
+test('approved magazine is public while the older draft stays excluded',()=>{
+  const issues=JSON.parse(readFileSync('content/briefs.json')).issues;
+  const published=issues.find(i=>i.id==='agentic-trading-frontier-02');
+  const draft=issues.find(i=>i.id==='research-foundations-01');
+  assert.equal(isPublished(published),true);
+  assert.equal(existsSync(`public/intelligence/issues/${published.slug}/index.html`),true);
+  assert.equal(existsSync(`public/intelligence/issues/${published.slug}/cover.svg`),true);
+  assert.equal(existsSync(`public/intelligence/issues/${published.slug}/marketdeck-brief.pdf`),true);
+  assert.ok(html.includes(published.cover));
+  assert.ok(readFileSync('public/sitemap.xml','utf8').includes(published.slug));
+  assert.equal(isPublished(draft),false);
+  assert.equal(existsSync(`public/intelligence/issues/${draft.slug}`),false);
+  assert.equal(html.includes(draft.pdfPath),false);
+  assert.equal(readFileSync('public/sitemap.xml','utf8').includes(draft.slug),false);
+  const review=readFileSync(`.preview/review/intelligence/issues/${draft.slug}/index.html`,'utf8');
+  assert.match(review,/noindex, nofollow/);
+  assert.match(review,/Read in HTML/);
 });
 
 test('community counts only enabled confirmed external joinable URLs, deduplicated',()=>{

@@ -1,6 +1,21 @@
 {
   "issues": [
     {
+      "id": "agentic-trading-frontier-02",
+      "title": "The agentic trading frontier",
+      "slug": "agentic-trading-frontier-2026",
+      "edition": "Fieldnotes 02 · Agentic trading 2026",
+      "summary": "A research brief on the 2026 shift from predictive models to tool-using trading agents: specialist teams, adaptive policies, hybrid systems, live evidence, benchmark traps, and the control layer that matters most.",
+      "cover": "/intelligence/issues/agentic-trading-frontier-2026/cover.svg",
+      "pdfPath": "/intelligence/issues/agentic-trading-frontier-2026/marketdeck-brief.pdf",
+      "pageCount": 8,
+      "sourceReviewedAt": "2026-09-22",
+      "publicationStatus": "published",
+      "approvedAt": "2026-09-22",
+      "source": "content/issues/agentic-trading-frontier-2026.json",
+      "assets": "content/issues/agentic-trading-frontier-2026"
+    },
+    {
       "id": "research-foundations-01",
       "title": "Start with the evidence",
       "slug": "research-foundations",

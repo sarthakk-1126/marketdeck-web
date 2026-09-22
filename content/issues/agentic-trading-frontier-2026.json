@@ -1,0 +1,279 @@
+{
+  "sources": [
+    {
+      "id": "S1",
+      "title": "EvolveTrade: Experience-Driven Policy Refinement for Self-Evolving LLM Trading Agents",
+      "url": "https://arxiv.org/abs/2609.17632",
+      "publicationDate": "15 September 2026",
+      "reviewedAt": "2026-09-22"
+    },
+    {
+      "id": "S2",
+      "title": "What LLM Trading Agents Actually Do in Production: A Six-Month, Population-Scale Record from Two Fleets",
+      "url": "https://arxiv.org/abs/2609.05663",
+      "publicationDate": "4 September 2026",
+      "reviewedAt": "2026-09-22"
+    },
+    {
+      "id": "S3",
+      "title": "Contagion on the Trading Floor: How Adversarial Signals Spread in Multi-Agent Trading Systems",
+      "url": "https://arxiv.org/abs/2609.19789",
+      "publicationDate": "17 September 2026",
+      "reviewedAt": "2026-09-22"
+    },
+    {
+      "id": "S4",
+      "title": "From Knowing to Doing: A Memory-Controlled Benchmark for LLM Trading Agents on Stock Markets",
+      "url": "https://arxiv.org/abs/2605.28359",
+      "publicationDate": "27 May 2026",
+      "reviewedAt": "2026-09-22"
+    },
+    {
+      "id": "S5",
+      "title": "Fin-Analyst at FinMMEval 2026 Task 3: A Live Hybrid Trading Agent with LLM Specialists and Rule-Based Signals",
+      "url": "https://arxiv.org/abs/2607.12233",
+      "publicationDate": "14 July 2026",
+      "reviewedAt": "2026-09-22"
+    },
+    {
+      "id": "S6",
+      "title": "Toward Expert Investment Teams: A Multi-Agent LLM System with Fine-Grained Trading Tasks",
+      "url": "https://arxiv.org/abs/2602.23330",
+      "publicationDate": "26 February 2026",
+      "reviewedAt": "2026-09-22"
+    },
+    {
+      "id": "S7",
+      "title": "Supervising banks in an AI-shaped economy — Financial Stability Institute / BIS",
+      "url": "https://www.bis.org/speeches/20260918-supervising-banks-ai-shaped-economy",
+      "publicationDate": "18 September 2026",
+      "reviewedAt": "2026-09-22"
+    },
+    {
+      "id": "S8",
+      "title": "Agentic Trading: When Large Language Model Agents Meet Financial Markets",
+      "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7270343",
+      "publicationDate": "12 August 2026",
+      "reviewedAt": "2026-09-22"
+    },
+    {
+      "id": "S9",
+      "title": "The Agentic Turn in Finance: AI Agents in Financial Decision-Making",
+      "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7118938",
+      "publicationDate": "31 July 2026",
+      "reviewedAt": "2026-09-22"
+    }
+  ],
+  "pages": [
+    {
+      "kicker": "THE MARKETDECK BRIEF / FIELDNOTES 02",
+      "title": "The agentic trading frontier",
+      "intro": "What changed in 2026 — and why the most important edge may be the system around the model, not the model itself.",
+      "sections": [
+        {
+          "title": "From predictions to delegated workflows",
+          "text": "The new research frontier is not simply a better forecasting model. Agentic systems combine data retrieval, tool use, planning, memory, risk checks and action in a loop. The same language model can behave very differently depending on the evidence it receives, the tools it can call and the authority it is given. [S8] [S9]"
+        },
+        {
+          "title": "The five themes in this issue",
+          "items": [
+            "Specialist teams are replacing the one-prompt analyst.",
+            "Policies and memory are becoming adaptive rather than static.",
+            "Hybrid systems keep deterministic rules around stochastic reasoning.",
+            "Benchmarks are being redesigned to separate genuine skill from leakage and beta.",
+            "Production evidence is shifting attention toward controls, interfaces and execution discipline."
+          ]
+        },
+        {
+          "title": "A note on evidence",
+          "text": "Most 2026 results are early-stage papers, benchmarks or limited live experiments. They are useful signals about system design, not proof of durable trading alpha. This brief separates reported findings from MarketDeck editorial interpretation."
+        }
+      ],
+      "callout": "Published 22 September 2026. Research and education only — not a trading system, recommendation, or claim of future returns.",
+      "sourceIds": [
+        "S8",
+        "S9"
+      ]
+    },
+    {
+      "kicker": "01 / THE AGENTIC TURN",
+      "title": "The trading stack is becoming a team",
+      "intro": "In 2026, the interesting question is less “which model?” and more “which workflow, which tools, and which authority?”",
+      "sections": [
+        {
+          "title": "Agents are workflows with memory and tools",
+          "text": "Recent finance research describes an agent as more than a prediction endpoint: it perceives a state, pursues an objective, plans, uses tools, retains memory, receives feedback and may act under delegated authority. That changes the engineering problem from model selection to system design. [S9]"
+        },
+        {
+          "title": "Why multi-agent designs keep appearing",
+          "text": "A recurring architecture assigns separate agents to fundamentals, news, sentiment, technicals, macro or risk, then uses a coordinator to synthesize them. The appeal is modularity: each role can have its own data contract, prompt, tools and audit trail. [S6] [S8]"
+        },
+        {
+          "title": "The latest design lesson",
+          "text": "Fine-grained task decomposition matters. A February 2026 study on Japanese equities reported stronger risk-adjusted results for explicit, granular task decomposition than for coarser role prompts, while also highlighting the importance of alignment between intermediate analysis and the downstream decision objective. [S6]"
+        }
+      ],
+      "callout": "Editorial takeaway: the “agent” is the whole decision loop. The LLM is one component inside it.",
+      "sourceIds": [
+        "S6",
+        "S8",
+        "S9"
+      ]
+    },
+    {
+      "kicker": "02 / STRATEGY DESIGN",
+      "title": "Specialists beat the giant prompt — when the handoffs are clear",
+      "intro": "The emerging strategy pattern is decomposition: narrow evidence jobs, explicit interfaces, and a coordinator that can disagree with its own analysts.",
+      "sections": [
+        {
+          "title": "A practical specialist map",
+          "items": [
+            "Evidence agent: retrieves filings, market data and news with timestamps.",
+            "Quant agent: computes deterministic features, exposures and attribution.",
+            "Narrative agent: summarizes catalysts and competing explanations.",
+            "Risk agent: applies exposure, liquidity and concentration constraints.",
+            "Coordinator: compares evidence, resolves conflicts and produces an auditable decision record."
+          ]
+        },
+        {
+          "title": "Debate is not automatically alpha",
+          "text": "Multi-agent debate can reduce one-sided reasoning, but extra agents also create more handoffs, cost and correlated failure modes. The 2026 literature increasingly tests whether each role adds information rather than assuming that more discussion is better. [S6] [S8]"
+        },
+        {
+          "title": "Keep calculations outside the prose loop",
+          "text": "A strong pattern is to let code or a deterministic tool calculate returns, factors, exposure, position limits and transaction-cost assumptions, while the language model interprets or chooses among explicitly defined options. This makes the reasoning layer easier to audit and replay."
+        }
+      ],
+      "callout": "Design principle: use language models for synthesis and tool choice; use deterministic code for arithmetic, state and hard limits.",
+      "sourceIds": [
+        "S6",
+        "S8"
+      ]
+    },
+    {
+      "kicker": "03 / ADAPTATION",
+      "title": "The newest idea: evolve the playbook, not only the weights",
+      "intro": "Self-improving trading agents are starting to update their own operating policy from decision traces and portfolio feedback.",
+      "sections": [
+        {
+          "title": "EvolveTrade changes the procedure",
+          "text": "EvolveTrade treats a trading agent’s system prompt as a text-parameterized policy. A policy agent periodically revises how the trading agent gathers evidence, invokes tools, verifies signals and constructs portfolios, while the underlying LLM remains fixed. The authors report improved Sharpe and cumulative return versus fixed-policy baselines in most tested settings. [S1]"
+        },
+        {
+          "title": "Why this is different from retraining",
+          "text": "The adaptation target is the reusable procedure: which tools to call, what to verify, and how to react to market context. That can be cheaper and more interpretable than frequent weight updates, but it also creates a new control problem because the operating instructions themselves can drift. [S1]"
+        },
+        {
+          "title": "Memory has to be designed, not merely added",
+          "text": "A live hybrid-agent study found that memoryless agents could repeat wrong calls for days, motivating a memory-aware successor. The useful question is what the system should remember: prior hypotheses, invalidated evidence, execution errors, regime labels or all of the above. [S5]"
+        }
+      ],
+      "callout": "What to watch: policy versioning, rollback, change logs, and whether adaptation survives out-of-sample regime changes.",
+      "sourceIds": [
+        "S1",
+        "S5"
+      ]
+    },
+    {
+      "kicker": "04 / HYBRID SYSTEMS",
+      "title": "The strongest near-term pattern may be hybrid",
+      "intro": "LLMs are being paired with rule-based signals and deterministic risk controls rather than asked to own every part of the stack.",
+      "sections": [
+        {
+          "title": "Fin-Analyst is a useful case study",
+          "text": "Fin-Analyst used eight LLM specialists for Tesla and a lightweight rule-based three-signal vote for Bitcoin in the FinMMEval 2026 live task. Its authors report that the TSLA system finished first on the final leaderboard, while the BTC rule system ended flat and the interim asset ranking reversed — a warning about short-window rankings. [S5]"
+        },
+        {
+          "title": "Hybrid does not mean “LLM plus a few indicators”",
+          "text": "A robust hybrid architecture separates responsibilities: models interpret unstructured evidence, code computes features and portfolio state, a risk layer constrains actions, and the execution layer translates approved intent into orders. Each boundary should be testable on its own."
+        },
+        {
+          "title": "Why this matters for India",
+          "text": "For an India-focused research stack, the same architecture can keep exchange data, corporate filings, broker execution state and risk rules explicit while using agents for retrieval, synthesis and research workflow. The principle is general; local data contracts and market microstructure still need local engineering."
+        }
+      ],
+      "callout": "Hybrid systems are not a compromise. They are a way to assign stochastic reasoning only where it adds value.",
+      "sourceIds": [
+        "S5"
+      ]
+    },
+    {
+      "kicker": "05 / REALITY CHECK",
+      "title": "A profitable backtest can still be a bad agent benchmark",
+      "intro": "2026 benchmark work is attacking two uncomfortable problems: memorized history and returns that are really just market exposure.",
+      "sections": [
+        {
+          "title": "Mask the history the model may already know",
+          "text": "KTD-Fin anonymizes identifiers and calendar information so an LLM cannot easily lean on memorized tickers, dates or narratives. The benchmark then asks whether the agent can still reason from the supplied evidence. [S4]"
+        },
+        {
+          "title": "Attribute the return, not just the P&L",
+          "text": "KTD-Fin also decomposes performance into market, style and stock-selection components. Across ten frontier LLM agents on CSI300 data, its authors report that leakage-controlled cumulative returns were largely explained by passive market and style exposure, with limited evidence of persistent stock-selection alpha. [S4]"
+        },
+        {
+          "title": "Short live contests can mislead too",
+          "text": "The Fin-Analyst results show another problem: rankings can reverse over short live windows. A useful evaluation therefore needs longer horizons, multiple regimes, transaction costs, drawdown analysis and a record of what the agent actually did — not only its ending return. [S5]"
+        }
+      ],
+      "callout": "Benchmark rule: ask where the return came from, what information was available then, and whether the result survives masking and attribution.",
+      "sourceIds": [
+        "S4",
+        "S5"
+      ]
+    },
+    {
+      "kicker": "06 / PRODUCTION EVIDENCE",
+      "title": "In live systems, the operating layer can dominate the strategy text",
+      "intro": "A September 2026 production study makes the strongest case yet for treating interface and execution design as part of the trading strategy.",
+      "sections": [
+        {
+          "title": "A rare population-scale record",
+          "text": "The DX Research Group reports two real-money deployments: 3,505 user-funded vaults in one system and a later fleet of roughly 500–599 user-created agents. The later record contains 231,638 finalized turns and 14,596 fills. [S2]"
+        },
+        {
+          "title": "What shaped behavior",
+          "text": "The authors report that operating-layer choices had large behavioral effects: risk settings influenced leverage, agent-specific effects explained substantial variance, and a small leaderboard rendered in the prompt strongly affected which assets agents entered. These are system-design effects, not simply model-quality effects. [S2]"
+        },
+        {
+          "title": "Why this changes the research agenda",
+          "text": "Production agents sit inside feedback loops. UI ordering, available tools, memory state, risk sliders, latency, fill handling and position reconciliation can all alter the realized strategy. The agent cannot be evaluated independently from that environment."
+        }
+      ],
+      "callout": "Production lesson: prompt text is only one policy surface. Interface, state, risk and execution are policy too.",
+      "sourceIds": [
+        "S2"
+      ]
+    },
+    {
+      "kicker": "07 / CONTROL PLANE",
+      "title": "The next edge may be trustworthy autonomy",
+      "intro": "As agents gain authority, the control problem becomes more important than adding another analyst persona.",
+      "sections": [
+        {
+          "title": "Adversarial information is now a trading risk",
+          "text": "A September 2026 study of multi-agent trading stacks found that plausible social-media inputs could propagate through analyst and coordinator layers and materially degrade offline risk-return metrics. The same paper found that topology and coordinator design could dampen some adversarial effects. [S3]"
+        },
+        {
+          "title": "Governance is catching up",
+          "text": "The Financial Stability Institute has emphasized that finance is entering an AI-shaped economy in which governance and supervisory frameworks must adapt as systems become more autonomous. The broad point for trading systems is simple: delegated action requires explicit accountability and revocable authority. [S7]"
+        },
+        {
+          "title": "A MarketDeck control checklist",
+          "items": [
+            "Evidence provenance: every external input gets source, timestamp and integrity status.",
+            "Deterministic state: positions, cash, fills and limits come from reconciled systems, not model memory.",
+            "Bounded authority: the agent cannot bypass hard exposure or order constraints.",
+            "Auditability: store prompts, tool calls, data snapshots, decisions and execution outcomes.",
+            "Kill and rollback paths: policy changes and autonomous actions remain reversible.",
+            "Evaluation: separate signal quality, portfolio construction, execution quality and operational failures."
+          ]
+        }
+      ],
+      "callout": "The frontier is moving from “can an agent trade?” to “can an agent be trusted inside a controlled decision system?”",
+      "sourceIds": [
+        "S3",
+        "S7"
+      ]
+    }
+  ]
+}
