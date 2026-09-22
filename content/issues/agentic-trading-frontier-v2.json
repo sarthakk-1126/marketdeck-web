@@ -2,66 +2,449 @@
   "edition": "2.0",
   "reviewedAt": "2026-09-22",
   "sources": [
-    {"id":"S1","title":"EvolveTrade: Experience-Driven Policy Refinement for Self-Evolving LLM Trading Agents","authors":"Sehee Kim, Yumin Choi, Minki Kang and Sung Ju Hwang","url":"https://arxiv.org/abs/2609.17632","publicationDate":"15 September 2026","reviewedAt":"2026-09-22","note":"Preprint. Abstract-level findings; no performance series reproduced."},
-    {"id":"S2","title":"What LLM Trading Agents Actually Do in Production","authors":"T. J. Barton and colleagues / DX Research Group","url":"https://github.com/ProjectDXAI/continuous-record-llm-trading-agents","publicationDate":"4 September 2026; research companion reviewed 22 September","reviewedAt":"2026-09-22","note":"Author research companion to arXiv:2609.05663. Aggregate results, evidence boundaries and figure descriptions; CC BY 4.0."},
-    {"id":"S3","title":"Contagion on the Trading Floor: How Adversarial Signals Spread in Multi-Agent Trading Systems","authors":"Qi Rong Sua and colleagues","url":"https://arxiv.org/abs/2609.19789","publicationDate":"17 September 2026","reviewedAt":"2026-09-22","note":"Offline adversarial-input study; abstract-level conclusions, not a live incident report."},
-    {"id":"S4","title":"From Knowing to Doing: A Memory-Controlled Benchmark for LLM Trading Agents on Stock Markets","authors":"KTD-Fin research paper","url":"https://arxiv.org/abs/2605.28359","publicationDate":"27 May 2026","reviewedAt":"2026-09-22","note":"Benchmark proposal. Masking and return attribution; not proof that every agent lacks skill."},
-    {"id":"S5","title":"Fin-Analyst at FinMMEval 2026 Task 3: A Live Hybrid Trading Agent with LLM Specialists and Rule-Based Signals","authors":"Mohotarema Rashid, Lingzi Hong, Junhua Ding and K. S. M. Tozammel Hossain","url":"https://arxiv.org/abs/2607.12233","publicationDate":"14 July 2026","reviewedAt":"2026-09-22","note":"Working notes, v1. Chart uses Table 6 (PDF page 7), offline TSLA ablation; live-result inconsistencies are not reconciled."},
-    {"id":"S6","title":"Toward Expert Investment Teams: A Multi-Agent LLM System with Fine-Grained Trading Tasks","authors":"Kunihiro Miyazaki, Takanobu Kawahara, Stephen Roberts and Stefan Zohren","url":"https://arxiv.org/abs/2602.23330","publicationDate":"26 February 2026","reviewedAt":"2026-09-22","note":"Japanese-equity backtest. Findings are specific to the evaluated task structure and sample."},
-    {"id":"S7","title":"Supervising banks in an AI-shaped economy","authors":"Fernando Restoy / Financial Stability Institute, BIS","url":"https://www.bis.org/speeches/20260918-supervising-banks-ai-shaped-economy","publicationDate":"18 September 2026","reviewedAt":"2026-09-22","note":"Supervisory perspective, not trading evidence or India-specific legal guidance."}
+    {
+      "id": "S1",
+      "title": "EvolveTrade: Experience-Driven Policy Refinement for Self-Evolving LLM Trading Agents",
+      "authors": "Sehee Kim, Yumin Choi, Minki Kang and Sung Ju Hwang",
+      "url": "https://arxiv.org/abs/2609.17632",
+      "publicationDate": "15 September 2026",
+      "reviewedAt": "2026-09-22",
+      "note": "Preprint. Abstract-level findings; no performance series reproduced."
+    },
+    {
+      "id": "S2",
+      "title": "What LLM Trading Agents Actually Do in Production",
+      "authors": "T. J. Barton and colleagues / DX Research Group",
+      "url": "https://github.com/ProjectDXAI/continuous-record-llm-trading-agents",
+      "publicationDate": "4 September 2026; research companion reviewed 22 September",
+      "reviewedAt": "2026-09-22",
+      "note": "Author research companion to arXiv:2609.05663. Aggregate results, evidence boundaries and figure descriptions; CC BY 4.0."
+    },
+    {
+      "id": "S3",
+      "title": "Contagion on the Trading Floor: How Adversarial Signals Spread in Multi-Agent Trading Systems",
+      "authors": "Qi Rong Sua and colleagues",
+      "url": "https://arxiv.org/abs/2609.19789",
+      "publicationDate": "17 September 2026",
+      "reviewedAt": "2026-09-22",
+      "note": "Offline adversarial-input study; abstract-level conclusions, not a live incident report."
+    },
+    {
+      "id": "S4",
+      "title": "From Knowing to Doing: A Memory-Controlled Benchmark for LLM Trading Agents on Stock Markets",
+      "authors": "KTD-Fin research paper",
+      "url": "https://arxiv.org/abs/2605.28359",
+      "publicationDate": "27 May 2026",
+      "reviewedAt": "2026-09-22",
+      "note": "Benchmark proposal. Masking and return attribution; not proof that every agent lacks skill."
+    },
+    {
+      "id": "S5",
+      "title": "Fin-Analyst at FinMMEval 2026 Task 3: A Live Hybrid Trading Agent with LLM Specialists and Rule-Based Signals",
+      "authors": "Mohotarema Rashid, Lingzi Hong, Junhua Ding and K. S. M. Tozammel Hossain",
+      "url": "https://arxiv.org/abs/2607.12233",
+      "publicationDate": "14 July 2026",
+      "reviewedAt": "2026-09-22",
+      "note": "Working notes, v1. Chart uses Table 6 (PDF page 7), offline TSLA ablation; live-result inconsistencies are not reconciled."
+    },
+    {
+      "id": "S6",
+      "title": "Toward Expert Investment Teams: A Multi-Agent LLM System with Fine-Grained Trading Tasks",
+      "authors": "Kunihiro Miyazaki, Takanobu Kawahara, Stephen Roberts and Stefan Zohren",
+      "url": "https://arxiv.org/abs/2602.23330",
+      "publicationDate": "26 February 2026",
+      "reviewedAt": "2026-09-22",
+      "note": "Japanese-equity backtest. Findings are specific to the evaluated task structure and sample."
+    },
+    {
+      "id": "S7",
+      "title": "Supervising banks in an AI-shaped economy",
+      "authors": "Fernando Restoy / Financial Stability Institute, BIS",
+      "url": "https://www.bis.org/speeches/20260918-supervising-banks-ai-shaped-economy",
+      "publicationDate": "18 September 2026",
+      "reviewedAt": "2026-09-22",
+      "note": "Supervisory perspective, not trading evidence or India-specific legal guidance."
+    }
   ],
   "figures": {
-    "ablation":{"source":"S5","location":"Table 6, PDF page 7","sample":"Offline TSLA backtest; historical dataset 2025-08-01 to 2026-05-10","units":"percentage points","rows":[["Event / 8-K",-30.65],["Quarterly / 10-Q",-14.35],["Daily news",-11.74],["Annual / 10-K",2.42],["Fundamentals",2.95]]},
-    "leverage":{"source":"S2","location":"Author research companion, Four findings / Figure 4 description","labels":["1","2","3","4","5","6"],"values":[5,5,5,5,5,5],"units":"times leverage","volatilitySpread":5.7},
-    "concentration":{"source":"S2","positionShare":11,"liquidationShare":62,"units":"percent; different denominators"},
-    "capture":{"source":"S2","favorableShare":43.2,"lossAmongFavorable":49.3,"thresholdBps":300,"hours":24,"units":"percent; conditional cohorts"}
+    "ablation": {
+      "source": "S5",
+      "location": "Table 6, PDF page 7",
+      "sample": "Offline TSLA backtest; historical dataset 2025-08-01 to 2026-05-10",
+      "units": "percentage points",
+      "rows": [
+        [
+          "Event / 8-K",
+          -30.65
+        ],
+        [
+          "Quarterly / 10-Q",
+          -14.35
+        ],
+        [
+          "Daily news",
+          -11.74
+        ],
+        [
+          "Annual / 10-K",
+          2.42
+        ],
+        [
+          "Fundamentals",
+          2.95
+        ]
+      ]
+    },
+    "leverage": {
+      "source": "S2",
+      "location": "Author research companion, Four findings / Figure 4 description",
+      "labels": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "values": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "units": "times leverage",
+      "volatilitySpread": 5.7
+    },
+    "concentration": {
+      "source": "S2",
+      "positionShare": 11,
+      "liquidationShare": 62,
+      "units": "percent; different denominators"
+    },
+    "capture": {
+      "source": "S2",
+      "favorableShare": 43.2,
+      "lossAmongFavorable": 49.3,
+      "thresholdBps": 300,
+      "hours": 24,
+      "units": "percent; conditional cohorts"
+    }
   },
   "pages": [
-    {"kind":"cover","kicker":"THE MARKETDECK BRIEF / FIELDNOTES 02","title":"The agentic trading frontier","intro":"Smarter agents. Harder questions.","sections":[{"title":"Inside the September issue","text":"Tool-using teams, adaptive policies, hybrid strategies and the evidence behind the headlines. A visual field guide to the systems changing market research."}],"callout":"Research and education. Not investment advice.","sourceIds":[]},
-    {"kind":"contents","kicker":"START HERE / EDITOR'S NOTE","title":"The system is the story.","intro":"A market agent is not just a model with a buy button. It is a chain of decisions, tools and permissions.","sections":[
-      {"title":"Read the frontier, not the hype","text":"This edition keeps the original brief's eight themes and turns them into a working magazine: research context, visual explanations, source-labelled charts and a notebook you can fill in. The organizing question is simple: what changes when a model can do something with its answer?"},
-      {"title":"Three lenses for every claim","text":"First, examine the architecture: which component gathers evidence, calculates a value or authorizes an action? Next, examine the experiment: was it a historical simulation, a live-price evaluation or real capital? Finally, examine the limit: what was not tested? These are different questions, and a convincing result needs all three."},
-      {"title":"How to use the digital edition","text":"Click any contents row to jump. Footer links return to contents, sources or the web article. Blue source IDs open the reference page. The last working page contains editable notes and checkboxes; save your own copy in a form-capable PDF reader. No JavaScript, tracking or submission endpoint is included."}],"callout":"Reading key: REPORTED = source result. EDITORIAL = MarketDeck interpretation. SCHEMATIC = an explanatory diagram, not market data.","sourceIds":[]},
-    {"kind":"timeline","kicker":"01 / WHAT CHANGED","title":"Five signals from 2026.","intro":"The research conversation is moving from better predictions to better decision processes.","sections":[
-      {"title":"The common thread","text":"Task decomposition, memory controls, hybrid pipelines, policy revision and adversarial testing attack different weaknesses in the same system. None makes the other checks redundant. A more capable reasoning model still needs an honest data cut, an explicit objective and a bounded set of actions."},
-      {"title":"What the dates do not prove","text":"This is a selected research timeline, not a census of the industry. A new paper is evidence that a problem is being studied; it does not establish adoption, independent replication or an investable edge. Read the study design before treating publication recency as progress."}],"callout":"Editorial lens: ask what the new mechanism fixes, what it costs, and which failure mode remains.","sourceIds":["S1","S3","S4","S5","S6"]},
-    {"kind":"architecture","kicker":"02 / SPECIALIST TEAMS","title":"Give every agent a job.","intro":"Useful specialization starts with narrow evidence tasks and explicit handoffs, not impressive job titles.","sections":[
-      {"title":"What the research reports","text":"The Expert Investment Teams study decomposes investment analysis into fine-grained tasks and evaluates the framework on Japanese equities under leakage controls. Its reported improvement over coarser designs makes task structure worth investigating; it does not imply that adding more agents always helps. [S6]"},
-      {"title":"The handoff is a contract","text":"In our proposed workflow, an evidence agent must return a source location, observation time and uncertainty flag. A numerical tool returns inputs, units and a reproducible calculation. A coordinator receives both, but cannot convert disagreement into certainty by taking a vote. These are editorial design suggestions, not a description of an existing MarketDeck execution product."},
-      {"title":"Test the contribution","text":"Remove a specialist and repeat the evaluation with the same data cut, costs and decision horizon. Check whether the role changes evidence quality, latency or decisions. Correlated agents repeating the same source can create the appearance of consensus without adding information."}],"callout":"A good handoff is small enough to validate: claim, source, timestamp, computation, uncertainty.","sourceIds":["S6"]},
-    {"kind":"policy","kicker":"03 / SELF-EVOLVING POLICIES","title":"Change the playbook.","intro":"Some new agents adapt the procedure around the model rather than retraining the model itself.","sections":[
-      {"title":"EvolveTrade, in plain language","text":"EvolveTrade treats the trading agent's system prompt as an editable policy. At update intervals, a Policy Agent reviews decision traces and realized portfolio feedback, revises the procedure, and supplies it to the next decision batch while the backbone LLM stays fixed. The authors report improvements over fixed policies in many evaluated settings. [S1]"},
-      {"title":"Why the distinction matters","text":"A policy update might change which evidence is checked first, when code is called or how conflicting signals are handled. That differs from changing learned model weights. It also means the operating instructions become a versioned research object. A revised prompt can introduce a failure just as a code change can."},
-      {"title":"Editorial guardrails for adaptation","text":"Preserve the previous policy and its data cutoff. Evaluate the candidate on untouched data and replay known bad cases. Separate an observed result from the explanation proposed for it. Approve a candidate only after checks; keep a route back to the last accepted version. Do not let a profitable few days automatically rewrite a live system's authority."}],"callout":"Adaptive does not mean unconstrained. Policy learning and permission to act should remain separate.","sourceIds":["S1"]},
-    {"kind":"ablation","kicker":"04 / THE HYBRID PATTERN","title":"More voices, better signal?","intro":"A specialist-removal test is more informative than assuming every extra agent earns its place.","sections":[
-      {"title":"A measured example","text":"Fin-Analyst combines eight LLM specialists for TSLA with a rule-based BTC path. In its historical TSLA ablation, removing the event, quarterly or news specialist reduced cumulative return; removing two slower inputs slightly increased it. The chart redraws Table 6, not live portfolio performance. [S5]"},
-      {"title":"Read the signs correctly","text":"The zero line is the full system. A negative bar means performance was lower when that role was removed; a positive bar means the reduced system did better in that experiment. These are percentage-point changes, not individual-agent returns, and the effects need not add up."},
-      {"title":"The right conclusion is narrower","text":"This supports testing each information channel at the intended horizon. It does not show that annual filings are generally unhelpful or that one role guarantees returns. A hybrid stack can assign prose interpretation to models while leaving calculations, position state and hard limits to code."}],"callout":"Source caveat: this paper's live BTC figure, table and prose differ. We do not turn those inconsistent live figures into a performance chart.","sourceIds":["S5"]},
-    {"kind":"benchmark","kicker":"05 / BENCHMARK REALITY","title":"Profit is not the full test.","intro":"A good result must survive a second question: where did the return come from?","sections":[
-      {"title":"Separate knowledge from skill","text":"KTD-Fin masks identifying and calendar information across prompts and tools to reduce the use of memorized market history. It also decomposes returns into market, style and stock-selection components. Its authors report limited evidence of persistent selection alpha among ten tested agents on CSI300 data after these controls. [S4]"},
-      {"title":"Why attribution changes the story","text":"Imagine a portfolio rising while the wider market rises. The gain is real, but it does not by itself identify a useful selection rule. Conversely, a defensive process can lag in a rising sample yet still serve a different stated objective. Define the objective before choosing the benchmark; do not select a flattering comparison afterward."},
-      {"title":"Build an evidence ladder","text":"Start with a frozen historical experiment, then an untouched holdout, a live-price paper run and only then a separately authorized capital test. Record costs, rejected orders, missing inputs and downtime. A change in environment can invalidate the comparison even when the model name has not changed."},
-      {"title":"Repeatability belongs in the scorecard","text":"Replay identical inputs to examine decision stability. Track whether a conclusion survives nearby assumptions, alternate windows and simple baselines. Report uncertainty and failures beside the headline metric instead of hiding them in a final disclaimer."}],"callout":"Our evaluation checklist is editorial guidance, not a claim that any one benchmark eliminates leakage or proves future alpha.","sourceIds":["S4"]},
-    {"kind":"leverage","kicker":"06 / PRODUCTION EVIDENCE","title":"A flat line can reveal a lot.","intro":"In one pre-alpha fleet, median chosen leverage stayed fixed even as measured volatility changed.","sections":[
-      {"title":"The reported pattern","text":"DXRG's research companion reports median leverage of 5.0x in every volatility sextile across a 5.7x volatility spread. It also reports that one posture-and-slider group held 11% of positions but 62% of liquidations. These aggregates describe that system and period, not all trading agents. [S2]"},
-      {"title":"Know which record you are reading","text":"The companion distinguishes 3,505 user-funded Terminal Pro vaults trading real ETH over 21 days from the later DXAP record: 231,638 turns and 14,596 fills over 69 days, largely paper execution at live prices plus a small real-capital book. It is a pre-alpha baseline, not the current product's performance. [S2]"},
-      {"title":"Editorial interpretation","text":"A model can describe volatility without changing its exposure appropriately. Inspect the actual order-sizing rule and where risk inputs enter it. The flat median is a warning about that operating behavior; medians alone do not show every agent's choices or establish the effect of an alternative sizing rule."}],"callout":"Do not treat a risk adjective in a prompt as an enforced exposure limit. Verify the rule that can reject an order.","sourceIds":["S2"]},
-    {"kind":"capture","kicker":"07 / EXECUTION AND EXITS","title":"Reaching upside\nis not keeping it.","intro":"The path through a position can tell a different story from the final profit-and-loss number.","sections":[
-      {"title":"A gap worth investigating","text":"In the DXRG record, 43.2% of positions touched at least +300 basis points of open profit within 24 hours; 49.3% of those positions still closed negative. A basis point is one hundredth of a percentage point, so 300 basis points is 3%. The two percentages use different denominators. [S2]"},
-      {"title":"Do not turn hindsight into an exit rule","text":"A favorable excursion is visible after the path has unfolded. It is not an executable instruction available at the entry time. A rule selected because it fits those paths needs a new evaluation window, realistic fees, liquidity assumptions and reproducible trigger handling."},
-      {"title":"Measure the whole chain","text":"Separate idea selection, allocation, execution and exit behavior. A bad fill, stale position, duplicate order or late risk response can overwhelm a plausible thesis. Store intended action, accepted order and confirmed fill as different records so a post-mortem can locate the failure."},
-      {"title":"What a useful replay asks","text":"At each decision point, what was actually known? What action was permitted? What was submitted, acknowledged and filled? A replay should not silently use later data or assume an order succeeded. That is an engineering discipline as much as a forecasting problem."}],"callout":"Charts here visualize published aggregates only. No synthetic equity curve, hypothetical profit promise or recommended exit threshold is included.","sourceIds":["S2"]},
-    {"kind":"controls","kicker":"08 / TRUSTWORTHY AUTONOMY","title":"Authority needs a boundary.","intro":"The final risk check should not be another paragraph asking the model to be careful.","sections":[
-      {"title":"Information can carry an attack","text":"Contagion on the Trading Floor studies adversarial content entering through social-media evidence in an offline multi-agent benchmark. The authors report degraded risk-return metrics and show that some coordinator designs dampen the effect. This is a robustness experiment, not evidence of a specific live breach. [S3]"},
-      {"title":"A useful governance parallel","text":"A September FSI speech argues for both model governance and wider operational resilience as AI changes financial systems. The banking-supervision context differs from a trading agent, but its emphasis on accountability and recovery is a useful parallel. It is not approval of a trading method or India-specific legal advice. [S7]"},
-      {"title":"An editorial control pattern","text":"Treat retrieved content as evidence, never as an instruction source. Keep reconciled state outside model memory. Use independent checks for exposure, stale data, duplicate actions and service health. An explicit human decision can then grant tightly limited authority; an incident path should be able to revoke it."},
-      {"title":"India-aware research, without pretending to execute","text":"For a MarketDeck research workflow, preserve the exchange, instrument, filing date, currency and observation time. Use the suite to investigate a question and keep execution separate. This magazine neither connects to a broker nor authorizes automated trading. Applicable market-data and execution requirements need their own current review."}],"callout":"The safe progression is evidence access, bounded analysis and reversible delegation - not an unrestricted agent with a secret key.","sourceIds":["S3","S7"]},
-    {"kind":"worksheet","kicker":"FIELDWORK / INTERACTIVE NOTEBOOK","title":"Turn the reading into a test.","intro":"A reusable, fillable worksheet for a research experiment - not an order ticket.","sections":[
-      {"title":"Choose one small question","text":"Write a falsifiable question rather than an ambitious mandate such as beat the market. For example: does a source-checking step reduce unsupported event claims on a fixed set of filings? Define what counts as a failure before running the comparison."},
-      {"title":"Save your own working copy","text":"The fields below are standard PDF form fields. Many desktop readers can save them; support varies in mobile and browser viewers. Open in a compatible PDF app if editing is unavailable. Nothing in this document sends your entries to MarketDeck. Do not enter credentials, account numbers or personal financial information."}],"callout":"A completed checklist records your process. It is not a safety certification, investment recommendation or permission to deploy.","sourceIds":[]},
-    {"kind":"sources","kicker":"REFERENCE DESK / METHODOLOGY","title":"Keep the evidence attached.","intro":"Primary sources, chart provenance and the limits of this edition.","sections":[
-      {"title":"What changed in this edition","text":"The eight-page outline has been expanded into a visual, source-checked 12-page edition. The original themes are retained. The DXAP evidence is explicitly labelled as mainly paper execution at live prices, and the inconsistent Fin-Analyst live BTC summaries are not used for charting."},
-      {"title":"How to read the graphics","text":"The ablation bars reproduce five Table 6 values from S5. The leverage and exit graphics redraw aggregate observations from S2. Diagrams of teams, policy review and controls are original MarketDeck schematics, not representations of a deployed trading strategy. We did not reproduce or independently validate the experiments."},
-      {"title":"Publication and use","text":"Edition 2.0 / sources reviewed 22 September 2026 / MarketDeck editorial synthesis. Links open the original source or its author-maintained companion. Research can change; the review date is not a claim of continuous freshness. This publication is educational, not personal financial advice."}],"callout":"Source references are not endorsements. All charts are labelled with their evidence scope.","sourceIds":["S1","S2","S3","S4","S5","S6","S7"]}
+    {
+      "kind": "cover",
+      "kicker": "THE MARKETDECK BRIEF / FIELDNOTES 02",
+      "title": "The agentic trading frontier",
+      "intro": "Smarter agents. Harder questions.",
+      "sections": [
+        {
+          "title": "Inside the September issue",
+          "text": "Tool-using teams, adaptive policies, hybrid strategies and the evidence behind the headlines. A visual field guide to the systems changing market research."
+        }
+      ],
+      "callout": "Research and education. Not investment advice.",
+      "sourceIds": []
+    },
+    {
+      "kind": "contents",
+      "kicker": "START HERE / EDITOR'S NOTE",
+      "title": "The system is the story.",
+      "intro": "A market agent is not just a model with a buy button. It is a chain of decisions, tools and permissions.",
+      "sections": [
+        {
+          "title": "Read the frontier, not the hype",
+          "text": "This edition keeps the original brief's eight themes and turns them into a working magazine: research context, visual explanations, source-labelled charts and a notebook you can fill in. The organizing question is simple: what changes when a model can do something with its answer?"
+        },
+        {
+          "title": "Three lenses for every claim",
+          "text": "First, examine the architecture: which component gathers evidence, calculates a value or authorizes an action? Next, examine the experiment: was it a historical simulation, a live-price evaluation or real capital? Finally, examine the limit: what was not tested? These are different questions, and a convincing result needs all three."
+        },
+        {
+          "title": "How to use the digital edition",
+          "text": "Click any contents row to jump. Footer links return to contents, sources or the web article. Blue source IDs open the reference page. The last working page contains editable notes and checkboxes; save your own copy in a form-capable PDF reader. No JavaScript, tracking or submission endpoint is included."
+        }
+      ],
+      "callout": "Reading key: REPORTED = source result. EDITORIAL = MarketDeck interpretation. SCHEMATIC = an explanatory diagram, not market data.",
+      "sourceIds": []
+    },
+    {
+      "kind": "timeline",
+      "kicker": "01 / WHAT CHANGED",
+      "title": "Five signals from 2026.",
+      "intro": "The research conversation is moving from better predictions to better decision processes.",
+      "sections": [
+        {
+          "title": "The common thread",
+          "text": "Task decomposition, memory controls, hybrid pipelines, policy revision and adversarial testing attack different weaknesses in the same system. None makes the other checks redundant. A more capable reasoning model still needs an honest data cut, an explicit objective and a bounded set of actions."
+        },
+        {
+          "title": "What the dates do not prove",
+          "text": "This is a selected research timeline, not a census of the industry. A new paper is evidence that a problem is being studied; it does not establish adoption, independent replication or an investable edge. Read the study design before treating publication recency as progress."
+        }
+      ],
+      "callout": "Editorial lens: ask what the new mechanism fixes, what it costs, and which failure mode remains.",
+      "sourceIds": [
+        "S1",
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "figure": "/intelligence/issues/agentic-trading-frontier-2026/figure-03.webp",
+      "figureAlt": "Magazine graphic: Five signals from 2026.",
+      "figureCaption": "Source-labelled chart or original explanatory schematic. See the surrounding text for evidence scope."
+    },
+    {
+      "kind": "architecture",
+      "kicker": "02 / SPECIALIST TEAMS",
+      "title": "Give every agent a job.",
+      "intro": "Useful specialization starts with narrow evidence tasks and explicit handoffs, not impressive job titles.",
+      "sections": [
+        {
+          "title": "What the research reports",
+          "text": "The Expert Investment Teams study decomposes investment analysis into fine-grained tasks and evaluates the framework on Japanese equities under leakage controls. Its reported improvement over coarser designs makes task structure worth investigating; it does not imply that adding more agents always helps. [S6]"
+        },
+        {
+          "title": "The handoff is a contract",
+          "text": "In our proposed workflow, an evidence agent must return a source location, observation time and uncertainty flag. A numerical tool returns inputs, units and a reproducible calculation. A coordinator receives both, but cannot convert disagreement into certainty by taking a vote. These are editorial design suggestions, not a description of an existing MarketDeck execution product."
+        },
+        {
+          "title": "Test the contribution",
+          "text": "Remove a specialist and repeat the evaluation with the same data cut, costs and decision horizon. Check whether the role changes evidence quality, latency or decisions. Correlated agents repeating the same source can create the appearance of consensus without adding information."
+        }
+      ],
+      "callout": "A good handoff is small enough to validate: claim, source, timestamp, computation, uncertainty.",
+      "sourceIds": [
+        "S6"
+      ],
+      "figure": "/intelligence/issues/agentic-trading-frontier-2026/figure-04.webp",
+      "figureAlt": "Magazine graphic: Give every agent a job.",
+      "figureCaption": "Source-labelled chart or original explanatory schematic. See the surrounding text for evidence scope."
+    },
+    {
+      "kind": "policy",
+      "kicker": "03 / SELF-EVOLVING POLICIES",
+      "title": "Change the playbook.",
+      "intro": "Some new agents adapt the procedure around the model rather than retraining the model itself.",
+      "sections": [
+        {
+          "title": "EvolveTrade, in plain language",
+          "text": "EvolveTrade treats the trading agent's system prompt as an editable policy. At update intervals, a Policy Agent reviews decision traces and realized portfolio feedback, revises the procedure, and supplies it to the next decision batch while the backbone LLM stays fixed. The authors report improvements over fixed policies in many evaluated settings. [S1]"
+        },
+        {
+          "title": "Why the distinction matters",
+          "text": "A policy update might change which evidence is checked first, when code is called or how conflicting signals are handled. That differs from changing learned model weights. It also means the operating instructions become a versioned research object. A revised prompt can introduce a failure just as a code change can."
+        },
+        {
+          "title": "Editorial guardrails for adaptation",
+          "text": "Preserve the previous policy and its data cutoff. Evaluate the candidate on untouched data and replay known bad cases. Separate an observed result from the explanation proposed for it. Approve a candidate only after checks; keep a route back to the last accepted version. Do not let a profitable few days automatically rewrite a live system's authority."
+        }
+      ],
+      "callout": "Adaptive does not mean unconstrained. Policy learning and permission to act should remain separate.",
+      "sourceIds": [
+        "S1"
+      ],
+      "figure": "/intelligence/issues/agentic-trading-frontier-2026/figure-05.webp",
+      "figureAlt": "Magazine graphic: Change the playbook.",
+      "figureCaption": "Source-labelled chart or original explanatory schematic. See the surrounding text for evidence scope."
+    },
+    {
+      "kind": "ablation",
+      "kicker": "04 / THE HYBRID PATTERN",
+      "title": "More voices, better signal?",
+      "intro": "A specialist-removal test is more informative than assuming every extra agent earns its place.",
+      "sections": [
+        {
+          "title": "A measured example",
+          "text": "Fin-Analyst combines eight LLM specialists for TSLA with a rule-based BTC path. In its historical TSLA ablation, removing the event, quarterly or news specialist reduced cumulative return; removing two slower inputs slightly increased it. The chart redraws Table 6, not live portfolio performance. [S5]"
+        },
+        {
+          "title": "Read the signs correctly",
+          "text": "The zero line is the full system. A negative bar means performance was lower when that role was removed; a positive bar means the reduced system did better in that experiment. These are percentage-point changes, not individual-agent returns, and the effects need not add up."
+        },
+        {
+          "title": "The right conclusion is narrower",
+          "text": "This supports testing each information channel at the intended horizon. It does not show that annual filings are generally unhelpful or that one role guarantees returns. A hybrid stack can assign prose interpretation to models while leaving calculations, position state and hard limits to code."
+        }
+      ],
+      "callout": "Source caveat: this paper's live BTC figure, table and prose differ. We do not turn those inconsistent live figures into a performance chart.",
+      "sourceIds": [
+        "S5"
+      ],
+      "figure": "/intelligence/issues/agentic-trading-frontier-2026/figure-06.webp",
+      "figureAlt": "Magazine graphic: More voices, better signal?",
+      "figureCaption": "Source-labelled chart or original explanatory schematic. See the surrounding text for evidence scope."
+    },
+    {
+      "kind": "benchmark",
+      "kicker": "05 / BENCHMARK REALITY",
+      "title": "Profit is not the full test.",
+      "intro": "A good result must survive a second question: where did the return come from?",
+      "sections": [
+        {
+          "title": "Separate knowledge from skill",
+          "text": "KTD-Fin masks identifying and calendar information across prompts and tools to reduce the use of memorized market history. It also decomposes returns into market, style and stock-selection components. Its authors report limited evidence of persistent selection alpha among ten tested agents on CSI300 data after these controls. [S4]"
+        },
+        {
+          "title": "Why attribution changes the story",
+          "text": "Imagine a portfolio rising while the wider market rises. The gain is real, but it does not by itself identify a useful selection rule. Conversely, a defensive process can lag in a rising sample yet still serve a different stated objective. Define the objective before choosing the benchmark; do not select a flattering comparison afterward."
+        },
+        {
+          "title": "Build an evidence ladder",
+          "text": "Start with a frozen historical experiment, then an untouched holdout, a live-price paper run and only then a separately authorized capital test. Record costs, rejected orders, missing inputs and downtime. A change in environment can invalidate the comparison even when the model name has not changed."
+        },
+        {
+          "title": "Repeatability belongs in the scorecard",
+          "text": "Replay identical inputs to examine decision stability. Track whether a conclusion survives nearby assumptions, alternate windows and simple baselines. Report uncertainty and failures beside the headline metric instead of hiding them in a final disclaimer."
+        }
+      ],
+      "callout": "Our evaluation checklist is editorial guidance, not a claim that any one benchmark eliminates leakage or proves future alpha.",
+      "sourceIds": [
+        "S4"
+      ],
+      "figure": "/intelligence/issues/agentic-trading-frontier-2026/figure-07.webp",
+      "figureAlt": "Magazine graphic: Profit is not the full test.",
+      "figureCaption": "Source-labelled chart or original explanatory schematic. See the surrounding text for evidence scope."
+    },
+    {
+      "kind": "leverage",
+      "kicker": "06 / PRODUCTION EVIDENCE",
+      "title": "A flat line can reveal a lot.",
+      "intro": "In one pre-alpha fleet, median chosen leverage stayed fixed even as measured volatility changed.",
+      "sections": [
+        {
+          "title": "The reported pattern",
+          "text": "DXRG's research companion reports median leverage of 5.0x in every volatility sextile across a 5.7x volatility spread. It also reports that one posture-and-slider group held 11% of positions but 62% of liquidations. These aggregates describe that system and period, not all trading agents. [S2]"
+        },
+        {
+          "title": "Know which record you are reading",
+          "text": "The companion distinguishes 3,505 user-funded Terminal Pro vaults trading real ETH over 21 days from the later DXAP record: 231,638 turns and 14,596 fills over 69 days, largely paper execution at live prices plus a small real-capital book. It is a pre-alpha baseline, not the current product's performance. [S2]"
+        },
+        {
+          "title": "Editorial interpretation",
+          "text": "A model can describe volatility without changing its exposure appropriately. Inspect the actual order-sizing rule and where risk inputs enter it. The flat median is a warning about that operating behavior; medians alone do not show every agent's choices or establish the effect of an alternative sizing rule."
+        }
+      ],
+      "callout": "Do not treat a risk adjective in a prompt as an enforced exposure limit. Verify the rule that can reject an order.",
+      "sourceIds": [
+        "S2"
+      ],
+      "figure": "/intelligence/issues/agentic-trading-frontier-2026/figure-08.webp",
+      "figureAlt": "Magazine graphic: A flat line can reveal a lot.",
+      "figureCaption": "Source-labelled chart or original explanatory schematic. See the surrounding text for evidence scope."
+    },
+    {
+      "kind": "capture",
+      "kicker": "07 / EXECUTION AND EXITS",
+      "title": "Reaching upside\nis not keeping it.",
+      "intro": "The path through a position can tell a different story from the final profit-and-loss number.",
+      "sections": [
+        {
+          "title": "A gap worth investigating",
+          "text": "In the DXRG record, 43.2% of positions touched at least +300 basis points of open profit within 24 hours; 49.3% of those positions still closed negative. A basis point is one hundredth of a percentage point, so 300 basis points is 3%. The two percentages use different denominators. [S2]"
+        },
+        {
+          "title": "Do not turn hindsight into an exit rule",
+          "text": "A favorable excursion is visible after the path has unfolded. It is not an executable instruction available at the entry time. A rule selected because it fits those paths needs a new evaluation window, realistic fees, liquidity assumptions and reproducible trigger handling."
+        },
+        {
+          "title": "Measure the whole chain",
+          "text": "Separate idea selection, allocation, execution and exit behavior. A bad fill, stale position, duplicate order or late risk response can overwhelm a plausible thesis. Store intended action, accepted order and confirmed fill as different records so a post-mortem can locate the failure."
+        },
+        {
+          "title": "What a useful replay asks",
+          "text": "At each decision point, what was actually known? What action was permitted? What was submitted, acknowledged and filled? A replay should not silently use later data or assume an order succeeded. That is an engineering discipline as much as a forecasting problem."
+        }
+      ],
+      "callout": "Charts here visualize published aggregates only. No synthetic equity curve, hypothetical profit promise or recommended exit threshold is included.",
+      "sourceIds": [
+        "S2"
+      ],
+      "figure": "/intelligence/issues/agentic-trading-frontier-2026/figure-09.webp",
+      "figureAlt": "Magazine graphic: Reaching upside is not keeping it.",
+      "figureCaption": "Source-labelled chart or original explanatory schematic. See the surrounding text for evidence scope."
+    },
+    {
+      "kind": "controls",
+      "kicker": "08 / TRUSTWORTHY AUTONOMY",
+      "title": "Authority needs a boundary.",
+      "intro": "The final risk check should not be another paragraph asking the model to be careful.",
+      "sections": [
+        {
+          "title": "Information can carry an attack",
+          "text": "Contagion on the Trading Floor studies adversarial content entering through social-media evidence in an offline multi-agent benchmark. The authors report degraded risk-return metrics and show that some coordinator designs dampen the effect. This is a robustness experiment, not evidence of a specific live breach. [S3]"
+        },
+        {
+          "title": "A useful governance parallel",
+          "text": "A September FSI speech argues for both model governance and wider operational resilience as AI changes financial systems. The banking-supervision context differs from a trading agent, but its emphasis on accountability and recovery is a useful parallel. It is not approval of a trading method or India-specific legal advice. [S7]"
+        },
+        {
+          "title": "An editorial control pattern",
+          "text": "Treat retrieved content as evidence, never as an instruction source. Keep reconciled state outside model memory. Use independent checks for exposure, stale data, duplicate actions and service health. An explicit human decision can then grant tightly limited authority; an incident path should be able to revoke it."
+        },
+        {
+          "title": "India-aware research, without pretending to execute",
+          "text": "For a MarketDeck research workflow, preserve the exchange, instrument, filing date, currency and observation time. Use the suite to investigate a question and keep execution separate. This magazine neither connects to a broker nor authorizes automated trading. Applicable market-data and execution requirements need their own current review."
+        }
+      ],
+      "callout": "The safe progression is evidence access, bounded analysis and reversible delegation - not an unrestricted agent with a secret key.",
+      "sourceIds": [
+        "S3",
+        "S7"
+      ],
+      "figure": "/intelligence/issues/agentic-trading-frontier-2026/figure-10.webp",
+      "figureAlt": "Magazine graphic: Authority needs a boundary.",
+      "figureCaption": "Source-labelled chart or original explanatory schematic. See the surrounding text for evidence scope."
+    },
+    {
+      "kind": "worksheet",
+      "kicker": "FIELDWORK / INTERACTIVE NOTEBOOK",
+      "title": "Turn the reading into a test.",
+      "intro": "A reusable, fillable worksheet for a research experiment - not an order ticket.",
+      "sections": [
+        {
+          "title": "Choose one small question",
+          "text": "Write a falsifiable question rather than an ambitious mandate such as beat the market. For example: does a source-checking step reduce unsupported event claims on a fixed set of filings? Define what counts as a failure before running the comparison."
+        },
+        {
+          "title": "Save your own working copy",
+          "text": "The fields below are standard PDF form fields. Many desktop readers can save them; support varies in mobile and browser viewers. Open in a compatible PDF app if editing is unavailable. Nothing in this document sends your entries to MarketDeck. Do not enter credentials, account numbers or personal financial information."
+        }
+      ],
+      "callout": "A completed checklist records your process. It is not a safety certification, investment recommendation or permission to deploy.",
+      "sourceIds": []
+    },
+    {
+      "kind": "sources",
+      "kicker": "REFERENCE DESK / METHODOLOGY",
+      "title": "Keep the evidence attached.",
+      "intro": "Primary sources, chart provenance and the limits of this edition.",
+      "sections": [
+        {
+          "title": "What changed in this edition",
+          "text": "The eight-page outline has been expanded into a visual, source-checked 12-page edition. The original themes are retained. The DXAP evidence is explicitly labelled as mainly paper execution at live prices, and the inconsistent Fin-Analyst live BTC summaries are not used for charting."
+        },
+        {
+          "title": "How to read the graphics",
+          "text": "The ablation bars reproduce five Table 6 values from S5. The leverage and exit graphics redraw aggregate observations from S2. Diagrams of teams, policy review and controls are original MarketDeck schematics, not representations of a deployed trading strategy. We did not reproduce or independently validate the experiments."
+        },
+        {
+          "title": "Publication and use",
+          "text": "Edition 2.0 / sources reviewed 22 September 2026 / MarketDeck editorial synthesis. Links open the original source or its author-maintained companion. Research can change; the review date is not a claim of continuous freshness. This publication is educational, not personal financial advice."
+        }
+      ],
+      "callout": "Source references are not endorsements. All charts are labelled with their evidence scope.",
+      "sourceIds": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7"
+      ]
+    }
   ]
 }
