@@ -1,0 +1,205 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [ 4 0 R 5 0 R 6 0 R 7 0 R 8 0 R 9 0 R 10 0 R 11 0 R ] /Count 8 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 12 0 R >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 14 0 R >>
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 15 0 R >>
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 16 0 R >>
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 17 0 R >>
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 18 0 R >>
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 19 0 R >>
+endobj
+12 0 obj
+<< /Length 278 >>
+stream
+BT
+/F1 22 Tf
+50 780 Td
+(THE AGENTIC TRADING FRONTIER) Tj
+0 -42 Td
+/F1 11 Tf
+(MarketDeck Brief / Fieldnotes 02 / September 2026) Tj
+0 -24 Td
+(AI strategies, multi-agent systems, live evidence and risk.) Tj
+0 -24 Td
+(Research and education. Not investment advice.) Tj
+0 -24 Td
+ET
+endstream
+endobj
+13 0 obj
+<< /Length 343 >>
+stream
+BT
+/F1 22 Tf
+50 780 Td
+(THE TRADING STACK IS BECOMING A TEAM) Tj
+0 -42 Td
+/F1 11 Tf
+(2026 systems increasingly split evidence, quant, narrative and risk jobs.) Tj
+0 -24 Td
+(Specialist agents are useful when handoffs and data contracts are explicit.) Tj
+0 -24 Td
+(The agent is the whole decision loop; the LLM is one component.) Tj
+0 -24 Td
+ET
+endstream
+endobj
+14 0 obj
+<< /Length 342 >>
+stream
+BT
+/F1 22 Tf
+50 780 Td
+(SPECIALISTS NEED CLEAR HANDOFFS) Tj
+0 -42 Td
+/F1 11 Tf
+(Evidence agents retrieve. Quant tools calculate. Risk layers constrain.) Tj
+0 -24 Td
+(Coordinators should compare competing evidence instead of merely voting.) Tj
+0 -24 Td
+(Deterministic code remains the best home for arithmetic and hard limits.) Tj
+0 -24 Td
+ET
+endstream
+endobj
+15 0 obj
+<< /Length 351 >>
+stream
+BT
+/F1 22 Tf
+50 780 Td
+(EVOLVE THE PLAYBOOK, NOT ONLY THE WEIGHTS) Tj
+0 -42 Td
+/F1 11 Tf
+(EvolveTrade treats the agent procedure itself as an adaptable policy.) Tj
+0 -24 Td
+(Decision traces and realized feedback can change tool use and verification.) Tj
+0 -24 Td
+(Policy versioning, rollback and out-of-sample checks become essential.) Tj
+0 -24 Td
+ET
+endstream
+endobj
+16 0 obj
+<< /Length 306 >>
+stream
+BT
+/F1 22 Tf
+50 780 Td
+(THE HYBRID PATTERN) Tj
+0 -42 Td
+/F1 11 Tf
+(Fin-Analyst combined LLM specialists with rule-based signals.) Tj
+0 -24 Td
+(The promising pattern separates reasoning, state, risk and execution.) Tj
+0 -24 Td
+(Short live windows remain noisy; rankings can reverse quickly.) Tj
+0 -24 Td
+ET
+endstream
+endobj
+17 0 obj
+<< /Length 372 >>
+stream
+BT
+/F1 22 Tf
+50 780 Td
+(A PROFITABLE BACKTEST CAN STILL BE A BAD BENCHMARK) Tj
+0 -42 Td
+/F1 11 Tf
+(KTD-Fin masks identifiers and dates to reduce historical-memory leakage.) Tj
+0 -24 Td
+(It also attributes returns to market, style and stock-selection components.) Tj
+0 -24 Td
+(Reported profits are not enough; researchers need to know where they came from.) Tj
+0 -24 Td
+ET
+endstream
+endobj
+18 0 obj
+<< /Length 359 >>
+stream
+BT
+/F1 22 Tf
+50 780 Td
+(WHAT PRODUCTION AGENTS ACTUALLY DO) Tj
+0 -42 Td
+/F1 11 Tf
+(A September 2026 study recorded thousands of real-money agent deployments.) Tj
+0 -24 Td
+(Operating-layer choices, risk settings and prompt-visible rankings shaped behavior.) Tj
+0 -24 Td
+(Interface, state and execution design are part of the realized strategy.) Tj
+0 -24 Td
+ET
+endstream
+endobj
+19 0 obj
+<< /Length 354 >>
+stream
+BT
+/F1 22 Tf
+50 780 Td
+(THE NEXT EDGE MAY BE TRUSTWORTHY AUTONOMY) Tj
+0 -42 Td
+/F1 11 Tf
+(Adversarial inputs can propagate through multi-agent trading stacks.) Tj
+0 -24 Td
+(Bounded authority, reconciled state, provenance and kill paths are core controls.) Tj
+0 -24 Td
+(The frontier is moving from can an agent trade to can it be trusted.) Tj
+0 -24 Td
+ET
+endstream
+endobj
+xref
+0 20
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000161 00000 n 
+0000000231 00000 n 
+0000000358 00000 n 
+0000000485 00000 n 
+0000000612 00000 n 
+0000000739 00000 n 
+0000000866 00000 n 
+0000000993 00000 n 
+0000001121 00000 n 
+0000001249 00000 n 
+0000001578 00000 n 
+0000001972 00000 n 
+0000002365 00000 n 
+0000002767 00000 n 
+0000003124 00000 n 
+0000003547 00000 n 
+0000003957 00000 n 
+trailer
+<< /Size 20 /Root 1 0 R >>
+startxref
+4362
+%%EOF
