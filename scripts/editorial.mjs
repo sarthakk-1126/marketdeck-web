@@ -2,6 +2,7 @@ import {readFileSync,writeFileSync,mkdirSync,copyFileSync,existsSync} from 'node
 import {resolve,dirname} from 'node:path';
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const isPublished=i=>i.publicationStatus==='published'&&Boolean(i.approvedAt);
+const refText=v=>esc(v).replace(/\[(S\d+)\]/g,'<a href="#$1">[$1]</a>');
 export function buildEditorial({data,template,root,review}) {
   const manifest=JSON.parse(readFileSync(data.editorial.manifest,'utf8'));
   const urls=['/','/intelligence/','/intelligence/issues/','/credits/'];
@@ -25,10 +26,13 @@ export function buildEditorial({data,template,root,review}) {
     const draft=!isPublished(issue),path=`/intelligence/issues/${issue.slug}/`;
     const source=JSON.parse(readFileSync(issue.source,'utf8'));
     const contents=source.pages.map((p,i)=>`<li><a href="#page-${i+1}">${String(i+1).padStart(2,'0')} / ${esc(p.title)}</a></li>`).join('');
-    const body=source.pages.map((p,i)=>`<section class="issue-chapter" id="page-${i+1}"><p class="eyebrow">${esc(p.kicker)} / PAGE ${i+1}</p><h2>${esc(p.title)}</h2><p class="reading-lead">${esc(p.intro)}</p>${p.sections.map(s=>`<h3>${esc(s.title)}</h3>${s.text?`<p>${esc(s.text)}</p>`:''}${s.items?`<ul>${s.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`).join('')}<aside>${esc(p.callout)}</aside></section>`).join('');
+    const body=source.pages.map((p,i)=>`<section class="issue-chapter" id="page-${i+1}"><p class="eyebrow">${esc(p.kicker)} / PAGE ${i+1}</p><h2>${esc(p.title)}</h2><p class="reading-lead">${esc(p.intro)}</p>${p.figure?`<figure class="issue-figure"><img src="${esc(p.figure)}" alt="${esc(p.figureAlt)}" loading="lazy" style="display:block;max-width:100%;height:auto"><figcaption>${esc(p.figureCaption)}</figcaption></figure>`:""}${p.sections.map(s=>`<h3>${esc(s.title)}</h3>${s.text?`<p>${refText(s.text)}</p>`:''}${s.items?`<ul>${s.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`).join('')}<aside>${esc(p.callout)}</aside></section>`).join('');
     const refs=source.sources.map(s=>`<li id="${s.id}"><a href="${esc(s.url)}">${s.id} / ${esc(s.title)}</a><p>Source date: ${esc(s.publicationDate)}. Reviewed ${esc(s.reviewedAt)}.</p></li>`).join('');
     write(path,page(issue.title,issue.summary,path,`<p class="eyebrow">THE MARKETDECK BRIEF</p><h1>${esc(issue.title)}</h1><p class="reading-lead">${esc(issue.summary)}</p><p>${esc(issue.edition)} · ${issue.pageCount} pages · Sources reviewed ${issue.sourceReviewedAt}</p><div class="issue-actions"><a class="button button-primary" href="${esc(issue.pdfPath)}">Open PDF · ${issue.pageCount} pages ↗</a><a href="#contents">Read in HTML ↓</a></div><nav id="contents" class="issue-contents" aria-label="Issue contents"><h2>In this issue</h2><ol>${contents}</ol></nav><article class="reading-body">${body}<section class="issue-chapter"><h2>Primary source references</h2><ol class="source-list">${refs}</ol></section></article>`,draft));
-    for(const name of ['marketdeck-brief.pdf','cover.webp','cover.svg']){const src=resolve(issue.assets,name);if(existsSync(src))copyFileSync(src,resolve(root,`.${path}${name}`));}
+    // Magazine assets are explicit in the manifest/source; require every advertised file.
+    const names=new Set([issue.pdfPath,issue.cover,...source.pages.map(p=>p.figure)].filter(Boolean).map(p=>p.split('/').pop()));
+    names.add('marketdeck-brief.pdf');
+    for(const name of names){const src=resolve(issue.assets,name);if(!existsSync(src))throw new Error(`Missing editorial asset: ${src}`);copyFileSync(src,resolve(root,`.${path}${name}`));}
     if(!draft)urls.push(path);
   }
   const notesHtml=`<div class="reading-notes">${notes.map(n=>`<article><h2><a href="${n.path}">${n.title}</a></h2><p>${n.summary}</p></article>`).join('')}</div>`;
