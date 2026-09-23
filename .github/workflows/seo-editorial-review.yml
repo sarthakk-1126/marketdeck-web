@@ -19,6 +19,33 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Restore the reviewed renderer publication guards
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          p=Path('scripts/articles.mjs');s=p.read_text()
+          if hashlib.sha256(p.read_bytes()).hexdigest()=='eb19fc6dde9500c555eef6e73eb203eb7a9d15f42b8b09241dbc5a09d73f1247':
+            s=s.replace('<meta name="description" content="${E(description)}">','<meta name="description" content="${E(description)}"><meta name="theme-color" content="#080c12">')
+            s=s.replace('<meta name="twitter:card" content="summary_large_image">','')
+            s=s.replace('>Skip to reading</a>','>Skip to article</a>').replace('aria-label="Reading navigation"','aria-label="Editorial navigation"')
+            s=s.replace('<a href="/intelligence/editorial-policy/">Editorial standards ↗</a>','<a href="/intelligence/editorial-policy/">Editorial standards</a><a href="/intelligence/">All perspectives ↗</a>')
+            start=s.index(" const meta=JSON.parse(readFileSync('content/articles/metadata.json'")
+            end=s.index('  const path=`/intelligence/notes/',start)
+            replacement=""" const metadata=JSON.parse(readFileSync('content/articles/metadata.json','utf8'));
+           const manifest=JSON.parse(readFileSync('content/briefs.json','utf8'));
+           const allowed=new Set(manifest.notes.filter(n=>n.publicationStatus==='published'&&n.approvedAt).map(n=>n.slug));
+           const output=[];const metaMap=new Map(metadata.map(x=>[x.slug,x]));
+           const write=(path,html)=>{const f=resolve(root,'.'+path+'index.html');mkdirSync(dirname(f),{recursive:true});writeFileSync(f,html);};
+           for(const a of metadata){
+            slug(a.slug);if(!allowed.has(a.slug)||a.publicationStatus!=='published'||!a.approvedAt)throw Error('Unapproved authored note');
+            if(!a.topics.length||a.topics.some(t=>!TOPICS[t]))throw Error('Invalid article topic');
+            if(a.source!==`content/articles/${a.slug}.md`)throw Error('Invalid article source path');
+            if(new Set(a.sources.map(s=>s.id)).size!==a.sources.length)throw Error('Duplicate sources');a.sources.forEach(s=>url(s.url));url(a.coverArt);if(!existsSync(resolve('public','.'+a.coverArt)))throw Error('Missing cover artwork');
+          """
+            s=s[:start]+replacement+s[end:];p.write_text(s)
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='8bcb67155769902e200e5fd7a6af1901d891616fcd5120ea77c45146e8af261d','Reviewed renderer mismatch'
+          PY
       - name: Check reviewed manuscript and renderer integrity
         run: |
           python - <<'PY'
@@ -67,7 +94,7 @@ jobs:
           test "${GITHUB_REF_NAME}" = 'editorial/seo-foundations-20260923'
           git config user.name 'MarketDeck editorial build'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add content/articles/metadata.json content/briefs.json scripts/editorial.mjs tests/intelligence.test.mjs tests/homepage.test.mjs public/index.html public/intelligence/index.html public/intelligence/notes public/intelligence/editorial-policy public/assets/intelligence/articles public/sitemap.xml
+          git add scripts/articles.mjs content/articles/metadata.json content/briefs.json scripts/editorial.mjs tests/intelligence.test.mjs tests/homepage.test.mjs public/index.html public/intelligence/index.html public/intelligence/notes public/intelligence/editorial-policy public/assets/intelligence/articles public/sitemap.xml
           git diff --cached --check
           git commit -m 'Build seven source-linked field guides and update the Intelligence library'
           git push origin HEAD:editorial/seo-foundations-20260923
@@ -75,6 +102,7 @@ jobs:
         if: always()
         run: |
           mkdir -p .preview/seo-review/generated
+          cp scripts/articles.mjs .preview/seo-review/
           cp -r public/intelligence public/assets/intelligence content/articles/metadata.json .preview/seo-review/generated/ 2>/dev/null || true
       - uses: actions/upload-artifact@v4
         if: always()
