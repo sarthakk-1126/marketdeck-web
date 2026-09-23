@@ -7,7 +7,7 @@ Five original AI-assisted conceptual illustrations: business foundations, price 
 
 ## Delivery
 1400 x 800 previews, 520 x 290 thumbnails and 1040 x 580 high-density thumbnails. Versioned self-hosted WebP paths with exact SHA-256 hashes and dimensions in asset-manifest.json.
-Export total: 633268 bytes across 15 files.
+Export total: 636200 bytes across 15 files.
 Thumbnails preserve unwarped subjects in a central safe band with edge-tone extensions. Only the object-position CSS property changes; card sizes and motion are unchanged. FNO preview uses a seamless full-frame crop. Old files remain for rollback.
 
 ## Reproduction
