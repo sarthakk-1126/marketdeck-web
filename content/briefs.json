@@ -43,7 +43,10 @@
         "equities",
         "india"
       ],
-      "coverArt": "/assets/products/editorial-v2/stockproof.webp"
+      "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+      "source": "content/articles/business-before-the-stock.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-09-23"
     },
     {
       "slug": "a-chart-is-a-question",
@@ -51,7 +54,10 @@
         "markets",
         "research-craft"
       ],
-      "coverArt": "/assets/products/editorial-v2/charting.webp"
+      "coverArt": "/assets/products/editorial-v2/charting.webp",
+      "source": "content/articles/a-chart-is-a-question.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-09-23"
     },
     {
       "slug": "five-research-lenses",
@@ -59,7 +65,54 @@
         "research-craft",
         "india"
       ],
-      "coverArt": "/assets/india-earth-small.webp"
+      "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+      "source": "content/articles/five-research-lenses.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-09-23"
+    },
+    {
+      "slug": "iv-rank-vs-iv-percentile-nifty-options",
+      "topics": [
+        "fno",
+        "markets"
+      ],
+      "coverArt": "/assets/products/editorial-v2/fno.webp",
+      "source": "content/articles/iv-rank-vs-iv-percentile-nifty-options.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-09-23"
+    },
+    {
+      "slug": "read-nse-company-announcements-results",
+      "topics": [
+        "india",
+        "equities"
+      ],
+      "coverArt": "/assets/products/editorial-v2/commentary.webp",
+      "source": "content/articles/read-nse-company-announcements-results.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-09-23"
+    },
+    {
+      "slug": "crypto-fundamentals-fees-revenue-token-value",
+      "topics": [
+        "crypto",
+        "research-craft"
+      ],
+      "coverArt": "/assets/products/editorial-v2/crypto.webp",
+      "source": "content/articles/crypto-fundamentals-fees-revenue-token-value.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-09-23"
+    },
+    {
+      "slug": "evaluate-ai-trading-agents",
+      "topics": [
+        "ai-quant",
+        "research-craft"
+      ],
+      "coverArt": "/assets/products/editorial-v2/commentary.webp",
+      "source": "content/articles/evaluate-ai-trading-agents.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-09-23"
     }
   ]
 }
