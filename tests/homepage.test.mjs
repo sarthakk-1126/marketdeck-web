@@ -50,19 +50,22 @@ test('semantic content and deep links survive without JavaScript', () => {
   assert.equal(/class="(?:product-panel|community-panel)[^"]*"[^>]*hidden/.test(html), false);
 });
 
-test('homepage explains all five products together before the interactive detail panels', () => {
+test('homepage explains all five products together with premium cards before the interactive detail panels', () => {
   assert.equal((html.match(/class="suite-overview-card /g) || []).length, 5);
   assert.match(html, /id="suite-overview-heading"[^>]*>One market\./);
-  assert.match(html, /Different tools\. One research process\./);
+  assert.match(html, /href="\/product-overview-v2\.css"/);
   for (const product of data.products) {
     const card = html.match(new RegExp(`<article class="suite-overview-card [^"]+" data-overview-product="${product.id}">[\\s\\S]*?<\\/article>`))?.[0];
     assert.ok(card, `Missing overview card for ${product.id}`);
     assert.ok(card.includes(escapeHtml(product.name)));
     assert.ok(card.includes(escapeHtml(product.category)));
     assert.ok(card.includes(escapeHtml(product.headline)));
-    for (const feature of product.features) assert.ok(card.includes(escapeHtml(feature)));
+    assert.ok(card.includes('class="suite-overview-chips"'));
+    assert.ok(card.includes(`src="${product.thumbnail}"`));
+    assert.ok(card.includes(`srcset="${product.thumbnail} 1x, ${product.thumbnail2x} 2x"`));
+    for (const feature of product.features) assert.ok(card.includes(`<li>${escapeHtml(feature)}</li>`));
     assert.ok(card.includes(`href="${product.url}"`));
-    assert.doesNotMatch(card, /<img\b|<script\b|data-preview-src/);
+    assert.doesNotMatch(card, /<script\b|data-preview-src/);
   }
   const overviewStart = html.indexOf('class="suite-overview-section"');
   const overviewEnd = html.indexOf('</section>', overviewStart);
