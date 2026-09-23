@@ -35,6 +35,15 @@ jobs:
           Path('/tmp/ia-repair.py').write_bytes(data)
           PY
           python3 /tmp/ia-repair.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/qa-ia-release.mjs');s=p.read_text()
+          s=s.replace("const browser=await chromium.launch({headless:true});", "const browser=await chromium.launch({headless:true});\nasync function openPage(options={}){const context=await browser.newContext(options);return context.newPage();}")
+          s=s.replace('browser.newPage(', 'openPage(').replace('await page.close();','await page.context().close();')
+          s=s.replace("report.accessibility.push({path,width,violations:a.violations});assert.equal(a.violations.length,0,JSON.stringify(a.violations));", "report.accessibility.push({path,width,violations:a.violations});")
+          s=s.replace("await context.close();report.status='PASS';", "await context.close();assert.equal(report.accessibility.flatMap(x=>x.violations).length,0,'Accessibility violations: inspect browser-results.json');report.status='PASS';")
+          p.write_text(s)
+          PY
       - name: Build and test current repository
         run: |
           set -euo pipefail
