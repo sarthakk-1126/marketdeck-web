@@ -1,0 +1,8 @@
+# MarketDeck public crawl policy.
+# Search indexing is allowed for public pages. Page-level robots directives
+# and application access controls govern non-indexable/private surfaces.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://marketdeck.in/sitemap.xml
