@@ -86,7 +86,6 @@ jobs:
 
               const entries=page.locator('[data-intel-entry]');
               assert.equal(await entries.count(),11);
-              assert.equal(await entries.locator('[data-kind="magazine"]').count(),0).catch(()=>{});
               assert.equal(await page.locator('[data-intel-entry][data-kind="magazine"]').count(),1);
               assert.equal(await page.locator('[data-intel-entry][data-kind="note"]').count(),10);
               assert.equal(await page.getByText('Start with the evidence',{exact:true}).count(),0);
