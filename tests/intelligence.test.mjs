@@ -1,0 +1,60 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync} from 'node:fs';
+import {catalog,shelf,library,hub,archivePage,localPath,readingTime} from '../scripts/intelligence.mjs';
+const manifest=JSON.parse(readFileSync('content/briefs.json'));
+const fixture=(n=0)=>({id:'issue-'+n,title:'Research '+n,summary:'Evidence, not recommendations.',slug:'issue-'+n,edition:'Fieldnotes',cover:'/cover.webp',pdfPath:'/brief.pdf',pageCount:12,source:'source.json',approvedAt:'2026-09-22',publicationStatus:'published',topics:['ai-quant']});
+const opts={read:()=>({pages:[{intro:'A research idea'}]}),exists:()=>true};
+const issueHTML=readFileSync('public/intelligence/issues/agentic-trading-frontier-2026/index.html','utf8');
+test('catalog excludes drafts and unapproved entries, keeps immutable published URLs',()=>{
+ const items=catalog({issues:[fixture(),{...fixture(1),publicationStatus:'draft'},{...fixture(2),approvedAt:null}]},[],opts);
+ assert.equal(items.length,1);assert.equal(items[0].path,'/intelligence/issues/issue-0/');assert.equal(items[0].pdf,'/brief.pdf');
+ assert.equal(catalog({issues:[]},[],opts).length,0);
+});
+test('multiple approved magazines work without special-casing an issue ID',()=>{
+ const items=catalog({issues:Array.from({length:25},(_,n)=>fixture(n))},[],opts);
+ assert.equal(items.length,25);assert.equal((shelf(items).match(/data-intel-slide /g)||[]).length,8);
+ assert.equal((archivePage(items).match(/data-intel-entry /g)||[]).length,25);
+});
+test('published metadata and URLs fail closed on unsafe values',()=>{
+ for(const bad of ['javascript:x','//evil.test/x','/../secret','/x/../y','/x"onclick="x','/x\\evil','/x?redirect=https://bad'])assert.throws(()=>localPath(bad));
+ for(const patch of [{slug:'x"onclick="bad'},{topics:['not-a-topic']},{topics:[]},{pageCount:0},{cover:'https://bad/x'}])assert.throws(()=>catalog({issues:[{...fixture(),...patch}]},[],opts));
+ assert.throws(()=>catalog({issues:[fixture(),fixture()]},[],opts));
+ assert.throws(()=>catalog({issues:[fixture()]},[],{...opts,exists:()=>false}));
+});
+test('empty, single, missing-PDF, and escaping states render honestly',()=>{
+ const items=catalog({issues:[{...fixture(),title:'<img src=x onerror=bad>Safe & sound',summary:'<script>bad</script> A study',pdfPath:null}]},[],opts);
+ const html=shelf(items);assert.doesNotMatch(html,/onerror=|<script>/);assert.match(html,/Safe &amp; sound/);assert.match(html,/Online edition/);assert.doesNotMatch(html,/Download PDF/);
+ assert.match(shelf([]),/taking shape/);assert.match(library([]),/No matching perspectives/);
+ assert.equal(readingTime('word '.repeat(221)),2);
+});
+test('homepage shelf and library preserve actual content and advertise only actual PDFs',()=>{
+ const homepage=readFileSync('public/index.html','utf8'),page=readFileSync('public/intelligence/index.html','utf8'),archive=readFileSync('public/intelligence/issues/index.html','utf8');
+ assert.equal((homepage.match(/data-intel-slide /g)||[]).length,4);
+ assert.equal((page.match(/data-intel-entry /g)||[]).length,4);
+ assert.equal((archive.match(/data-intel-entry /g)||[]).length,1);
+ for(const html of [homepage,page,archive]){
+  assert.doesNotMatch(html,/research-foundations|EDITORIAL DRAFT/);
+  for(const link of html.matchAll(/href="([^\"]+\.pdf)"/g))assert.ok(existsSync('public'+link[1]));
+  assert.match(html,/data-intel-status/);
+ }
+ assert.ok(issueHTML.includes('marketdeck-brief-v2.pdf'));
+ assert.equal(manifest.issues.find(i=>i.id==='research-foundations-01').publicationStatus,'draft');
+});
+test('hub and archive are canonical, crawlable static collections',()=>{
+ for(const path of ['intelligence/','intelligence/issues/']){
+  const html=readFileSync('public/'+path+'index.html','utf8');
+  assert.equal((html.match(/<h1\b/g)||[]).length,1);
+  assert.match(html,new RegExp('rel="canonical" href="https://marketdeck.in/'+path+'"'));
+  const ids=[...html.matchAll(/\bid="([^\"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length);
+  const schema=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);assert.equal(schema['@type'],'CollectionPage');
+  assert.equal(schema.mainEntity.itemListElement.length,path==='intelligence/'?4:1);
+  assert.doesNotMatch(html,/aria-roledescription="carousel"|data-intel-entry[^>]+hidden|data-intel-slide[^>]+hidden/);
+ }
+ assert.match(hub([],{review:true}),/noindex, nofollow/);
+});
+test('client enhancement is small, local and non-autoplay',()=>{
+ const js=readFileSync('public/intelligence-shelf-v1.js','utf8');
+ assert.doesNotMatch(js,/setInterval|innerHTML\s*=|fetch\(|localStorage|sessionStorage|document\.cookie/);
+ assert.ok(Buffer.byteLength(js)<12000);assert.match(js,/pointercancel/);assert.match(js,/ArrowLeft/);
+});
