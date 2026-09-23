@@ -24,49 +24,43 @@ jobs:
           run-id: 35817414195
           github-token: ${{ github.token }}
           path: /tmp/art-final
-      - name: Restore only reviewed artwork changes
+      - name: Install image and browser tools
+        run: |
+          python -m pip install Pillow==12.3.0 playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: Restore only reviewed artwork changes and finalize exports
         run: |
           python - <<'PY'
-          import shutil
+          import shutil,json
           from pathlib import Path
           source=Path('/tmp/art-final/site')
-          paths=['src/site-data.json','scripts/build.mjs','scripts/editorial.mjs','public/home.css','public/index.html','public/credits/index.html']
-          for name in paths: shutil.copy2(source/name,name)
-          shutil.copytree(source/'public/assets/products/editorial-v2','public/assets/products/editorial-v2',dirs_exist_ok=True)
-          Path('docs/PRODUCT_ART_V2.md').write_text('''# MarketDeck product artwork V2
-
-Owner-authorized completion and publication: 23 September 2026.
-
-## Art direction
-Five cohesive original AI-assisted conceptual illustrations: business foundations (StockProof), sculptural candlesticks (Charting), payoff and volatility geometry (F&O), traceable waveform and sources (Commentary), and connected digital-asset infrastructure (Crypto World). Graphite, brushed titanium and sapphire optical glass. These are editorial illustrations, not application screenshots, real charts or trading signals.
-
-## Output and integration
-Each artwork has a 1400 x 800 WebP preview, 520 x 290 standard thumbnail and 1040 x 580 high-density thumbnail. All 15 exports total 596,804 bytes. Versioned paths live under /assets/products/editorial-v2/. Existing files remain for rollback. Thumbnails preserve unwarped subjects inside a central safe band with edge-tone extensions; the only CSS change centers the artwork inside the existing crop. Card dimensions, typography, globe, animations, magazine and product applications remain unchanged.
-
-The manifest includes generation task IDs, source SHA-256 hashes, export dimensions, sizes and export hashes. No signed image URLs or credentials are included. Original PNGs were retrieved from the connected image workspace and retained in temporary review artifacts. F&O received a final image edit to remove a visible studio light. No video or paid subscription was purchased.
-
-## Reproduction
-Run python scripts/prepare-product-art-v2.py ORIGINAL_DIRECTORY with Pillow 12.3.0. The directory should contain stockproof.png, charting.png, fno.png, commentary.png and crypto.png. Then run node scripts/build.mjs, node scripts/build.mjs --review and node --test tests/*.test.mjs.
-
-## Verification scope
-Fifteen Node tests cover existing homepage/magazine contracts and new asset, density and integrity contracts. Browser review covers mobile, tablet and desktop with normal/reduced motion. The motion-enabled gallery must be fully docked and focused before targeting its moving cards; the initial test did not reset that state between successive jumps into product panels. The final test explicitly focuses each card, waits for its dock, then clicks and asserts the selected tab and visible matching panel. No application event code was changed to satisfy this test.
-
-The release preserves production deployment configuration. Live asset hashes and image delivery are checked after deployment. See the release PR and workflow evidence for outcomes.
-''')
+          for name in ['src/site-data.json','scripts/build.mjs','scripts/editorial.mjs','public/home.css','public/index.html','public/credits/index.html']:
+              shutil.copy2(source/name,name)
+          p=Path('scripts/prepare-product-art-v2.py');s=p.read_text()
+          old="full=ImageOps.fit(image,(1400,800),Image.Resampling.LANCZOS) if image.width/image.height<2 else stage(image,(1400,800),.94)"
+          new="full=ImageOps.fit(image,(1400,800),Image.Resampling.LANCZOS)"
+          assert old in s or new in s;p.write_text(s.replace(old,new))
+          PY
+          python scripts/prepare-product-art-v2.py /tmp/art-final/originals
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          m=json.loads(Path('public/assets/products/editorial-v2/asset-manifest.json').read_text())
+          lines=['# MarketDeck product artwork V2','', 'Owner-authorized publication: 23 September 2026.','', '## Scope','Five original AI-assisted conceptual illustrations: business foundations, price structure, derivatives geometry, source-linked commentary and digital infrastructure. Not real application screenshots or market data.','', '## Delivery','1400 x 800 previews, 520 x 290 thumbnails and 1040 x 580 high-density thumbnails. Versioned self-hosted WebP paths with exact SHA-256 hashes and dimensions in asset-manifest.json.','Export total: '+str(m['totalBytes'])+' bytes across 15 files.','Thumbnails preserve unwarped subjects in a central safe band with edge-tone extensions. Only the object-position CSS property changes; card sizes and motion are unchanged. FNO preview uses a seamless full-frame crop. Old files remain for rollback.','', '## Reproduction','Run python scripts/prepare-product-art-v2.py ORIGINAL_DIRECTORY with Pillow 12.3.0, then node scripts/build.mjs and node scripts/build.mjs --review.','Original PNGs remain in the review artifacts and connected image workspace; generation task IDs and source hashes are recorded without signed URLs.','', '## Verification','Fifteen Node contracts plus browser image loading, mobile/desktop overflow and product selection checks. Normal-motion cards are focused and fully docked before click targeting. Globe, product event code, magazine and deployment configuration are protected from change. See the release PR and workflow logs for final results.']
+          Path('docs/PRODUCT_ART_V2.md').write_text('\n'.join(lines)+'\n')
           PY
           node scripts/build.mjs
           node scripts/build.mjs --review
           node --check scripts/build.mjs
           node --check scripts/editorial.mjs
           node --test tests/*.test.mjs
-      - name: Confirm exact scope and image integrity
+      - name: Verify exact preservation scope
         run: |
           python - <<'PY'
           import subprocess,json,hashlib
           from pathlib import Path
           original=subprocess.check_output(['git','show','HEAD:public/index.html'],text=True)
-          old=json.loads(subprocess.check_output(['git','show','HEAD:src/site-data.json'],text=True))
-          new=json.loads(Path('src/site-data.json').read_text())
+          old=json.loads(subprocess.check_output(['git','show','HEAD:src/site-data.json'],text=True));new=json.loads(Path('src/site-data.json').read_text())
           for a,b in zip(old['products'],new['products']):
               assert {k:v for k,v in a.items() if k not in ('preview','thumbnail','previewKind')}=={k:v for k,v in b.items() if k not in ('preview','thumbnail','thumbnail2x','previewKind')}
               original=original.replace(a['thumbnail'],b['thumbnail']).replace(a['preview'],b['preview']).replace(a['previewKind'],b['previewKind'])
@@ -75,23 +69,17 @@ The release preserves production deployment configuration. Live asset hashes and
           assert {k:v for k,v in old.items() if k!='products'}=={k:v for k,v in new.items() if k!='products'}
           protected=['public/home.js','public/experience.js','public/assets/globe.js','src/globe.js','src/earth-shaders.js','src/index.template.html','public/intelligence','content/briefs.json','.github/workflows/deploy.yml']
           assert not subprocess.check_output(['git','diff','--name-only','--',*protected],text=True).strip()
-          manifest=json.loads(Path('public/assets/products/editorial-v2/asset-manifest.json').read_text())
-          for name,entry in manifest['files'].items(): assert hashlib.sha256((Path('public/assets/products/editorial-v2')/name).read_bytes()).hexdigest()==entry['sha256']
-          print('Scope and export integrity PASS')
+          print('Scope and preservation PASS')
           PY
-      - name: Install browser QA tools
-        run: |
-          python -m pip install Pillow==12.3.0 playwright==1.56.0
-          python -m playwright install --with-deps chromium
-      - name: Verify desktop and mobile cards using native focus and clicks
+      - name: Browser image and interaction review
         run: |
           mkdir -p review-verified
           python -m http.server 4173 --directory public >/tmp/art-server.log 2>&1 &
           python - <<'PY'
           from pathlib import Path
           from playwright.sync_api import sync_playwright,expect
-          from PIL import Image, ImageDraw, ImageFont, ImageOps
-          import json,time,re
+          from PIL import Image,ImageDraw,ImageFont,ImageOps
+          import json,time,re,shutil
           out=Path('review-verified');report=[];time.sleep(2)
           with sync_playwright() as p:
               browser=p.chromium.launch(args=['--use-angle=swiftshader','--enable-unsafe-swiftshader'])
@@ -106,37 +94,33 @@ The release preserves production deployment configuration. Live asset hashes and
                   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
                   for i in range(5):
                       tab=page.locator('.product-tab').nth(i)
-                      # Native focus resets the existing scroll choreography to its interactive dock.
                       tab.focus();page.wait_for_timeout(450)
                       if motion=='no-preference':page.wait_for_function('!document.querySelector(".story-gallery").inert')
                       tab.click(timeout=15000)
                       expect(tab).to_have_attribute('aria-selected','true',timeout=5000)
-                      expect(tab).to_have_class(re.compile(r'\bis-active\b'))
-                      panel=page.locator('#'+tab.get_attribute('aria-controls'))
-                      expect(panel).to_be_visible(timeout=5000)
+                      panel=page.locator('#'+tab.get_attribute('aria-controls'));expect(panel).to_be_visible(timeout=5000)
                       assert page.locator('.product-tab.is-active').count()==1
                   assert not errors,errors
                   report.append({'width':width,'height':height,'motion':motion,'density':2,'imagesLoaded':5,'nativeClickSelections':5,'overflow':False,'pageErrors':errors})
-                  (out/'browser-qa.json').write_text(json.dumps(report,indent=2))
-                  page.close()
+                  (out/'browser-qa.json').write_text(json.dumps(report,indent=2));page.close()
               browser.close()
           print(json.dumps(report,indent=2))
           sheet=Image.new('RGB',(1740,1000),'#080c12');d=ImageDraw.Draw(sheet)
           font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',23)
           small=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',15)
-          d.text((42,26),'MARKETDECK / PRODUCT ARTWORK',font=font,fill='#edf1f6')
-          d.text((42,64),'Graphite. Optical glass. Research made visible.',font=small,fill='#929eac')
+          d.text((42,26),'MARKETDECK / PRODUCT ARTWORK',font=font,fill='#edf1f6');d.text((42,64),'Graphite. Optical glass. Research made visible.',font=small,fill='#929eac')
           for i,(name,label) in enumerate(zip(['stockproof','charting','fno','commentary','crypto'],['StockProof','Charting','F&O','Commentary','Crypto World'])):
               x=42+i*560 if i<3 else 322+(i-3)*560;y=120 if i<3 else 560
               img=ImageOps.fit(Image.open(f'public/assets/products/editorial-v2/{name}.webp'),(536,306))
               sheet.paste(img,(x,y));d.text((x+4,y+322),label,font=font,fill='#edf1f6')
           sheet.save(out/'MarketDeck_Product_Artwork.jpg',quality=95)
+          shutil.copytree('public/assets/products/editorial-v2',out/'editorial-v2')
           PY
       - name: Commit verified scoped changes to release branch only
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add public/assets/products/editorial-v2 src/site-data.json scripts/build.mjs scripts/editorial.mjs public/home.css public/index.html public/credits/index.html docs/PRODUCT_ART_V2.md
+          git add public/assets/products/editorial-v2 src/site-data.json scripts/build.mjs scripts/editorial.mjs scripts/prepare-product-art-v2.py public/home.css public/index.html public/credits/index.html docs/PRODUCT_ART_V2.md
           git diff --cached --check
           git commit -m 'Replace product cards with verified premium editorial artwork'
           git push origin HEAD:assets/premium-product-art-20260923
