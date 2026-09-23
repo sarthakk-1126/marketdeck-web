@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
-import {catalog,shelf,library,hub,archivePage,learningHub,LEARNING_HUBS,localPath,readingTime} from '../scripts/intelligence.mjs';
+import {catalog,shelf,library,hub,libraryPage,archivePage,learningHub,LEARNING_HUBS,localPath,readingTime} from '../scripts/intelligence.mjs';
 const manifest=JSON.parse(readFileSync('content/briefs.json'));
 const publicCount=manifest.issues.filter(i=>i.publicationStatus==='published'&&i.approvedAt).length+manifest.notes.filter(n=>n.publicationStatus==='published'&&n.approvedAt).length;
 const fixture=(n=0)=>({id:'issue-'+n,title:'Research '+n,summary:'Evidence, not recommendations.',slug:'issue-'+n,edition:'Fieldnotes',cover:'/cover.webp',pdfPath:'/brief.pdf',pageCount:12,source:'source.json',approvedAt:'2026-09-22',publicationStatus:'published',topics:['ai-quant']});
@@ -29,30 +29,39 @@ test('empty, single, missing-PDF, and escaping states render honestly',()=>{
  assert.match(shelf([]),/taking shape/);assert.match(library([]),/No matching perspectives/);
  assert.equal(readingTime('word '.repeat(221)),2);
 });
-test('homepage shelf and library preserve actual content and advertise only actual PDFs',()=>{
- const homepage=readFileSync('public/index.html','utf8'),page=readFileSync('public/intelligence/index.html','utf8'),archive=readFileSync('public/intelligence/issues/index.html','utf8');
+test('homepage, landing, unified library and magazine archive preserve approved content only',()=>{
+ const homepage=readFileSync('public/index.html','utf8'),page=readFileSync('public/intelligence/index.html','utf8'),all=readFileSync('public/intelligence/library/index.html','utf8'),archive=readFileSync('public/intelligence/issues/index.html','utf8');
  assert.equal((homepage.match(/data-intel-slide /g)||[]).length,Math.min(8,publicCount));
- assert.equal((page.match(/data-intel-entry /g)||[]).length,publicCount);
+ assert.equal((page.match(/data-intel-entry /g)||[]).length,0,'The Intelligence landing should not duplicate the complete library');
+ assert.equal((all.match(/data-intel-entry /g)||[]).length,publicCount);
+ assert.equal((all.match(/data-kind="magazine"/g)||[]).length,1);
+ assert.equal((all.match(/data-kind="note"/g)||[]).length,publicCount-1);
  assert.equal((archive.match(/data-intel-entry /g)||[]).length,1);
- for(const html of [homepage,page,archive]){
+ assert.match(page,/href="\/intelligence\/library\/"/);
+ assert.match(archive,/Browse all MarketDeck Intelligence/);
+ for(const html of [homepage,page,all,archive]){
   assert.doesNotMatch(html,/research-foundations|EDITORIAL DRAFT/);
   for(const link of html.matchAll(/href="([^\"]+\.pdf)"/g))assert.ok(existsSync('public'+link[1]));
-  assert.match(html,/data-intel-status/);
+  assert.match(html,/data-intel-status|intel-browse-doors/);
  }
  assert.ok(issueHTML.includes('marketdeck-brief-v2.pdf'));
  assert.equal(manifest.issues.find(i=>i.id==='research-foundations-01').publicationStatus,'draft');
 });
-test('hub and archive are canonical, crawlable static collections',()=>{
- for(const path of ['intelligence/','intelligence/issues/']){
+test('Intelligence landing, library and magazine archive are canonical crawlable collections',()=>{
+ for(const path of ['intelligence/','intelligence/library/','intelligence/issues/']){
   const html=readFileSync('public/'+path+'index.html','utf8');
   assert.equal((html.match(/<h1\b/g)||[]).length,1);
   assert.match(html,new RegExp('rel="canonical" href="https://marketdeck.in/'+path+'"'));
   const ids=[...html.matchAll(/\bid="([^\"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length);
   const schema=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);assert.equal(schema['@type'],'CollectionPage');
-  assert.equal(schema.mainEntity.itemListElement.length,path==='intelligence/'?publicCount:1);
+  assert.equal(schema.mainEntity.itemListElement.length,path==='intelligence/issues/'?1:publicCount);
   assert.doesNotMatch(html,/aria-roledescription="carousel"|data-intel-entry[^>]+hidden|data-intel-slide[^>]+hidden/);
  }
+ const all=readFileSync('public/intelligence/library/index.html','utf8');
+ assert.match(all,/data-intel-kind="all"/);assert.match(all,/data-intel-kind="magazine"/);assert.match(all,/data-intel-kind="note"/);
+ assert.ok(readFileSync('public/sitemap.xml','utf8').includes('<loc>https://marketdeck.in/intelligence/library/</loc>'));
  assert.match(hub([],{review:true}),/noindex, nofollow/);
+ assert.match(libraryPage([],{review:true}),/noindex, nofollow/);
 });
 test('client enhancement is small, local and non-autoplay',()=>{
  const js=readFileSync('public/intelligence-shelf-v1.js','utf8');
