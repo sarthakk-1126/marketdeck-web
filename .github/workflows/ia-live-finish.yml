@@ -16,12 +16,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Verify certificate-checked public pages and exact assets
+      - name: Capture certificate-checked public pages and compare release assets
         run: |
-          mkdir -p .preview/ia-live
+          mkdir -p .preview/ia-live/responses
           python3 - <<'PY'
           from pathlib import Path
-          import urllib.request,hashlib,json,time
+          import urllib.request,hashlib,json,difflib
+          out=Path('.preview/ia-live')
           paths=['index.html','intelligence/index.html','intelligence/issues/index.html','sitemap.xml','intelligence-hub-v1.css','intelligence-article-v1.css','intelligence-shelf-v1.css','intelligence/issues/agentic-trading-frontier-2026/marketdeck-brief-v2.pdf','intelligence/issues/agentic-trading-frontier-2026/index.html']
           paths += ['intelligence/'+x+'/index.html' for x in ['equities','technical-analysis','futures-options']]
           paths += ['intelligence/notes/'+x+'/index.html' for x in ['pe-ratio-vs-earnings-yield','support-vs-resistance-stock-charts','call-option-vs-put-option-india']]
@@ -29,20 +30,19 @@ jobs:
           report=[]
           for path in paths:
               url='https://marketdeck.in/'+(path[:-10] if path.endswith('index.html') else path)
-              expected=hashlib.sha256(Path('public',path).read_bytes()).hexdigest()
-              for attempt in range(4):
-                  try:
-                      req=urllib.request.Request(url,headers={'User-Agent':'MarketDeck-Release-Verification/1.0','Cache-Control':'no-cache'})
-                      with urllib.request.urlopen(req,timeout=45) as r: data=r.read();status=r.status;final=r.url
-                      actual=hashlib.sha256(data).hexdigest()
-                      assert status==200 and actual==expected,(url,status,actual,expected)
-                      report.append({'url':url,'finalURL':final,'status':status,'sha256':actual,'matchesReviewedRelease':True})
-                      break
-                  except Exception:
-                      if attempt==3:raise
-                      time.sleep(8)
-          Path('.preview/ia-live/https-integrity.json').write_text(json.dumps(report,indent=2))
-          print('PASS:',len(report),'public pages/assets match reviewed release')
+              expected=Path('public',path).read_bytes();key=path.replace('/','__');row={'url':url,'file':path}
+              try:
+                  req=urllib.request.Request(url,headers={'User-Agent':'MarketDeck-Release-Verification/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(req,timeout=45) as r:data=r.read();row.update(status=r.status,finalURL=r.url,headers={k:v for k,v in r.headers.items() if k.lower() in ['content-type','cf-cache-status','age','last-modified']})
+                  row.update(sha256=hashlib.sha256(data).hexdigest(),expectedSHA256=hashlib.sha256(expected).hexdigest(),matchesReviewedRelease=data==expected)
+                  (out/'responses'/key).write_bytes(data)
+                  if data!=expected and not path.endswith('.pdf'):
+                      a=expected.decode().replace('><','>\n<').splitlines();b=data.decode().replace('><','>\n<').splitlines()
+                      diff='\n'.join(difflib.unified_diff(a,b,fromfile='reviewed',tofile='production'))
+                      (out/'responses'/(key+'.diff')).write_text(diff);print(path+' DIFFERENCE: '+diff[:5000])
+              except Exception as e:row['error']=str(e)
+              report.append(row)
+          (out/'https-integrity.json').write_text(json.dumps(report,indent=2));print(json.dumps(report,indent=2))
           PY
       - name: Install isolated browser QA tools
         run: |
@@ -54,6 +54,13 @@ jobs:
           IA_BASE_URL: https://marketdeck.in
           IA_QA_DIR: .preview/ia-live
         run: node scripts/qa-ia-release.mjs
+      - name: Require exact release bytes pending classification of any observed difference
+        run: |
+          python3 - <<'PY'
+          import json
+          rows=json.load(open('.preview/ia-live/https-integrity.json'))
+          assert all(r.get('status')==200 and r.get('matchesReviewedRelease') for r in rows),'Inspect captured production differences before release sign-off'
+          PY
       - uses: actions/upload-artifact@v4
         if: always()
         with:
