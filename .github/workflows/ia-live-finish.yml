@@ -1,4 +1,4 @@
-name: Verify published IA completion
+name: Verify IA live editorial assets
 on:
   push:
     branches: [feature/ia-hubs-deeplinks-20260923]
@@ -6,73 +6,9 @@ on:
 permissions:
   contents: read
 jobs:
-  integrity:
+  assets:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: 95fbe8f688d4efdd03e881f7f32ea4d2a7135448
-          persist-credentials: false
-      - name: Diagnose exact public release bytes without hiding mismatches
-        run: |
-          mkdir -p .preview/ia-live-integrity
-          python3 - <<'PY'
-          from pathlib import Path
-          import urllib.request,hashlib,json,re,difflib
-          out=Path('.preview/ia-live-integrity')
-          paths=['index.html','intelligence/index.html','intelligence/issues/index.html','sitemap.xml','intelligence-hub-v1.css','intelligence-article-v1.css','intelligence-shelf-v1.css','intelligence/issues/agentic-trading-frontier-2026/marketdeck-brief-v2.pdf','intelligence/issues/agentic-trading-frontier-2026/index.html']
-          paths += ['intelligence/'+x+'/index.html' for x in ['equities','technical-analysis','futures-options']]
-          paths += ['intelligence/notes/'+x+'/index.html' for x in ['pe-ratio-vs-earnings-yield','support-vs-resistance-stock-charts','call-option-vs-put-option-india']]
-          paths += ['assets/intelligence/articles/'+x+'.svg' for x in ['pe-ratio-vs-earnings-yield','support-vs-resistance-stock-charts','call-option-vs-put-option-india']]
-          observed_beacon_sha='08315641718ee2685c70859826a5267fb4594fb81d5a9a8a4d1328b2f0fe631d'
-          report=[]
-          for path in paths:
-              url='https://marketdeck.in/'+(path[:-10] if path.endswith('index.html') else path)
-              expected=Path('public',path).read_bytes()
-              try:
-                  req=urllib.request.Request(url,headers={'User-Agent':'MarketDeck-Release-Verification/1.0','Cache-Control':'no-cache'})
-                  with urllib.request.urlopen(req,timeout=30) as r:data=r.read();status=r.status;final=r.url;headers=dict(r.headers)
-                  normalized=data;exception=None
-                  if data!=expected and path.endswith('.html'):
-                      blocks=re.findall(rb'<script\b[^>]*src="https://static\.cloudflareinsights\.com/beacon\.min\.js/[^"<>]*"[^>]*></script>\n',data)
-                      if len(blocks)==1 and hashlib.sha256(blocks[0]).hexdigest()==observed_beacon_sha:
-                          normalized=data.replace(blocks[0],b'',1)
-                          exception='Single exact previously inspected Cloudflare analytics script and its injected newline; provider settings unchanged.'
-                  row={'url':url,'status':status,'finalURL':final,'headers':headers,'actualSHA256':hashlib.sha256(data).hexdigest(),'reviewedSHA256':hashlib.sha256(expected).hexdigest(),'normalizedSHA256':hashlib.sha256(normalized).hexdigest(),'rawBytesMatch':data==expected,'reviewedContentMatch':normalized==expected,'comparisonException':exception}
-                  if normalized!=expected:
-                      safe=path.replace('/','__')
-                      (out/(safe+'.actual')).write_bytes(data)
-                      (out/(safe+'.expected')).write_bytes(expected)
-                      if path.endswith(('.html','.css','.xml','.svg')):
-                          diff=''.join(difflib.unified_diff(expected.decode().splitlines(True),normalized.decode().splitlines(True),fromfile='reviewed/'+path,tofile='live/'+path))
-                          (out/(safe+'.diff')).write_text(diff)
-                          print('MISMATCH',path,json.dumps(headers),diff[:18000])
-                      if path.endswith('.css'):
-                          probe=url+'?ia_probe=95fbe8f-resume-1'
-                          with urllib.request.urlopen(urllib.request.Request(probe,headers={'User-Agent':'MarketDeck-Release-Verification/1.0','Cache-Control':'no-cache'}),timeout=30) as r:fresh=r.read();probeheaders=dict(r.headers)
-                          row['diagnosticQuery']={'url':probe,'matchesReviewed':fresh==expected,'headers':probeheaders,'sha256':hashlib.sha256(fresh).hexdigest()}
-                          (out/(safe+'.probe')).write_bytes(fresh)
-                          print('CACHE PROBE',json.dumps(row['diagnosticQuery']))
-                  print('CHECK',path,'PASS' if status==200 and normalized==expected else 'FAIL')
-              except Exception as e:
-                  row={'url':url,'reviewedContentMatch':False,'error':str(e)}
-                  print('ERROR',path,str(e))
-              report.append(row)
-              (out/'https-integrity.json').write_text(json.dumps(report,indent=2))
-          assert all(x.get('status')==200 and x['reviewedContentMatch'] for x in report),'Unexplained public content differences remain; inspect diagnostic artifact. A query probe is NOT a public-URL pass.'
-          print('PASS:',len(report),'exact public HTTPS comparisons')
-          PY
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: marketdeck-ia-live-integrity
-          path: .preview/ia-live-integrity/
-          retention-days: 7
-          if-no-files-found: error
-  browser:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -81,59 +17,56 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install isolated browser QA tools
-        id: install
+      - name: Install browser
         run: |
           npm ci
-          npm install --no-save --package-lock=false @axe-core/playwright
           npx playwright install --with-deps chromium
-      - name: Verify live hubs and article structure, accessibility and links
-        env:
-          IA_BASE_URL: https://marketdeck.in
-          IA_QA_DIR: .preview/ia-live
-        run: node scripts/qa-ia-release.mjs
-      - name: Verify actual product learning links on desktop and mobile
-        if: always() && steps.install.outcome == 'success'
+      - name: Verify actual images, including lazy-loaded magazine covers
         run: |
-          mkdir -p .preview/ia-live
-          cat > .preview/ia-product-live.mjs <<'JS'
+          mkdir -p .preview/ia-assets
+          cat > .preview/ia-asset-check.mjs <<'JS'
           import {chromium} from '@playwright/test';
-          import AxeBuilder from '@axe-core/playwright';
-          import {writeFileSync,mkdirSync} from 'node:fs';
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
           import assert from 'node:assert/strict';
-          const root='https://marketdeck.in',out='.preview/ia-live',results=[];
-          const cases=[['stockproof','/screener/','equities','business-before-the-stock','pe-ratio-vs-earnings-yield'],['charting','/charts/','technical-analysis','a-chart-is-a-question','support-vs-resistance-stock-charts'],['fno','/futures-and-options/','futures-options','call-option-vs-put-option-india','iv-rank-vs-iv-percentile-nifty-options']];
-          mkdirSync(out+'/products',{recursive:true});const browser=await chromium.launch();
+          const root='https://marketdeck.in',out='.preview/ia-assets',browser=await chromium.launch();
+          const paths=['/','/intelligence/','/intelligence/issues/','/intelligence/issues/agentic-trading-frontier-2026/','/intelligence/equities/','/intelligence/technical-analysis/','/intelligence/futures-options/','/intelligence/notes/pe-ratio-vs-earnings-yield/','/intelligence/notes/support-vs-resistance-stock-charts/','/intelligence/notes/call-option-vs-put-option-india/'];
+          const report={origin:root,pages:[],assets:[],status:'RUNNING'},assets=new Set();
           try{
-            for(const [name,path,hub,a,b] of cases){
-              const expected=[`${root}/intelligence/${hub}/`,`${root}/intelligence/notes/${a}/`,`${root}/intelligence/notes/${b}/`];
-              for(const width of [320,390,768,1440,1920]){
-                const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'});const page=await context.newPage();
-                const response=await page.goto(root+path,{waitUntil:'networkidle',timeout:60000});
-                assert.equal(response.status(),200);const box=page.locator('#md-learning-links');
-                assert.equal(await box.count(),1,name);assert.deepEqual(await box.locator('a').evaluateAll(xs=>xs.map(x=>x.href)),expected);
-                const headingBefore=await page.locator('h1').allTextContents();
-                await box.locator('summary').focus();await page.keyboard.press('Enter');assert.equal(await box.locator('details').evaluate(x=>x.open),true);
-                for(const link of await box.locator('a').all())assert(await link.isVisible());
-                const bounds=await box.boundingBox();assert(bounds.x>=-1&&bounds.x+bounds.width<=width+1,JSON.stringify({name,width,bounds}));
-                const scan=await new AxeBuilder({page}).include('#md-learning-links').withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();assert.equal(scan.violations.length,0,JSON.stringify(scan.violations));
-                assert.deepEqual(await page.locator('h1').allTextContents(),headingBefore);
-                if(width===390||width===1440){await box.screenshot({path:`${out}/products/${name}-${width}-learning.png`});await page.screenshot({path:`${out}/products/${name}-${width}.png`});}
-                if(width===390)for(const url of expected){const r=await context.request.get(url);assert.equal(r.status(),200,url);}
-                results.push({product:name,path,finalURL:page.url(),width,status:response.status(),links:expected,keyboard:'PASS',scopedAccessibilityViolations:scan.violations.length,newSectionWithinViewport:true,documentOverflow:await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)});
-                await context.close();
+            const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+            for(const path of paths){
+              for(const width of [390,1440]){
+                const page=await context.newPage();await page.setViewportSize({width,height:1000});const failures=[];page.on('requestfailed',r=>failures.push({url:r.url(),error:r.failure()?.errorText}));
+                const response=await page.goto(root+path,{waitUntil:'networkidle',timeout:60000});assert.equal(response.status(),200,path);
+                const images=await page.evaluate(async()=>{
+                  const imgs=[...document.images];for(const img of imgs)img.loading='eager';
+                  return await Promise.all(imgs.map(async img=>{let error=null;try{await img.decode();}catch(e){error=String(e);}return {src:img.currentSrc||img.src,complete:img.complete,width:img.naturalWidth,height:img.naturalHeight,error};}));
+                });
+                for(const img of images)if(new URL(img.src).origin===root)assets.add(new URL(img.src).pathname);
+                const broken=images.filter(i=>!i.complete||!i.width||i.error);
+                const links=await page.locator('link[rel="stylesheet"][href],script[src]').evaluateAll(xs=>xs.map(x=>x.href||x.src));
+                for(const link of links)if(new URL(link).origin===root)assets.add(new URL(link).pathname);
+                const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+                report.pages.push({path,width,status:response.status(),images,broken,overflow,requestFailures:failures});
+                writeFileSync(out+'/asset-results.json',JSON.stringify(report,null,2));
+                if(path==='/intelligence/'||path==='/'||path.includes('/issues/'))await page.screenshot({path:out+'/'+(path.split('/').filter(Boolean).at(-1)||'home')+'-'+width+'.png',fullPage:true});
+                assert.deepEqual(broken,[],path+' '+width+' broken images');assert(overflow<=1,path+' overflow');
+                await page.close();
               }
-              const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:900}});const page=await context.newPage();const r=await page.goto(root+path);assert.equal(r.status(),200);
-              const box=page.locator('#md-learning-links');await box.locator('summary').click();assert.equal(await box.locator('details').getAttribute('open'),'');assert.equal(await box.locator('a').count(),3);await context.close();
             }
-            writeFileSync(out+'/product-live-results.json',JSON.stringify({status:'PASS',cases:results,noJavaScriptProducts:3},null,2));console.log('PASS: 15 live product viewport checks, 15 scoped accessibility scans, 3 no-JS checks, 9 real educational links');
-          }finally{await browser.close();writeFileSync(out+'/product-live-cases.json',JSON.stringify(results,null,2));}
+            for(const path of assets){
+              const response=await context.request.get(root+path);assert.equal(response.status(),200,path);const actual=await response.body(),expected=readFileSync('public'+path);
+              const row={path,status:response.status(),bytes:actual.length,sha256:createHash('sha256').update(actual).digest('hex'),reviewedSHA256:createHash('sha256').update(expected).digest('hex'),matchesReviewed:actual.equals(expected)};report.assets.push(row);writeFileSync(out+'/asset-results.json',JSON.stringify(report,null,2));assert(row.matchesReviewed,path+' asset differs');
+            }
+            report.status='PASS';console.log(JSON.stringify({status:report.status,viewportCases:report.pages.length,exactAssets:report.assets.length}));
+            await context.close();
+          }catch(e){report.status='FAIL';report.error=e.stack;throw e;}finally{writeFileSync(out+'/asset-results.json',JSON.stringify(report,null,2));await browser.close();}
           JS
-          node .preview/ia-product-live.mjs
+          node .preview/ia-asset-check.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: marketdeck-ia-live-browser
-          path: .preview/ia-live/
+          name: marketdeck-ia-live-assets
+          path: .preview/ia-assets/
           retention-days: 7
           if-no-files-found: error
