@@ -31,8 +31,10 @@ jobs:
         run: |
           npm run check
           node --test --test-concurrency=1 tests/*.test.mjs
-      - name: Install Chromium for visual QA
-        run: npx playwright install --with-deps chromium
+      - name: Install QA-only browser tooling
+        run: |
+          npm install --no-save --package-lock=false @playwright/test
+          npx playwright install --with-deps chromium
       - name: Responsive, semantic and live-link QA
         run: |
           set -euo pipefail
@@ -41,7 +43,7 @@ jobs:
           SERVER_PID=$!
           trap 'kill $SERVER_PID || true' EXIT
           sleep 2
-          cat > /tmp/qa.mjs <<'NODE'
+          cat > .preview/ia/qa.mjs <<'NODE'
           import { chromium } from '@playwright/test';
           import fs from 'node:fs';
           const browser=await chromium.launch({headless:true});
@@ -89,7 +91,7 @@ jobs:
           fs.writeFileSync('.preview/ia/browser-results.json',JSON.stringify(rows,null,2));
           await browser.close();
           NODE
-          node /tmp/qa.mjs
+          node .preview/ia/qa.mjs
       - name: Verify generated URL inventory and preservation boundary
         run: |
           set -euo pipefail
