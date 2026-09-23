@@ -53,7 +53,7 @@ export function buildEditorial({data,template,root,review}) {
   writeFileSync(resolve(root,'sitemap.xml'),`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(u=>`<url><loc>${new URL(u,data.brand.url).href}</loc></url>`).join('')}</urlset>`);
   const brief=shelf(collection);
   template=template.replace(/    <section class="brief-section"[\s\S]*?<\/section>/,`<section class="brief-section"><div class="container">${brief}${data.newsletter.url?`<p class="newsletter-note"><a href="${esc(data.newsletter.url)}">Newsletter updates →</a></p>`:''}</div></section>`);
-  template=template.replace('</head>','<link rel="stylesheet" href="/intelligence-shelf-v1.css"><script src="/intelligence-shelf-v1.js" defer></script></head>');
+  template=template.replace('</head>','<link rel="stylesheet" href="/intelligence-shelf-v2.css"><script src="/intelligence-shelf-v2.js" defer></script></head>');
   template=template.replace(/  <dialog class="article-dialog"[\s\S]*?<\/dialog>/,'');
   if(review)template=template.replace('<meta name="theme-color"','<meta name="robots" content="noindex, nofollow"><meta name="theme-color"');
   return template;

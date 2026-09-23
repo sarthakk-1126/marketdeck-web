@@ -64,7 +64,7 @@ test('Intelligence landing, library and magazine archive are canonical crawlable
  assert.match(libraryPage([],{review:true}),/noindex, nofollow/);
 });
 test('client enhancement is small, local and non-autoplay',()=>{
- const js=readFileSync('public/intelligence-shelf-v1.js','utf8');
+ const js=readFileSync('public/intelligence-shelf-v2.js','utf8');
  assert.doesNotMatch(js,/setInterval|innerHTML\s*=|fetch\(|localStorage|sessionStorage|document\.cookie/);
  assert.ok(Buffer.byteLength(js)<12000);assert.match(js,/pointercancel/);assert.match(js,/ArrowLeft/);
 });
