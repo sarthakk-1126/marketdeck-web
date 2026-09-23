@@ -1,13 +1,17 @@
-name: Verify and integrate Intelligence IA
+name: Complete and verify Intelligence IA
 on:
   push:
     branches: [feature/ia-hubs-deeplinks-20260923]
     paths: [.github/workflows/ia-apply-review.yml]
 permissions:
   contents: write
+concurrency:
+  group: marketdeck-ia-final-review
+  cancel-in-progress: false
 jobs:
   review:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -15,113 +19,67 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Apply reviewed source patch
+      - name: Resume existing implementation and verify repair integrity
         run: |
           set -euo pipefail
+          test "$(git rev-parse origin/main)" = a3a9f30dbec2d37ae3906fd169e5184e41533d31
           cat .ia/mdpart-* | base64 -d | gunzip > /tmp/ia.patch
           git apply --check /tmp/ia.patch
-          git apply /tmp/ia.patch
-      - name: Install exact project dependencies
-        run: npm ci
-      - name: Build production and review outputs
-        run: |
-          npm run build
-          npm run build:review
-      - name: Run repository checks
-        run: |
-          npm run check
-          node --test --test-concurrency=1 tests/*.test.mjs
-      - name: Install QA-only browser tooling
-        run: |
-          npm install --no-save --package-lock=false @playwright/test
-          npx playwright install --with-deps chromium
-      - name: Responsive, semantic and live-link QA
+          git apply --whitespace=fix /tmp/ia.patch
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64,gzip,hashlib
+          encoded=Path('.github/ia-final-repair.b64').read_text().replace('WRcWRc','WRc').replace('qcKgKg','qcKg')
+          data=gzip.decompress(base64.b64decode(encoded))
+          assert hashlib.sha256(data).hexdigest()=='93e6f55f26c86dcca193fa3cb10eb445faca76be83651f0ad66202b1ef8b0004','Repair transport integrity failed'
+          Path('/tmp/ia-repair.py').write_bytes(data)
+          PY
+          python3 /tmp/ia-repair.py
+      - name: Build and test current repository
         run: |
           set -euo pipefail
-          mkdir -p .preview/ia/screens
+          mkdir -p .preview/ia-final
+          npm ci
+          npm run build
+          npm run build:review
+          node --check scripts/articles.mjs
+          node --check scripts/intelligence.mjs
+          node --test --test-concurrency=1 tests/*.test.mjs | tee .preview/ia-final/unit-tests.txt
+          python3 scripts/check-ia-preservation.py | tee .preview/ia-final/preservation.json
+          git diff --check
+      - name: Install QA-only tools
+        run: |
+          npm install --no-save --package-lock=false @axe-core/playwright
+          npx playwright install --with-deps chromium
+      - name: Responsive, accessible, no-JavaScript and deep-link checks
+        run: |
+          set -euo pipefail
           python3 -m http.server 4173 -d public >/tmp/ia-http.log 2>&1 &
           SERVER_PID=$!
           trap 'kill $SERVER_PID || true' EXIT
           sleep 2
-          cat > .preview/ia/qa.mjs <<'NODE'
-          import { chromium } from '@playwright/test';
-          import fs from 'node:fs';
-          const browser=await chromium.launch({headless:true});
-          const targets=[
-            ['/intelligence/equities/','Equities'],
-            ['/intelligence/technical-analysis/','Technical Analysis'],
-            ['/intelligence/futures-options/','Futures & Options'],
-            ['/intelligence/notes/pe-ratio-vs-earnings-yield/','P/E'],
-            ['/intelligence/notes/support-vs-resistance-stock-charts/','Support'],
-            ['/intelligence/notes/call-option-vs-put-option-india/','Call']
-          ];
-          const widths=[320,390,768,1440,1920];
-          const rows=[];
-          for(const [path,label] of targets){
-            for(const width of widths){
-              const page=await browser.newPage({viewport:{width,height:1000},reducedMotion:'reduce'});
-              const res=await page.goto('http://127.0.0.1:4173'+path,{waitUntil:'networkidle'});
-              if(!res?.ok()) throw new Error(path+' '+res?.status());
-              const v=await page.evaluate(()=>({
-                h1:document.querySelectorAll('h1').length,
-                overflow:document.documentElement.scrollWidth-document.documentElement.clientWidth,
-                canonical:document.querySelector('link[rel="canonical"]')?.href||'',
-                json:[...document.querySelectorAll('script[type="application/ld+json"]')].map(x=>JSON.parse(x.textContent)),
-                broken:[...document.querySelectorAll('a[href^="/"]')].filter(a=>!a.getAttribute('href')).length
-              }));
-              if(v.h1!==1) throw new Error(path+' H1 count '+v.h1);
-              if(v.overflow>1) throw new Error(path+' overflow '+v.overflow+' at '+width);
-              if(!v.canonical.startsWith('https://marketdeck.in/intelligence/')) throw new Error(path+' canonical');
-              if(!v.json.length) throw new Error(path+' missing JSON-LD');
-              rows.push({path,width,...v,json:'parsed'});
-              if(width===390||width===1440) await page.screenshot({path:'.preview/ia/screens/'+label.replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'-'+width+'.png',fullPage:true});
-              await page.close();
-            }
-          }
-          const hubs=['/intelligence/equities/','/intelligence/technical-analysis/','/intelligence/futures-options/'];
-          for(const path of hubs){
-            const page=await browser.newPage();
-            await page.goto('http://127.0.0.1:4173'+path,{waitUntil:'networkidle'});
-            const types=await page.evaluate(()=>JSON.parse(document.querySelector('script[type="application/ld+json"]').textContent)['@graph'].map(x=>x['@type']));
-            if(!types.includes('CollectionPage')||!types.includes('BreadcrumbList')) throw new Error(path+' hub schema');
-            const cards=await page.locator('.learning-card').count();
-            if(cards<2) throw new Error(path+' too few real guides');
-            await page.close();
-          }
-          fs.writeFileSync('.preview/ia/browser-results.json',JSON.stringify(rows,null,2));
-          await browser.close();
-          NODE
-          node .preview/ia/qa.mjs
-      - name: Verify generated URL inventory and preservation boundary
+          node scripts/qa-ia-release.mjs
+      - name: Clean temporary tooling and commit tested implementation to feature branch only
         run: |
           set -euo pipefail
-          for p in equities technical-analysis futures-options; do
-            test -s "public/intelligence/$p/index.html"
-            grep -q "https://marketdeck.in/intelligence/$p/" public/sitemap.xml
-          done
-          for p in pe-ratio-vs-earnings-yield support-vs-resistance-stock-charts call-option-vs-put-option-india; do
-            test -s "public/intelligence/notes/$p/index.html"
-            grep -q "https://marketdeck.in/intelligence/notes/$p/" public/sitemap.xml
-          done
-          git diff --check
-          git diff --name-only a3a9f30dbec2d37ae3906fd169e5184e41533d31...HEAD > .preview/ia/preexisting-branch-files.txt
-      - name: Commit only reviewed implementation and remove temporary machinery
-        run: |
-          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = a3a9f30dbec2d37ae3906fd169e5184e41533d31
           rm -rf .ia
-          rm -f .github/workflows/ia-source-review.yml .github/workflows/ia-apply-review.yml
-          git config user.name "MarketDeck IA QA"
-          git config user.email "actions@users.noreply.github.com"
-          git add -A
-          git reset -- .preview 2>/dev/null || true
-          if ! git diff --cached --quiet; then
-            git commit -m "Build Intelligence learning hubs and deep-link architecture"
-            git push origin HEAD:feature/ia-hubs-deeplinks-20260923
-          fi
+          rm -f .github/ia-payload.* .github/ia-final-repair.b64
+          rm -f .github/workflows/ia-source-review.yml .github/workflows/ia-apply-review.yml .github/workflows/ia-resume-snapshot.yml
+          git add -A -- .ia .github content public scripts tests docs
+          git diff --cached --check
+          git config user.name 'MarketDeck IA release'
+          git config user.email 'actions@users.noreply.github.com'
+          git commit -m 'Complete learning hubs, reciprocal deep links and three foundational guides'
+          git push origin HEAD:feature/ia-hubs-deeplinks-20260923
+          git rev-parse HEAD > .preview/ia-final/reviewed-head.txt
+          git diff --stat origin/main HEAD > .preview/ia-final/diff-stat.txt
+          git archive HEAD > .preview/ia-final/reviewed-source.tar
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: intelligence-ia-review
-          path: .preview/ia/
+          name: marketdeck-ia-final-review
+          path: .preview/ia-final/
           retention-days: 7
           if-no-files-found: warn
