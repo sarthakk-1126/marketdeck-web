@@ -1,0 +1,84 @@
+name: Intelligence asset v2 hotfix QA
+on:
+  push:
+    branches: [fix/intelligence-library-assets-v2-20260923]
+    paths:
+      - public/intelligence-shelf-v2.css
+      - public/intelligence-shelf-v2.js
+      - scripts/editorial.mjs
+      - scripts/intelligence.mjs
+      - tests/intelligence.test.mjs
+      - .github/workflows/intelligence-assets-v2-qa.yml
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        run: npm ci
+      - name: Build and test
+        run: |
+          npm run build
+          npm run build:review
+          npm run check
+          git diff --check
+          grep -q '/intelligence-shelf-v2.css' public/intelligence/library/index.html
+          grep -q '/intelligence-shelf-v2.js' public/intelligence/library/index.html
+          grep -q '/intelligence-shelf-v2.js' public/index.html
+      - name: Install browser
+        run: |
+          npm install --no-save --package-lock=false @axe-core/playwright
+          npx playwright install --with-deps chromium
+      - name: Verify v2 filter behavior locally
+        run: |
+          mkdir -p .preview/intelligence-v2
+          python3 -m http.server 4173 -d public >/tmp/md-http.log 2>&1 &
+          pid=$!
+          trap 'kill $pid || true' EXIT
+          for i in {1..20}; do curl -fsS http://127.0.0.1:4173/intelligence/library/ >/dev/null && break; sleep .5; done
+          cat > .preview/intelligence-v2/qa.mjs <<'JS'
+          import {chromium} from '@playwright/test';
+          import assert from 'node:assert/strict';
+          const browser=await chromium.launch();
+          try{
+            const context=await browser.newContext({viewport:{width:390,height:1000},reducedMotion:'reduce'});
+            const page=await context.newPage();
+            await page.goto('http://127.0.0.1:4173/intelligence/library/',{waitUntil:'networkidle'});
+            const entries=page.locator('[data-intel-entry]');
+            const visible=async()=>await entries.evaluateAll(xs=>xs.filter(x=>!x.hidden).length);
+            assert.equal(await entries.count(),11);
+            assert.equal(await visible(),11);
+            assert.equal(await page.evaluate(()=>[...document.scripts].some(s=>s.src.includes('/intelligence-shelf-v2.js'))),true);
+            await page.getByRole('button',{name:'Magazines',exact:true}).click();assert.equal(await visible(),1);
+            await page.getByRole('button',{name:'Learning Notes',exact:true}).click();assert.equal(await visible(),10);
+            await page.getByRole('button',{name:'All Research',exact:true}).click();assert.equal(await visible(),11);
+            await page.screenshot({path:'.preview/intelligence-v2/library-390.png',fullPage:true});
+            await context.close();
+            console.log('PASS: v2 asset loads and all 11 entries remain visible initially.');
+          }finally{await browser.close();}
+          JS
+          node .preview/intelligence-v2/qa.mjs
+      - name: Commit generated output
+        run: |
+          git config user.name "MarketDeck Build Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public
+          if ! git diff --cached --quiet; then
+            git commit -m "Build Intelligence asset v2 output"
+            git push origin HEAD:fix/intelligence-library-assets-v2-20260923
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: intelligence-assets-v2-qa
+          path: .preview/intelligence-v2/
+          retention-days: 7
+          if-no-files-found: error
