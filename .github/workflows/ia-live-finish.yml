@@ -6,23 +6,21 @@ on:
 permissions:
   contents: read
 jobs:
-  live:
+  integrity:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 6
     steps:
       - uses: actions/checkout@v4
         with:
           ref: 95fbe8f688d4efdd03e881f7f32ea4d2a7135448
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Verify HTTPS release bytes with only the reviewed provider injection excluded
+          persist-credentials: false
+      - name: Diagnose exact public release bytes without hiding mismatches
         run: |
-          mkdir -p .preview/ia-live
+          mkdir -p .preview/ia-live-integrity
           python3 - <<'PY'
           from pathlib import Path
-          import urllib.request,hashlib,json,re
-          out=Path('.preview/ia-live')
+          import urllib.request,hashlib,json,re,difflib
+          out=Path('.preview/ia-live-integrity')
           paths=['index.html','intelligence/index.html','intelligence/issues/index.html','sitemap.xml','intelligence-hub-v1.css','intelligence-article-v1.css','intelligence-shelf-v1.css','intelligence/issues/agentic-trading-frontier-2026/marketdeck-brief-v2.pdf','intelligence/issues/agentic-trading-frontier-2026/index.html']
           paths += ['intelligence/'+x+'/index.html' for x in ['equities','technical-analysis','futures-options']]
           paths += ['intelligence/notes/'+x+'/index.html' for x in ['pe-ratio-vs-earnings-yield','support-vs-resistance-stock-charts','call-option-vs-put-option-india']]
@@ -32,21 +30,59 @@ jobs:
           for path in paths:
               url='https://marketdeck.in/'+(path[:-10] if path.endswith('index.html') else path)
               expected=Path('public',path).read_bytes()
-              req=urllib.request.Request(url,headers={'User-Agent':'MarketDeck-Release-Verification/1.0','Cache-Control':'no-cache'})
-              with urllib.request.urlopen(req,timeout=45) as r:data=r.read();status=r.status;final=r.url
-              normalized=data;exception=None
-              if data!=expected and path.endswith('.html'):
-                  blocks=re.findall(rb'<script\b[^>]*src="https://static\.cloudflareinsights\.com/beacon\.min\.js/[^"<>]*"[^>]*></script>\n',data)
-                  assert len(blocks)==1,(path,'Unexpected number of injected blocks')
-                  assert hashlib.sha256(blocks[0]).hexdigest()==observed_beacon_sha,(path,'Unreviewed provider injection')
-                  normalized=data.replace(blocks[0],b'',1)
-                  exception='Single exact Cloudflare analytics script and injected newline; independently inspected in run 35890088449. No provider settings changed.'
-              row={'url':url,'status':status,'finalURL':final,'actualSHA256':hashlib.sha256(data).hexdigest(),'reviewedSHA256':hashlib.sha256(expected).hexdigest(),'normalizedSHA256':hashlib.sha256(normalized).hexdigest(),'rawBytesMatch':data==expected,'reviewedContentMatch':normalized==expected,'comparisonException':exception}
-              report.append(row);(out/'https-integrity.json').write_text(json.dumps(report,indent=2))
-              assert status==200 and normalized==expected,(path,row)
-          print('PASS:',len(report),'HTTPS release comparisons; no unexplained differences')
+              try:
+                  req=urllib.request.Request(url,headers={'User-Agent':'MarketDeck-Release-Verification/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(req,timeout=30) as r:data=r.read();status=r.status;final=r.url;headers=dict(r.headers)
+                  normalized=data;exception=None
+                  if data!=expected and path.endswith('.html'):
+                      blocks=re.findall(rb'<script\b[^>]*src="https://static\.cloudflareinsights\.com/beacon\.min\.js/[^"<>]*"[^>]*></script>\n',data)
+                      if len(blocks)==1 and hashlib.sha256(blocks[0]).hexdigest()==observed_beacon_sha:
+                          normalized=data.replace(blocks[0],b'',1)
+                          exception='Single exact previously inspected Cloudflare analytics script and its injected newline; provider settings unchanged.'
+                  row={'url':url,'status':status,'finalURL':final,'headers':headers,'actualSHA256':hashlib.sha256(data).hexdigest(),'reviewedSHA256':hashlib.sha256(expected).hexdigest(),'normalizedSHA256':hashlib.sha256(normalized).hexdigest(),'rawBytesMatch':data==expected,'reviewedContentMatch':normalized==expected,'comparisonException':exception}
+                  if normalized!=expected:
+                      safe=path.replace('/','__')
+                      (out/(safe+'.actual')).write_bytes(data)
+                      (out/(safe+'.expected')).write_bytes(expected)
+                      if path.endswith(('.html','.css','.xml','.svg')):
+                          diff=''.join(difflib.unified_diff(expected.decode().splitlines(True),normalized.decode().splitlines(True),fromfile='reviewed/'+path,tofile='live/'+path))
+                          (out/(safe+'.diff')).write_text(diff)
+                          print('MISMATCH',path,json.dumps(headers),diff[:18000])
+                      if path.endswith('.css'):
+                          probe=url+'?ia_probe=95fbe8f-resume-1'
+                          with urllib.request.urlopen(urllib.request.Request(probe,headers={'User-Agent':'MarketDeck-Release-Verification/1.0','Cache-Control':'no-cache'}),timeout=30) as r:fresh=r.read();probeheaders=dict(r.headers)
+                          row['diagnosticQuery']={'url':probe,'matchesReviewed':fresh==expected,'headers':probeheaders,'sha256':hashlib.sha256(fresh).hexdigest()}
+                          (out/(safe+'.probe')).write_bytes(fresh)
+                          print('CACHE PROBE',json.dumps(row['diagnosticQuery']))
+                  print('CHECK',path,'PASS' if status==200 and normalized==expected else 'FAIL')
+              except Exception as e:
+                  row={'url':url,'reviewedContentMatch':False,'error':str(e)}
+                  print('ERROR',path,str(e))
+              report.append(row)
+              (out/'https-integrity.json').write_text(json.dumps(report,indent=2))
+          assert all(x.get('status')==200 and x['reviewedContentMatch'] for x in report),'Unexplained public content differences remain; inspect diagnostic artifact. A query probe is NOT a public-URL pass.'
+          print('PASS:',len(report),'exact public HTTPS comparisons')
           PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: marketdeck-ia-live-integrity
+          path: .preview/ia-live-integrity/
+          retention-days: 7
+          if-no-files-found: error
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 95fbe8f688d4efdd03e881f7f32ea4d2a7135448
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Install isolated browser QA tools
+        id: install
         run: |
           npm ci
           npm install --no-save --package-lock=false @axe-core/playwright
@@ -57,7 +93,9 @@ jobs:
           IA_QA_DIR: .preview/ia-live
         run: node scripts/qa-ia-release.mjs
       - name: Verify actual product learning links on desktop and mobile
+        if: always() && steps.install.outcome == 'success'
         run: |
+          mkdir -p .preview/ia-live
           cat > .preview/ia-product-live.mjs <<'JS'
           import {chromium} from '@playwright/test';
           import AxeBuilder from '@axe-core/playwright';
@@ -71,15 +109,9 @@ jobs:
               const expected=[`${root}/intelligence/${hub}/`,`${root}/intelligence/notes/${a}/`,`${root}/intelligence/notes/${b}/`];
               for(const width of [320,390,768,1440,1920]){
                 const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'});const page=await context.newPage();
-                let response;
-                for(let n=0;n<5;n++){
-                  response=await page.goto(root+path,{waitUntil:'networkidle',timeout:60000});
-                  if(response.status()===200&&await page.locator('#md-learning-links').count()===1)break;
-                  if(n===4)throw Error(name+': new release not available');
-                  await page.waitForTimeout(8000);
-                }
+                const response=await page.goto(root+path,{waitUntil:'networkidle',timeout:60000});
                 assert.equal(response.status(),200);const box=page.locator('#md-learning-links');
-                assert.equal(await box.count(),1);assert.deepEqual(await box.locator('a').evaluateAll(xs=>xs.map(x=>x.href)),expected);
+                assert.equal(await box.count(),1,name);assert.deepEqual(await box.locator('a').evaluateAll(xs=>xs.map(x=>x.href)),expected);
                 const headingBefore=await page.locator('h1').allTextContents();
                 await box.locator('summary').focus();await page.keyboard.press('Enter');assert.equal(await box.locator('details').evaluate(x=>x.open),true);
                 for(const link of await box.locator('a').all())assert(await link.isVisible());
@@ -88,7 +120,7 @@ jobs:
                 assert.deepEqual(await page.locator('h1').allTextContents(),headingBefore);
                 if(width===390||width===1440){await box.screenshot({path:`${out}/products/${name}-${width}-learning.png`});await page.screenshot({path:`${out}/products/${name}-${width}.png`});}
                 if(width===390)for(const url of expected){const r=await context.request.get(url);assert.equal(r.status(),200,url);}
-                results.push({product:name,path,finalURL:page.url(),width,status:response.status(),links:expected,keyboard:'PASS',scopedAccessibilityViolations:scan.violations.length,newSectionWithinViewport:true});
+                results.push({product:name,path,finalURL:page.url(),width,status:response.status(),links:expected,keyboard:'PASS',scopedAccessibilityViolations:scan.violations.length,newSectionWithinViewport:true,documentOverflow:await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth)});
                 await context.close();
               }
               const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:900}});const page=await context.newPage();const r=await page.goto(root+path);assert.equal(r.status(),200);
@@ -101,7 +133,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: marketdeck-ia-live-completion
+          name: marketdeck-ia-live-browser
           path: .preview/ia-live/
           retention-days: 7
           if-no-files-found: error
