@@ -50,6 +50,26 @@ test('semantic content and deep links survive without JavaScript', () => {
   assert.equal(/class="(?:product-panel|community-panel)[^"]*"[^>]*hidden/.test(html), false);
 });
 
+test('homepage explains all five products together before the interactive detail panels', () => {
+  assert.equal((html.match(/class="suite-overview-card /g) || []).length, 5);
+  assert.match(html, /id="suite-overview-heading"[^>]*>One market\./);
+  assert.match(html, /Different tools\. One research process\./);
+  for (const product of data.products) {
+    const card = html.match(new RegExp(`<article class="suite-overview-card [^"]+" data-overview-product="${product.id}">[\\s\\S]*?<\\/article>`))?.[0];
+    assert.ok(card, `Missing overview card for ${product.id}`);
+    assert.ok(card.includes(escapeHtml(product.name)));
+    assert.ok(card.includes(escapeHtml(product.category)));
+    assert.ok(card.includes(escapeHtml(product.headline)));
+    for (const feature of product.features) assert.ok(card.includes(escapeHtml(feature)));
+    assert.ok(card.includes(`href="${product.url}"`));
+    assert.doesNotMatch(card, /<img\b|<script\b|data-preview-src/);
+  }
+  const overviewStart = html.indexOf('class="suite-overview-section"');
+  const overviewEnd = html.indexOf('</section>', overviewStart);
+  const railStart = html.indexOf('class="product-rail"', overviewEnd);
+  const panelsStart = html.indexOf('class="product-panels"', railStart);
+  assert.ok(overviewStart > 0 && overviewEnd > overviewStart && railStart > overviewEnd && panelsStart > railStart, 'Overview should precede the existing interactive showcase');
+});
 test('approved magazine is public while the older draft stays excluded',()=>{
   const issues=JSON.parse(readFileSync('content/briefs.json')).issues;
   const published=issues.find(i=>i.id==='agentic-trading-frontier-02');
