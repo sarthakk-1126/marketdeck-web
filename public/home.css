@@ -3232,3 +3232,6 @@ body:not(.motion-enabled) .orbit-highlight { animation: none; }
 .hero[data-renderer=context-lost] picture,.hero[data-renderer=failed] picture,.hero[data-renderer=timeout] picture{transition:none;opacity:1}
 .product-visual img[data-preview-src]:not([src]){visibility:hidden}
 @media(min-width:651px){.product-rail{position:sticky;top:76px;z-index:20}.product-panel{scroll-margin-top:180px}}
+
+/* Editorial V2: center the card-safe artwork; preserve all card dimensions and motion. */
+.product-tab img { object-position: center; }

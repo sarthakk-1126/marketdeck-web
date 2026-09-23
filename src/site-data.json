@@ -21,9 +21,10 @@
         "Peer comparisons"
       ],
       "action": "Explore StockProof",
-      "preview": "/assets/products/stockproof.webp",
-      "thumbnail": "/assets/products/stockproof-small.webp",
-      "previewKind": "Historical interface capture"
+      "preview": "/assets/products/editorial-v2/stockproof.webp",
+      "thumbnail": "/assets/products/editorial-v2/stockproof-small.webp",
+      "previewKind": "Original editorial illustration",
+      "thumbnail2x": "/assets/products/editorial-v2/stockproof-small@2x.webp"
     },
     {
       "id": "charting",
@@ -41,9 +42,10 @@
         "Market exploration"
       ],
       "action": "Explore Charting",
-      "preview": "/assets/products/charting.webp",
-      "thumbnail": "/assets/products/charting-small.webp",
-      "previewKind": "Historical interface capture"
+      "preview": "/assets/products/editorial-v2/charting.webp",
+      "thumbnail": "/assets/products/editorial-v2/charting-small.webp",
+      "previewKind": "Original editorial illustration",
+      "thumbnail2x": "/assets/products/editorial-v2/charting-small@2x.webp"
     },
     {
       "id": "fno",
@@ -61,9 +63,10 @@
         "Risk & payoff exploration"
       ],
       "action": "Explore F&O",
-      "preview": "/assets/products/fno.webp",
-      "thumbnail": "/assets/products/fno-small.webp",
-      "previewKind": "Local interface capture · illustrative payoff"
+      "preview": "/assets/products/editorial-v2/fno.webp",
+      "thumbnail": "/assets/products/editorial-v2/fno-small.webp",
+      "previewKind": "Original editorial illustration",
+      "thumbnail2x": "/assets/products/editorial-v2/fno-small@2x.webp"
     },
     {
       "id": "commentary",
@@ -81,9 +84,10 @@
         "Research context"
       ],
       "action": "Explore Commentary",
-      "preview": "/assets/products/commentary.webp",
-      "thumbnail": "/assets/products/commentary-small.webp",
-      "previewKind": "Product artwork · representative preview"
+      "preview": "/assets/products/editorial-v2/commentary.webp",
+      "thumbnail": "/assets/products/editorial-v2/commentary-small.webp",
+      "previewKind": "Original editorial illustration",
+      "thumbnail2x": "/assets/products/editorial-v2/commentary-small@2x.webp"
     },
     {
       "id": "crypto",
@@ -101,9 +105,10 @@
         "Indian context"
       ],
       "action": "Explore Crypto World",
-      "preview": "/assets/products/crypto.webp",
-      "thumbnail": "/assets/products/crypto-small.webp",
-      "previewKind": "Product artwork · representative preview"
+      "preview": "/assets/products/editorial-v2/crypto.webp",
+      "thumbnail": "/assets/products/editorial-v2/crypto-small.webp",
+      "previewKind": "Original editorial illustration",
+      "thumbnail2x": "/assets/products/editorial-v2/crypto-small@2x.webp"
     }
   ],
   "community": [
