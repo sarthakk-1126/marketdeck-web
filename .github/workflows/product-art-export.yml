@@ -36,7 +36,7 @@ jobs:
           m=json.loads(Path('public/assets/products/editorial-v2/asset-manifest.json').read_text())
           p=Path('docs/PRODUCT_ART_V2.md');p.write_text(re.sub(r'Export total: \d+ bytes',f"Export total: {m['totalBytes']} bytes",p.read_text()))
           PY
-      - name: Final card screenshots and click checks
+      - name: Final card screenshots and native navigation checks
         run: |
           mkdir -p release-review
           python -m http.server 4173 --directory public >/tmp/art-server.log 2>&1 &
@@ -52,20 +52,26 @@ jobs:
                   page=browser.new_page(viewport={'width':width,'height':height},device_scale_factor=2,reduced_motion=motion)
                   errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
                   page.goto('http://127.0.0.1:4173/#products',wait_until='networkidle');page.wait_for_timeout(1000)
-                  page.locator('.product-tab').first.focus();page.wait_for_timeout(400)
+                  if motion=='no-preference':
+                      page.locator('.nav-cta').click();page.wait_for_function('!document.querySelector(".story-gallery").inert',timeout=5000)
+                  else: page.locator('.product-tabs').scroll_into_view_if_needed()
+                  page.wait_for_timeout(300)
                   page.locator('.story-gallery').screenshot(path=str(out/f'cards-{width}-{height}-{motion}.png'))
                   assert page.locator('.product-tabs img').evaluate_all('(xs)=>xs.length===5&&xs.every(i=>i.complete&&i.naturalWidth>0&&i.currentSrc.includes("@2x"))')
                   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
                   for i in range(5):
-                      tab=page.locator('.product-tab').nth(i);tab.focus();page.wait_for_timeout(450)
-                      if motion=='no-preference':page.wait_for_function('!document.querySelector(".story-gallery").inert')
-                      tab.click();expect(tab).to_have_attribute('aria-selected','true')
+                      if motion=='no-preference':
+                          # Return from each product panel exactly as a visitor would.
+                          page.locator('.nav-cta').click();page.wait_for_function('!document.querySelector(".story-gallery").inert',timeout=5000)
+                          page.wait_for_timeout(300)
+                      tab=page.locator('.product-tab').nth(i)
+                      tab.click(timeout=15000);expect(tab).to_have_attribute('aria-selected','true',timeout=5000)
                       expect(page.locator('#'+tab.get_attribute('aria-controls'))).to_be_visible()
                   assert not errors,errors
                   results.append({'width':width,'height':height,'motion':motion,'imagesLoaded':5,'selections':5,'overflow':False,'pageErrors':errors})
-                  page.close()
+                  (out/'browser-qa.json').write_text(json.dumps(results,indent=2));page.close()
               browser.close()
-          (out/'browser-qa.json').write_text(json.dumps(results,indent=2));print(json.dumps(results,indent=2))
+          print(json.dumps(results,indent=2))
           shutil.copytree('public/assets/products/editorial-v2',out/'editorial-v2')
           sheet=Image.new('RGB',(1740,1000),'#080c12');d=ImageDraw.Draw(sheet)
           f=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',23)
