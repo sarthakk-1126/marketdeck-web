@@ -19,9 +19,9 @@
       "cash flow vs profit Indian stocks"
     ],
     "related": [
+      "pe-ratio-vs-earnings-yield",
       "read-nse-company-announcements-results",
-      "five-research-lenses",
-      "a-chart-is-a-question"
+      "five-research-lenses"
     ],
     "takeaways": [
       "Define a comparable universe before choosing filters.",
@@ -59,7 +59,16 @@
         "scope": "Official financial-results discovery resource.",
         "reviewedAt": "2026-09-23"
       }
-    ]
+    ],
+    "primaryHub": {
+      "slug": "equities",
+      "label": "Equities"
+    },
+    "tool": {
+      "url": "/screener/",
+      "label": "Explore MarketDeck Screener",
+      "name": "MarketDeck Screener"
+    }
   },
   {
     "slug": "a-chart-is-a-question",
@@ -67,8 +76,8 @@
     "h1": "A chart is the start of a better question.",
     "description": "Learn to read stock charts with the right timeframe, scale and adjustments. Worked examples explain dividends, drawdowns and misleading comparisons.",
     "topics": [
-      "markets",
-      "research-craft"
+      "technical-analysis",
+      "markets"
     ],
     "coverArt": "/assets/products/editorial-v2/charting.webp",
     "source": "content/articles/a-chart-is-a-question.md",
@@ -81,9 +90,9 @@
       "drawdown recovery percentage"
     ],
     "related": [
+      "support-vs-resistance-stock-charts",
       "read-nse-company-announcements-results",
-      "business-before-the-stock",
-      "five-research-lenses"
+      "business-before-the-stock"
     ],
     "takeaways": [
       "Record the settings before interpreting the shape.",
@@ -121,7 +130,16 @@
         "scope": "Educational chart concepts, not proof that a level will hold.",
         "reviewedAt": "2026-09-23"
       }
-    ]
+    ],
+    "primaryHub": {
+      "slug": "technical-analysis",
+      "label": "Technical Analysis"
+    },
+    "tool": {
+      "url": "/charts/",
+      "label": "Open MarketDeck Charts",
+      "name": "MarketDeck Charts"
+    }
   },
   {
     "slug": "five-research-lenses",
@@ -198,9 +216,9 @@
       "implied volatility historical percentile formula"
     ],
     "related": [
+      "call-option-vs-put-option-india",
       "a-chart-is-a-question",
-      "five-research-lenses",
-      "evaluate-ai-trading-agents"
+      "five-research-lenses"
     ],
     "takeaways": [
       "Rank describes the range; percentile describes observations.",
@@ -232,7 +250,16 @@
         "scope": "Official reference surface; no historical reconstruction or live quote claim.",
         "reviewedAt": "2026-09-23"
       }
-    ]
+    ],
+    "primaryHub": {
+      "slug": "futures-options",
+      "label": "Futures & Options"
+    },
+    "tool": {
+      "url": "/futures-and-options/",
+      "label": "Explore MarketDeck F&O",
+      "name": "MarketDeck F&O"
+    }
   },
   {
     "slug": "read-nse-company-announcements-results",
@@ -309,7 +336,16 @@
         "scope": "Separate reporting scope; no investment opinion or actual amount comparison.",
         "reviewedAt": "2026-09-23"
       }
-    ]
+    ],
+    "primaryHub": {
+      "slug": "equities",
+      "label": "Equities"
+    },
+    "tool": {
+      "url": "/screener/",
+      "label": "Explore MarketDeck Screener",
+      "name": "MarketDeck Screener"
+    }
   },
   {
     "slug": "crypto-fundamentals-fees-revenue-token-value",
@@ -426,6 +462,222 @@
         "title": "Herculean: An Agentic Benchmark for Financial Intelligence",
         "url": "https://arxiv.org/abs/2605.14355",
         "scope": "Authors’ workflow and reliability findings, version 3, 29 May 2026. Abstract reviewed, not an independent reproduction.",
+        "reviewedAt": "2026-09-23"
+      }
+    ]
+  },
+  {
+    "slug": "pe-ratio-vs-earnings-yield",
+    "title": "P/E Ratio vs Earnings Yield: A Beginner Guide for Indian Stocks",
+    "h1": "P/E and earnings yield are the same valuation relationship, viewed from opposite directions.",
+    "description": "Understand P/E ratio versus earnings yield with simple ₹ examples, cyclical earnings traps and a practical checklist for comparing Indian stocks.",
+    "topics": [
+      "equities",
+      "india"
+    ],
+    "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+    "source": "content/articles/pe-ratio-vs-earnings-yield.md",
+    "modifiedAt": "2026-09-23",
+    "sourceReviewedAt": "2026-09-23",
+    "primaryKeyword": "P/E ratio vs earnings yield",
+    "relatedKeywords": [
+      "PE ratio meaning India",
+      "earnings yield explained",
+      "low PE stock valuation trap"
+    ],
+    "related": [
+      "business-before-the-stock",
+      "read-nse-company-announcements-results",
+      "five-research-lenses"
+    ],
+    "takeaways": [
+      "P/E and earnings yield use the same price and earnings inputs.",
+      "The earnings denominator matters more than the shortcut.",
+      "A low P/E is a question to investigate, not proof of undervaluation."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-09-23",
+    "publishedAt": "2026-09-23",
+    "primaryHub": {
+      "slug": "equities",
+      "label": "Equities"
+    },
+    "tool": {
+      "url": "/screener/",
+      "label": "Explore MarketDeck Screener",
+      "name": "MarketDeck Screener"
+    },
+    "sources": [
+      {
+        "id": "S1",
+        "title": "NSE: Financial Results",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results",
+        "scope": "Official financial-results discovery resource; verify the company document and reporting basis.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S2",
+        "title": "SEC: Beginners’ Guide to Financial Statements",
+        "url": "https://www.sec.gov/about/reports-publications/investorpubsbegfinstmtguide",
+        "scope": "General educational financial-statement framework; not Indian filing law.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S3",
+        "title": "NSE: Corporate Announcements",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+        "scope": "Official issuer-disclosure discovery resource for events affecting earnings context.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S4",
+        "title": "SEC Investor.gov: Price-Earnings (P/E) Ratio",
+        "url": "https://www.investor.gov/introduction-investing/investing-basics/glossary/price-earnings-pe-ratio",
+        "scope": "Official investor-education definition of price divided by earnings per share; earnings-yield reciprocals below are original hypothetical calculations.",
+        "reviewedAt": "2026-09-23"
+      }
+    ]
+  },
+  {
+    "slug": "support-vs-resistance-stock-charts",
+    "title": "Support vs Resistance: How to Read Levels on Stock Charts",
+    "h1": "Support and resistance are areas where behaviour changed before—not magic prices.",
+    "description": "Learn support and resistance step by step with zones, repeated tests, breakouts, volume context and beginner mistakes using simple Indian-market examples.",
+    "topics": [
+      "technical-analysis",
+      "markets"
+    ],
+    "coverArt": "/assets/products/editorial-v2/charting.webp",
+    "source": "content/articles/support-vs-resistance-stock-charts.md",
+    "modifiedAt": "2026-09-23",
+    "sourceReviewedAt": "2026-09-23",
+    "primaryKeyword": "support vs resistance",
+    "relatedKeywords": [
+      "how to identify support and resistance",
+      "support resistance stock chart India",
+      "support resistance breakout explained"
+    ],
+    "related": [
+      "a-chart-is-a-question",
+      "five-research-lenses",
+      "read-nse-company-announcements-results"
+    ],
+    "takeaways": [
+      "Treat levels as zones, not exact predictions.",
+      "Choose the timeframe and breakout rule before judging the result.",
+      "A level organizes evidence; it does not replace risk management."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-09-23",
+    "publishedAt": "2026-09-23",
+    "primaryHub": {
+      "slug": "technical-analysis",
+      "label": "Technical Analysis"
+    },
+    "tool": {
+      "url": "/charts/",
+      "label": "Open MarketDeck Charts",
+      "name": "MarketDeck Charts"
+    },
+    "sources": [
+      {
+        "id": "S1",
+        "title": "TradingView: PriceScaleMode",
+        "url": "https://www.tradingview.com/charting-library-docs/latest/api/enums/Charting_Library.PriceScaleMode/",
+        "scope": "Provider documentation on chart price-scale modes; interface-specific.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S2",
+        "title": "Charles Schwab: Use Support and Resistance to Read Stock Charts",
+        "url": "https://www.schwab.com/learn/story/use-support-and-resistance-to-read-stock-charts",
+        "scope": "Educational description of support and resistance; not evidence that a level will hold.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S3",
+        "title": "Zerodha Varsity: Technical Analysis",
+        "url": "https://zerodha.com/varsity/module/technical-analysis/",
+        "scope": "India-focused educational sequencing for charts, support/resistance and indicators.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S4",
+        "title": "NSE: Corporate Actions",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-actions",
+        "scope": "Official corporate-action discovery for events that can alter chart context.",
+        "reviewedAt": "2026-09-23"
+      }
+    ]
+  },
+  {
+    "slug": "call-option-vs-put-option-india",
+    "title": "Call Option vs Put Option: A Beginner Guide for Indian Traders",
+    "h1": "Calls and puts are two different rights—and the premium is the price of that right.",
+    "description": "Understand call versus put options with simple ₹ examples covering strike, premium, expiry, intrinsic value and the risks beginners should know.",
+    "topics": [
+      "fno",
+      "india"
+    ],
+    "coverArt": "/assets/products/editorial-v2/fno.webp",
+    "source": "content/articles/call-option-vs-put-option-india.md",
+    "modifiedAt": "2026-09-23",
+    "sourceReviewedAt": "2026-09-23",
+    "primaryKeyword": "call option vs put option",
+    "relatedKeywords": [
+      "call and put option explained India",
+      "option strike price vs premium",
+      "options for beginners India"
+    ],
+    "related": [
+      "iv-rank-vs-iv-percentile-nifty-options",
+      "a-chart-is-a-question",
+      "five-research-lenses"
+    ],
+    "takeaways": [
+      "A call is a right to buy; a put is a right to sell.",
+      "Strike, spot and premium are different numbers.",
+      "Option risk depends on position structure, expiry and leverage—not direction alone."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-09-23",
+    "publishedAt": "2026-09-23",
+    "primaryHub": {
+      "slug": "futures-options",
+      "label": "Futures & Options"
+    },
+    "tool": {
+      "url": "/futures-and-options/",
+      "label": "Explore MarketDeck F&O",
+      "name": "MarketDeck F&O"
+    },
+    "sources": [
+      {
+        "id": "S1",
+        "title": "NSE: Equity Derivatives Contract Specifications",
+        "url": "https://www.nseindia.com/static/products-services/equity-derivatives-contract-specifications",
+        "scope": "Official current contract reference; expiry, lot-size and settlement conventions must be checked here.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S2",
+        "title": "SEBI Investor: Understanding Derivatives",
+        "url": "https://investor.sebi.gov.in/understanding_derivatives.html",
+        "scope": "Official investor guidance on leverage and derivative risk. Relevant risk explanation reviewed via indexed public extract; no loss-rate estimate is reproduced.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S3",
+        "title": "NSE: Option Chain",
+        "url": "https://www.nseindia.com/option-chain",
+        "scope": "Official option-chain reference surface; live quotes are not reproduced in the article.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S4",
+        "title": "Groww: Delivery margins and equity derivatives settlement policy",
+        "url": "https://groww.in/help/stocks/sx-fno/what-is-groww-s-policy-on-delivery-margins-for-delivery-settlement-in-equity-derivatives--82",
+        "scope": "Broker documentation distinguishing cash-settled index options from physical-delivery equity derivatives and describing its delivery-margin policy. Broker requirements are not universal and must be checked with the actual broker.",
         "reviewedAt": "2026-09-23"
       }
     ]

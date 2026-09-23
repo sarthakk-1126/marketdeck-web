@@ -97,6 +97,8 @@ The second is false precision. A difference between ROCE of 19.8% and 20.1% may 
 
 The third is mixing timestamps. A current share price divided by old earnings is a specific trailing valuation measure, not a fully current picture of the business. Save the price date and filing period together. A research note should make it obvious what was known at the time it was written.
 
+For a focused valuation example, compare [P/E ratio with earnings yield](/intelligence/notes/pe-ratio-vs-earnings-yield/), then use the [Equities learning hub](/intelligence/equities/) to connect that ratio to company results and cash flow.
+
 ## Frequently asked questions
 
 ### What are the best filters for fundamentally strong Indian stocks?

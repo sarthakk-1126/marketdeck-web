@@ -28,7 +28,7 @@ Now use the same 20,000 strike, but a put costs ₹180 per unit. If the index fi
 
 If the index finishes at 20,300, the put has no intrinsic value at expiry and the buyer loses the ₹180 premium.
 
-The buyer of either option knows the premium paid upfront. But that does not make options low-risk in general. Sellers can face very different payoff profiles, margin requirements and potentially large losses. Derivatives are leveraged instruments, and SEBI materials repeatedly warn that derivatives can create disproportionate gains and losses and require understanding of both the underlying and the derivative. [S2]
+The buyer of either option knows the premium paid upfront. But that does not make options low-risk in general. Sellers can face very different payoff profiles, margin requirements and potentially large losses. Derivatives are leveraged instruments, and SEBI investor guidance warns that leverage can magnify losses as well as gains. [S2]
 
 [[figure]]
 
@@ -67,6 +67,10 @@ The [IV rank versus IV percentile guide](/intelligence/notes/iv-rank-vs-iv-perce
 A call buyer’s maximum loss in the simplified expiry example is the premium paid. The call seller receives that premium but can face losses if the underlying rises far beyond the strike, subject to contract and settlement mechanics. A put seller can also face substantial losses if the underlying falls sharply.
 
 This asymmetry is why an “options are safer because the buyer can only lose premium” statement is incomplete. It ignores sellers, repeated premium losses, position sizing and the leverage created by contract size. It also ignores that a 100% loss of premium is still a 100% loss of the amount paid for the option.
+
+## Settlement can create obligations beyond a payoff sketch
+
+The index examples above describe cash-settled payoffs before costs. Do not apply them blindly to a stock option held through expiry. Indian stock derivatives can require physical delivery: an in-the-money long call may require the funds to take delivery of shares, while an in-the-money long put can require shares to deliver. A broker may require delivery margins or close positions under its own risk policy. Groww documents these distinctions and its delivery-margin requirements; check the current exchange specification and your own broker rather than assuming the premium is all the cash you could need. Delivery funding is different from the option’s simplified payoff loss. [S1] [S4]
 
 ## Expiry matters because the contract is finite
 
@@ -109,7 +113,7 @@ A call gives the buyer a right to buy at the strike under the contract terms; a 
 
 ### Can an option buyer lose more than the premium?
 
-For a straightforward long listed option position, the premium paid is the core upfront amount at risk from the option itself in the simplified expiry framework, but actual trading also involves charges, position sizing and market mechanics. Other option positions—especially selling options or multi-leg structures—have different risk profiles.
+In the cash-settled index examples here, the option buyer’s expiry loss before charges is limited to the premium paid. That does not mean every real position needs only that amount of cash: physically settled stock options can create delivery-funding or share-delivery obligations, and costs and broker close-out rules also matter. Sellers and multi-leg positions have different risk profiles. [S4]
 
 ### Why can an option lose value even if I guessed the direction correctly?
 

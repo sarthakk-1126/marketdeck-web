@@ -1,6 +1,6 @@
 ## The same valuation, read from two directions
 
-P/E ratio and earnings yield use the same two ingredients—price and earnings—but put them in opposite order. P/E asks how many rupees of price investors are paying for one rupee of annual earnings. Earnings yield asks how many rupees of annual earnings the current price represents for every ₹100 invested. For a beginner, that makes earnings yield a useful translation rather than a different valuation model.
+P/E ratio and earnings yield use the same two ingredients—price and earnings—but put them in opposite order. P/E asks how many rupees of price investors are paying for one rupee of annual earnings. Earnings yield asks how many rupees of annual earnings the current price represents for every ₹100 invested. For a beginner, that makes earnings yield a useful translation rather than a different valuation model. [S4]
 
 If a share trades at ₹300 and earnings per share are ₹15, the P/E ratio is 20. The earnings yield is 15 divided by 300, or 5%. If the P/E is positive, you can also move between the two by taking the reciprocal: earnings yield is approximately 1 divided by P/E. A P/E of 20 therefore corresponds to an earnings yield of 5%.
 

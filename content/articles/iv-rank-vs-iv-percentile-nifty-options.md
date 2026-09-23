@@ -93,6 +93,8 @@ Use [MarketDeck F&O](/futures-and-options/) to explore the available options res
 
 For a broader review, connect the volatility observation to the [research memo checklist](/intelligence/notes/five-research-lenses/) and the guide to [reading chart context](/intelligence/notes/a-chart-is-a-question/). Keep the option statistic, the price observation and the narrative explanation separate until the evidence supports combining them.
 
+New to options? Begin with [calls versus puts and premium risk](/intelligence/notes/call-option-vs-put-option-india/) before using volatility rankings. The [Futures & Options learning hub](/intelligence/futures-options/) puts contract basics before more advanced measures.
+
 ## Frequently asked questions
 
 ### Which is better: IV rank or IV percentile?

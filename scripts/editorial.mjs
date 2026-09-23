@@ -1,5 +1,5 @@
 import {buildArticles} from './articles.mjs';
-import {catalog,shelf,hub,archivePage} from './intelligence.mjs';
+import {catalog,shelf,hub,archivePage,learningHub,LEARNING_HUBS} from './intelligence.mjs';
 import {readFileSync,writeFileSync,mkdirSync,copyFileSync,existsSync} from 'node:fs';
 import {resolve,dirname} from 'node:path';
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -44,6 +44,11 @@ export function buildEditorial({data,template,root,review}) {
   const collection=catalog(manifest,notes);
   write('/intelligence/',hub(collection,{review}));
   write('/intelligence/issues/',archivePage(collection,{review}));
+  for(const slug of Object.keys(LEARNING_HUBS)){
+    const path=`/intelligence/${slug}/`;
+    write(path,learningHub(collection,slug,{review}));
+    urls.push(path);
+  }
   writeFileSync(resolve(root,'sitemap.xml'),`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(u=>`<url><loc>${new URL(u,data.brand.url).href}</loc></url>`).join('')}</urlset>`);
   const brief=shelf(collection);
   template=template.replace(/    <section class="brief-section"[\s\S]*?<\/section>/,`<section class="brief-section"><div class="container">${brief}${data.newsletter.url?`<p class="newsletter-note"><a href="${esc(data.newsletter.url)}">Newsletter updates →</a></p>`:''}</div></section>`);
