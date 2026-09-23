@@ -1,3 +1,4 @@
+import {catalog,shelf,hub,archivePage} from './intelligence.mjs';
 import {readFileSync,writeFileSync,mkdirSync,copyFileSync,existsSync} from 'node:fs';
 import {resolve,dirname} from 'node:path';
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -16,7 +17,7 @@ export function buildEditorial({data,template,root,review}) {
   template=template.replace(/<details class="editorial-card reveal"><summary>([\s\S]*?)<\/summary><div class="article-body">([\s\S]*?)<\/div><\/details>/g,(_,card,body)=>{
     const path=`/intelligence/notes/${noteSlugs[notes.length]}/`;
     const title=card.match(/<h3>([\s\S]*?)<\/h3>/)[1].replace(/<br\s*\/?\s*>/g,' ').replace(/<[^>]*>/g,'');
-    const summary=card.match(/<p>([\s\S]*?)<\/p>/)[1];notes.push({path,title,summary});urls.push(path);
+    const summary=card.match(/<p>([\s\S]*?)<\/p>/)[1];notes.push({path,title,summary,slug:noteSlugs[notes.length],body});urls.push(path);
     write(path,page(title,summary,path,`<p class="eyebrow">MARKETDECK INTELLIGENCE / LEARNING NOTE</p><h1>${title}</h1><p class="reading-lead">${summary}</p><article class="reading-body">${body.replaceAll('<h4>','<h2>').replaceAll('</h4>','</h2>')}</article><a class="text-link" href="/intelligence/">All learning notes →</a>`));
     return `<article class="editorial-card reveal"><a href="${path}">${card}</a></article>`;
   });
@@ -35,13 +36,13 @@ export function buildEditorial({data,template,root,review}) {
     for(const name of names){const src=resolve(issue.assets,name);if(!existsSync(src))throw new Error(`Missing editorial asset: ${src}`);copyFileSync(src,resolve(root,`.${path}${name}`));}
     if(!draft)urls.push(path);
   }
-  const notesHtml=`<div class="reading-notes">${notes.map(n=>`<article><h2><a href="${n.path}">${n.title}</a></h2><p>${n.summary}</p></article>`).join('')}</div>`;
-  const archive=visible.length?visible.map(issueCard).join(''):'<p class="reading-lead">The first MarketDeck Brief is in editorial development. Published issues will appear here.</p>';
-  write('/intelligence/',page('For the curious investor','Original learning notes and the MarketDeck Brief issue archive.','/intelligence/',`<p class="eyebrow">MARKETDECK INTELLIGENCE</p><h1>For the curious investor.</h1>${notesHtml}<h2 class="reading-section-title">The MarketDeck Brief</h2>${archive}`));
-  write('/intelligence/issues/',page('The MarketDeck Brief archive','Read published issues of the MarketDeck Brief.','/intelligence/issues/',`<p class="eyebrow">RESEARCH. IDEAS. PERSPECTIVE.</p><h1>The issue archive.</h1>${archive}`));
+  const collection=catalog(manifest,notes);
+  write('/intelligence/',hub(collection,{review}));
+  write('/intelligence/issues/',archivePage(collection,{review}));
   writeFileSync(resolve(root,'sitemap.xml'),`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls.map(u=>`<url><loc>${new URL(u,data.brand.url).href}</loc></url>`).join('')}</urlset>`);
-  const brief=visible.length?issueCard(visible[0]):'<div class="brief-placeholder"><p class="eyebrow">THE MARKETDECK BRIEF</p><h2>More room for perspective.</h2><p>Our first issue is in editorial development.</p><a class="text-link" href="/intelligence/issues/">Explore the issue archive →</a></div>';
-  template=template.replace(/    <section class="brief-section"[\s\S]*?<\/section>/,`<section class="brief-section"><div class="container">${brief}<p class="newsletter-note">${data.newsletter.url?`<a href="${esc(data.newsletter.url)}">Newsletter updates →</a>`:'Newsletter subscriptions are not being collected yet.'}</p></div></section>`);
+  const brief=shelf(collection);
+  template=template.replace(/    <section class="brief-section"[\s\S]*?<\/section>/,`<section class="brief-section"><div class="container">${brief}${data.newsletter.url?`<p class="newsletter-note"><a href="${esc(data.newsletter.url)}">Newsletter updates →</a></p>`:''}</div></section>`);
+  template=template.replace('</head>','<link rel="stylesheet" href="/intelligence-shelf-v1.css"><script src="/intelligence-shelf-v1.js" defer></script></head>');
   template=template.replace(/  <dialog class="article-dialog"[\s\S]*?<\/dialog>/,'');
   if(review)template=template.replace('<meta name="theme-color"','<meta name="robots" content="noindex, nofollow"><meta name="theme-color"');
   return template;

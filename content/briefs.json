@@ -15,7 +15,11 @@
       "source": "content/issues/agentic-trading-frontier-v2.json",
       "assets": "content/issues/agentic-trading-frontier-2026",
       "lastUpdated": "2026-09-22",
-      "pdfEdition": "2.0"
+      "pdfEdition": "2.0",
+      "topics": [
+        "ai-quant",
+        "research-craft"
+      ]
     },
     {
       "id": "research-foundations-01",
@@ -30,6 +34,32 @@
       "publicationStatus": "draft",
       "source": "content/issues/research-foundations.json",
       "assets": "content/issues/research-foundations"
+    }
+  ],
+  "notes": [
+    {
+      "slug": "business-before-the-stock",
+      "topics": [
+        "equities",
+        "india"
+      ],
+      "coverArt": "/assets/products/editorial-v2/stockproof.webp"
+    },
+    {
+      "slug": "a-chart-is-a-question",
+      "topics": [
+        "markets",
+        "research-craft"
+      ],
+      "coverArt": "/assets/products/editorial-v2/charting.webp"
+    },
+    {
+      "slug": "five-research-lenses",
+      "topics": [
+        "research-craft",
+        "india"
+      ],
+      "coverArt": "/assets/india-earth-small.webp"
     }
   ]
 }
