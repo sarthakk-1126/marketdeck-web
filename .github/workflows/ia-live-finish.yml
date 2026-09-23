@@ -38,19 +38,29 @@ jobs:
               for(const width of [390,1440]){
                 const page=await context.newPage();await page.setViewportSize({width,height:1000});const failures=[];page.on('requestfailed',r=>failures.push({url:r.url(),error:r.failure()?.errorText}));
                 const response=await page.goto(root+path,{waitUntil:'networkidle',timeout:60000});assert.equal(response.status(),200,path);
+                if(path==='/'){
+                  // Existing home.js intentionally assigns preview src only when its native tab is selected.
+                  // Exercise that UI, rather than interpreting inactive src-less placeholders as broken URLs.
+                  const tabs=page.locator('.product-tabs [data-product]');assert.equal(await tabs.count(),5);
+                  for(const tab of await tabs.all()){
+                    const id=await tab.getAttribute('data-product');await tab.click();
+                    const preview=page.locator(`[data-panel="${id}"] img[data-preview-src]`);
+                    await preview.evaluate(async img=>{await img.decode();if(!img.naturalWidth)throw new Error('Preview failed: '+img.src);});
+                  }
+                  await tabs.first().click();await page.evaluate(()=>scrollTo(0,0));
+                }
                 const images=await page.evaluate(async()=>{
                   const imgs=[...document.images];for(const img of imgs)img.loading='eager';
                   return await Promise.all(imgs.map(async img=>{let error=null;try{await img.decode();}catch(e){error=String(e);}return {src:img.currentSrc||img.src,complete:img.complete,width:img.naturalWidth,height:img.naturalHeight,error};}));
                 });
-                for(const img of images)if(new URL(img.src).origin===root)assets.add(new URL(img.src).pathname);
-                const broken=images.filter(i=>!i.complete||!i.width||i.error);
+                const broken=images.filter(i=>!i.src||!i.complete||!i.width||i.error);
                 const links=await page.locator('link[rel="stylesheet"][href],script[src]').evaluateAll(xs=>xs.map(x=>x.href||x.src));
-                for(const link of links)if(new URL(link).origin===root)assets.add(new URL(link).pathname);
                 const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
                 report.pages.push({path,width,status:response.status(),images,broken,overflow,requestFailures:failures});
                 writeFileSync(out+'/asset-results.json',JSON.stringify(report,null,2));
                 if(path==='/intelligence/'||path==='/'||path.includes('/issues/'))await page.screenshot({path:out+'/'+(path.split('/').filter(Boolean).at(-1)||'home')+'-'+width+'.png',fullPage:true});
                 assert.deepEqual(broken,[],path+' '+width+' broken images');assert(overflow<=1,path+' overflow');
+                for(const link of [...images.map(i=>i.src),...links]){const u=new URL(link);if(u.origin===root)assets.add(u.pathname);}
                 await page.close();
               }
             }
