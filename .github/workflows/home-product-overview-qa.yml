@@ -82,12 +82,16 @@ jobs:
                 assert.equal(await card.locator(`a[href="${href}"]`).count(),1);
                 assert(await card.isVisible());
               }
-              const order=await page.evaluate(()=>({
-                overview:document.querySelector('.suite-overview-section').getBoundingClientRect().top+scrollY,
-                rail:document.querySelector('.product-rail').getBoundingClientRect().top+scrollY,
-                panels:document.querySelector('.product-panels').getBoundingClientRect().top+scrollY
-              }));
-              assert(order.overview < order.rail && order.rail < order.panels,JSON.stringify(order));
+              const order=await page.evaluate(()=>{
+                const overview=document.querySelector('.suite-overview-section');
+                const rail=document.querySelector('.product-rail');
+                const panels=document.querySelector('.product-panels');
+                return {
+                  overviewBeforeRail:Boolean(overview.compareDocumentPosition(rail)&Node.DOCUMENT_POSITION_FOLLOWING),
+                  railBeforePanels:Boolean(rail.compareDocumentPosition(panels)&Node.DOCUMENT_POSITION_FOLLOWING)
+                };
+              });
+              assert(order.overviewBeforeRail && order.railBeforePanels,JSON.stringify(order));
               assert.equal(await page.locator('.product-panel').count(),5);
               const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
               assert(overflow<=1,`horizontal overflow ${overflow}px at ${width}`);
