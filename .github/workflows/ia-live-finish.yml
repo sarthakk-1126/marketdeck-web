@@ -1,0 +1,63 @@
+name: Verify published IA completion
+on:
+  push:
+    branches: [feature/ia-hubs-deeplinks-20260923]
+    paths: [.github/workflows/ia-live-finish.yml]
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 95fbe8f688d4efdd03e881f7f32ea4d2a7135448
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify certificate-checked public pages and exact assets
+        run: |
+          mkdir -p .preview/ia-live
+          python3 - <<'PY'
+          from pathlib import Path
+          import urllib.request,hashlib,json,time
+          paths=['index.html','intelligence/index.html','intelligence/issues/index.html','sitemap.xml','intelligence-hub-v1.css','intelligence-article-v1.css','intelligence-shelf-v1.css','intelligence/issues/agentic-trading-frontier-2026/marketdeck-brief-v2.pdf','intelligence/issues/agentic-trading-frontier-2026/index.html']
+          paths += ['intelligence/'+x+'/index.html' for x in ['equities','technical-analysis','futures-options']]
+          paths += ['intelligence/notes/'+x+'/index.html' for x in ['pe-ratio-vs-earnings-yield','support-vs-resistance-stock-charts','call-option-vs-put-option-india']]
+          paths += ['assets/intelligence/articles/'+x+'.svg' for x in ['pe-ratio-vs-earnings-yield','support-vs-resistance-stock-charts','call-option-vs-put-option-india']]
+          report=[]
+          for path in paths:
+              url='https://marketdeck.in/'+(path[:-10] if path.endswith('index.html') else path)
+              expected=hashlib.sha256(Path('public',path).read_bytes()).hexdigest()
+              for attempt in range(4):
+                  try:
+                      req=urllib.request.Request(url,headers={'User-Agent':'MarketDeck-Release-Verification/1.0','Cache-Control':'no-cache'})
+                      with urllib.request.urlopen(req,timeout=45) as r: data=r.read();status=r.status;final=r.url
+                      actual=hashlib.sha256(data).hexdigest()
+                      assert status==200 and actual==expected,(url,status,actual,expected)
+                      report.append({'url':url,'finalURL':final,'status':status,'sha256':actual,'matchesReviewedRelease':True})
+                      break
+                  except Exception:
+                      if attempt==3:raise
+                      time.sleep(8)
+          Path('.preview/ia-live/https-integrity.json').write_text(json.dumps(report,indent=2))
+          print('PASS:',len(report),'public pages/assets match reviewed release')
+          PY
+      - name: Install isolated browser QA tools
+        run: |
+          npm ci
+          npm install --no-save --package-lock=false @axe-core/playwright
+          npx playwright install --with-deps chromium
+      - name: Test live IA pages, links, accessibility and mobile rendering
+        env:
+          IA_BASE_URL: https://marketdeck.in
+          IA_QA_DIR: .preview/ia-live
+        run: node scripts/qa-ia-release.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: marketdeck-ia-live-completion
+          path: .preview/ia-live/
+          retention-days: 7
+          if-no-files-found: error
