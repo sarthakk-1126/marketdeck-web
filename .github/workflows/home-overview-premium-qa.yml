@@ -1,0 +1,93 @@
+name: Premium homepage overview QA
+on:
+  push:
+    branches: [fix/home-product-overview-premium-20260923]
+    paths:
+      - public/index.html
+      - public/product-overview-v2.css
+      - scripts/build.mjs
+      - src/index.template.html
+      - tests/homepage.test.mjs
+      - .github/workflows/home-overview-premium-qa.yml
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install
+        run: npm ci
+      - name: Rebuild and verify generated homepage
+        run: |
+          npm run build
+          git diff --exit-code -- public/index.html
+          test -s public/product-overview-v2.css
+      - name: Build review fixtures and run full checks
+        run: |
+          npm run build:review
+          npm run check
+      - name: Install browser QA
+        run: |
+          npm install --no-save --package-lock=false @axe-core/playwright
+          npx playwright install --with-deps chromium
+      - name: Verify premium cards at responsive widths
+        run: |
+          mkdir -p .preview/premium-overview
+          python3 -m http.server 4173 -d public >/tmp/md-http.log 2>&1 &
+          pid=$!
+          trap 'kill $pid || true' EXIT
+          for i in {1..20}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && break; sleep .5; done
+          cat > .preview/premium-overview/qa.mjs <<'JS'
+          import {chromium} from '@playwright/test';
+          import AxeBuilder from '@axe-core/playwright';
+          import assert from 'node:assert/strict';
+          import {writeFileSync} from 'node:fs';
+          const widths=[320,390,768,1440,1920],results=[];
+          const browser=await chromium.launch();
+          try{
+            for(const width of widths){
+              const context=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
+              const page=await context.newPage();const errors=[];
+              page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
+              const response=await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+              assert.equal(response.status(),200);
+              const overview=page.locator('.suite-overview-section');
+              const cards=overview.locator('.suite-overview-card');
+              assert.equal(await cards.count(),5);
+              await overview.scrollIntoViewIfNeeded();
+              const css=await cards.first().evaluate(el=>{const s=getComputedStyle(el);return {display:s.display,border:s.borderTopWidth,radius:s.borderRadius,bg:s.backgroundColor,minHeight:s.minHeight}});
+              assert.notEqual(css.display,'inline');
+              assert.notEqual(css.border,'0px');
+              assert.notEqual(css.radius,'0px');
+              for(const card of await cards.all()){
+                assert(await card.isVisible());
+                const box=await card.boundingBox();assert(box && box.width>250 && box.height>240,JSON.stringify({width,box}));
+                assert.equal(await card.locator('.suite-overview-art img').count(),1);
+                assert((await card.locator('.suite-overview-chips li').count())===3);
+              }
+              const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+              assert(overflow<=1,`overflow ${overflow} at ${width}`);
+              const scan=await new AxeBuilder({page}).include('.suite-overview-section').withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
+              assert.equal(scan.violations.length,0,JSON.stringify(scan.violations));
+              assert.deepEqual(errors,[]);
+              if(width===390||width===1440)await overview.screenshot({path:`.preview/premium-overview/overview-${width}.png`});
+              results.push({width,css,overflow,accessibilityViolations:0});
+              await context.close();
+            }
+            writeFileSync('.preview/premium-overview/results.json',JSON.stringify({status:'PASS',results},null,2));
+            console.log('PASS: premium cards rendered at all five viewport widths.');
+          }finally{await browser.close();}
+          JS
+          node .preview/premium-overview/qa.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: premium-homepage-overview-qa
+          path: .preview/premium-overview/
+          retention-days: 7
+          if-no-files-found: error
