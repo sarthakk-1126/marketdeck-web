@@ -1,0 +1,170 @@
+name: Finalize MarketDeck product artwork
+on:
+  push:
+    branches: [assets/premium-product-art-20260923]
+    paths: [.github/workflows/product-art-finalize.yml]
+permissions:
+  contents: write
+  actions: read
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: marketdeck-product-art-review
+          run-id: 35816637017
+          github-token: ${{ github.token }}
+          path: /tmp/art-review
+      - name: Install image and browser tools
+        run: |
+          python -m pip install Pillow==12.3.0 playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: Retrieve the corrected FNO original and prepare assets
+        run: |
+          python - <<'PY'
+          from urllib.request import Request,urlopen
+          from pathlib import Path
+          url='https://dnznrvs05pmza.cloudfront.net/gemini/gemini-3-pro-image/images/23333671-267c-4f94-a3b4-2c9cebde5f78/11c78e28-b289-49a7-b0f3-1f75fa320f65/Refine__original_into_one_finished_luxury_financial_editoria.png?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZmI4ZDc4NGQxZWRmMmVjNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MDI2NjE4OX0.1cqYoMZM4bGGO1blNS-l1ekIhSrCZhaExA4H0UPzkp4'
+          with urlopen(Request(url,headers={'User-Agent':'MarketDeck-Asset-Preparation/1.0'}),timeout=60) as r: data=r.read(30000000)
+          Path('/tmp/art-review/originals/fno.png').write_bytes(data)
+          PY
+          python scripts/prepare-product-art-v2.py /tmp/art-review/originals
+      - name: Integrate only image references, truthful credits and framing
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, subprocess, hashlib
+          data_path=Path('src/site-data.json');data=json.loads(data_path.read_text())
+          before=json.loads(data_path.read_text())
+          for p in data['products']:
+              name=p['id'];p.update(preview=f'/assets/products/editorial-v2/{name}.webp',thumbnail=f'/assets/products/editorial-v2/{name}-small.webp',thumbnail2x=f'/assets/products/editorial-v2/{name}-small@2x.webp',previewKind='Original editorial illustration')
+          data_path.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+          p=Path('scripts/build.mjs');text=p.read_text()
+          old='src="${safeUrl(p.thumbnail)}" width="520"'
+          new='src="${safeUrl(p.thumbnail)}" srcset="${safeUrl(p.thumbnail)} 1x, ${safeUrl(p.thumbnail2x)} 2x" width="520"'
+          assert text.count(old)==1,'Thumbnail template changed'
+          p.write_text(text.replace(old,new))
+          p=Path('scripts/editorial.mjs');text=p.read_text()
+          old='Product previews are sanitized historical MarketDeck interface captures or representative artwork from the corresponding product. Each preview is labelled.'
+          new='The five product-card images are original AI-assisted editorial illustrations created for MarketDeck. They depict research concepts, not application interfaces or live market data. They are cropped and exported as self-hosted WebP assets.'
+          assert text.count(old)==1,'Artwork credit contract changed'
+          p.write_text(text.replace(old,new))
+          p=Path('public/home.css');text=p.read_text()
+          addition='\n/* Editorial V2: center the card-safe artwork; preserve all card dimensions and motion. */\n.product-tab img { object-position: center; }\n'
+          assert addition not in text
+          p.write_text(text+addition)
+          docs=Path('docs');docs.mkdir(exist_ok=True)
+          manifest=json.loads(Path('public/assets/products/editorial-v2/asset-manifest.json').read_text())
+          descriptions={'stockproof':'Business foundations: architectural equity-research specimen, report layers and optical inspection.','charting':'Price structure: physical candlestick sequence and blue trend spline; conceptual, not plotted market data.','fno':'Risk geometry: metal payoff ribbon and engraved blue-glass volatility surface.','commentary':'Traceable market conversation: acoustic waveform, source pylons and evidence tiles.','crypto':'India-aware digital infrastructure: connected glass/titanium ledger nodes.'}
+          lines=['# MarketDeck product artwork V2','', 'Owner requested completion and publication on 23 September 2026.','', '## Scope', '', 'Five original conceptual illustrations replace the old screenshot/artwork mixture. The source PNGs were recovered from the connected image workspace; F&O received a final image edit to remove a visible studio fixture. No purchased plan, video, product code, financial logic or production infrastructure was changed.', '', '## Exports', '', '- Preview: 1400 x 800 WebP.', '- Standard thumbnail: 520 x 290 WebP.', '- High-density thumbnail: 1040 x 580 WebP, advertised through srcset.', '- The thumbnails extend sampled edge tones around an unwarped central scene. Only object-position is changed in CSS; card dimensions and scroll choreography are preserved.', '- Versioned paths avoid stale image caches; older assets remain available for rollback.', '', '## Art direction', '', 'Graphite, brushed titanium, optical sapphire glass, controlled photographic lighting. No text, interface claims or live-data claims inside the artwork.', '']
+          lines += [f'- {key}: {value}' for key,value in descriptions.items()]
+          lines += ['', '## Reproduction and evidence', '', 'Run `python scripts/prepare-product-art-v2.py ORIGINAL_DIRECTORY` with Pillow 12.3.0. Raw PNGs are retained in the review artifact, not loaded by the website. The asset manifest records source hashes, generation task IDs, exact export dimensions and SHA-256 hashes. Signed source URLs are not included in the production asset manifest.', '', 'Publication gates: all Node tests; desktop/mobile browser crop review; loaded 1x/2x images; product-tab interactions; no horizontal overflow; unchanged homepage outside the allowed artwork references/framing; unchanged magazine and globe artifacts. See the release pull request for final outcomes.']
+          (docs/'PRODUCT_ART_V2.md').write_text('\n'.join(lines)+'\n')
+          # No mutation outside the exact product image fields.
+          for oldp,newp in zip(before['products'],data['products']):
+              assert {k:v for k,v in oldp.items() if k not in ('preview','thumbnail','previewKind')} == {k:v for k,v in newp.items() if k not in ('preview','thumbnail','thumbnail2x','previewKind')}
+          assert {k:v for k,v in before.items() if k!='products'}=={k:v for k,v in data.items() if k!='products'}
+          PY
+          node scripts/build.mjs
+          node scripts/build.mjs --review
+          node --check scripts/build.mjs
+          node --check scripts/editorial.mjs
+          node --test tests/*.test.mjs
+      - name: Validate preservation and export integrity
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess, json, hashlib
+          from PIL import Image
+          before=subprocess.check_output(['git','show','HEAD:public/index.html'],text=True)
+          old=json.loads(subprocess.check_output(['git','show','HEAD:src/site-data.json'],text=True))
+          new=json.loads(Path('src/site-data.json').read_text())
+          for a,b in zip(old['products'],new['products']):
+              before=before.replace(a['thumbnail'],b['thumbnail']).replace(a['preview'],b['preview']).replace(a['previewKind'],b['previewKind'])
+              before=before.replace('src="'+b['thumbnail']+'" width="520"','src="'+b['thumbnail']+'" srcset="'+b['thumbnail']+' 1x, '+b['thumbnail2x']+' 2x" width="520"')
+          assert before.strip()==Path('public/index.html').read_text().strip(),'Unexpected homepage mutation'
+          protected=['public/home.js','public/experience.js','public/assets/globe.js','src/globe.js','src/earth-shaders.js','src/index.template.html','public/intelligence','content/briefs.json','.github/workflows/deploy.yml']
+          assert not subprocess.check_output(['git','diff','--name-only','--',*protected],text=True).strip(),'Protected files changed'
+          m=json.loads(Path('public/assets/products/editorial-v2/asset-manifest.json').read_text())
+          for name,entry in m['files'].items():
+              file=Path('public/assets/products/editorial-v2')/name
+              assert list(Image.open(file).size)==entry['size']
+              assert hashlib.sha256(file.read_bytes()).hexdigest()==entry['sha256']
+          print('Preservation PASS: only product image URLs/captions/srcset changed in homepage; globe and magazine unchanged.')
+          PY
+      - name: Browser QA and visual review outputs
+        run: |
+          mkdir -p review-final
+          python -m http.server 4173 --directory public >/tmp/art-server.log 2>&1 &
+          python - <<'PY'
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          from PIL import Image, ImageDraw, ImageOps, ImageFont
+          import json, time
+          time.sleep(2);out=Path('review-final');results=[]
+          with sync_playwright() as p:
+              browser=p.chromium.launch(args=['--use-angle=swiftshader','--enable-unsafe-swiftshader'])
+              for width,height,motion in [(320,800,'reduce'),(390,844,'reduce'),(768,1024,'reduce'),(1024,900,'reduce'),(1440,1000,'reduce'),(1920,1080,'reduce'),(1280,720,'no-preference'),(1440,900,'no-preference')]:
+                  page=browser.new_page(viewport={'width':width,'height':height},device_scale_factor=2,reduced_motion=motion)
+                  errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
+                  page.goto('http://127.0.0.1:4173/#products',wait_until='networkidle')
+                  page.wait_for_timeout(1300)
+                  if motion=='no-preference':
+                      page.evaluate("(()=>{const s=document.querySelector('.market-story');window.scrollTo({top:s.offsetTop+s.offsetHeight-innerHeight,behavior:'instant'});})()")
+                      page.wait_for_timeout(400)
+                  gallery=page.locator('.story-gallery');gallery.screenshot(path=str(out/f'cards-{width}-{height}-{motion}.png'))
+                  assert page.locator('.product-tabs img').evaluate_all('(xs)=>xs.length===5 && xs.every(i=>i.complete && i.naturalWidth>0 && i.currentSrc.includes("@2x"))')
+                  assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'),'Horizontal overflow'
+                  for i in range(5):
+                      tab=page.locator('.product-tab').nth(i);tab.click(timeout=15000);page.wait_for_timeout(200)
+                      assert page.locator('.product-tab.is-active').count()==1
+                      assert tab.get_attribute('class').find('is-active')>=0
+                  assert not errors,errors
+                  results.append({'width':width,'height':height,'motion':motion,'density':2,'images':5,'interactions':5,'overflow':False,'pageErrors':errors})
+                  page.close()
+              browser.close()
+          (out/'browser-qa.json').write_text(json.dumps(results,indent=2))
+          manifest=json.loads(Path('public/assets/products/editorial-v2/asset-manifest.json').read_text());(out/'asset-manifest.json').write_text(json.dumps(manifest,indent=2))
+          sheet=Image.new('RGB',(1740,1000),'#080c12');draw=ImageDraw.Draw(sheet)
+          font=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',23)
+          small=ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',15)
+          draw.text((42,26),'MARKETDECK / PRODUCT ARTWORK',font=font,fill='#edf1f6')
+          draw.text((42,64),'Graphite. Optical glass. Research made visible.',font=small,fill='#929eac')
+          names=['stockproof','charting','fno','commentary','crypto'];labels=['StockProof','Charting','F&O','Commentary','Crypto World']
+          for i,(name,label) in enumerate(zip(names,labels)):
+              x=42+i*560 if i<3 else 322+(i-3)*560;y=120 if i<3 else 560
+              im=Image.open(f'public/assets/products/editorial-v2/{name}.webp');im=ImageOps.fit(im,(536,306))
+              sheet.paste(im,(x,y));draw.text((x+4,y+322),label,font=font,fill='#edf1f6')
+          sheet.save(out/'MarketDeck_Product_Artwork.jpg',quality=95)
+          print(json.dumps(results,indent=2))
+          PY
+      - name: Commit only scoped release files to feature branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/assets/products/editorial-v2 src/site-data.json scripts/build.mjs scripts/editorial.mjs public/home.css public/index.html public/credits/index.html docs/PRODUCT_ART_V2.md
+          git diff --cached --check
+          git commit -m 'Replace product-card imagery with cohesive editorial artwork'
+          git push origin HEAD:assets/premium-product-art-20260923
+      - name: Bundle final files for review
+        if: always()
+        run: |
+          mkdir -p review-final/site review-final/originals
+          cp -r public src scripts tests content package.json package-lock.json playwright.config.mjs review-final/site/
+          cp /tmp/art-review/originals/*.png review-final/originals/
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: marketdeck-product-art-final
+          path: review-final/
+          retention-days: 3
+          if-no-files-found: error
