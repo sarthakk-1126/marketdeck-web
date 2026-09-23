@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 import {catalog,shelf,library,hub,archivePage,localPath,readingTime} from '../scripts/intelligence.mjs';
 const manifest=JSON.parse(readFileSync('content/briefs.json'));
+const publicCount=manifest.issues.filter(i=>i.publicationStatus==='published'&&i.approvedAt).length+manifest.notes.filter(n=>n.publicationStatus==='published'&&n.approvedAt).length;
 const fixture=(n=0)=>({id:'issue-'+n,title:'Research '+n,summary:'Evidence, not recommendations.',slug:'issue-'+n,edition:'Fieldnotes',cover:'/cover.webp',pdfPath:'/brief.pdf',pageCount:12,source:'source.json',approvedAt:'2026-09-22',publicationStatus:'published',topics:['ai-quant']});
 const opts={read:()=>({pages:[{intro:'A research idea'}]}),exists:()=>true};
 const issueHTML=readFileSync('public/intelligence/issues/agentic-trading-frontier-2026/index.html','utf8');
@@ -30,8 +31,8 @@ test('empty, single, missing-PDF, and escaping states render honestly',()=>{
 });
 test('homepage shelf and library preserve actual content and advertise only actual PDFs',()=>{
  const homepage=readFileSync('public/index.html','utf8'),page=readFileSync('public/intelligence/index.html','utf8'),archive=readFileSync('public/intelligence/issues/index.html','utf8');
- assert.equal((homepage.match(/data-intel-slide /g)||[]).length,4);
- assert.equal((page.match(/data-intel-entry /g)||[]).length,4);
+ assert.equal((homepage.match(/data-intel-slide /g)||[]).length,Math.min(8,publicCount));
+ assert.equal((page.match(/data-intel-entry /g)||[]).length,publicCount);
  assert.equal((archive.match(/data-intel-entry /g)||[]).length,1);
  for(const html of [homepage,page,archive]){
   assert.doesNotMatch(html,/research-foundations|EDITORIAL DRAFT/);
@@ -48,7 +49,7 @@ test('hub and archive are canonical, crawlable static collections',()=>{
   assert.match(html,new RegExp('rel="canonical" href="https://marketdeck.in/'+path+'"'));
   const ids=[...html.matchAll(/\bid="([^\"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length);
   const schema=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);assert.equal(schema['@type'],'CollectionPage');
-  assert.equal(schema.mainEntity.itemListElement.length,path==='intelligence/'?4:1);
+  assert.equal(schema.mainEntity.itemListElement.length,path==='intelligence/'?publicCount:1);
   assert.doesNotMatch(html,/aria-roledescription="carousel"|data-intel-entry[^>]+hidden|data-intel-slide[^>]+hidden/);
  }
  assert.match(hub([],{review:true}),/noindex, nofollow/);

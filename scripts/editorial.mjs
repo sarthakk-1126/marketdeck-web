@@ -1,3 +1,4 @@
+import {buildArticles} from './articles.mjs';
 import {catalog,shelf,hub,archivePage} from './intelligence.mjs';
 import {readFileSync,writeFileSync,mkdirSync,copyFileSync,existsSync} from 'node:fs';
 import {resolve,dirname} from 'node:path';
@@ -36,6 +37,10 @@ export function buildEditorial({data,template,root,review}) {
     for(const name of names){const src=resolve(issue.assets,name);if(!existsSync(src))throw new Error(`Missing editorial asset: ${src}`);copyFileSync(src,resolve(root,`.${path}${name}`));}
     if(!draft)urls.push(path);
   }
+  const expanded=buildArticles({root,review,baseNotes:notes});
+  notes.splice(0,notes.length,...expanded);
+  for(const n of notes)if(!urls.includes(n.path))urls.push(n.path);
+  urls.push('/intelligence/editorial-policy/');
   const collection=catalog(manifest,notes);
   write('/intelligence/',hub(collection,{review}));
   write('/intelligence/issues/',archivePage(collection,{review}));

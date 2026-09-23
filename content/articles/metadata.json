@@ -1,0 +1,433 @@
+[
+  {
+    "slug": "business-before-the-stock",
+    "title": "How to Screen Indian Stocks: ROCE, Cash Flow & Valuation",
+    "h1": "How to screen Indian stocks without mistaking a ratio for research.",
+    "description": "Build an Indian stock shortlist using comparable financials, ROCE, cash conversion and valuation. Includes worked examples and a source-checking process.",
+    "topics": [
+      "equities",
+      "india"
+    ],
+    "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+    "source": "content/articles/business-before-the-stock.md",
+    "modifiedAt": "2026-09-23",
+    "sourceReviewedAt": "2026-09-23",
+    "primaryKeyword": "How to screen Indian stocks",
+    "relatedKeywords": [
+      "stock screener filters India",
+      "ROCE calculation average capital employed",
+      "cash flow vs profit Indian stocks"
+    ],
+    "related": [
+      "read-nse-company-announcements-results",
+      "five-research-lenses",
+      "a-chart-is-a-question"
+    ],
+    "takeaways": [
+      "Define a comparable universe before choosing filters.",
+      "Inspect the denominator and cash-flow bridge.",
+      "A shortlist is a starting point, not a recommendation."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-09-23",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "SEC: Beginners’ Guide to Financial Statements",
+        "url": "https://www.sec.gov/about/reports-publications/investorpubsbegfinstmtguide",
+        "scope": "Educational statement framework; not Indian law.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S2",
+        "title": "IFRS Foundation: IAS 7 Statement of Cash Flows",
+        "url": "https://www.ifrs.org/issued-standards/list-of-standards/ias-7-statement-of-cash-flows/",
+        "scope": "Operating, investing and financing framework; local reporting rules must be checked.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S3",
+        "title": "NSE: Corporate Announcements",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+        "scope": "Official issuer-disclosure discovery resource.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S4",
+        "title": "NSE: Financial Results",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results",
+        "scope": "Official financial-results discovery resource.",
+        "reviewedAt": "2026-09-23"
+      }
+    ]
+  },
+  {
+    "slug": "a-chart-is-a-question",
+    "title": "How to Read Stock Charts: Timeframes, Scales & Returns",
+    "h1": "A chart is the start of a better question.",
+    "description": "Learn to read stock charts with the right timeframe, scale and adjustments. Worked examples explain dividends, drawdowns and misleading comparisons.",
+    "topics": [
+      "markets",
+      "research-craft"
+    ],
+    "coverArt": "/assets/products/editorial-v2/charting.webp",
+    "source": "content/articles/a-chart-is-a-question.md",
+    "modifiedAt": "2026-09-23",
+    "sourceReviewedAt": "2026-09-23",
+    "primaryKeyword": "how to read stock charts",
+    "relatedKeywords": [
+      "linear vs logarithmic stock chart",
+      "adjusted stock price dividends",
+      "drawdown recovery percentage"
+    ],
+    "related": [
+      "read-nse-company-announcements-results",
+      "business-before-the-stock",
+      "five-research-lenses"
+    ],
+    "takeaways": [
+      "Record the settings before interpreting the shape.",
+      "A price-only return is not a total return.",
+      "Separate observation, sequence and proposed cause."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-09-23",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "TradingView: How to adjust data for dividends",
+        "url": "https://in.tradingview.com/support/solutions/43000590597-how-to-adjust-data-for-dividends/",
+        "scope": "Provider documentation for dividend-adjustment interpretation.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S2",
+        "title": "TradingView: PriceScaleMode",
+        "url": "https://www.tradingview.com/charting-library-docs/latest/api/enums/Charting_Library.PriceScaleMode/",
+        "scope": "Provider documentation distinguishing price-scale modes.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S3",
+        "title": "NSE: Corporate Actions",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-actions",
+        "scope": "Corporate-action discovery; no live figures reproduced.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S4",
+        "title": "Charles Schwab: Use Support and Resistance to Read Stock Charts",
+        "url": "https://www.schwab.com/learn/story/use-support-and-resistance-to-read-stock-charts",
+        "scope": "Educational chart concepts, not proof that a level will hold.",
+        "reviewedAt": "2026-09-23"
+      }
+    ]
+  },
+  {
+    "slug": "five-research-lenses",
+    "title": "Stock Research Checklist India: A Five-Lens Evidence Guide",
+    "h1": "Five lenses. One evidence-led research memo.",
+    "description": "Use a five-lens stock research checklist for Indian markets. Connect business, valuation, charts and commentary while keeping sources and uncertainty clear.",
+    "topics": [
+      "research-craft",
+      "india"
+    ],
+    "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+    "source": "content/articles/five-research-lenses.md",
+    "modifiedAt": "2026-09-23",
+    "sourceReviewedAt": "2026-09-23",
+    "primaryKeyword": "stock research checklist India",
+    "relatedKeywords": [
+      "equity research memo template",
+      "verify stock market commentary",
+      "stock research evidence checklist"
+    ],
+    "related": [
+      "business-before-the-stock",
+      "read-nse-company-announcements-results",
+      "evaluate-ai-trading-agents"
+    ],
+    "takeaways": [
+      "Start with one question and a dated source register.",
+      "Repeated commentary is not independent confirmation.",
+      "Write what could change your interpretation."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-09-23",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "NSE: Corporate Announcements",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+        "scope": "Official issuer-disclosure discovery resource.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S2",
+        "title": "NSE: Financial Results",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results",
+        "scope": "Official financial-results discovery resource.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S3",
+        "title": "SEC: Beginners’ Guide to Financial Statements",
+        "url": "https://www.sec.gov/about/reports-publications/investorpubsbegfinstmtguide",
+        "scope": "Educational statement framework; not Indian law.",
+        "reviewedAt": "2026-09-23"
+      }
+    ]
+  },
+  {
+    "slug": "iv-rank-vs-iv-percentile-nifty-options",
+    "title": "IV Rank vs IV Percentile: A NIFTY Options Research Guide",
+    "h1": "IV rank and percentile are not the same question.",
+    "description": "Compare IV rank and IV percentile for NIFTY options research. See an outlier example, tie conventions, formulas and checks for a comparable volatility series.",
+    "topics": [
+      "fno",
+      "markets"
+    ],
+    "coverArt": "/assets/products/editorial-v2/fno.webp",
+    "source": "content/articles/iv-rank-vs-iv-percentile-nifty-options.md",
+    "modifiedAt": "2026-09-23",
+    "sourceReviewedAt": "2026-09-23",
+    "primaryKeyword": "IV rank vs IV percentile",
+    "relatedKeywords": [
+      "IV percentile NIFTY options",
+      "IV rank outlier example",
+      "implied volatility historical percentile formula"
+    ],
+    "related": [
+      "a-chart-is-a-question",
+      "five-research-lenses",
+      "evaluate-ai-trading-agents"
+    ],
+    "takeaways": [
+      "Rank describes the range; percentile describes observations.",
+      "One extreme can separate the two readings sharply.",
+      "Neither number is a probability of profit."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-09-23",
+    "publishedAt": "2026-09-23",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "NSE: Equity Derivatives Contract Specifications",
+        "url": "https://www.nseindia.com/static/products-services/equity-derivatives-contract-specifications",
+        "scope": "Check current contract details; no expiry weekday or lot size assumed.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S2",
+        "title": "tastylive: Implied Volatility Rank and Percentile",
+        "url": "https://www.tastylive.com/concepts-strategies/implied-volatility-rank-percentile",
+        "scope": "Metric definitions; no automatic trade recommendations adopted.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S3",
+        "title": "NSE: Option Chain",
+        "url": "https://www.nseindia.com/option-chain",
+        "scope": "Official reference surface; no historical reconstruction or live quote claim.",
+        "reviewedAt": "2026-09-23"
+      }
+    ]
+  },
+  {
+    "slug": "read-nse-company-announcements-results",
+    "title": "How to Read NSE Announcements and Financial Results",
+    "h1": "Read the filing. Not just the headline.",
+    "description": "A practical guide to NSE company announcements and results. Check timestamps, lakhs versus crores, reporting periods, consolidated scope and source documents.",
+    "topics": [
+      "india",
+      "equities"
+    ],
+    "coverArt": "/assets/products/editorial-v2/commentary.webp",
+    "source": "content/articles/read-nse-company-announcements-results.md",
+    "modifiedAt": "2026-09-23",
+    "sourceReviewedAt": "2026-09-23",
+    "primaryKeyword": "how to read NSE financial results",
+    "relatedKeywords": [
+      "NSE company announcements",
+      "standalone vs consolidated results",
+      "lakhs to crores financial statements"
+    ],
+    "related": [
+      "business-before-the-stock",
+      "five-research-lenses",
+      "a-chart-is-a-question"
+    ],
+    "takeaways": [
+      "Separate reporting period, publication and retrieval time.",
+      "Read units and reporting scope before comparing numbers.",
+      "Preserve the document behind every important claim."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-09-23",
+    "publishedAt": "2026-09-23",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "NSE: Corporate Announcements",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+        "scope": "Official issuer-disclosure discovery resource.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S2",
+        "title": "NSE: Financial Results",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results",
+        "scope": "Official financial-results discovery resource.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S3",
+        "title": "SEBI: Corporate Filings Resource Directory",
+        "url": "https://www.sebi.gov.in/curation/corporate_filings.html",
+        "scope": "Directory of exchange filing resources, not current legal advice.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S4",
+        "title": "NSE: Corporate Filings",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-application",
+        "scope": "Exchange dissemination disclaimer and filing categories.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S5",
+        "title": "NSE-hosted Infosys consolidated integrated filing, 23 April 2026",
+        "url": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_152465_23042026210154_iXBRL_WEB.html",
+        "scope": "Header fields only used as a real example; not a stock recommendation.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S6",
+        "title": "NSE-hosted Infosys standalone integrated filing, 23 April 2026",
+        "url": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_152466_23042026210204_iXBRL_WEB.html",
+        "scope": "Separate reporting scope; no investment opinion or actual amount comparison.",
+        "reviewedAt": "2026-09-23"
+      }
+    ]
+  },
+  {
+    "slug": "crypto-fundamentals-fees-revenue-token-value",
+    "title": "Crypto Fees vs Revenue: A Token Fundamentals Guide",
+    "h1": "A busy protocol is not automatically a valuable token.",
+    "description": "Understand crypto fees, protocol revenue and token value capture. Worked examples cover FDV, supply, TVL and an India-aware research checklist.",
+    "topics": [
+      "crypto",
+      "research-craft"
+    ],
+    "coverArt": "/assets/products/editorial-v2/crypto.webp",
+    "source": "content/articles/crypto-fundamentals-fees-revenue-token-value.md",
+    "modifiedAt": "2026-09-23",
+    "sourceReviewedAt": "2026-09-23",
+    "primaryKeyword": "crypto fees vs revenue",
+    "relatedKeywords": [
+      "protocol revenue vs tokenholder revenue",
+      "crypto FDV vs market cap",
+      "TVL price effect example"
+    ],
+    "related": [
+      "five-research-lenses",
+      "business-before-the-stock",
+      "evaluate-ai-trading-agents"
+    ],
+    "takeaways": [
+      "Track the flow from user payment to tokenholder mechanism.",
+      "Define the supply and revenue denominator.",
+      "Protocol activity does not guarantee token returns."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-09-23",
+    "publishedAt": "2026-09-23",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "DefiLlama: Data Definitions",
+        "url": "https://enterprise.defillama.com/data-definitions",
+        "scope": "Provider definitions of fees, revenue, holders revenue and TVL. Search-rendered public definition text reviewed; direct page extraction was unavailable.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S2",
+        "title": "Ethereum: Gas and Fees Technical Overview",
+        "url": "https://ethereum.org/developers/docs/gas/",
+        "scope": "Base-fee burn and priority-fee distinction, not a token return forecast.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S3",
+        "title": "CoinGecko: What Is Market Cap in Crypto?",
+        "url": "https://www.coingecko.com/learn/what-is-market-cap-in-crypto",
+        "scope": "Supply and valuation conventions; no current prices or cap figures reused.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S4",
+        "title": "Token Terminal: Metrics Documentation",
+        "url": "https://tokenterminal.com/docs/explorer/metrics",
+        "scope": "General and project-specific definitions; not audited corporate accounting.",
+        "reviewedAt": "2026-09-23"
+      }
+    ]
+  },
+  {
+    "slug": "evaluate-ai-trading-agents",
+    "title": "How to Evaluate AI Trading Agents: Evidence, Bias & Risk",
+    "h1": "Judge the experiment before the return chart.",
+    "description": "Evaluate AI trading agents with checks for leakage, baselines, costs and operational failures. A source-linked framework for India-focused research.",
+    "topics": [
+      "ai-quant",
+      "research-craft"
+    ],
+    "coverArt": "/assets/products/editorial-v2/commentary.webp",
+    "source": "content/articles/evaluate-ai-trading-agents.md",
+    "modifiedAt": "2026-09-23",
+    "sourceReviewedAt": "2026-09-23",
+    "primaryKeyword": "evaluate AI trading agents",
+    "relatedKeywords": [
+      "AI trading agent benchmark",
+      "LLM trading backtest leakage",
+      "AI trading agents India research"
+    ],
+    "related": [
+      "five-research-lenses",
+      "read-nse-company-announcements-results",
+      "iv-rank-vs-iv-percentile-nifty-options"
+    ],
+    "takeaways": [
+      "Evaluate the whole workflow, not the explanation alone.",
+      "Keep historical inputs inside the information boundary.",
+      "Paper results, real capital and dependable operation differ."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-09-23",
+    "publishedAt": "2026-09-23",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "TradingAgents: Multi-Agents LLM Financial Trading Framework",
+        "url": "https://arxiv.org/abs/2412.20138",
+        "scope": "Authors’ architecture and abstract-level claims, version 7, 3 June 2025. No independent replication claimed.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S2",
+        "title": "AI-Trader: Benchmarking Autonomous Agents in Real-Time Financial Markets",
+        "url": "https://arxiv.org/abs/2512.10971",
+        "scope": "Authors’ benchmark description and abstract-level findings, 1 December 2025. No NSE alpha or real-capital performance inferred.",
+        "reviewedAt": "2026-09-23"
+      },
+      {
+        "id": "S3",
+        "title": "Herculean: An Agentic Benchmark for Financial Intelligence",
+        "url": "https://arxiv.org/abs/2605.14355",
+        "scope": "Authors’ workflow and reliability findings, version 3, 29 May 2026. Abstract reviewed, not an independent reproduction.",
+        "reviewedAt": "2026-09-23"
+      }
+    ]
+  }
+]

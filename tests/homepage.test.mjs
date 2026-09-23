@@ -45,7 +45,7 @@ test('semantic content and deep links survive without JavaScript', () => {
     assert.ok(html.includes(escapeHtml(product.description)));
   }
   assert.equal((html.match(/<article class="editorial-card/g) || []).length, 3);
-  assert.equal(new Set(hrefs.filter(h=>h.startsWith('/intelligence/notes/'))).size,3);
+  assert.equal(new Set(hrefs.filter(h=>h.startsWith('/intelligence/notes/'))).size,JSON.parse(readFileSync('content/briefs.json')).notes.filter(n=>n.publicationStatus==='published'&&n.approvedAt).length);
   assert.equal(/class="(?:product-panel|community-panel)[^"]*"[^>]*hidden/.test(html), false);
 });
 
