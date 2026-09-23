@@ -96,6 +96,8 @@ Use [MarketDeck Charting](/charts/) to explore available price history and techn
 
 Then connect the chart to a [five-lens research memo](/intelligence/notes/five-research-lenses/). The final output should be a question you can investigate more precisely, not a screenshot used as a substitute for an argument.
 
+To apply this chart-reading framework to a specific question, work through [support versus resistance](/intelligence/notes/support-vs-resistance-stock-charts/). The [Technical Analysis learning hub](/intelligence/technical-analysis/) keeps the broader sequence together.
+
 ## Frequently asked questions
 
 ### Which timeframe should a beginner use?

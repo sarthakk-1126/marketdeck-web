@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
-import {catalog,shelf,library,hub,archivePage,localPath,readingTime} from '../scripts/intelligence.mjs';
+import {catalog,shelf,library,hub,archivePage,learningHub,LEARNING_HUBS,localPath,readingTime} from '../scripts/intelligence.mjs';
 const manifest=JSON.parse(readFileSync('content/briefs.json'));
 const publicCount=manifest.issues.filter(i=>i.publicationStatus==='published'&&i.approvedAt).length+manifest.notes.filter(n=>n.publicationStatus==='published'&&n.approvedAt).length;
 const fixture=(n=0)=>({id:'issue-'+n,title:'Research '+n,summary:'Evidence, not recommendations.',slug:'issue-'+n,edition:'Fieldnotes',cover:'/cover.webp',pdfPath:'/brief.pdf',pageCount:12,source:'source.json',approvedAt:'2026-09-22',publicationStatus:'published',topics:['ai-quant']});
@@ -58,4 +58,10 @@ test('client enhancement is small, local and non-autoplay',()=>{
  const js=readFileSync('public/intelligence-shelf-v1.js','utf8');
  assert.doesNotMatch(js,/setInterval|innerHTML\s*=|fetch\(|localStorage|sessionStorage|document\.cookie/);
  assert.ok(Buffer.byteLength(js)<12000);assert.match(js,/pointercancel/);assert.match(js,/ArrowLeft/);
+});
+
+test('three primary learning hubs are substantial, canonical and connected to products',()=>{
+ const notes=JSON.parse(readFileSync('content/articles/metadata.json')).map(a=>({slug:a.slug,path:'/intelligence/notes/'+a.slug+'/',title:a.title,summary:a.description,body:readFileSync(a.source,'utf8')}));
+ const items=catalog(manifest,notes,{read:p=>JSON.parse(readFileSync(p,'utf8')),exists:p=>existsSync('public'+p)});
+ for(const [slug,h] of Object.entries(LEARNING_HUBS)){const html=learningHub(items,slug);assert.equal((html.match(/<h1\b/g)||[]).length,1);assert.ok(html.includes(`rel="canonical" href="https://marketdeck.in/intelligence/${slug}/"`));assert.ok(html.includes(h.tool.url));assert.ok((html.match(/class="learning-card"/g)||[]).length>=2);const ld=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);assert.equal(ld['@graph'][0]['@type'],'CollectionPage');assert.equal(ld['@graph'][1]['@type'],'BreadcrumbList');}
 });

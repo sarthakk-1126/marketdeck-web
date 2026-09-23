@@ -11,18 +11,18 @@ after(()=>rmSync(isolated,{recursive:true,force:true}));
 const get=a=>readFileSync(`${isolated}/intelligence/notes/${a.slug}/index.html`,'utf8');
 const root='https://marketdeck.in';
 const apps=new Set(['/','/screener/','/charts/','/futures-and-options/','/commentary/','/crypto/']);
-test('seven substantial source-backed guides cover seven categories without duplicate targets',()=>{
- assert.equal(meta.length,7);assert.equal(new Set(meta.map(a=>a.slug)).size,7);assert.equal(new Set(meta.map(a=>a.primaryKeyword.toLowerCase())).size,7);
- assert.deepEqual(new Set(meta.map(a=>a.topics[0])),new Set(['ai-quant','equities','fno','markets','india','crypto','research-craft']));
+test('ten substantial source-backed guides cover the intended editorial categories without duplicate targets',()=>{
+ assert.equal(meta.length,10);assert.equal(new Set(meta.map(a=>a.slug)).size,10);assert.equal(new Set(meta.map(a=>a.primaryKeyword.toLowerCase())).size,10);
+ for(const required of ['ai-quant','equities','fno','technical-analysis','india','crypto','research-craft'])assert.ok(meta.some(a=>a.topics.includes(required)),required);
  for(const a of meta){const md=readFileSync(a.source,'utf8');assert.ok(md.split(/\s+/).length>=1500,a.slug);assert.ok(a.sources.length>=3);assert.equal(a.publicationStatus,'published');assert.ok(a.approvedAt);assert.equal((md.match(/\[\[figure\]\]/g)||[]).length,1);assert.equal(new Set(a.sources.map(s=>s.id)).size,a.sources.length);for(const m of md.matchAll(/\[(S\d+)\]/g))assert.ok(a.sources.some(s=>s.id===m[1]),a.slug+':'+m[1]);}
 });
 test('article SEO metadata is unique, readable and canonical; schema does not invent expertise',()=>{
- assert.equal(new Set(meta.map(a=>a.title)).size,7);assert.equal(new Set(meta.map(a=>a.description)).size,7);
+ assert.equal(new Set(meta.map(a=>a.title)).size,10);assert.equal(new Set(meta.map(a=>a.description)).size,10);
  for(const a of meta){const h=get(a);assert.equal((h.match(/<h1\b/g)||[]).length,1);assert.equal((h.match(/rel="canonical"/g)||[]).length,1);assert.ok(h.includes(`href="${root}/intelligence/notes/${a.slug}/"`));assert.ok(a.description.length>=110&&a.description.length<=180);assert.ok(!h.includes('noindex'));assert.match(h,/<meta name="description"/);const ld=JSON.parse(h.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);assert.equal(ld['@graph'][0]['@type'],'Article');assert.equal(ld['@graph'][1]['@type'],'BreadcrumbList');assert.equal(ld['@graph'][0].author['@type'],'Organization');assert.equal(ld['@graph'][0].author.name,'MarketDeck');assert.equal(ld['@graph'][0].dateModified,a.modifiedAt);assert.ok(!h.includes('FAQPage'));assert.ok(!h.includes('aggregateRating'));assert.ok(!h.includes('Download PDF'));}
 });
 test('all reference anchors, contents links, related guides and local image files resolve',()=>{
  for(const a of meta){const h=get(a),ids=[...h.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length,a.slug);
- for(const m of h.matchAll(/\bhref="([^"]+)"/g)){const u=m[1];if(u.startsWith('#'))assert.ok(ids.includes(u.slice(1)),a.slug+':'+u);else if(u.startsWith('/')){const path=u.split('#')[0];if(apps.has(path))continue;assert.ok(existsSync('public'+path+(path.endsWith('/')?'index.html':'')),a.slug+':'+path);}}
+ for(const m of h.matchAll(/\bhref="([^"]+)"/g)){const u=m[1];if(u.startsWith('#'))assert.ok(ids.includes(u.slice(1)),a.slug+':'+u);else if(u.startsWith('/')){const path=u.split('#')[0];if(apps.has(path)||/^\/intelligence\/(equities|technical-analysis|futures-options)\/$/.test(path))continue;assert.ok(existsSync('public'+path+(path.endsWith('/')?'index.html':'')),a.slug+':'+path);}}
  for(const m of h.matchAll(/\b(?:src|href)="(\/[^"#]+\.(?:svg|webp|css))"/g))assert.ok(existsSync('public'+m[1]),m[1]);
  for(const s of a.sources)assert.ok(h.includes(`id="source-${s.id}"`));assert.ok(h.includes('AI-assisted educational writing'));
  }
@@ -47,5 +47,5 @@ test('restricted Markdown escapes HTML and rejects unsafe URL schemes and unreso
  assert.throws(()=>parseArticle('## Same\n\n## Same',{sources:[]},''));assert.throws(()=>parseArticle('| A | B |\n|---|---|\n| only one |',{sources:[],title:'test'},''));
 });
 test('reader FAQ headings, original figures and contextual links exist on every guide',()=>{
- for(const a of meta){const h=get(a);assert.ok(h.includes('Frequently asked questions'));assert.ok((h.match(/<h3\b/g)||[]).length>=3);assert.ok(h.includes('class="a-figure"'));assert.equal(a.related.length,3);assert.ok(h.includes('class="a-toc"'));assert.ok(h.includes('class="a-related"'));assert.ok(h.includes('aria-label="Article contents"'));}
+ for(const a of meta){const h=get(a);assert.ok(h.includes('Frequently asked questions'));assert.ok((h.match(/<h3\b/g)||[]).length>=3);assert.ok(h.includes('class="a-figure"'));assert.equal(a.related.length,3);assert.ok(h.includes('class="a-toc"'));assert.ok(h.includes('class="a-related"'));assert.ok(h.includes('aria-label="Article contents"'));if(a.primaryHub){assert.ok(h.includes(`/intelligence/${a.primaryHub.slug}/`));assert.ok(h.includes('class="a-apply"'));assert.ok(h.includes(a.tool.url));}}
 });
