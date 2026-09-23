@@ -1,0 +1,158 @@
+{
+  "edition": "editorial-v2",
+  "createdAt": "2026-09-23",
+  "purpose": "Original conceptual product illustrations; not real market data or interface screenshots.",
+  "files": {
+    "stockproof.webp": {
+      "size": [
+        1400,
+        800
+      ],
+      "bytes": 78708,
+      "sha256": "0d19378ddd2d161c66c04878c9dcfb3034b9f2022498bd2224b3fb82c3a17ed7",
+      "sourceSHA256": "3f375216f3dcf2f8e708d03b9891cf69af5295266d5cd891065496a63bf733fa",
+      "generationTask": "c9d94c93-2f99-432b-bed7-26c3a47de591"
+    },
+    "stockproof-small.webp": {
+      "size": [
+        520,
+        290
+      ],
+      "bytes": 8106,
+      "sha256": "f087dcb2865098f7759ddf40fa0dac8e9d6b0bbd2efcd24f2569b4797e70b120",
+      "sourceSHA256": "3f375216f3dcf2f8e708d03b9891cf69af5295266d5cd891065496a63bf733fa",
+      "generationTask": "c9d94c93-2f99-432b-bed7-26c3a47de591"
+    },
+    "stockproof-small@2x.webp": {
+      "size": [
+        1040,
+        580
+      ],
+      "bytes": 24294,
+      "sha256": "04a3c3de8af58333ec2e438232e1e2a926151c03714ea88af5ef2dd88d58b31b",
+      "sourceSHA256": "3f375216f3dcf2f8e708d03b9891cf69af5295266d5cd891065496a63bf733fa",
+      "generationTask": "c9d94c93-2f99-432b-bed7-26c3a47de591"
+    },
+    "charting.webp": {
+      "size": [
+        1400,
+        800
+      ],
+      "bytes": 84590,
+      "sha256": "c823c33b007b6deec1d068c3777065fb9cc531bb3b91af196af11d07a966b6d6",
+      "sourceSHA256": "6cf9ee82206810c0402af89971f411ca80771f83bed6023c28a7e109a97e794a",
+      "generationTask": "864e1da7-c63a-4d42-bc17-54ed72208c94"
+    },
+    "charting-small.webp": {
+      "size": [
+        520,
+        290
+      ],
+      "bytes": 9732,
+      "sha256": "90c650c7edc48cab5e4a6c4261a160d2f020c3c297988f64712685a0a2de138f",
+      "sourceSHA256": "6cf9ee82206810c0402af89971f411ca80771f83bed6023c28a7e109a97e794a",
+      "generationTask": "864e1da7-c63a-4d42-bc17-54ed72208c94"
+    },
+    "charting-small@2x.webp": {
+      "size": [
+        1040,
+        580
+      ],
+      "bytes": 27682,
+      "sha256": "419c0b31170f525031ed140cdf2002e045dca903d3ad7a1bbf0510669e9e3bf4",
+      "sourceSHA256": "6cf9ee82206810c0402af89971f411ca80771f83bed6023c28a7e109a97e794a",
+      "generationTask": "864e1da7-c63a-4d42-bc17-54ed72208c94"
+    },
+    "fno.webp": {
+      "size": [
+        1400,
+        800
+      ],
+      "bytes": 98004,
+      "sha256": "a65bf11da9a02f0a8427c76ac5786598d041bd40e004bb80db32c028fe0a5ea3",
+      "sourceSHA256": "8a4f741d88a1bc8140a77bc372a9825162870ca2aaebacb2c70d2b64524d110a",
+      "generationTask": "23333671-267c-4f94-a3b4-2c9cebde5f78"
+    },
+    "fno-small.webp": {
+      "size": [
+        520,
+        290
+      ],
+      "bytes": 10134,
+      "sha256": "581ffa34b562a198186cdc510d950e4d893c7f2c4ac06dee1cc846395c4b177b",
+      "sourceSHA256": "8a4f741d88a1bc8140a77bc372a9825162870ca2aaebacb2c70d2b64524d110a",
+      "generationTask": "23333671-267c-4f94-a3b4-2c9cebde5f78"
+    },
+    "fno-small@2x.webp": {
+      "size": [
+        1040,
+        580
+      ],
+      "bytes": 31062,
+      "sha256": "4ccddce2cc2971ffa824ac7925c583aaf03dfd224239bd6d2ffcfc6baef758d6",
+      "sourceSHA256": "8a4f741d88a1bc8140a77bc372a9825162870ca2aaebacb2c70d2b64524d110a",
+      "generationTask": "23333671-267c-4f94-a3b4-2c9cebde5f78"
+    },
+    "commentary.webp": {
+      "size": [
+        1400,
+        800
+      ],
+      "bytes": 75148,
+      "sha256": "e942f1d493fa565b236ab7113b04c25dfa4259eb7e458eca2b7ea5f330facf66",
+      "sourceSHA256": "f04a411b7cfc1ea5f9396cd16bc4e965588b715b0a4f3813e13ba1cd785aa1b0",
+      "generationTask": "8071caaa-e62b-4fff-bd8a-b4a5226394ee"
+    },
+    "commentary-small.webp": {
+      "size": [
+        520,
+        290
+      ],
+      "bytes": 9186,
+      "sha256": "0ac21e2d503c666ff92a96206f049f6b3ad46877d0604ed2067d9e07d040962b",
+      "sourceSHA256": "f04a411b7cfc1ea5f9396cd16bc4e965588b715b0a4f3813e13ba1cd785aa1b0",
+      "generationTask": "8071caaa-e62b-4fff-bd8a-b4a5226394ee"
+    },
+    "commentary-small@2x.webp": {
+      "size": [
+        1040,
+        580
+      ],
+      "bytes": 26780,
+      "sha256": "6f7d81d5c70d480234c4ce559160017617abe2ccf67630025527d6b4425ac9a2",
+      "sourceSHA256": "f04a411b7cfc1ea5f9396cd16bc4e965588b715b0a4f3813e13ba1cd785aa1b0",
+      "generationTask": "8071caaa-e62b-4fff-bd8a-b4a5226394ee"
+    },
+    "crypto.webp": {
+      "size": [
+        1400,
+        800
+      ],
+      "bytes": 102024,
+      "sha256": "aa85288b70b40d9ffeb8f1906d76a05260dcd59250f091fac2b0989f07aa43a5",
+      "sourceSHA256": "b593f8149f7bebb2fbf786216c7bb29404729d941c16524b112d914078e6a6c9",
+      "generationTask": "684cb2ec-8a04-46c4-9713-83a6c1f3109c"
+    },
+    "crypto-small.webp": {
+      "size": [
+        520,
+        290
+      ],
+      "bytes": 12772,
+      "sha256": "1b1db123852e986623f6dc06984593f6bdc24318c6535f7e12a94fd79e06df02",
+      "sourceSHA256": "b593f8149f7bebb2fbf786216c7bb29404729d941c16524b112d914078e6a6c9",
+      "generationTask": "684cb2ec-8a04-46c4-9713-83a6c1f3109c"
+    },
+    "crypto-small@2x.webp": {
+      "size": [
+        1040,
+        580
+      ],
+      "bytes": 35046,
+      "sha256": "913e5911b5fd60beddd3edd458cda426c4755a9db3ee73834879a1eaa04a2119",
+      "sourceSHA256": "b593f8149f7bebb2fbf786216c7bb29404729d941c16524b112d914078e6a6c9",
+      "generationTask": "684cb2ec-8a04-46c4-9713-83a6c1f3109c"
+    }
+  },
+  "totalBytes": 633268
+}

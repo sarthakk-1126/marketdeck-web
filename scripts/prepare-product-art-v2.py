@@ -48,7 +48,7 @@ def main() -> None:
         with Image.open(original) as opened:
             opened.load();image=ImageOps.exif_transpose(opened).convert('RGB')
         assert image.width>=1400 and image.height>=800, f'Insufficient source resolution: {name}'
-        full=ImageOps.fit(image,(1400,800),Image.Resampling.LANCZOS) if image.width/image.height<2 else stage(image,(1400,800),.94)
+        full=ImageOps.fit(image,(1400,800),Image.Resampling.LANCZOS)
         retina=stage(image,(1040,580),.68)
         small=retina.resize((520,290),Image.Resampling.LANCZOS)
         for suffix,img in [('',full),('-small',small),('-small@2x',retina)]:
