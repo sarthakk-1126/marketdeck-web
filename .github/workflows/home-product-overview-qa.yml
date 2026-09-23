@@ -1,0 +1,110 @@
+name: Homepage product overview QA
+on:
+  push:
+    branches: [ui/home-product-overview-20260923]
+    paths:
+      - public/index.html
+      - public/home.css
+      - scripts/build.mjs
+      - src/index.template.html
+      - tests/homepage.test.mjs
+      - .github/workflows/home-product-overview-qa.yml
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm ci
+      - name: Rebuild and verify committed output
+        run: |
+          npm run build
+          git diff --exit-code -- public/index.html
+      - name: Run source checks and tests
+        run: npm run check
+      - name: Install browser accessibility tooling
+        run: |
+          npm install --no-save --package-lock=false @axe-core/playwright
+          npx playwright install --with-deps chromium
+      - name: Responsive and accessibility QA
+        run: |
+          mkdir -p .preview/home-overview
+          python3 -m http.server 4173 -d public > /tmp/marketdeck-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid || true' EXIT
+          for i in {1..20}; do curl -fsS http://127.0.0.1:4173/ >/dev/null && break; sleep 0.5; done
+          cat > .preview/home-overview/qa.mjs <<'JS'
+          import {chromium} from '@playwright/test';
+          import AxeBuilder from '@axe-core/playwright';
+          import assert from 'node:assert/strict';
+          import {writeFileSync} from 'node:fs';
+
+          const expected=[
+            ['/screener/','StockProof'],
+            ['/charts/','Charting'],
+            ['/futures-and-options/','F&O'],
+            ['/commentary/','Commentary'],
+            ['/crypto/','Crypto World'],
+          ];
+          const widths=[320,390,768,1440,1920];
+          const results=[];
+          const browser=await chromium.launch();
+          try{
+            for(const width of widths){
+              const context=await browser.newContext({viewport:{width,height:1000},reducedMotion:'reduce'});
+              const page=await context.newPage();
+              const consoleErrors=[];
+              page.on('console',m=>{if(m.type()==='error')consoleErrors.push(m.text())});
+              const response=await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+              assert.equal(response.status(),200);
+              const overview=page.locator('.suite-overview-section');
+              assert.equal(await overview.count(),1);
+              const cards=overview.locator('.suite-overview-card');
+              assert.equal(await cards.count(),5);
+              assert.deepEqual(await cards.locator('a').evaluateAll(xs=>xs.map(x=>[x.getAttribute('href'),x.textContent.trim().replace(/\s+/g,' ')])),[
+                ['/screener/','Explore StockProof'],
+                ['/charts/','Explore Charting'],
+                ['/futures-and-options/','Explore F&O'],
+                ['/commentary/','Explore Commentary'],
+                ['/crypto/','Explore Crypto World'],
+              ]);
+              for(const [href,name] of expected){
+                const card=overview.locator('.suite-overview-card',{has:page.getByRole('heading',{name,exact:true})});
+                assert.equal(await card.count(),1);
+                assert.equal(await card.locator(`a[href="${href}"]`).count(),1);
+                assert(await card.isVisible());
+              }
+              const order=await page.evaluate(()=>({
+                overview:document.querySelector('.suite-overview-section').getBoundingClientRect().top+scrollY,
+                rail:document.querySelector('.product-rail').getBoundingClientRect().top+scrollY,
+                panels:document.querySelector('.product-panels').getBoundingClientRect().top+scrollY
+              }));
+              assert(order.overview < order.rail && order.rail < order.panels,JSON.stringify(order));
+              assert.equal(await page.locator('.product-panel').count(),5);
+              const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+              assert(overflow<=1,`horizontal overflow ${overflow}px at ${width}`);
+              const scan=await new AxeBuilder({page}).include('.suite-overview-section').withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
+              assert.equal(scan.violations.length,0,JSON.stringify(scan.violations));
+              assert.deepEqual(consoleErrors,[]);
+              if(width===390||width===1440)await page.screenshot({path:`.preview/home-overview/home-${width}.png`,fullPage:true});
+              results.push({width,status:response.status(),cards:await cards.count(),overflow,accessibilityViolations:scan.violations.length,consoleErrors});
+              await context.close();
+            }
+            writeFileSync('.preview/home-overview/results.json',JSON.stringify({status:'PASS',results},null,2));
+            console.log('PASS: 5 products visible together across 5 viewport widths, no overflow, no scoped axe violations.');
+          }finally{await browser.close();}
+          JS
+          node .preview/home-overview/qa.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: homepage-product-overview-qa
+          path: .preview/home-overview/
+          retention-days: 7
+          if-no-files-found: error
