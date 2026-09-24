@@ -12,7 +12,7 @@ sys.path.insert(0,str(ROOT/'scripts'/'seo'))
 sys.path.insert(0,str(ROOT/'docs'/'seo'))
 from inventory_protocol_reference import finalize_inventory
 from publisher import (
-    GROUPS, MAX_BYTES, NS, PRODUCERS, PublicationError, admit_inventories,
+    GENERATOR_POLICY, GROUPS, MAX_BYTES, NS, PRODUCERS, PublicationError, admit_inventories,
     assert_rollback_safe, build_xml_release, load_accepted_inventories, load_inventory,
     load_private_state, publish_release, publisher_lock, reconcile_sets,
     recover_active_release, select_generations, sha256, split_group,
@@ -32,7 +32,7 @@ ACCEPTED_GENERATORS={
     'marketdeck-web':'seo-008f-web-inventory-v1',
     'stockproof':'stockproof-seo-inventory-v1',
     'charting-v1':'charting-seo-inventory-v1',
-    'fo-analytics-v1':'seo-008c-r1',
+    'fo-analytics-v1':'seo-008c-r2',
     'market-commentary-v1':'commentary-inventory-v1',
     'crypto-tools-v1':'crypto-seo-inventory-v1',
 }
@@ -65,6 +65,7 @@ class PublisherTests(unittest.TestCase):
 
     def test_six_producer_happy_path_and_empty_groups(self):
         values=six();self.assertEqual({owner:value['generator_version'] for owner,value in values.items()},ACCEPTED_GENERATORS)
+        self.assertEqual(GENERATOR_POLICY,{owner:{version} for owner,version in ACCEPTED_GENERATORS.items()})
         admitted=admit_inventories(values);xml=build_xml_release(admitted)
         self.assertEqual(sum(map(len,admitted.values())),6)
         self.assertEqual(sum(c['count'] for c in xml['children']),6)
@@ -85,6 +86,12 @@ class PublisherTests(unittest.TestCase):
                 with self.subTest(owner=owner,generator_version=rejected):
                     values=six();values[owner]['generator_version']=rejected
                     self.code('generator_policy_mismatch',lambda:admit_inventories(values))
+
+    def test_fo_prior_stale_and_future_generator_versions_fail_closed(self):
+        for rejected in ('seo-008c-r1','seo-008-inventory-v1','future-v9'):
+            with self.subTest(generator_version=rejected):
+                values=six();values['fo-analytics-v1']['generator_version']=rejected
+                self.code('generator_policy_mismatch',lambda:admit_inventories(values))
 
     def test_sp08_clean_screener_is_admitted_but_result_state_is_not(self):
         clean=row('stockproof','SP-08 screener_landing','https://marketdeck.in/screener/screener/',route='screener:screener')

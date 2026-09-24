@@ -206,7 +206,7 @@ GENERATOR_POLICY = {
     "marketdeck-web": {"seo-008f-web-inventory-v1"},
     "stockproof": {"stockproof-seo-inventory-v1"},
     "charting-v1": {"charting-seo-inventory-v1"},
-    "fo-analytics-v1": {"seo-008c-r1"},
+    "fo-analytics-v1": {"seo-008c-r2"},
     "market-commentary-v1": {"commentary-inventory-v1"},
     "crypto-tools-v1": {"crypto-seo-inventory-v1"},
 }
