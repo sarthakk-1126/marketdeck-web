@@ -283,12 +283,20 @@ def _validate_query(code: str, query: str) -> None:
         if keys not in (["screen"], ["screen", "page"]):
             _fail("unapproved_query_identity")
         values = dict(pairs)
-        if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", values["screen"]):
+        # StockProof PRESET_SCREENS keys are source-owned snake_case
+        # identifiers (for example magic_formula and rsi_14).  The central
+        # publisher validates only that canonical key grammar; source
+        # membership itself remains the producer's responsibility.
+        if not re.fullmatch(r"[a-z0-9]+(?:_[a-z0-9]+)*", values["screen"]):
             _fail("unapproved_query_identity")
-        if "page" in values and (not re.fullmatch(r"[2-9]\d*", values["page"]) or values["page"].startswith("0")):
+        if "page" in values and not re.fullmatch(r"(?:[2-9]|[1-9]\d+)", values["page"]):
             _fail("unapproved_query_identity")
         return
-    if code in {"SP-02", "SP-09", "SP-11"} and keys == ["page"] and re.fullmatch(r"[2-9]\d*", pairs[0][1]):
+    if (
+        code in {"SP-02", "SP-09", "SP-11"}
+        and keys == ["page"]
+        and re.fullmatch(r"(?:[2-9]|[1-9]\d+)", pairs[0][1])
+    ):
         return
     _fail("unapproved_query_identity")
 

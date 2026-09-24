@@ -104,6 +104,36 @@ class PublisherTests(unittest.TestCase):
         values=six();values['stockproof']=envelope('stockproof',[row('stockproof','SP-08 screener_landing','https://marketdeck.in/screener/screener/?q=bank')])
         self.code('unapproved_query_identity',lambda:admit_inventories(values))
 
+    def test_stockproof_approved_query_identities_match_real_source_grammar(self):
+        valid = [
+            ('SP-02 company_directory','https://marketdeck.in/screener/companies/?page=2'),
+            ('SP-09 fund_directory','https://marketdeck.in/screener/funds/?page=10'),
+            ('SP-11 etf_directory','https://marketdeck.in/screener/etfs/?page=100'),
+            ('SP-07 curated_screen','https://marketdeck.in/screener/screener/?screen=magic_formula'),
+            ('SP-07 curated_screen','https://marketdeck.in/screener/screener/?screen=rsi_14&page=2'),
+            ('SP-07 curated_screen','https://marketdeck.in/screener/screener/?screen=delivery_percentage&page=10'),
+        ]
+        for family,url in valid:
+            with self.subTest(valid=url):
+                values=six();values['stockproof']=envelope('stockproof',[row('stockproof',family,url)])
+                admitted=admit_inventories(values)
+                self.assertEqual(sum(map(len,admitted.values())),6)
+
+        invalid = [
+            ('SP-02 company_directory','https://marketdeck.in/screener/companies/?page=1'),
+            ('SP-09 fund_directory','https://marketdeck.in/screener/funds/?page=01'),
+            ('SP-11 etf_directory','https://marketdeck.in/screener/etfs/?page=0'),
+            ('SP-07 curated_screen','https://marketdeck.in/screener/screener/?screen=magic-formula'),
+            ('SP-07 curated_screen','https://marketdeck.in/screener/screener/?screen=magic__formula'),
+            ('SP-07 curated_screen','https://marketdeck.in/screener/screener/?screen=magic_formula&page=1'),
+            ('SP-07 curated_screen','https://marketdeck.in/screener/screener/?page=2&screen=magic_formula'),
+            ('SP-07 curated_screen','https://marketdeck.in/screener/screener/?screen=magic_formula&foo=x'),
+        ]
+        for family,url in invalid:
+            with self.subTest(invalid=url):
+                values=six();values['stockproof']=envelope('stockproof',[row('stockproof',family,url)])
+                self.code('unapproved_query_identity',lambda:admit_inventories(values))
+
     def test_duplicate_cross_owner_canonical_is_not_deduplicated(self):
         values=six();original=values['stockproof']['records'][0]['canonical_url'];duplicate=values['marketdeck-web']['records'][0]['canonical_url']
         changed=copy.deepcopy(values['stockproof']['records'][0]);changed.update(canonical_url=duplicate,declared_canonical=duplicate)
