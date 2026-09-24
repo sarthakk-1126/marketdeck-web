@@ -2,10 +2,12 @@
 import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {resolve,dirname} from 'node:path';
 import {TOPICS,LEARNING_HUBS} from './intelligence.mjs';
+import {loadEditorialSources,validateArticleCandidate} from './editorial-registry.mjs';
 const ORIGIN='https://marketdeck.in';
 const E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const slug=v=>{if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(v))throw Error('Invalid article slug');return v;};
-function url(v){if(/^\/(?!\/)[a-zA-Z0-9/_@.#-]*$/.test(v)&&!v.split('/').includes('..'))return v;const u=new URL(v);if(u.protocol!=='https:'||u.username||u.password)throw Error('Unsafe article URL');return u.href;}
+export function articleUrl(v){if(/^\/(?!\/)[a-zA-Z0-9/_@.#-]*$/.test(v)&&!v.split('/').includes('..'))return v;const u=new URL(v);if(u.protocol!=='https:'||u.username||u.password)throw Error('Unsafe article URL');return u.href;}
+const url=articleUrl;
 export function inline(v,sources){
  const rx=/\[([^\]\n]+)\]\(([^\s)]+)\)|\[(S\d+)\]/g;let out='',at=0;
  for(const m of v.matchAll(rx)){out+=E(v.slice(at,m.index));if(m[3]){if(!sources.some(s=>s.id===m[3]))throw Error('Unknown reference '+m[3]);out+=`<a class="a-cite" href="#source-${m[3]}" aria-label="Source ${m[3]}">[${m[3]}]</a>`;}else out+=`<a href="${E(url(m[2]))}">${E(m[1])}</a>`;at=m.index+m[0].length;}
@@ -81,18 +83,17 @@ function shell(title,description,path,content,review,schema=''){
  return `<!doctype html><html lang="en-IN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${E(title)} | MarketDeck</title><meta name="description" content="${E(description)}"><meta name="theme-color" content="#080c12">${review?'<meta name="robots" content="noindex, nofollow">':`<link rel="canonical" href="${ORIGIN+path}">`}<meta property="og:type" content="article"><meta property="og:title" content="${E(title)}"><meta property="og:description" content="${E(description)}"><meta property="og:url" content="${ORIGIN+path}"><link rel="icon" href="/assets/favicon.svg"><link rel="stylesheet" href="/home.css"><link rel="stylesheet" href="/intelligence-article-v1.css">${schema}</head><body class="md-article"><a class="skip-link" href="#reading">Skip to article</a><header class="a-header"><a class="a-brand" href="/">MarketDeck<span>.</span></a><nav aria-label="Editorial navigation"><a href="/intelligence/">Intelligence</a><a href="/intelligence/library/">Library</a><a href="/intelligence/issues/">Magazine archive</a><a href="/#products">The suite ↗</a></nav></header>${content}<footer class="a-footer"><span>MarketDeck · Research and education. Not investment advice.</span><a href="/intelligence/editorial-policy/">Editorial standards</a><a href="/intelligence/">All perspectives ↗</a></footer></body></html>`;
 }
 export function buildArticles({root,review,baseNotes=[]}){
- const metadata=JSON.parse(readFileSync('content/articles/metadata.json','utf8'));
- const manifest=JSON.parse(readFileSync('content/briefs.json','utf8'));
+ const sources=loadEditorialSources();
+ const metadata=[...sources.articleMetadata.values()];
+ const manifest=sources.manifest;
  const allowed=new Set(manifest.notes.filter(n=>n.publicationStatus==='published'&&n.approvedAt).map(n=>n.slug));
  const output=[];const metaMap=new Map(metadata.map(x=>[x.slug,x]));
  const write=(path,html)=>{const f=resolve(root,'.'+path+'index.html');mkdirSync(dirname(f),{recursive:true});writeFileSync(f,html);};
  for(const a of metadata){
   slug(a.slug);if(!allowed.has(a.slug)||a.publicationStatus!=='published'||!a.approvedAt)throw Error('Unapproved authored note');
-  if(!a.topics.length||a.topics.some(t=>!TOPICS[t]))throw Error('Invalid article topic');
-  if(a.source!==`content/articles/${a.slug}.md`)throw Error('Invalid article source path');
+  const validated=validateArticleCandidate(a,sources.manifestNotes.get(a.slug));
   if(new Set(a.sources.map(s=>s.id)).size!==a.sources.length)throw Error('Duplicate sources');a.sources.forEach(s=>url(s.url));url(a.coverArt);if(!existsSync(resolve('public','.'+a.coverArt)))throw Error('Missing cover artwork');
-  const path=`/intelligence/notes/${a.slug}/`,md=readFileSync(a.source,'utf8'),words=md.replace(/\[([^\]]+)\]\([^)]+\)/g,'$1').split(/\s+/).filter(Boolean).length;
-  if(words<1500)throw Error('Article is below approved depth: '+a.slug);
+  const path=validated.path,md=validated.md,words=validated.words;
   const fig=illustration(a),figpath=`/assets/intelligence/articles/${a.slug}.svg`;mkdirSync(dirname(resolve(root,'.'+figpath)),{recursive:true});writeFileSync(resolve(root,'.'+figpath),fig.svg);
   const {body,toc}=parseArticle(md,a,`<figure class="a-figure"><img src="${figpath}" width="960" height="480" loading="lazy" alt="${E(fig.desc)}"><figcaption>${E(fig.desc)}</figcaption></figure>`);
   const crumbs=[{'@type':'ListItem',position:1,name:'MarketDeck',item:ORIGIN+'/'},{'@type':'ListItem',position:2,name:'Intelligence',item:ORIGIN+'/intelligence/'}];
