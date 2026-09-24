@@ -28,6 +28,14 @@ OWNER_FIXTURES={
     'market-commentary-v1':('COM-01 commentary_home','https://marketdeck.in/commentary/'),
     'crypto-tools-v1':('CR-01 crypto_home','https://marketdeck.in/crypto/'),
 }
+ACCEPTED_GENERATORS={
+    'marketdeck-web':'seo-008f-web-inventory-v1',
+    'stockproof':'stockproof-seo-inventory-v1',
+    'charting-v1':'charting-seo-inventory-v1',
+    'fo-analytics-v1':'seo-008c-r1',
+    'market-commentary-v1':'commentary-inventory-v1',
+    'crypto-tools-v1':'crypto-seo-inventory-v1',
+}
 
 def row(owner,family,url,*,eligible=True,classification='A',updated=None,route='fixture:route',identity=None):
     return {
@@ -45,7 +53,7 @@ def row(owner,family,url,*,eligible=True,classification='A',updated=None,route='
 
 def envelope(owner,records=None):
     family,url=OWNER_FIXTURES[owner]
-    value={'schema_version':'1.0.0','run_id':'fixture-'+owner,'generated_at':NOW,'generator_version':'seo-008f-web-inventory-v1' if owner=='marketdeck-web' else 'seo-008-inventory-v1','environment':'test','preferred_origin':'https://marketdeck.in','producer':owner,'source_revision':REV,'source_snapshots':[{'name':'fixture','version':'v1'}],'enumeration_status':'complete','enumeration_errors':[],'record_count':0,'records_sha256':'','records':records if records is not None else [row(owner,family,url)]}
+    value={'schema_version':'1.0.0','run_id':'fixture-'+owner,'generated_at':NOW,'generator_version':ACCEPTED_GENERATORS[owner],'environment':'test','preferred_origin':'https://marketdeck.in','producer':owner,'source_revision':REV,'source_snapshots':[{'name':'fixture','version':'v1'}],'enumeration_status':'complete','enumeration_errors':[],'record_count':0,'records_sha256':'','records':records if records is not None else [row(owner,family,url)]}
     return finalize_inventory(value)
 
 def six():return {owner:envelope(owner) for owner in PRODUCERS}
@@ -56,7 +64,8 @@ class PublisherTests(unittest.TestCase):
         self.assertEqual(str(caught.exception),expected)
 
     def test_six_producer_happy_path_and_empty_groups(self):
-        admitted=admit_inventories(six());xml=build_xml_release(admitted)
+        values=six();self.assertEqual({owner:value['generator_version'] for owner,value in values.items()},ACCEPTED_GENERATORS)
+        admitted=admit_inventories(values);xml=build_xml_release(admitted)
         self.assertEqual(sum(map(len,admitted.values())),6)
         self.assertEqual(sum(c['count'] for c in xml['children']),6)
         self.assertFalse(any(c['group'] in {'stockproof-companies','stockproof-funds','crypto-coins'} for c in xml['children']))
@@ -68,8 +77,25 @@ class PublisherTests(unittest.TestCase):
 
     def test_schema_and_generator_mismatch(self):
         values=six();values['stockproof']['schema_version']='2.0.0';self.code('inventory_schema_mismatch',lambda:admit_inventories(values))
-        values=six();values['stockproof']['generator_version']='future-v9';self.code('generator_policy_mismatch',lambda:admit_inventories(values))
         values=six();values['stockproof']['records_sha256']='0'*64;self.code('inventory_integrity_failed',lambda:admit_inventories(values))
+
+    def test_unknown_and_stale_generator_versions_fail_closed(self):
+        for owner in PRODUCERS:
+            for rejected in ('future-v9','seo-008-inventory-v1'):
+                with self.subTest(owner=owner,generator_version=rejected):
+                    values=six();values[owner]['generator_version']=rejected
+                    self.code('generator_policy_mismatch',lambda:admit_inventories(values))
+
+    def test_sp08_clean_screener_is_admitted_but_result_state_is_not(self):
+        clean=row('stockproof','SP-08 screener_landing','https://marketdeck.in/screener/screener/',route='screener:screener')
+        result=row('stockproof','SP-08 screener_result_state','https://marketdeck.in/screener/screener/?q=bank',eligible=False,classification='C',route='screener:screener',identity='q=bank')
+        values=six();values['stockproof']=envelope('stockproof',[clean,result])
+        admitted=admit_inventories(values)
+        self.assertEqual(admitted['stockproof-catalog'],[{'url':clean['canonical_url'],'family':'SP-08','content_updated_at':None}])
+        self.assertFalse(result['sitemap_eligible'])
+        self.assertNotIn(result['canonical_url'],[record['url'] for records in admitted.values() for record in records])
+        values=six();values['stockproof']=envelope('stockproof',[row('stockproof','SP-08 screener_landing','https://marketdeck.in/screener/screener/?q=bank')])
+        self.code('unapproved_query_identity',lambda:admit_inventories(values))
 
     def test_duplicate_cross_owner_canonical_is_not_deduplicated(self):
         values=six();original=values['stockproof']['records'][0]['canonical_url'];duplicate=values['marketdeck-web']['records'][0]['canonical_url']

@@ -204,11 +204,11 @@ def schema_v1_valid(envelope: Any) -> bool:
 
 GENERATOR_POLICY = {
     "marketdeck-web": {"seo-008f-web-inventory-v1"},
-    "stockproof": {"seo-008-inventory-v1"},
-    "charting-v1": {"seo-008-inventory-v1"},
-    "fo-analytics-v1": {"seo-008-inventory-v1"},
-    "market-commentary-v1": {"seo-008-inventory-v1"},
-    "crypto-tools-v1": {"seo-008-inventory-v1"},
+    "stockproof": {"stockproof-seo-inventory-v1"},
+    "charting-v1": {"charting-seo-inventory-v1"},
+    "fo-analytics-v1": {"seo-008c-r1"},
+    "market-commentary-v1": {"commentary-inventory-v1"},
+    "crypto-tools-v1": {"crypto-seo-inventory-v1"},
 }
 
 FAMILY_GROUP = {
@@ -219,7 +219,8 @@ FAMILY_GROUP = {
     "SP-01": "stockproof-catalog", "SP-02": "stockproof-catalog",
     "SP-03": "stockproof-companies", "SP-04": "stockproof-companies",
     "SP-05": "stockproof-companies", "SP-06": "stockproof-companies",
-    "SP-07": "stockproof-catalog", "SP-09": "stockproof-funds",
+    "SP-07": "stockproof-catalog", "SP-08": "stockproof-catalog",
+    "SP-09": "stockproof-funds",
     "SP-10": "stockproof-funds", "SP-11": "stockproof-funds",
     "SP-12": "stockproof-catalog", "SP-13": "stockproof-catalog",
     "SP-14": "stockproof-catalog", "SP-15": "stockproof-catalog",
