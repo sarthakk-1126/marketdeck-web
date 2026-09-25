@@ -26,23 +26,9 @@ function groups(text) {
   return out;
 }
 
-test('robots explicitly allows approved search and retrieval agents', () => {
+test('robots preserves the simple production wildcard allow policy', () => {
   const parsed = groups(robots);
-  const expected = [
-    'Googlebot',
-    'Bingbot',
-    'OAI-SearchBot',
-    'ChatGPT-User',
-    'Claude-SearchBot',
-    'Claude-User',
-    'PerplexityBot',
-    'Perplexity-User',
-  ];
-
-  for (const agent of expected) {
-    assert.deepEqual(parsed.get(agent), [['allow', '/']], agent);
-  }
-
+  assert.deepEqual([...parsed.keys()], ['*']);
   assert.deepEqual(parsed.get('*'), [['allow', '/']]);
   assert.match(robots, /^Sitemap: https:\/\/marketdeck\.in\/sitemap\.xml$/m);
 });
@@ -50,7 +36,7 @@ test('robots explicitly allows approved search and retrieval agents', () => {
 test('machine-readable policy separates search/retrieval from training', () => {
   assert.equal(policy.canonical_origin, 'https://marketdeck.in');
   assert.equal(policy.sitemap, 'https://marketdeck.in/sitemap.xml');
-  assert.equal(policy.owner_decisions.search_and_retrieval, 'allow');
+  assert.equal(policy.owner_decisions.search_and_retrieval, 'allow_no_robots_change_required');
   assert.equal(
     policy.owner_decisions.model_training,
     'pending_explicit_owner_decision_preserve_existing_allow',
@@ -81,7 +67,7 @@ test('machine-readable policy separates search/retrieval from training', () => {
   }
 });
 
-test('every primary crawler row carries the SG-01 evidence fields', () => {
+test('every primary crawler row carries completed live-edge evidence', () => {
   const expectedAgents = [
     'Googlebot',
     'Bingbot',
@@ -117,14 +103,33 @@ test('every primary crawler row carries the SG-01 evidence fields', () => {
       assert.ok(Object.hasOwn(entry, field), `${entry.agent}: missing ${field}`);
     }
     assert.equal(entry.last_verified, '2026-09-25');
-    assert.equal(entry.current_live_http_result, 'pending_sg_01a_vps_edge_gate');
+    assert.match(entry.current_live_http_result, /^PASS_UA_PROBE_2026-09-25:/);
   }
 });
 
-test('training crawlers are not accidentally given dedicated robots groups', () => {
+test('edge evidence isolates Python-urllib denial to User-Agent behavior', () => {
+  assert.equal(policy.edge_observation.edge, 'cloudflare');
+  assert.equal(policy.edge_observation.paths.length, 3);
+  assert.match(policy.edge_observation.classification, /User-Agent-based denial/);
+  assert.match(policy.edge_observation.classification, /not a Python\/TLS-stack fingerprint block/);
+});
+
+test('no dedicated crawler group is needed merely to restate wildcard access', () => {
   const parsed = groups(robots);
-  assert.equal(parsed.has('GPTBot'), false);
-  assert.equal(parsed.has('ClaudeBot'), false);
+  for (const agent of [
+    'Googlebot',
+    'Bingbot',
+    'OAI-SearchBot',
+    'GPTBot',
+    'ChatGPT-User',
+    'Claude-SearchBot',
+    'ClaudeBot',
+    'Claude-User',
+    'PerplexityBot',
+    'Perplexity-User',
+  ]) {
+    assert.equal(parsed.has(agent), false, agent);
+  }
 });
 
 test('Google-Extended remains a separate pending owner control', () => {
