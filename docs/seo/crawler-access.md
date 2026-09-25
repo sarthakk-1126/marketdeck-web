@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.5  
+Version: 2026-09-25.6  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -247,3 +247,30 @@ Conclusion:
 SG-01E and SG-01F need one scoped Caddy observability change. Caddy's native structured access logs are sufficient for response status, bytes, latency, User-Agent and real-client-IP fields, so no application-level logging change is needed.
 
 Because MarketDeck is proxied by Cloudflare, verified-bot attribution must not blindly trust a client-supplied forwarding header. The implementation must establish Cloudflare as a trusted proxy source and only then derive the real visitor/client IP from the Cloudflare-provided header. The next preflight must inspect the exact Caddy version/config structure and existing origin network restrictions before a production patch is designed.
+
+
+## SG-01E/F implementation design
+
+Use Caddy native JSON access logging on `marketdeck.in` only.
+
+Initial release deliberately does **not** enable global `trusted_proxies`. Instead, the access log will retain Caddy's direct peer IP and append Cloudflare's `CF-Connecting-IP` and `CF-Ray` values as separate fields. Offline bot verification may trust the appended visitor IP only when the direct peer IP belongs to the current official Cloudflare proxy ranges.
+
+This avoids changing reverse-proxy/request semantics across the other product hosts while still giving SG-01E the evidence needed to authenticate crawler origin.
+
+Bounded storage:
+
+- path: `/data/marketdeck-access.json`;
+- mode: `0600`;
+- roll at `20MiB`;
+- keep 5 rolled files;
+- keep for at most 14 days (`336h`);
+- Caddy's file logger compresses rolled files by default.
+
+The nominal uncompressed upper bound is about 120MiB (active file plus five full-size rolled files), materially below the available disk headroom observed in preflight.
+
+Caddy native access records provide request metadata, status, response bytes and duration. Two additional request-context fields are appended:
+
+- `cf_connecting_ip`;
+- `cf_ray`.
+
+No request or response bodies are logged.
