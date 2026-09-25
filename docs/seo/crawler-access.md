@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.6  
+Version: 2026-09-25.7  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -274,3 +274,27 @@ Caddy native access records provide request metadata, status, response bytes and
 - `cf_ray`.
 
 No request or response bodies are logged.
+
+
+## SG-01E/F observability candidate validation — PASS
+
+Isolated validation: `2026-09-25T06:08:48Z`.
+
+Evidence:
+
+- live Caddyfile SHA before and after validation:
+  `016a69aa482a0bbf7cb45c1e965a3c29fdbe75a46b435dd693601ab818687e28`;
+- candidate:
+  `/opt/factory/Caddyfile.sg01-observability`;
+- candidate SHA:
+  `94aa1cc20679e8a9455b6843564bec9eac5413fc285115d6837783b949a2241b`;
+- Caddy version: `v2.11.4`;
+- isolated `caddy validate`: `Valid configuration`;
+- validation filesystem created `marketdeck-access.json` with mode `0600`;
+- no live config change;
+- no production restart;
+- no production logging enabled during validation.
+
+The formatting warning is non-blocking and predates/does not invalidate the candidate syntax. The known Cloudflare Origin Certificate OCSP warnings are likewise unrelated to the logging change.
+
+This clears the candidate-validation gate for a controlled Caddy-only production activation with rollback.
