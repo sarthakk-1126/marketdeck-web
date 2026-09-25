@@ -1,10 +1,10 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.2  
+Version: 2026-09-25.3  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
-This is the versioned SG-01 crawler-access baseline. It separates search/retrieval access from model-training access, records provider verification methods, and deliberately leaves live edge/WAF results pending until the production VPS gate is run.
+This is the versioned SG-01 crawler-access baseline. It separates search/retrieval access from model-training access, records provider verification methods, and now includes the first production Cloudflare edge/UA probe.
 
 It does **not** grant access to private application data, override page-level `noindex`, authorize crawler-specific content, or change the separate training-use decision.
 
@@ -19,7 +19,7 @@ Allow: /
 Sitemap: https://marketdeck.in/sitemap.xml
 ```
 
-Therefore automatic crawlers that honor the wildcard are currently allowed. The explicit crawler groups on this branch are a proposed, testable expression of search/retrieval intent; they are not deployed yet.
+Therefore automatic crawlers that honor the wildcard are currently allowed. The production edge probe confirms the tested Google, Bing, OpenAI, Anthropic and Perplexity crawler UA families are also served successfully. Explicit per-search-bot robots groups are unnecessary, so the SG-01 branch now preserves this simple production wildcard policy.
 
 ## Policy decision already safe to make
 
@@ -33,16 +33,16 @@ Training is a separate owner decision. SG-01 does not silently opt out or opt in
 
 | Crawler | Provider | Purpose | Search / retrieval | Training | robots token | Verification | Current production robots | Live HTTP | Desired policy | Required change |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Googlebot | Google | Search indexing | Yes | No; Google has separate Google-Extended control | `Googlebot` | Reverse+forward DNS or published common-crawler ranges | Wildcard allow | Pending VPS gate | Allow | Verify edge/WAF; explicit branch group documents intent |
-| bingbot | Microsoft | Search indexing | Yes | Not documented as a Bingbot purpose | `bingbot` | Reverse DNS to `search.msn.com` + forward-confirmation; Microsoft verification methods | Wildcard allow | Pending VPS gate | Allow | Verify edge/WAF; explicit branch group documents intent |
-| OAI-SearchBot | OpenAI | ChatGPT Search | Yes | No | `OAI-SearchBot` | OpenAI published SearchBot ranges | Wildcard allow | Pending VPS gate | Allow | Verify edge/WAF against current ranges; explicit branch group |
-| GPTBot | OpenAI | Model development/training | No | Yes | `GPTBot` | OpenAI published GPTBot ranges | Wildcard allow; no dedicated rule | Pending VPS gate | **Owner decision pending** | Do not couple to Search rollout |
-| ChatGPT-User | OpenAI | User-initiated retrieval | Yes | No | `ChatGPT-User` | OpenAI published ChatGPT-User ranges | Wildcard allow; provider says robots may not apply to user actions | Pending VPS gate | Allow | Verify no WAF/challenge block; explicit branch group documents intent |
-| Claude-SearchBot | Anthropic | Search quality/indexing | Yes | No | `Claude-SearchBot` | Anthropic official crawler IP list + claimed UA | Wildcard allow | Pending VPS gate | Allow | Verify edge/WAF; explicit branch group |
-| ClaudeBot | Anthropic | Model development/training | No | Yes | `ClaudeBot` | Anthropic official crawler IP list + claimed UA | Wildcard allow; no dedicated rule | Pending VPS gate | **Owner decision pending** | Do not couple to Search rollout |
-| Claude-User | Anthropic | User-initiated retrieval | Yes | No | `Claude-User` | Anthropic official crawler IP list + claimed UA | Wildcard allow | Pending VPS gate | Allow | Verify no WAF/challenge block; explicit branch group |
-| PerplexityBot | Perplexity | Search indexing | Yes | No | `PerplexityBot` | Current PerplexityBot IP ranges + claimed UA | Wildcard allow | Pending VPS gate | Allow | Verify edge/WAF using current ranges + UA; explicit branch group |
-| Perplexity-User | Perplexity | User-initiated retrieval | Yes | No | `Perplexity-User` | Current Perplexity-User IP ranges + claimed UA | Wildcard allow; provider says user fetches generally ignore robots | Pending VPS gate | Allow | Verify no WAF/challenge block; explicit branch group |
+| Googlebot | Google | Search indexing | Yes | No; Google has separate Google-Extended control | `Googlebot` | Reverse+forward DNS or published common-crawler ranges | Wildcard allow | PASS: 200 on 3-path live UA probe | Allow | No robots change; preserve wildcard allow; add verified-bot logging separately |
+| bingbot | Microsoft | Search indexing | Yes | Not documented as a Bingbot purpose | `bingbot` | Reverse DNS to `search.msn.com` + forward-confirmation; Microsoft verification methods | Wildcard allow | PASS: 200 on 3-path live UA probe | Allow | No robots change; preserve wildcard allow; add verified-bot logging separately |
+| OAI-SearchBot | OpenAI | ChatGPT Search | Yes | No | `OAI-SearchBot` | OpenAI published SearchBot ranges | Wildcard allow | PASS: 200 on 3-path live UA probe | Allow | No robots change; preserve wildcard allow; add verified-bot logging separately |
+| GPTBot | OpenAI | Model development/training | No | Yes | `GPTBot` | OpenAI published GPTBot ranges | Wildcard allow; no dedicated rule | PASS: 200 on 3-path live UA probe | **Owner decision pending** | Do not couple to Search rollout |
+| ChatGPT-User | OpenAI | User-initiated retrieval | Yes | No | `ChatGPT-User` | OpenAI published ChatGPT-User ranges | Wildcard allow; provider says robots may not apply to user actions | PASS: 200 on 3-path live UA probe | Allow | No robots change; live UA probe passed; verified-bot logging remains |
+| Claude-SearchBot | Anthropic | Search quality/indexing | Yes | No | `Claude-SearchBot` | Anthropic official crawler IP list + claimed UA | Wildcard allow | PASS: 200 on 3-path live UA probe | Allow | No robots change; live UA probe passed; verified-bot logging remains |
+| ClaudeBot | Anthropic | Model development/training | No | Yes | `ClaudeBot` | Anthropic official crawler IP list + claimed UA | Wildcard allow; no dedicated rule | PASS: 200 on 3-path live UA probe | **Owner decision pending** | Do not couple to Search rollout |
+| Claude-User | Anthropic | User-initiated retrieval | Yes | No | `Claude-User` | Anthropic official crawler IP list + claimed UA | Wildcard allow | PASS: 200 on 3-path live UA probe | Allow | No robots change; live UA probe passed; verified-bot logging remains |
+| PerplexityBot | Perplexity | Search indexing | Yes | No | `PerplexityBot` | Current PerplexityBot IP ranges + claimed UA | Wildcard allow | PASS: 200 on 3-path live UA probe | Allow | No robots change; live UA probe passed; verified-bot logging remains |
+| Perplexity-User | Perplexity | User-initiated retrieval | Yes | No | `Perplexity-User` | Current Perplexity-User IP ranges + claimed UA | Wildcard allow; provider says user fetches generally ignore robots | PASS: 200 on 3-path live UA probe | Allow | No robots change; live UA probe passed; verified-bot logging remains |
 
 The complete machine-readable row set, evidence URLs, current-policy field, required-change field and verification endpoints are in `docs/seo/crawler-access.json`.
 
@@ -146,15 +146,43 @@ Crawler-policy changes must preserve all of the following:
 - Verified approved Search/retrieval agents must not receive a WAF challenge/403 while ordinary public users receive 200.
 - Training-crawler policy changes only after an explicit owner decision.
 
-## Remaining SG-01A gate
+## SG-01A live edge result — PASS with a non-search-client caveat
 
-The earlier production verification observed a material discrepancy:
+Read-only production probe: 2026-09-25T05:50:52Z.
 
-- `curl` could fetch the public sitemap with HTTP 200;
-- Python `urllib.request.urlopen()` received HTTP 403.
+Tested paths:
 
-That is enough evidence to require an edge/client-discrimination test before deploying the proposed robots change.
+- `/robots.txt`
+- `/sitemap.xml`
+- `/screener/companies/`
 
-The next gate must measure representative public URLs using ordinary curl, a Python-like client, and the official crawler UA families; record HTTP status, redirects, bytes, latency, server/CDN headers, challenge signals and cookie dependency. UA-only probing does **not** prove actual verified-bot behavior.
+Results:
 
-After that result is recorded, SG-01A can classify whether the problem is User-Agent discrimination, client/TLS fingerprinting, rate/security policy, or something else, and only then should any WAF/Caddy change be designed.
+- ordinary curl -> HTTP 200 on all three paths;
+- curl with `Python-urllib/3.10` UA -> HTTP 403 on all three paths;
+- actual Python urllib default -> HTTP 403 on all three paths;
+- actual Python urllib using `curl/7.81.0` UA -> HTTP 200 on all three paths;
+- Googlebot, bingbot, OAI-SearchBot, GPTBot, ChatGPT-User, Claude-SearchBot, ClaudeBot, Claude-User, PerplexityBot and Perplexity-User UA probes -> HTTP 200 on all three paths;
+- no tested crawler UA needed redirects, cookies, or a visible challenge page;
+- response server header was Cloudflare.
+
+### Root-cause classification
+
+The earlier Python verifier 403 is **User-Agent based at the Cloudflare edge**. It is not caused by Python urllib's TLS/client fingerprint, because the same urllib client succeeds when it sends the curl User-Agent.
+
+This does **not** currently block the tested official search/retrieval crawler UA families.
+
+UA spoofing remains possible, so this is an accessibility test, not verified-bot authentication. SG-01E remains responsible for verified-bot logging using provider-published verification methods/ranges.
+
+### Robots decision after the probe
+
+Do **not** deploy redundant explicit allow groups for search crawlers.
+
+The accepted production wildcard already grants access and the live edge probe confirms it works. Keeping the simple wildcard:
+
+- avoids unnecessary crawler-specific maintenance;
+- avoids implying UA strings establish identity;
+- preserves the existing training-crawler posture until the owner makes that separate decision;
+- leaves room to add narrowly scoped training-agent rules later if the owner chooses.
+
+The Python-urllib UA block should be documented as a Cloudflare generic-client policy observation, not treated as a search-indexing defect.
