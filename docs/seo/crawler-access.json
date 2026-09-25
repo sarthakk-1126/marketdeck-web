@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.15",
+  "version": "2026-09-25.16",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -481,5 +481,19 @@
     "robots_report_interpretation": "Do not treat as a production robots defect at property-creation time; live robots.txt had already been independently verified public and functional. Recheck after Search Console finishes processing.",
     "crawl_stats_state": "No data available yet",
     "property_added_date": "2026-09-25"
+  },
+  "google_search_console": {
+    "property": "marketdeck.in",
+    "property_type": "Domain",
+    "ownership_verified": true,
+    "verification_method": "Domain name provider / Cloudflare DNS",
+    "search_generative_ai": "Include",
+    "sitemap": "https://marketdeck.in/sitemap.xml",
+    "sitemap_submitted_at": "2026-09-25",
+    "sitemap_last_read": "2026-09-25",
+    "sitemap_status": "Sitemap index processed successfully",
+    "discovered_pages_at_first_successful_read": 0,
+    "interpretation": "Root sitemap index is accepted and readable by Google. Discovered-page/indexing counts are not yet populated on this newly-created property and should be observed over time rather than inferred.",
+    "sg_03a_status": "PASS"
   }
 }
