@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.12",
+  "version": "2026-09-25.13",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -84,8 +84,8 @@
       "verification_endpoint": "https://openai.com/gptbot.json",
       "current_marketdeck_robots_policy": "Currently allowed by production wildcard User-agent: * / Allow: /; there is no dedicated GPTBot rule.",
       "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
-      "desired_business_policy": "pending_explicit_owner_training_decision",
-      "required_change": "No SG-01 search-access change required. Current wildcard permits this training agent and the live UA probe passes, but future allow/disallow remains a separate explicit owner decision.",
+      "desired_business_policy": "disallow_training",
+      "required_change": "Add a dedicated GPTBot robots group with Disallow: /. Preserve search/retrieval agents through the wildcard allow.",
       "official_source": "https://developers.openai.com/api/docs/bots",
       "evidence_note": "OpenAI documents GPTBot as crawling content that may be used to train generative AI foundation models.",
       "last_verified": "2026-09-25"
@@ -138,8 +138,8 @@
       "verification_endpoint": "https://claude.com/crawling/bots.json",
       "current_marketdeck_robots_policy": "Currently allowed by production wildcard User-agent: * / Allow: /; there is no dedicated ClaudeBot rule.",
       "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
-      "desired_business_policy": "pending_explicit_owner_training_decision",
-      "required_change": "No SG-01 search-access change required. Current wildcard permits this training agent and the live UA probe passes, but future allow/disallow remains a separate explicit owner decision.",
+      "desired_business_policy": "disallow_training",
+      "required_change": "Add a dedicated ClaudeBot robots group with Disallow: /. Preserve search/retrieval agents through the wildcard allow.",
       "official_source": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
       "evidence_note": "Anthropic documents ClaudeBot as collecting public web content that could potentially contribute to model training.",
       "last_verified": "2026-09-25"
@@ -207,16 +207,16 @@
       "training_or_grounding": true,
       "search_inclusion_or_ranking": false,
       "current_marketdeck_robots_policy": "No dedicated production Google-Extended group; current wildcard posture does not express a separate owner choice.",
-      "desired_business_policy": "pending_explicit_owner_training_and_grounding_decision",
-      "required_change": "Do not alter until the owner makes the separate training/grounding decision.",
+      "desired_business_policy": "allow_for_gemini_grounding_and_training_visibility",
+      "required_change": "Add an explicit Google-Extended Allow: / group so the business decision is documented independently from Google Search.",
       "official_source": "https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers",
       "last_verified": "2026-09-25"
     }
   ],
   "owner_decisions": {
-    "search_and_retrieval": "allow_no_robots_change_required",
-    "model_training": "pending_explicit_owner_decision_preserve_existing_allow",
-    "google_extended_training_and_grounding": "pending_explicit_owner_decision"
+    "search_and_retrieval": "allow",
+    "model_training": "disallow_GPTBot_and_ClaudeBot",
+    "google_extended_training_and_grounding": "allow"
   },
   "edge_observation": {
     "tested_at_utc": "2026-09-25T05:50:52Z",
@@ -429,5 +429,38 @@
     "private_report": "/opt/factory/seo-state/sg01-crawler-audit-20260925T151725Z.json",
     "private_report_mode": "0600",
     "conclusion": "SG-01E verified-bot logging and SG-01F response-size monitoring are accepted operational."
+  },
+  "sg_01c_decision": {
+    "decided_at": "2026-09-25",
+    "objective": "Maximize search/retrieval and AI-grounding visibility while avoiding pure training crawl load that does not control search inclusion.",
+    "policy": {
+      "Googlebot": "allow",
+      "bingbot": "allow",
+      "OAI-SearchBot": "allow",
+      "ChatGPT-User": "allow",
+      "Claude-SearchBot": "allow",
+      "Claude-User": "allow",
+      "PerplexityBot": "allow",
+      "Perplexity-User": "allow",
+      "GPTBot": "disallow",
+      "ClaudeBot": "disallow",
+      "Google-Extended": "allow"
+    },
+    "rationale": [
+      "OpenAI documents OAI-SearchBot and GPTBot as independent controls; GPTBot can be disallowed without opting out of ChatGPT Search.",
+      "Anthropic documents Claude-SearchBot/Claude-User separately from ClaudeBot; blocking ClaudeBot does not require blocking Claude search/retrieval.",
+      "The acceptance window observed 1,949 verified ClaudeBot training requests in one hour, creating meaningful crawl volume without being a Claude Search signal.",
+      "Google-Extended is kept allowed because Google documents it as governing Gemini model use and grounding in Gemini Apps / Vertex AI, while not affecting Google Search inclusion or ranking."
+    ],
+    "production_status": "pending_robots_deployment"
+  },
+  "search_console_generative_ai_control": {
+    "checked_at": "2026-09-25",
+    "account_session_present": true,
+    "marketdeck_property_present": false,
+    "observed_ui_state": "Search Console welcome / Add a website",
+    "property_control_state": "not_verifiable_until_property_added_and_verified",
+    "desired_state": "Include my site's links and content in Search generative AI features",
+    "official_rollout_note": "Google says the Search generative AI control rolled out worldwide by 2026-08-31 and defaults to inclusion for properties."
   }
 }
