@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.9",
+  "version": "2026-09-25.10",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -322,5 +322,41 @@
     "live_file_unchanged": true,
     "production_restart_performed": false,
     "conclusion": "Final privacy-minimized candidate is syntactically valid and accepted for controlled production reload."
+  },
+  "production_observability_activation": {
+    "activated_at_utc": "2026-09-25T06:16:33Z",
+    "status": "PASS",
+    "live_caddyfile_sha256": "c90de729b4e5025d4a4677ecf07181d7526849e1684b0c74c01253344d058540",
+    "candidate_sha256": "c90de729b4e5025d4a4677ecf07181d7526849e1684b0c74c01253344d058540",
+    "rollback_backup": "/opt/factory/Caddyfile.pre-sg01-observability-20260925T061633Z",
+    "rollback_backup_sha256": "016a69aa482a0bbf7cb45c1e965a3c29fdbe75a46b435dd693601ab818687e28",
+    "reload_method": "graceful caddy reload; no container restart",
+    "other_containers_restarted": false,
+    "product_health": {
+      "platform_root": 200,
+      "sitemap": 200,
+      "screener": 200,
+      "charts": 200,
+      "futures_and_options": 200,
+      "commentary": 200,
+      "crypto": 200
+    },
+    "sitemap_sha256": "4eb37dcc0d98d8b3605bc02bb8384aa2b26ee3085b427e025f4b5c2748ae250a",
+    "access_log": {
+      "path": "/var/lib/docker/volumes/factory_caddy_data/_data/marketdeck-access.json",
+      "initial_observed_bytes": 29768,
+      "mode": "0600",
+      "probe_status": 200,
+      "probe_response_size": 114757,
+      "probe_duration_seconds": 3.869836602,
+      "remote_ip_present": true,
+      "client_ip_present": true,
+      "cf_connecting_ip_present": true,
+      "cf_ray_present": true,
+      "request_headers_present": false,
+      "response_headers_present": false,
+      "record_validation": "PASS"
+    },
+    "conclusion": "SG-01 observability evidence layer is live and accepted. It can now feed verified-bot classification and response-size/latency monitoring."
   }
 }
