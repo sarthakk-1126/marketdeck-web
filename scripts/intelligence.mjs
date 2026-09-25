@@ -19,14 +19,14 @@ export function catalog(manifest,notes,{read=path=>JSON.parse(readFileSync(path,
     const cover=localPath(i.cover),pdf=i.pdfPath?localPath(i.pdfPath):null;
     if(!exists(cover)||(pdf&&!exists(pdf)))throw new Error('Missing published editorial asset: '+id);
     if(pdf&&(!Number.isInteger(i.pageCount)||i.pageCount<1))throw new Error('Invalid page count');
-    items.push({id,path,title:text(i.title),summary:text(i.summary),kind:'magazine',edition:text(i.edition),topics:topics(i.topics),cover,pdf,pages:i.pageCount,minutes:readingTime(read(i.source).pages.map(p=>[p.title,p.intro,p.callout,...(p.sections??[]).flatMap(s=>[s.title,s.text,...(s.items??[])])].filter(Boolean).join(' ')).join(' ')),date:i.publishedAt||i.approvedAt,updated:i.lastUpdated||i.publishedAt||i.approvedAt,featured:i.featured!==false});
+    items.push({id,path,title:text(i.title),summary:text(i.summary),kind:'magazine',edition:text(i.edition),topics:topics(i.topics),cover,pdf,pages:i.pageCount,minutes:readingTime(read(i.source).pages.map(p=>[p.title,p.intro,p.callout,...(p.sections??[]).flatMap(s=>[s.title,s.text,...(s.items??[])])].filter(Boolean).join(' ')).join(' ')),date:i.publishedAt||i.approvedAt,published:i.publishedAt||i.approvedAt,updated:i.lastUpdated||i.publishedAt||i.approvedAt,featured:i.featured!==false});
   }
   const metadata=new Map((manifest.notes??[]).map(n=>[n.slug,n]));
   for(const [index,n] of notes.entries()){
     const id=slug(n.slug),m=metadata.get(id)??{};
     const art=m.coverArt?localPath(m.coverArt):'/assets/india-earth-small.webp';
     if(!exists(art))throw new Error('Missing note artwork');
-    items.push({id,path:localPath(n.path),title:text(n.title),summary:text(n.summary),kind:'note',edition:'Learning note '+String(index+1).padStart(2,'0'),topics:topics(m.topics),cover:null,art,pdf:null,pages:null,minutes:readingTime(n.body),date:n.publishedAt||m.approvedAt||n.modifiedAt||null,updated:n.modifiedAt||n.publishedAt||m.approvedAt||null,featured:m.featured!==false});
+    items.push({id,path:localPath(n.path),title:text(n.title),summary:text(n.summary),kind:'note',edition:'Learning note '+String(index+1).padStart(2,'0'),topics:topics(m.topics),cover:null,art,pdf:null,pages:null,minutes:readingTime(n.body),date:null,published:n.publishedAt||m.approvedAt||n.modifiedAt||null,updated:n.modifiedAt||n.publishedAt||m.approvedAt||null,featured:m.featured!==false});
   }
   for(const i of items){if(seen.has(i.id)||!i.title)throw new Error('Duplicate or unnamed editorial item');seen.add(i.id);}
   return items.sort((a,b)=>((b.date??'').localeCompare(a.date??'')));
@@ -36,11 +36,11 @@ const atomDate=value=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(value??''))throw new Error
 export function atomFeed(items,{origin='https://marketdeck.in'}={}){
   const base=new URL(origin);
   if(base.protocol!=='https:'||base.username||base.password||base.pathname!=='/')throw new Error('Invalid Atom origin');
-  const entries=items.filter(i=>i.date).map(i=>({...i,updated:i.updated||i.date})).sort((a,b)=>(b.updated.localeCompare(a.updated)||b.date.localeCompare(a.date)||a.path.localeCompare(b.path)));
+  const entries=items.filter(i=>i.published).map(i=>({...i,updated:i.updated||i.published})).sort((a,b)=>(b.updated.localeCompare(a.updated)||b.published.localeCompare(a.published)||a.path.localeCompare(b.path)));
   if(!entries.length)throw new Error('Atom feed requires published dated entries');
   const feedUpdated=atomDate(entries[0].updated);
   const abs=path=>path==='/'?base.href:new URL(localPath(path),base).href;
-  return `<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><id>${esc(abs('/intelligence/'))}</id><title>MarketDeck Intelligence</title><subtitle>Research, learning notes and long-form market perspectives from MarketDeck.</subtitle><updated>${feedUpdated}</updated><link rel="self" type="application/atom+xml" href="${esc(abs('/intelligence/feed.xml'))}"/><link rel="alternate" type="text/html" href="${esc(abs('/intelligence/'))}"/><author><name>MarketDeck</name><uri>${esc(abs('/'))}</uri></author>${entries.map(i=>`<entry><id>${esc(abs(i.path))}</id><title>${esc(i.title)}</title><link rel="alternate" type="text/html" href="${esc(abs(i.path))}"/><published>${atomDate(i.date)}</published><updated>${atomDate(i.updated)}</updated><summary>${esc(i.summary)}</summary>${i.topics.map(t=>`<category term="${esc(t)}" label="${esc(TOPICS[t])}"/>`).join('')}</entry>`).join('')}</feed>`;
+  return `<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><id>${esc(abs('/intelligence/'))}</id><title>MarketDeck Intelligence</title><subtitle>Research, learning notes and long-form market perspectives from MarketDeck.</subtitle><updated>${feedUpdated}</updated><link rel="self" type="application/atom+xml" href="${esc(abs('/intelligence/feed.xml'))}"/><link rel="alternate" type="text/html" href="${esc(abs('/intelligence/'))}"/><author><name>MarketDeck</name><uri>${esc(abs('/'))}</uri></author>${entries.map(i=>`<entry><id>${esc(abs(i.path))}</id><title>${esc(i.title)}</title><link rel="alternate" type="text/html" href="${esc(abs(i.path))}"/><published>${atomDate(i.published)}</published><updated>${atomDate(i.updated)}</updated><summary>${esc(i.summary)}</summary>${i.topics.map(t=>`<category term="${esc(t)}" label="${esc(TOPICS[t])}"/>`).join('')}</entry>`).join('')}</feed>`;
 }
 
 function cover(i,mini=false){
