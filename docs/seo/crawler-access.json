@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.11",
+  "version": "2026-09-25.12",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -380,5 +380,54 @@
       "slow_seconds": 8,
       "rationale": "Operational headroom below Google's documented default 15 MB crawler/fetcher file boundary; size is Caddy transfer bytes and is a monitoring signal, not a claim of exact engine accounting."
     }
+  },
+  "verifier_monitor_acceptance": {
+    "tested_at_utc": "2026-09-25T15:17:25Z",
+    "status": "PASS",
+    "tool_revision": "5289f9b5b1536d4e949b1c63db39f671576631a9",
+    "unit_tests": {
+      "passed": 5,
+      "failed": 0
+    },
+    "log_mode": "0600",
+    "records_in_window": 2054,
+    "cloudflare_range_source_ok": true,
+    "controlled_spoof_claims": {
+      "count": 8,
+      "all_returned_http_200": true,
+      "all_rejected_as_verified_identity": true
+    },
+    "verified_real_traffic": {
+      "Googlebot": 34,
+      "ChatGPT-User": 3,
+      "ClaudeBot": 1949
+    },
+    "other_claimed_agents_in_window": {
+      "bingbot": 1,
+      "OAI-SearchBot": 1,
+      "Claude-SearchBot": 1,
+      "Claude-User": 1,
+      "PerplexityBot": 1,
+      "Perplexity-User": 1
+    },
+    "note": "The single claims for bingbot/OAI-SearchBot/Claude-SearchBot/Claude-User/PerplexityBot/Perplexity-User were controlled spoof probes and correctly remained unverified.",
+    "response_monitoring": {
+      "response_size_p50_bytes": 37932,
+      "response_size_p95_bytes": 79048.85,
+      "response_size_p99_bytes": 148162.14,
+      "duration_p50_seconds": 0.0307994995,
+      "duration_p95_seconds": 0.6920941697,
+      "duration_p99_seconds": 1.98670093067,
+      "largest_observed_response_bytes": 620113,
+      "largest_observed_uri": "/screener/company/IDEA.NS/",
+      "size_warning_threshold_mib": 10,
+      "size_critical_threshold_mib": 14,
+      "slow_threshold_seconds": 8,
+      "size_findings": 0,
+      "slow_findings": 0
+    },
+    "private_report": "/opt/factory/seo-state/sg01-crawler-audit-20260925T151725Z.json",
+    "private_report_mode": "0600",
+    "conclusion": "SG-01E verified-bot logging and SG-01F response-size monitoring are accepted operational."
   }
 }
