@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.15  
+Version: 2026-09-25.16  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -540,3 +540,23 @@ Observed property state:
 The robots report line is not treated as a production failure because MarketDeck's live `/robots.txt` was independently verified before and after the SG-01C release, including successful crawler access. Recheck the Search Console robots report after the newly-created property finishes processing.
 
 SG-01D is complete.
+
+
+## Google Search Console sitemap submission — PASS
+
+The verified Domain property `marketdeck.in` now has the authoritative root sitemap submitted:
+
+`https://marketdeck.in/sitemap.xml`
+
+Observed on 2026-09-25:
+
+- Search Console last read: 25/09/2026;
+- status: **Sitemap index processed successfully**;
+- discovered pages at the first successful read: 0;
+- discovered videos: 0.
+
+This supersedes the transient initial "Couldn't fetch" status shown immediately after submission.
+
+The zero discovered-page count is recorded as the initial Search Console processing state only. It is not used to redefine the authoritative inventory and is not treated as evidence that zero MarketDeck pages exist. The authoritative approved canonical denominator remains 12,866.
+
+SG-03A is accepted complete for property verification and sitemap configuration. SG-00C remains open until Google/Bing discovery/index-state baselines are populated.
