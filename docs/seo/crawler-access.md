@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.4  
+Version: 2026-09-25.5  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -225,3 +225,25 @@ Families covered:
 Conclusion: the sampled public acquisition surface is not being unintentionally blocked by the current Cloudflare/WAF/session behavior for the tested major search/retrieval crawler UA families.
 
 This closes SG-01G's cross-product accessibility gate without a 12,866-page crawler sweep. UA-only requests still do not prove crawler authenticity; SG-01E remains responsible for verified-bot logging.
+
+
+## SG-01E/F Caddy observability preflight
+
+Read-only production preflight: `2026-09-25T05:59:48Z`.
+
+Observed:
+
+- live Caddy container: `factory-caddy-1`;
+- Docker log driver: `json-file`;
+- no Caddy HTTP access-log directive was found;
+- no access-log file was found under `/opt/factory`;
+- no `trusted_proxies` directive was found;
+- no `client_ip_headers` directive was found;
+- current Docker/Caddy output contains runtime/admin messages, not request-access records;
+- standard Caddy modules include `http.handlers.log_append` and `http.matchers.client_ip`.
+
+Conclusion:
+
+SG-01E and SG-01F need one scoped Caddy observability change. Caddy's native structured access logs are sufficient for response status, bytes, latency, User-Agent and real-client-IP fields, so no application-level logging change is needed.
+
+Because MarketDeck is proxied by Cloudflare, verified-bot attribution must not blindly trust a client-supplied forwarding header. The implementation must establish Cloudflare as a trusted proxy source and only then derive the real visitor/client IP from the Cloudflare-provided header. The next preflight must inspect the exact Caddy version/config structure and existing origin network restrictions before a production patch is designed.
