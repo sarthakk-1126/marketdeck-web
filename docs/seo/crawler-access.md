@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.10  
+Version: 2026-09-25.11  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -370,3 +370,37 @@ Initial unique probe observation:
 - duration: 3.869836602 seconds.
 
 The observability evidence layer is therefore accepted live. SG-01E still requires verified crawler classification logic; SG-01F still requires monitoring/reporting policy on top of the now-available size/duration stream.
+
+
+## SG-01E/F crawler log auditor implemented
+
+Versioned source:
+
+- `scripts/seo/audit_crawler_access_log.py`
+- `tests/seo_crawler_log_audit_test.py`
+
+The tool is standard-library-only and consumes the privacy-minimized Caddy JSON stream.
+
+Verification rules:
+
+- first verify the direct Caddy peer against Cloudflare's current official IPv4/IPv6 ranges;
+- only then consider `CF-Connecting-IP` as the external source address;
+- Googlebot: current Google common-crawler CIDRs;
+- bingbot: reverse DNS ending in `search.msn.com` plus forward-confirmation;
+- OpenAI: the matching agent's official published JSON ranges;
+- Anthropic: official crawler JSON ranges;
+- Perplexity: the matching agent's official published JSON ranges.
+
+It reports claimed, verified, source-error and unverified/spoofed crawler observations without emitting raw IP addresses.
+
+SG-01F defaults:
+
+- response-size warning: 10 MiB;
+- response-size critical: 14 MiB;
+- slow-response warning: 8 seconds;
+- p50/p95/p99 size and duration;
+- largest and slowest public URIs.
+
+The 10/14 MiB values are operating headroom below Google's documented default 15 MB crawler/fetcher file-size boundary. Caddy's logged response size is treated as an operational transfer-size signal rather than asserted to be identical to every engine's fetch accounting.
+
+Status: implemented in GitHub; production execution and source-fetch verification still pending.
