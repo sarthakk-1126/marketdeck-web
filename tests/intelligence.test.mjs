@@ -75,6 +75,8 @@ test('Atom feed contains only published dated Intelligence entries and is autodi
  for(const item of items)assert.ok(feed.includes('https://marketdeck.in'+item.path),item.path);
  const firstUpdated=feed.match(/<feed[^>]*>[\s\S]*?<updated>([^<]+)<\/updated>/)?.[1];assert.equal(firstUpdated,'2026-09-23T00:00:00Z');
  for(const path of ['public/index.html','public/intelligence/index.html','public/intelligence/library/index.html']){const html=readFileSync(path,'utf8');assert.match(html,/rel="alternate" type="application\/atom\+xml" title="MarketDeck Intelligence" href="\/intelligence\/feed\.xml"/);}
+ assert.doesNotMatch(readFileSync('public/credits/index.html','utf8'),/application\/atom\+xml/);
+ const notesInCatalog=items.filter(i=>i.kind==='note');assert.ok(notesInCatalog.every(i=>i.date===null));assert.ok(notesInCatalog.every(i=>i.published==='2026-09-23'));
 });
 
 test('client enhancement is small, local and non-autoplay',()=>{
