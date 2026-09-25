@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.12  
+Version: 2026-09-25.13  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -449,3 +449,46 @@ Private machine-readable evidence:
 `/opt/factory/seo-state/sg01-crawler-audit-20260925T151725Z.json` (mode `0600`).
 
 SG-01E and SG-01F are accepted complete operationally.
+
+
+## SG-01C explicit business policy — DECIDED
+
+MarketDeck's crawler business policy is now explicit:
+
+**Allow search/retrieval:**
+- Googlebot;
+- bingbot;
+- OAI-SearchBot;
+- ChatGPT-User;
+- Claude-SearchBot;
+- Claude-User;
+- PerplexityBot;
+- Perplexity-User.
+
+**Disallow pure model-training crawlers:**
+- GPTBot;
+- ClaudeBot.
+
+**Allow Google-Extended:**
+- keep Gemini Apps / Vertex AI model-use and grounding eligibility enabled.
+
+Rationale:
+
+1. OpenAI documents OAI-SearchBot and GPTBot as independent controls, so GPTBot can be blocked without opting MarketDeck out of ChatGPT Search.
+2. Anthropic documents Claude-SearchBot and Claude-User independently from ClaudeBot, so ClaudeBot can be blocked without blocking Claude search/retrieval.
+3. The one-hour SG-01E acceptance window authenticated 1,949 ClaudeBot requests. That is substantial pure training crawl activity and is not itself evidence of Claude Search visibility.
+4. Google-Extended remains allowed because Google documents it as a control for Gemini model use and grounding in Gemini Apps / Vertex AI, while explicitly stating it does not affect Google Search inclusion or ranking.
+
+The branch robots policy now expresses those decisions directly. Production remains unchanged until the robots release gate is validated and promoted.
+
+## SG-01D Search Console property check — BLOCKED ON PROPERTY SETUP
+
+Opera was used to inspect the signed-in Google Search Console session. The account is authenticated, but Search Console currently shows the welcome screen with **Add a website**; no MarketDeck website property is configured.
+
+Therefore the actual MarketDeck Search generative AI property control cannot yet be verified.
+
+Google's current Search Console control (rolled out worldwide by 2026-08-31) covers AI Overviews, AI Mode and generative-AI features in Discover. The desired MarketDeck state is:
+
+`Include my site's links and content in Search generative AI features`.
+
+Google documents that inclusion is the default for properties, but SG-01D will remain open until a verified `marketdeck.in` Search Console property exists and its effective control is observed.
