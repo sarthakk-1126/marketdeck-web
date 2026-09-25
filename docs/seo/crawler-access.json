@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.4",
+  "version": "2026-09-25.5",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -250,5 +250,20 @@
     "visible_challenges_observed": 0,
     "conclusion": "PASS: sampled public acquisition pages across every live sitemap family are accessible through Cloudflare to all five tested search/retrieval crawler UA families without redirect, cookie, or visible challenge requirements.",
     "caveat": "UA probing demonstrates accessibility of claimed crawler strings, not verified crawler identity."
+  },
+  "observability_preflight": {
+    "tested_at_utc": "2026-09-25T05:59:48Z",
+    "caddy_container": "factory-caddy-1",
+    "docker_log_driver": "json-file",
+    "access_logging_configured": false,
+    "access_log_files_found_under_factory": false,
+    "trusted_proxies_configured": false,
+    "client_ip_headers_configured": false,
+    "caddy_modules_observed": [
+      "http.handlers.log_append",
+      "http.matchers.client_ip"
+    ],
+    "conclusion": "SG-01E/F require a Caddy observability change. Current logs are runtime/admin logs only; there is no HTTP access-log stream and no trusted-proxy real-client-IP parsing.",
+    "security_constraint": "Do not trust CF-Connecting-IP unless the direct peer is validated as Cloudflare via Caddy trusted_proxies or equivalent origin-network restriction."
   }
 }
