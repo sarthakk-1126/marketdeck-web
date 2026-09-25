@@ -101,3 +101,66 @@ Notification failure is separate from sitemap publication. The publisher writes 
 - Do not bulk-submit all 12,866 current canonicals merely because IndexNow was enabled.
 - Do not submit internal search states, arbitrary filters, account routes, downloads, uploads, or private URLs.
 - Do not treat HTTP 200 from IndexNow as an indexing guarantee.
+
+
+## SG-02C — Intelligence Atom feed
+
+MarketDeck will publish one Atom 1.0 feed for the genuine dated editorial stream:
+
+`https://marketdeck.in/intelligence/feed.xml`
+
+Scope:
+
+- published Intelligence learning notes;
+- published MarketDeck Brief issues;
+- no drafts;
+- no company/fund/coin/tool/entity pages;
+- no synthetic publication timestamps.
+
+The feed is generated from the same editorial registry used for the Intelligence library. Published and updated dates come from source-owned editorial metadata already used for visible dates / structured data.
+
+HTML autodiscovery uses:
+
+`<link rel="alternate" type="application/atom+xml" title="MarketDeck Intelligence" href="/intelligence/feed.xml">`
+
+Google officially accepts Atom 1.0 feeds as sitemap inputs and notes that such feeds represent recent URLs rather than a full historical inventory. The existing authoritative XML sitemap remains the complete acquisition inventory.
+
+## SG-02D — WebSub evaluation
+
+Decision: **defer implementation until the Atom feed is production-live and has a demonstrated subscriber/discovery use case**.
+
+Google documents that RSS/Atom publishers can use WebSub to broadcast changes to search engines including Google. W3C WebSub requires a publisher to advertise one or more hubs and a self/topic URL, then notify the hub when the topic changes.
+
+MarketDeck already has IndexNow for participating search engines and a durable canonical-change event stream. Adding a third-party hub before the feed is live would create another external dependency without measured incremental value.
+
+Re-evaluate WebSub after:
+1. `/intelligence/feed.xml` is production-live;
+2. feed updates occur naturally;
+3. a maintained HTTPS hub is selected and its availability/privacy/security posture is reviewed;
+4. incremental discovery benefit can be measured against sitemap + IndexNow.
+
+## SG-02F — separate lifecycle lag ledger
+
+Source:
+
+`scripts/seo/search_lag_ledger.py`
+
+Private state target:
+
+`/opt/factory/seo-state/search-lag-ledger.json`
+
+The ledger records first-observed timestamps independently for:
+
+- published;
+- notified;
+- first verified crawl;
+- search discovered;
+- indexed;
+- first impression;
+- first AI citation.
+
+It computes notification lag, crawl lag, discovery lag, index lag, ranking-signal lag and citation lag separately. No stage is inferred from another. Search Console/Bing observations remain external evidence and are recorded only when actually observed.
+
+## SG-02G — Google Indexing API guard
+
+Complete by policy and implementation review: MarketDeck does not use Google's Indexing API for ordinary finance/editorial/product URLs. Discovery uses the authoritative sitemap, Search Console, Bing/IndexNow, crawlable internal links, and the editorial Atom feed.
