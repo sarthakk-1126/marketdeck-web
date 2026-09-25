@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.6",
+  "version": "2026-09-25.7",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -278,5 +278,19 @@
     },
     "maximum_uncompressed_nominal_window": "approximately 120MiB including active file plus five 20MiB rolled files; rolled files are compressed by default",
     "rationale": "Central observability with bounded disk use and no application changes or proxy-header behavior changes."
+  },
+  "observability_candidate_validation": {
+    "tested_at_utc": "2026-09-25T06:08:48Z",
+    "live_caddyfile_sha256": "016a69aa482a0bbf7cb45c1e965a3c29fdbe75a46b435dd693601ab818687e28",
+    "candidate_path": "/opt/factory/Caddyfile.sg01-observability",
+    "candidate_sha256": "94aa1cc20679e8a9455b6843564bec9eac5413fc285115d6837783b949a2241b",
+    "caddy_version": "v2.11.4",
+    "validation": "PASS",
+    "validation_message": "Valid configuration",
+    "validation_log_file_created": true,
+    "validation_log_mode": "0600",
+    "live_file_unchanged": true,
+    "production_restart_performed": false,
+    "conclusion": "Candidate is syntactically valid and its file logger can create the intended access log with mode 0600 in an isolated validation filesystem."
   }
 }
