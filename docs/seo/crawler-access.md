@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.8  
+Version: 2026-09-25.9  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -321,3 +321,21 @@ Retain:
 Delete the general `request.headers` and `resp_headers` maps from the encoded record. Do not log request or response bodies.
 
 This preserves SG-01E/F evidence while avoiding collection of unrelated request metadata.
+
+
+## Final privacy-minimized observability candidate — PASS
+
+Final isolated validation: `2026-09-25T06:10:53Z`.
+
+- live Caddyfile SHA remained:
+  `016a69aa482a0bbf7cb45c1e965a3c29fdbe75a46b435dd693601ab818687e28`;
+- final candidate SHA:
+  `c90de729b4e5025d4a4677ecf07181d7526849e1684b0c74c01253344d058540`;
+- Caddy `v2.11.4`;
+- validation result: `Valid configuration`;
+- logger target created with mode `0600`;
+- general `request.headers` and `resp_headers` are filtered out;
+- explicit identity fields retained: `user_agent`, `cf_connecting_ip`, `cf_ray`;
+- no production mutation or restart occurred.
+
+This supersedes the earlier non-minimized candidate SHA. The final candidate is accepted for a controlled production Caddy reload with automatic rollback if reload, health, or log-shape verification fails.
