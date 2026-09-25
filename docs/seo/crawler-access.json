@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.7",
+  "version": "2026-09-25.8",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -277,7 +277,27 @@
       "roll_keep_for": "336h"
     },
     "maximum_uncompressed_nominal_window": "approximately 120MiB including active file plus five 20MiB rolled files; rolled files are compressed by default",
-    "rationale": "Central observability with bounded disk use and no application changes or proxy-header behavior changes."
+    "rationale": "Central observability with bounded disk use and no application changes or proxy-header behavior changes.",
+    "privacy_minimization": {
+      "strategy": "Append only user_agent, cf_connecting_ip and cf_ray as explicit fields, then delete request.headers and resp_headers from encoded access records.",
+      "retained_core_fields": [
+        "timestamp",
+        "request.remote_ip",
+        "request.client_ip",
+        "request.method",
+        "request.host",
+        "request.uri",
+        "request.protocol/tls metadata",
+        "status",
+        "size",
+        "duration",
+        "user_agent",
+        "cf_connecting_ip",
+        "cf_ray"
+      ],
+      "request_bodies_logged": false,
+      "response_bodies_logged": false
+    }
   },
   "observability_candidate_validation": {
     "tested_at_utc": "2026-09-25T06:08:48Z",
