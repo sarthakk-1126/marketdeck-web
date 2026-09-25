@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.9  
+Version: 2026-09-25.10  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -339,3 +339,34 @@ Final isolated validation: `2026-09-25T06:10:53Z`.
 - no production mutation or restart occurred.
 
 This supersedes the earlier non-minimized candidate SHA. The final candidate is accepted for a controlled production Caddy reload with automatic rollback if reload, health, or log-shape verification fails.
+
+
+## SG-01E/F production observability activation — PASS
+
+Activated: `2026-09-25T06:16:33Z`.
+
+Production evidence:
+
+- live Caddyfile SHA:
+  `c90de729b4e5025d4a4677ecf07181d7526849e1684b0c74c01253344d058540`;
+- rollback backup:
+  `/opt/factory/Caddyfile.pre-sg01-observability-20260925T061633Z`;
+- rollback backup SHA:
+  `016a69aa482a0bbf7cb45c1e965a3c29fdbe75a46b435dd693601ab818687e28`;
+- graceful Caddy reload passed;
+- no Caddy container restart;
+- no other container restart;
+- platform root, sitemap, Screener, Charts, F&O, Commentary and Crypto all returned HTTP 200;
+- authoritative sitemap SHA remained:
+  `4eb37dcc0d98d8b3605bc02bb8384aa2b26ee3085b427e025f4b5c2748ae250a`;
+- production access log exists with mode `0600`;
+- unique probe record returned HTTP 200 and exposed numeric response size and duration;
+- direct peer IP, Caddy client IP, CF-Connecting-IP and CF-Ray fields are present;
+- general request and response header maps are absent.
+
+Initial unique probe observation:
+
+- response size: 114,757 bytes;
+- duration: 3.869836602 seconds.
+
+The observability evidence layer is therefore accepted live. SG-01E still requires verified crawler classification logic; SG-01F still requires monitoring/reporting policy on top of the now-available size/duration stream.
