@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.8",
+  "version": "2026-09-25.9",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -300,17 +300,27 @@
     }
   },
   "observability_candidate_validation": {
-    "tested_at_utc": "2026-09-25T06:08:48Z",
+    "tested_at_utc": "2026-09-25T06:10:53Z",
     "live_caddyfile_sha256": "016a69aa482a0bbf7cb45c1e965a3c29fdbe75a46b435dd693601ab818687e28",
     "candidate_path": "/opt/factory/Caddyfile.sg01-observability",
-    "candidate_sha256": "94aa1cc20679e8a9455b6843564bec9eac5413fc285115d6837783b949a2241b",
+    "candidate_sha256": "c90de729b4e5025d4a4677ecf07181d7526849e1684b0c74c01253344d058540",
     "caddy_version": "v2.11.4",
     "validation": "PASS",
     "validation_message": "Valid configuration",
     "validation_log_file_created": true,
     "validation_log_mode": "0600",
+    "privacy_minimized": true,
+    "deleted_fields": [
+      "request.headers",
+      "resp_headers"
+    ],
+    "explicit_identity_fields": [
+      "user_agent",
+      "cf_connecting_ip",
+      "cf_ray"
+    ],
     "live_file_unchanged": true,
     "production_restart_performed": false,
-    "conclusion": "Candidate is syntactically valid and its file logger can create the intended access log with mode 0600 in an isolated validation filesystem."
+    "conclusion": "Final privacy-minimized candidate is syntactically valid and accepted for controlled production reload."
   }
 }
