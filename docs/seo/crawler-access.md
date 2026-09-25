@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.7  
+Version: 2026-09-25.8  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -298,3 +298,26 @@ Evidence:
 The formatting warning is non-blocking and predates/does not invalidate the candidate syntax. The known Cloudflare Origin Certificate OCSP warnings are likewise unrelated to the logging change.
 
 This clears the candidate-validation gate for a controlled Caddy-only production activation with rollback.
+
+
+## SG-01E/F access-log data minimization
+
+Before production activation, narrow the access-log payload to the minimum needed for crawler verification and response monitoring.
+
+Retain:
+
+- request timestamp;
+- direct peer IP;
+- Caddy client IP field;
+- method, host and URI;
+- protocol/TLS metadata;
+- status;
+- response bytes;
+- duration;
+- explicit `user_agent`;
+- explicit `cf_connecting_ip`;
+- explicit `cf_ray`.
+
+Delete the general `request.headers` and `resp_headers` maps from the encoded record. Do not log request or response bodies.
+
+This preserves SG-01E/F evidence while avoiding collection of unrelated request metadata.
