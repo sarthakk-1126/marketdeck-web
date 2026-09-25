@@ -205,6 +205,61 @@ class PublisherTests(unittest.TestCase):
             (base/'private'/'current.json').unlink();self.assertEqual(recover_active_release(base/'private',base/'public')['release_id'],'active')
             self.assertTrue(all(p.suffix=='.xml' for p in (base/'public').iterdir()));self.assertTrue(any(p.suffix=='.json' for p in (base/'private').rglob('*') if p.is_file()))
 
+    def test_change_event_initial_activation_is_baseline_not_historical_backfill(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            meta=publish_release(
+                six(),staging=base/'stage',public=base/'public',private=base/'private',
+                publisher_revision=REV,activate=True,release_id='baseline',
+            )
+            event=meta['change_event']
+            self.assertTrue(event['initial_baseline'])
+            self.assertEqual(event['previous_public_status'],'baseline_missing')
+            self.assertEqual(event['counts'],{'created':0,'updated':0,'withdrawn':0})
+            event_path=base/'private'/'change-events'/'baseline.json'
+            self.assertTrue(event_path.exists())
+            self.assertEqual(json.loads(event_path.read_text()),event)
+
+    def test_change_event_created_updated_withdrawn_and_substantive_timestamp_only(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            first=six()
+            first['marketdeck-web']=envelope('marketdeck-web',[
+                first['marketdeck-web']['records'][0],
+                row('marketdeck-web','INT-03 note','https://marketdeck.in/intelligence/notes/a/',updated='2026-09-24'),
+                row('marketdeck-web','INT-03 note','https://marketdeck.in/intelligence/notes/remove/',updated='2026-09-24'),
+            ])
+            publish_release(
+                first,staging=base/'stage',public=base/'public',private=base/'private',
+                publisher_revision=REV,activate=True,release_id='r1',timestamp='2026-09-24T00:00:00Z',
+            )
+
+            second=six()
+            second['marketdeck-web']=envelope('marketdeck-web',[
+                second['marketdeck-web']['records'][0],
+                row('marketdeck-web','INT-03 note','https://marketdeck.in/intelligence/notes/a/',updated='2026-09-25'),
+                row('marketdeck-web','INT-03 note','https://marketdeck.in/intelligence/notes/new/',updated='2026-09-25'),
+            ])
+            meta=publish_release(
+                second,staging=base/'stage',public=base/'public',private=base/'private',
+                publisher_revision=REV,activate=True,release_id='r2',timestamp='2026-09-25T00:00:00Z',
+            )
+            event=meta['change_event']
+            self.assertFalse(event['initial_baseline'])
+            self.assertEqual(event['previous_public_status'],'available')
+            self.assertEqual(event['created'],['https://marketdeck.in/intelligence/notes/new/'])
+            self.assertEqual(event['updated'],['https://marketdeck.in/intelligence/notes/a/'])
+            self.assertEqual(event['withdrawn'],['https://marketdeck.in/intelligence/notes/remove/'])
+            self.assertEqual(event['counts'],{'created':1,'updated':1,'withdrawn':1})
+            self.assertEqual(
+                meta['substantive_update_state']['https://marketdeck.in/intelligence/notes/a/'],
+                '2026-09-25',
+            )
+            self.assertEqual(
+                json.loads((base/'private'/'change-events'/'r2.json').read_text()),
+                event,
+            )
+
     def test_storage_paths_must_be_isolated(self):
         with tempfile.TemporaryDirectory() as td:
             base=Path(td);self.code('storage_paths_not_isolated',lambda:publish_release(six(),staging=base/'state'/'stage',public=base/'public',private=base/'state',publisher_revision=REV,release_id='bad-paths'))
