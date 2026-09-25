@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.10",
+  "version": "2026-09-25.11",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -358,5 +358,27 @@
       "record_validation": "PASS"
     },
     "conclusion": "SG-01 observability evidence layer is live and accepted. It can now feed verified-bot classification and response-size/latency monitoring."
+  },
+  "crawler_log_auditor": {
+    "source_path": "scripts/seo/audit_crawler_access_log.py",
+    "test_path": "tests/seo_crawler_log_audit_test.py",
+    "branch_commit": "5289f9b5b1536d4e949b1c63db39f671576631a9",
+    "script_git_blob_sha1": "9f1a13394a6bca8d0db317c9725ecd0be4e940ef",
+    "test_git_blob_sha1": "c09b777d3de2e0ab906ae39453f6d3cfd6698bca",
+    "status": "implemented_pending_production_execution",
+    "verification_methods": {
+      "cloudflare": "current official IPv4+IPv6 ranges",
+      "googlebot": "Google current common-crawler CIDR JSON",
+      "bingbot": "reverse DNS ending search.msn.com plus forward-confirmation",
+      "openai": "agent-specific published JSON ranges",
+      "anthropic": "published crawler JSON ranges",
+      "perplexity": "agent-specific published JSON ranges"
+    },
+    "response_monitoring": {
+      "warning_mib": 10,
+      "critical_mib": 14,
+      "slow_seconds": 8,
+      "rationale": "Operational headroom below Google's documented default 15 MB crawler/fetcher file boundary; size is Caddy transfer bytes and is a monitoring signal, not a claim of exact engine accounting."
+    }
   }
 }
