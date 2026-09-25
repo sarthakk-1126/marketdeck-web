@@ -631,7 +631,9 @@ def _build_change_event(
         url
         for url, value in current_updates.items()
         if (
-            url in current_urls
+            previous_public_urls is not None
+            and url in previous_public_urls
+            and url in current_urls
             and url in previous_updates
             and previous_updates.get(url) is not None
             and previous_updates.get(url) != value
