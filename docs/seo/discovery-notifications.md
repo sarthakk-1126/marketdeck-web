@@ -59,11 +59,9 @@ Source:
 
 Ownership key:
 
-`public/77268255eabc2cf6e741b466a8e53fba.txt`
+The production IndexNow key is **not stored in Git**. Generate a fresh cryptographically random key on the VPS during production activation, store the private source copy under `/opt/factory/seo-state/` with mode `0600`, and publish only the required UTF-8 verification file at an unlinked root-level URL.
 
-Key location after deployment:
-
-`https://marketdeck.in/77268255eabc2cf6e741b466a8e53fba.txt`
+The production key value and exact key-location URL must not be pasted into chat, GitHub issues, logs, or public documentation.
 
 The notifier:
 
@@ -90,7 +88,7 @@ Notification failure is separate from sitemap publication. The publisher writes 
 
 1. Run unit tests from an isolated branch worktree.
 2. Run a production-state clone acceptance: copy the live public sitemap tree and private accepted/current metadata into a temporary sandbox, activate the new publisher there, and require a zero-change event.
-3. Deploy and verify the public IndexNow key file.
+3. Generate a fresh production key on the VPS (never in chat/Git), publish the root-level verification file, and verify it without printing its value.
 4. Install the immutable publisher/notifier revision outside default-branch movement.
 5. Establish a live zero-change event baseline using the accepted current inventory; require the authoritative sitemap hash to remain unchanged.
 6. Run the notifier in dry-run mode and confirm baseline produces zero submissions.
