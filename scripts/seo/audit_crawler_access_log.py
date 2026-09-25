@@ -239,7 +239,12 @@ class RangeRegistry:
 
     def _get(self, key, loader):
         if key not in self._cache:
-            self._cache[key] = loader()
+            try:
+                self._cache[key] = loader()
+            except SourceError:
+                raise
+            except Exception as exc:
+                raise SourceError(f"{key} source failed: {exc}") from exc
         return self._cache[key]
 
     def cloudflare(self):
@@ -436,6 +441,7 @@ def audit(
             continue
 
         claims[agent]["claimed"] += 1
+        verified = False
 
         if cloudflare_source_error:
             claims[agent]["unverified_edge_source_error"] += 1
@@ -462,17 +468,7 @@ def audit(
                     "agent": agent,
                     "uri": path_key,
                     "status": status,
-                    "verified": bool(
-                        cloudflare_source_error is None
-                        and in_ranges(direct_peer, cloudflare_ranges)
-                        and forwarded is not None
-                        and claims[agent]["verified"] > 0
-                        and reason not in {
-                            "direct_peer_not_in_cloudflare_ranges",
-                            "missing_cf_connecting_ip",
-                            "cloudflare_range_source_error",
-                        }
-                    ),
+                    "verified": verified,
                     "reason": reason,
                 }
             )
