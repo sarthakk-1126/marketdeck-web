@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.14  
+Version: 2026-09-25.15  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -523,3 +523,20 @@ The authoritative sitemap SHA remained exactly
 No container restart, application deployment or Git default-branch move occurred.
 
 SG-01C is now both decided and live.
+
+
+## SG-01D Google Search generative AI control — PASS
+
+Verified on the live Google Search Console Domain property `marketdeck.in` on 2026-09-25.
+
+Observed property state:
+
+- Domain property ownership: verified;
+- verification method: domain name provider / Cloudflare DNS;
+- Search generative AI: **Include**;
+- Crawl stats: no data available yet;
+- Search Console robots report: "No robots.txt file" at initial property creation.
+
+The robots report line is not treated as a production failure because MarketDeck's live `/robots.txt` was independently verified before and after the SG-01C release, including successful crawler access. Recheck the Search Console robots report after the newly-created property finishes processing.
+
+SG-01D is complete.
