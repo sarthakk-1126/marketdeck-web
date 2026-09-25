@@ -234,6 +234,8 @@ def process_events(
         summary["events_seen"] += 1
         release_id = event["release_id"]
         urls = event_urls(event)
+        if event.get("initial_baseline") and urls:
+            raise NotificationError("baseline_event_contains_urls")
 
         existing = state["events"].get(release_id)
         if existing and existing.get("event_sha256") != event_digest:
