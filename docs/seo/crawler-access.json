@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.14",
+  "version": "2026-09-25.15",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -471,11 +471,15 @@
   },
   "search_console_generative_ai_control": {
     "checked_at": "2026-09-25",
-    "account_session_present": true,
-    "marketdeck_property_present": false,
-    "observed_ui_state": "Search Console welcome / Add a website",
-    "property_control_state": "not_verifiable_until_property_added_and_verified",
-    "desired_state": "Include my site's links and content in Search generative AI features",
-    "official_rollout_note": "Google says the Search generative AI control rolled out worldwide by 2026-08-31 and defaults to inclusion for properties."
+    "property_type": "Domain",
+    "property": "marketdeck.in",
+    "ownership_verified": true,
+    "verification_method": "Domain name provider / Cloudflare DNS",
+    "effective_state": "Include",
+    "sg_01d_status": "PASS",
+    "search_console_robots_report_state": "No robots.txt file",
+    "robots_report_interpretation": "Do not treat as a production robots defect at property-creation time; live robots.txt had already been independently verified public and functional. Recheck after Search Console finishes processing.",
+    "crawl_stats_state": "No data available yet",
+    "property_added_date": "2026-09-25"
   }
 }
