@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
-import {catalog,shelf,library,hub,libraryPage,archivePage,learningHub,LEARNING_HUBS,localPath,readingTime} from '../scripts/intelligence.mjs';
+import {catalog,shelf,library,hub,libraryPage,archivePage,learningHub,LEARNING_HUBS,localPath,readingTime,atomFeed} from '../scripts/intelligence.mjs';
 const manifest=JSON.parse(readFileSync('content/briefs.json'));
 const publicCount=manifest.issues.filter(i=>i.publicationStatus==='published'&&i.approvedAt).length+manifest.notes.filter(n=>n.publicationStatus==='published'&&n.approvedAt).length;
 const fixture=(n=0)=>({id:'issue-'+n,title:'Research '+n,summary:'Evidence, not recommendations.',slug:'issue-'+n,edition:'Fieldnotes',cover:'/cover.webp',pdfPath:'/brief.pdf',pageCount:12,source:'source.json',approvedAt:'2026-09-22',publicationStatus:'published',topics:['ai-quant']});
@@ -63,6 +63,19 @@ test('Intelligence landing, library and magazine archive are canonical crawlable
  assert.match(hub([],{review:true}),/noindex, nofollow/);
  assert.match(libraryPage([],{review:true}),/noindex, nofollow/);
 });
+test('Atom feed contains only published dated Intelligence entries and is autodiscoverable',()=>{
+ const notes=JSON.parse(readFileSync('content/articles/metadata.json')).map(a=>({slug:a.slug,path:'/intelligence/notes/'+a.slug+'/',title:a.title,summary:a.description,body:readFileSync(a.source,'utf8'),publishedAt:a.publishedAt??a.approvedAt,modifiedAt:a.modifiedAt}));
+ const items=catalog(manifest,notes,{read:p=>JSON.parse(readFileSync(p,'utf8')),exists:p=>existsSync('public'+p)});
+ const feed=atomFeed(items);
+ assert.match(feed,/xmlns="http:\/\/www\.w3\.org\/2005\/Atom"/);
+ assert.match(feed,/rel="self" type="application\/atom\+xml" href="https:\/\/marketdeck\.in\/intelligence\/feed\.xml"/);
+ assert.equal((feed.match(/<entry>/g)||[]).length,publicCount);
+ assert.doesNotMatch(feed,/research-foundations/);
+ for(const item of items)assert.ok(feed.includes('https://marketdeck.in'+item.path),item.path);
+ const firstUpdated=feed.match(/<feed[^>]*>[\s\S]*?<updated>([^<]+)<\/updated>/)?.[1];assert.equal(firstUpdated,'2026-09-23T00:00:00Z');
+ for(const path of ['public/index.html','public/intelligence/index.html','public/intelligence/library/index.html']){const html=readFileSync(path,'utf8');assert.match(html,/rel="alternate" type="application\/atom\+xml" title="MarketDeck Intelligence" href="\/intelligence\/feed\.xml"/);}
+});
+
 test('client enhancement is small, local and non-autoplay',()=>{
  const js=readFileSync('public/intelligence-shelf-v2.js','utf8');
  assert.doesNotMatch(js,/setInterval|innerHTML\s*=|fetch\(|localStorage|sessionStorage|document\.cookie/);
