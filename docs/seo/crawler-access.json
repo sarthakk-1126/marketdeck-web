@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.5",
+  "version": "2026-09-25.6",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -265,5 +265,18 @@
     ],
     "conclusion": "SG-01E/F require a Caddy observability change. Current logs are runtime/admin logs only; there is no HTTP access-log stream and no trusted-proxy real-client-IP parsing.",
     "security_constraint": "Do not trust CF-Connecting-IP unless the direct peer is validated as Cloudflare via Caddy trusted_proxies or equivalent origin-network restriction."
+  },
+  "observability_design": {
+    "approach": "Caddy native JSON access log on marketdeck.in only, plus explicit cf_connecting_ip and cf_ray fields via log_append.",
+    "real_ip_strategy": "Do not change Caddy trusted_proxies/request semantics in the first observability release. Preserve request behavior and verify that request.remote_ip is within current official Cloudflare CIDRs before treating the separately logged CF-Connecting-IP value as the visitor/source IP.",
+    "log_path": "/data/marketdeck-access.json",
+    "rotation": {
+      "mode": "0600",
+      "roll_size": "20MiB",
+      "roll_keep": 5,
+      "roll_keep_for": "336h"
+    },
+    "maximum_uncompressed_nominal_window": "approximately 120MiB including active file plus five 20MiB rolled files; rolled files are compressed by default",
+    "rationale": "Central observability with bounded disk use and no application changes or proxy-header behavior changes."
   }
 }
