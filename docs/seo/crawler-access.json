@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.3",
+  "version": "2026-09-25.4",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -236,5 +236,19 @@
     ],
     "classification": "Cloudflare User-Agent-based denial of Python-urllib-style clients; not a Python/TLS-stack fingerprint block and not a block of the tested search/AI crawler UA families.",
     "security_note": "UA-only probes establish accessibility of claimed agent strings, not verified crawler identity."
+  },
+  "cross_product_access_sample": {
+    "tested_at_utc": "2026-09-25T05:55:54Z",
+    "methodology": "One representative URL selected from each of the 10 live child sitemaps; tested with Googlebot, bingbot, OAI-SearchBot, Claude-SearchBot and PerplexityBot User-Agent claims.",
+    "sitemap_families_tested": 10,
+    "crawler_uas_tested_per_family": 5,
+    "total_requests": 50,
+    "http_200": 50,
+    "non_200": 0,
+    "redirects_required": 0,
+    "cookie_requirements_observed": 0,
+    "visible_challenges_observed": 0,
+    "conclusion": "PASS: sampled public acquisition pages across every live sitemap family are accessible through Cloudflare to all five tested search/retrieval crawler UA families without redirect, cookie, or visible challenge requirements.",
+    "caveat": "UA probing demonstrates accessibility of claimed crawler strings, not verified crawler identity."
   }
 }
