@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "description": "Stable MarketDeck acquisition/product entry points reserved for recurring Google URL Inspection coverage. Every URL must also exist in the currently accepted Class A canonical inventory.",
+  "urls": [
+    "https://marketdeck.in/",
+    "https://marketdeck.in/intelligence/",
+    "https://marketdeck.in/screener/",
+    "https://marketdeck.in/charts/",
+    "https://marketdeck.in/futures-and-options/",
+    "https://marketdeck.in/commentary/",
+    "https://marketdeck.in/crypto/"
+  ]
+}
