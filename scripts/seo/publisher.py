@@ -533,6 +533,129 @@ def load_private_state(private: str | Path) -> dict[str, Any] | None:
     return _read_json(Path(private) / "current.json")
 
 
+def _public_urlset_urls(root: ET.Element) -> list[str]:
+    urls = []
+    for node in root.findall(f"{{{NS}}}url/{{{NS}}}loc"):
+        if node.text:
+            urls.append(node.text.strip())
+    return urls
+
+
+def _load_previous_public_urls(public: Path) -> tuple[set[str] | None, str]:
+    """Read the currently active public sitemap set without network access.
+
+    Failure is deliberately non-fatal for publication: the change stream enters
+    baseline/degraded mode instead of blocking the core sitemap release.
+    """
+    root_path = public / "sitemap.xml"
+    if not root_path.exists():
+        return None, "baseline_missing"
+
+    try:
+        root = ET.fromstring(root_path.read_bytes())
+        if root.tag == f"{{{NS}}}urlset":
+            return set(_public_urlset_urls(root)), "available_legacy_urlset"
+        if root.tag != f"{{{NS}}}sitemapindex":
+            return None, "previous_public_unreadable"
+
+        urls: set[str] = set()
+        for loc in root.findall(f"{{{NS}}}sitemap/{{{NS}}}loc"):
+            if not loc.text:
+                return None, "previous_public_unreadable"
+            parsed = urlsplit(loc.text.strip())
+            if (
+                parsed.scheme != "https"
+                or parsed.netloc != "marketdeck.in"
+                or parsed.query
+                or parsed.fragment
+            ):
+                return None, "previous_public_unreadable"
+            name = Path(parsed.path).name
+            if not name.startswith("sitemap-") or not name.endswith(".xml"):
+                return None, "previous_public_unreadable"
+            child_path = public / name
+            child = ET.fromstring(child_path.read_bytes())
+            if child.tag != f"{{{NS}}}urlset":
+                return None, "previous_public_unreadable"
+            urls.update(_public_urlset_urls(child))
+        return urls, "available"
+    except (OSError, ET.ParseError, ValueError):
+        return None, "previous_public_unreadable"
+
+
+def _substantive_update_state(
+    admitted: Mapping[str, list[dict[str, Any]]],
+) -> dict[str, str]:
+    """Keep only source-owned timestamps already approved for honest lastmod."""
+    state: dict[str, str] = {}
+    for rows in admitted.values():
+        for row in rows:
+            value = _valid_lastmod(row)
+            if value is not None:
+                state[row["url"]] = value
+    return state
+
+
+def _build_change_event(
+    admitted: Mapping[str, list[dict[str, Any]]],
+    previous_public_urls: set[str] | None,
+    previous_public_status: str,
+    previous: Mapping[str, Any] | None,
+    release_id: str,
+    timestamp: str,
+) -> dict[str, Any]:
+    current_urls = {
+        row["url"]
+        for rows in admitted.values()
+        for row in rows
+    }
+    current_updates = _substantive_update_state(admitted)
+    previous_updates = (
+        previous.get("substantive_update_state", {})
+        if isinstance(previous, Mapping)
+        else {}
+    )
+    if not isinstance(previous_updates, Mapping):
+        previous_updates = {}
+
+    if previous_public_urls is None:
+        created: list[str] = []
+        withdrawn: list[str] = []
+        initial_baseline = True
+    else:
+        created = sorted(current_urls - previous_public_urls)
+        withdrawn = sorted(previous_public_urls - current_urls)
+        initial_baseline = False
+
+    updated = sorted(
+        url
+        for url, value in current_updates.items()
+        if (
+            url in current_urls
+            and url in previous_updates
+            and previous_updates.get(url) is not None
+            and previous_updates.get(url) != value
+        )
+    )
+
+    return {
+        "schema_version": "1.0",
+        "release_id": release_id,
+        "previous_release_id": previous.get("release_id") if previous else None,
+        "generated_at": timestamp,
+        "previous_public_status": previous_public_status,
+        "initial_baseline": initial_baseline,
+        "created": created,
+        "updated": updated,
+        "withdrawn": withdrawn,
+        "counts": {
+            "created": len(created),
+            "updated": len(updated),
+            "withdrawn": len(withdrawn),
+        },
+    }
+
+
 def load_accepted_inventories(private: str | Path) -> dict[str, dict[str, Any]]:
     directory = Path(private) / "accepted-inventories"
     result: dict[str, dict[str, Any]] = {}
@@ -573,6 +696,7 @@ def _release_metadata(
     release_id: str, publisher_revision: str, inventories: Mapping[str, Mapping[str, Any]],
     admitted: Mapping[str, list[dict[str, Any]]], xml: Mapping[str, Any], previous: Mapping[str, Any] | None,
     activated: bool, revocations: Iterable[str], statuses: Mapping[str, str], timestamp: str,
+    change_event: Mapping[str, Any],
 ) -> dict[str, Any]:
     admitted_urls = sorted(row["url"] for rows in admitted.values() for row in rows)
     return {
@@ -588,6 +712,8 @@ def _release_metadata(
         "timestamp": timestamp, "mode": "activated" if activated else "dry-run",
         "revocation_inputs": sorted(set(revocations)), "validation_result": "passed",
         "admitted_url_sha256": [sha256(url.encode("utf-8")) for url in admitted_urls],
+        "substantive_update_state": _substantive_update_state(admitted),
+        "change_event": dict(change_event),
     }
 
 
@@ -603,6 +729,19 @@ def _commit_private(private: Path, metadata: Mapping[str, Any], *, activate: boo
     if activate:
         if inventories is None:
             _fail("accepted_generation_missing")
+        event = metadata.get("change_event")
+        if not isinstance(event, Mapping):
+            _fail("change_event_missing")
+        events = private / "change-events"
+        events.mkdir(parents=True, exist_ok=True)
+        event_data = canonical_json_bytes(dict(event)) + b"\n"
+        event_path = events / f"{metadata['release_id']}.json"
+        if event_path.exists() and event_path.read_bytes() != event_data:
+            _fail("change_event_collision")
+        if not event_path.exists():
+            _write_fsync(event_path, event_data, exclusive=True)
+        _fsync_directory(events)
+
         accepted = private / "accepted-inventories"
         accepted.mkdir(parents=True, exist_ok=True)
         for owner in PRODUCERS:
@@ -642,15 +781,27 @@ def publish_release(
     hook = inject or (lambda _step: None)
     with publisher_lock(private_path):
         previous = load_private_state(private_path)
+        previous_public_urls, previous_public_status = _load_previous_public_urls(public_path)
         admitted = admit_inventories(inventories, revocations)
         xml = build_xml_release(admitted)
+        change_event = _build_change_event(
+            admitted,
+            previous_public_urls,
+            previous_public_status,
+            previous,
+            release_id,
+            timestamp,
+        )
         workspace = staging_path / release_id
         workspace.mkdir(parents=True, exist_ok=False)
         for name, data in xml["files"].items():
             _write_fsync(workspace / name, data, exclusive=True)
         _write_fsync(workspace / "sitemap.xml", xml["root"], exclusive=True)
         hook("after_staging")
-        metadata = _release_metadata(release_id, publisher_revision, inventories, admitted, xml, previous, activate, revocations, statuses, timestamp)
+        metadata = _release_metadata(
+            release_id, publisher_revision, inventories, admitted, xml, previous,
+            activate, revocations, statuses, timestamp, change_event,
+        )
         if not activate:
             _commit_private(private_path, metadata, activate=False)
             return metadata
