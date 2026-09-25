@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.3  
+Version: 2026-09-25.4  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -186,3 +186,42 @@ The accepted production wildcard already grants access and the live edge probe c
 - leaves room to add narrowly scoped training-agent rules later if the owner chooses.
 
 The Python-urllib UA block should be documented as a Cloudflare generic-client policy observation, not treated as a search-indexing defect.
+
+
+## SG-01G cross-product crawler-access sample — PASS
+
+Read-only production sample: `2026-09-25T05:55:54Z`.
+
+Method:
+
+- discovered the 10 live child sitemaps from the authoritative root;
+- selected one representative URL from each child sitemap;
+- tested each representative URL with Googlebot, bingbot, OAI-SearchBot, Claude-SearchBot and PerplexityBot UA claims.
+
+Result:
+
+- 10 sitemap families tested;
+- 5 search/retrieval crawler UAs per family;
+- 50 total live requests;
+- 50 HTTP 200;
+- 0 non-200 responses;
+- 0 redirects required;
+- 0 cookie requirements observed;
+- 0 visible challenge markers observed.
+
+Families covered:
+
+- web;
+- intelligence;
+- StockProof catalog;
+- StockProof companies;
+- StockProof funds;
+- charting;
+- F&O;
+- commentary;
+- crypto pages;
+- crypto coins.
+
+Conclusion: the sampled public acquisition surface is not being unintentionally blocked by the current Cloudflare/WAF/session behavior for the tested major search/retrieval crawler UA families.
+
+This closes SG-01G's cross-product accessibility gate without a 12,866-page crawler sweep. UA-only requests still do not prove crawler authenticity; SG-01E remains responsible for verified-bot logging.
