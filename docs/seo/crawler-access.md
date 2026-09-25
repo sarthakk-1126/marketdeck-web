@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.13  
+Version: 2026-09-25.14  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -492,3 +492,34 @@ Google's current Search Console control (rolled out worldwide by 2026-08-31) cov
 `Include my site's links and content in Search generative AI features`.
 
 Google documents that inclusion is the default for properties, but SG-01D will remain open until a verified `marketdeck.in` Search Console property exists and its effective control is observed.
+
+
+## SG-01C production robots activation — PASS
+
+Activated: `2026-09-25T15:46:24Z`.
+
+Live policy SHA:
+`399f561b3680f78045629b4e8be1b119b1321710f13e9373502ae00d679698d2`.
+
+Rollback:
+`/opt/factory/marketdeck-web/public/robots.txt.pre-sg01c-20260925T154624Z`
+with SHA
+`1c33fdb41cd2e5d48dd62d027030d6d09e5a7dc85ef6e01805183ceff89ef9e0`.
+
+Public policy now:
+
+- GPTBot: Disallow `/`;
+- ClaudeBot: Disallow `/`;
+- Google-Extended: Allow `/`;
+- wildcard: Allow `/`;
+- authoritative sitemap directive preserved.
+
+Search/retrieval non-regression:
+Googlebot, bingbot, OAI-SearchBot, ChatGPT-User, Claude-SearchBot, Claude-User, PerplexityBot and Perplexity-User all returned HTTP 200 fetching the live robots file after release.
+
+The authoritative sitemap SHA remained exactly
+`4eb37dcc0d98d8b3605bc02bb8384aa2b26ee3085b427e025f4b5c2748ae250a`.
+
+No container restart, application deployment or Git default-branch move occurred.
+
+SG-01C is now both decided and live.
