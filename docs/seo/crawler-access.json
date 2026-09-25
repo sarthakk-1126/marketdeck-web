@@ -1,5 +1,5 @@
 {
-  "version": "2026-09-25.2",
+  "version": "2026-09-25.3",
   "last_verified": "2026-09-25",
   "canonical_origin": "https://marketdeck.in",
   "sitemap": "https://marketdeck.in/sitemap.xml",
@@ -7,7 +7,7 @@
     "source": "public/robots.txt at accepted production baseline",
     "policy": "User-agent: * / Allow: /",
     "effect": "All automatic agents that honor wildcard robots rules are currently allowed unless a more specific live rule exists.",
-    "live_edge_result": "pending_sg_01a_vps_edge_gate"
+    "live_edge_result": "PASS for tested official crawler UA claims. Cloudflare returns 200 for curl default and all tested Google/Bing/OpenAI/Anthropic/Perplexity crawler UAs on /robots.txt, /sitemap.xml and /screener/companies/. Cloudflare returns 403 for Python-urllib-style UA on the same paths; actual urllib succeeds when given curl UA, isolating the behavior to User-Agent policy rather than Python/TLS client fingerprint."
   },
   "principles": [
     "Search/retrieval access and model-training access are separate policy decisions.",
@@ -27,9 +27,9 @@
       "robots_policy": "allow",
       "identity_verification": "Reverse DNS and forward-confirmation or match against Google's published common-crawler IP ranges.",
       "current_marketdeck_robots_policy": "Allowed by production wildcard User-agent: * / Allow: /.",
-      "current_live_http_result": "pending_sg_01a_vps_edge_gate",
+      "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
       "desired_business_policy": "allow",
-      "required_change": "No production robots change is required for basic access; explicit group on the SG-01 branch documents intent. Verify edge/WAF behavior before release.",
+      "required_change": "No robots.txt access change required: production wildcard already allows this agent and the live edge UA probe passes. Preserve wildcard allow; implement verified-bot logging separately.",
       "official_source": "https://developers.google.com/crawling/docs/crawlers-fetchers/google-common-crawlers",
       "verification_source": "https://developers.google.com/search/docs/crawling-indexing/verifying-googlebot",
       "evidence_note": "Google documents Googlebot as a common crawler for Search and warns that User-Agent strings can be spoofed.",
@@ -46,9 +46,9 @@
       "robots_policy": "allow",
       "identity_verification": "Reverse DNS must resolve to a search.msn.com hostname and forward DNS must resolve back to the same IP; Microsoft also provides Verify Bingbot/current IP verification methods.",
       "current_marketdeck_robots_policy": "Allowed by production wildcard User-agent: * / Allow: /.",
-      "current_live_http_result": "pending_sg_01a_vps_edge_gate",
+      "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
       "desired_business_policy": "allow",
-      "required_change": "No production robots change is required for basic access; explicit group on the SG-01 branch documents intent. Verify edge/WAF behavior before release.",
+      "required_change": "No robots.txt access change required: production wildcard already allows this agent and the live edge UA probe passes. Preserve wildcard allow; implement verified-bot logging separately.",
       "official_source": "https://www.bing.com/webmasters/help/which-crawlers-does-bing-use-8c184ec0",
       "verification_source": "https://www.bing.com/webmasters/help/how-to-verify-bingbot-3905dc26",
       "evidence_note": "Microsoft documents Bingbot as its standard crawler and explicitly notes that User-Agent strings are spoofable.",
@@ -65,9 +65,9 @@
       "identity_verification": "Match the claimed agent against OpenAI's current published OAI-SearchBot IP ranges.",
       "verification_endpoint": "https://openai.com/searchbot.json",
       "current_marketdeck_robots_policy": "Allowed by production wildcard User-agent: * / Allow: /.",
-      "current_live_http_result": "pending_sg_01a_vps_edge_gate",
+      "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
       "desired_business_policy": "allow",
-      "required_change": "Explicit allow group is proposed on the SG-01 branch; edge/WAF must also admit verified OpenAI search ranges.",
+      "required_change": "No robots.txt access change required: production wildcard already allows this agent and the live edge UA probe passes. Preserve wildcard allow; implement verified-bot logging separately.",
       "official_source": "https://developers.openai.com/api/docs/bots",
       "evidence_note": "OpenAI documents OAI-SearchBot as the Search crawler and makes its policy independent from GPTBot.",
       "last_verified": "2026-09-25"
@@ -83,9 +83,9 @@
       "identity_verification": "Match the claimed agent against OpenAI's current published GPTBot IP ranges.",
       "verification_endpoint": "https://openai.com/gptbot.json",
       "current_marketdeck_robots_policy": "Currently allowed by production wildcard User-agent: * / Allow: /; there is no dedicated GPTBot rule.",
-      "current_live_http_result": "pending_sg_01a_vps_edge_gate",
+      "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
       "desired_business_policy": "pending_explicit_owner_training_decision",
-      "required_change": "None until the owner explicitly chooses training access. Do not bundle a GPTBot decision into search/retrieval rollout.",
+      "required_change": "No SG-01 search-access change required. Current wildcard permits this training agent and the live UA probe passes, but future allow/disallow remains a separate explicit owner decision.",
       "official_source": "https://developers.openai.com/api/docs/bots",
       "evidence_note": "OpenAI documents GPTBot as crawling content that may be used to train generative AI foundation models.",
       "last_verified": "2026-09-25"
@@ -101,9 +101,9 @@
       "identity_verification": "Match the claimed agent against OpenAI's current published ChatGPT-User IP ranges where applicable.",
       "verification_endpoint": "https://openai.com/chatgpt-user.json",
       "current_marketdeck_robots_policy": "No dedicated production rule; wildcard allows it, although OpenAI notes robots.txt may not apply to user-initiated actions.",
-      "current_live_http_result": "pending_sg_01a_vps_edge_gate",
+      "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
       "desired_business_policy": "allow",
-      "required_change": "Ensure the public edge does not challenge/block verified user-initiated fetches; explicit allow group on the branch documents intent but is not the Search opt-in control.",
+      "required_change": "No robots.txt access change required: production wildcard already allows this agent and the live edge UA probe passes. Preserve wildcard allow; implement verified-bot logging separately.",
       "official_source": "https://developers.openai.com/api/docs/bots",
       "evidence_note": "OpenAI says ChatGPT-User is user initiated, is not an automatic web crawler, and does not control Search inclusion.",
       "last_verified": "2026-09-25"
@@ -119,9 +119,9 @@
       "identity_verification": "Validate the source IP against Anthropic's current official crawler IP list in addition to the claimed User-Agent.",
       "verification_endpoint": "https://claude.com/crawling/bots.json",
       "current_marketdeck_robots_policy": "Allowed by production wildcard User-agent: * / Allow: /.",
-      "current_live_http_result": "pending_sg_01a_vps_edge_gate",
+      "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
       "desired_business_policy": "allow",
-      "required_change": "Explicit allow group is proposed on the SG-01 branch; edge/WAF must also admit verified Anthropic crawler sources.",
+      "required_change": "No robots.txt access change required: production wildcard already allows this agent and the live edge UA probe passes. Preserve wildcard allow; implement verified-bot logging separately.",
       "official_source": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
       "evidence_note": "Anthropic documents Claude-SearchBot as the agent that improves search result quality and states its bots honor robots.txt.",
       "last_verified": "2026-09-25"
@@ -137,9 +137,9 @@
       "identity_verification": "Validate the source IP against Anthropic's current official crawler IP list in addition to the claimed User-Agent.",
       "verification_endpoint": "https://claude.com/crawling/bots.json",
       "current_marketdeck_robots_policy": "Currently allowed by production wildcard User-agent: * / Allow: /; there is no dedicated ClaudeBot rule.",
-      "current_live_http_result": "pending_sg_01a_vps_edge_gate",
+      "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
       "desired_business_policy": "pending_explicit_owner_training_decision",
-      "required_change": "None until the owner explicitly chooses training access. Do not bundle a ClaudeBot decision into search/retrieval rollout.",
+      "required_change": "No SG-01 search-access change required. Current wildcard permits this training agent and the live UA probe passes, but future allow/disallow remains a separate explicit owner decision.",
       "official_source": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
       "evidence_note": "Anthropic documents ClaudeBot as collecting public web content that could potentially contribute to model training.",
       "last_verified": "2026-09-25"
@@ -155,9 +155,9 @@
       "identity_verification": "Validate the source IP against Anthropic's current official crawler IP list in addition to the claimed User-Agent.",
       "verification_endpoint": "https://claude.com/crawling/bots.json",
       "current_marketdeck_robots_policy": "Allowed by production wildcard User-agent: * / Allow: /.",
-      "current_live_http_result": "pending_sg_01a_vps_edge_gate",
+      "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
       "desired_business_policy": "allow",
-      "required_change": "Explicit allow group is proposed on the SG-01 branch; verify the public edge permits retrieval without challenge/cookie dependency.",
+      "required_change": "No robots.txt access change required: production wildcard already allows this agent and the live edge UA probe passes. Preserve wildcard allow; implement verified-bot logging separately.",
       "official_source": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler",
       "evidence_note": "Anthropic documents Claude-User as user-initiated retrieval and says disabling it can reduce visibility in user-directed web search.",
       "last_verified": "2026-09-25"
@@ -173,9 +173,9 @@
       "identity_verification": "Combine the claimed User-Agent with Perplexity's current published PerplexityBot IP ranges.",
       "verification_endpoint": "https://www.perplexity.com/perplexitybot.json",
       "current_marketdeck_robots_policy": "Allowed by production wildcard User-agent: * / Allow: /.",
-      "current_live_http_result": "pending_sg_01a_vps_edge_gate",
+      "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
       "desired_business_policy": "allow",
-      "required_change": "Explicit allow group is proposed on the SG-01 branch; WAF rules, if needed, must combine current IP ranges and agent identity.",
+      "required_change": "No robots.txt access change required: production wildcard already allows this agent and the live edge UA probe passes. Preserve wildcard allow; implement verified-bot logging separately.",
       "official_source": "https://docs.perplexity.ai/docs/resources/perplexity-crawlers",
       "evidence_note": "Perplexity documents PerplexityBot as a Search crawler and explicitly says it is not used to crawl content for AI foundation models.",
       "last_verified": "2026-09-25"
@@ -191,9 +191,9 @@
       "identity_verification": "Combine the claimed User-Agent with Perplexity's current published Perplexity-User IP ranges.",
       "verification_endpoint": "https://www.perplexity.com/perplexity-user.json",
       "current_marketdeck_robots_policy": "No dedicated production rule; wildcard allows it, although Perplexity says user-requested fetches generally ignore robots.txt.",
-      "current_live_http_result": "pending_sg_01a_vps_edge_gate",
+      "current_live_http_result": "PASS_UA_PROBE_2026-09-25: HTTP 200 for robots.txt, sitemap.xml and /screener/companies/ via Cloudflare; no redirect, Set-Cookie requirement, or visible challenge marker.",
       "desired_business_policy": "allow",
-      "required_change": "Ensure the public edge does not challenge/block verified user-initiated fetches; explicit branch rule documents intent.",
+      "required_change": "No robots.txt access change required: production wildcard already allows this agent and the live edge UA probe passes. Preserve wildcard allow; implement verified-bot logging separately.",
       "official_source": "https://docs.perplexity.ai/docs/resources/perplexity-crawlers",
       "evidence_note": "Perplexity documents Perplexity-User as user-initiated retrieval, not web crawling or model-training collection.",
       "last_verified": "2026-09-25"
@@ -214,8 +214,27 @@
     }
   ],
   "owner_decisions": {
-    "search_and_retrieval": "allow",
+    "search_and_retrieval": "allow_no_robots_change_required",
     "model_training": "pending_explicit_owner_decision_preserve_existing_allow",
     "google_extended_training_and_grounding": "pending_explicit_owner_decision"
+  },
+  "edge_observation": {
+    "tested_at_utc": "2026-09-25T05:50:52Z",
+    "edge": "cloudflare",
+    "paths": [
+      "https://marketdeck.in/robots.txt",
+      "https://marketdeck.in/sitemap.xml",
+      "https://marketdeck.in/screener/companies/"
+    ],
+    "findings": [
+      "curl default User-Agent returned HTTP 200 on all three paths.",
+      "curl using Python-urllib/3.10 User-Agent returned HTTP 403 on all three paths.",
+      "actual Python urllib default returned HTTP 403 on all three paths.",
+      "actual Python urllib using curl/7.81.0 User-Agent returned HTTP 200 on all three paths.",
+      "All tested official crawler User-Agent claims returned HTTP 200 on all three paths.",
+      "No tested crawler request required redirects, cookies, or a visible challenge page."
+    ],
+    "classification": "Cloudflare User-Agent-based denial of Python-urllib-style clients; not a Python/TLS-stack fingerprint block and not a block of the tested search/AI crawler UA families.",
+    "security_note": "UA-only probes establish accessibility of claimed agent strings, not verified crawler identity."
   }
 }
