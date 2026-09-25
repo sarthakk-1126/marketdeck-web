@@ -72,6 +72,17 @@ class IndexNowTests(unittest.TestCase):
             saved=json.loads(state.read_text())
             self.assertEqual(saved['events']['baseline']['status'],'baseline_no_submission')
 
+    def test_nonempty_baseline_is_refused(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td);events=base/'events';state=base/'state.json'
+            write_event(events,'baseline',created=['https://marketdeck.in/old/'],baseline=True)
+            with self.assertRaisesRegex(indexnow.NotificationError,'baseline_event_contains_urls'):
+                indexnow.process_events(
+                    events_dir=events,state_path=state,key='A'*32,
+                    key_location='https://marketdeck.in/'+('A'*32)+'.txt',
+                    sender=lambda *args:200,
+                )
+
     def test_idempotent_chunk_state_prevents_resubmission(self):
         with tempfile.TemporaryDirectory() as td:
             base=Path(td);events=base/'events';state=base/'state.json'
