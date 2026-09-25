@@ -1,0 +1,97 @@
+{
+  "version": "2026-09-25",
+  "canonical_origin": "https://marketdeck.in",
+  "sitemap": "https://marketdeck.in/sitemap.xml",
+  "principles": [
+    "Search/retrieval access and model-training access are separate policy decisions.",
+    "User-agent strings are not trusted bot identity by themselves.",
+    "Private/noindex behavior remains enforced by application access control and page-level directives, not robots.txt alone.",
+    "Crawler access must not change application content or create crawler-specific pages."
+  ],
+  "agents": [
+    {
+      "agent": "Googlebot",
+      "provider": "Google",
+      "purpose": "search_index",
+      "robots_policy": "allow",
+      "identity_verification": "Google crawler verification / published infrastructure",
+      "official_source": "https://developers.google.com/crawling"
+    },
+    {
+      "agent": "Bingbot",
+      "provider": "Microsoft",
+      "purpose": "search_index",
+      "robots_policy": "allow",
+      "identity_verification": "Bing Verify Bingbot / supported verification methods",
+      "official_source": "https://www.bing.com/webmasters/help/which-crawlers-does-bing-use-8c184ec0"
+    },
+    {
+      "agent": "OAI-SearchBot",
+      "provider": "OpenAI",
+      "purpose": "search_index",
+      "robots_policy": "allow",
+      "identity_verification": "official published IP ranges",
+      "official_source": "https://developers.openai.com/api/docs/bots"
+    },
+    {
+      "agent": "ChatGPT-User",
+      "provider": "OpenAI",
+      "purpose": "user_initiated_retrieval",
+      "robots_policy": "allow",
+      "identity_verification": "official published IP ranges where applicable; user-initiated fetch semantics differ from automatic crawl",
+      "official_source": "https://developers.openai.com/api/docs/bots"
+    },
+    {
+      "agent": "GPTBot",
+      "provider": "OpenAI",
+      "purpose": "model_training",
+      "robots_policy": "wildcard_preserve_existing",
+      "identity_verification": "official published IP ranges",
+      "official_source": "https://developers.openai.com/api/docs/bots"
+    },
+    {
+      "agent": "Claude-SearchBot",
+      "provider": "Anthropic",
+      "purpose": "search_index",
+      "robots_policy": "allow",
+      "identity_verification": "Anthropic published crawler IP list when validating source",
+      "official_source": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler"
+    },
+    {
+      "agent": "Claude-User",
+      "provider": "Anthropic",
+      "purpose": "user_initiated_retrieval",
+      "robots_policy": "allow",
+      "identity_verification": "Anthropic published crawler IP list when validating source",
+      "official_source": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler"
+    },
+    {
+      "agent": "ClaudeBot",
+      "provider": "Anthropic",
+      "purpose": "model_training",
+      "robots_policy": "wildcard_preserve_existing",
+      "identity_verification": "Anthropic published crawler IP list when validating source",
+      "official_source": "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler"
+    },
+    {
+      "agent": "PerplexityBot",
+      "provider": "Perplexity",
+      "purpose": "search_index",
+      "robots_policy": "allow",
+      "identity_verification": "official published IP ranges",
+      "official_source": "https://docs.perplexity.ai/docs/resources/perplexity-crawlers"
+    },
+    {
+      "agent": "Perplexity-User",
+      "provider": "Perplexity",
+      "purpose": "user_initiated_retrieval",
+      "robots_policy": "allow",
+      "identity_verification": "official published IP ranges where applicable; user-initiated fetch may ignore robots.txt",
+      "official_source": "https://docs.perplexity.ai/docs/resources/perplexity-crawlers"
+    }
+  ],
+  "owner_decisions": {
+    "search_and_retrieval": "allow",
+    "model_training": "pending_explicit_owner_decision_preserve_existing_allow"
+  }
+}
