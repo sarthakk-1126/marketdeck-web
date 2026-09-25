@@ -69,6 +69,7 @@ test('Atom feed contains only published dated Intelligence entries and is autodi
  const feed=atomFeed(items);
  assert.match(feed,/xmlns="http:\/\/www\.w3\.org\/2005\/Atom"/);
  assert.match(feed,/rel="self" type="application\/atom\+xml" href="https:\/\/marketdeck\.in\/intelligence\/feed\.xml"/);
+ assert.match(feed,/<author><name>MarketDeck<\/name><uri>https:\/\/marketdeck\.in\/<\/uri><\/author>/);
  assert.equal((feed.match(/<entry>/g)||[]).length,publicCount);
  assert.doesNotMatch(feed,/research-foundations/);
  for(const item of items)assert.ok(feed.includes('https://marketdeck.in'+item.path),item.path);
