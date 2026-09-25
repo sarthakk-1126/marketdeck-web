@@ -39,7 +39,7 @@ export function atomFeed(items,{origin='https://marketdeck.in'}={}){
   const entries=items.filter(i=>i.date).map(i=>({...i,updated:i.updated||i.date})).sort((a,b)=>(b.updated.localeCompare(a.updated)||b.date.localeCompare(a.date)||a.path.localeCompare(b.path)));
   if(!entries.length)throw new Error('Atom feed requires published dated entries');
   const feedUpdated=atomDate(entries[0].updated);
-  const abs=path=>new URL(localPath(path),base).href;
+  const abs=path=>path==='/'?base.href:new URL(localPath(path),base).href;
   return `<?xml version="1.0" encoding="UTF-8"?><feed xmlns="http://www.w3.org/2005/Atom"><id>${esc(abs('/intelligence/'))}</id><title>MarketDeck Intelligence</title><subtitle>Research, learning notes and long-form market perspectives from MarketDeck.</subtitle><updated>${feedUpdated}</updated><link rel="self" type="application/atom+xml" href="${esc(abs('/intelligence/feed.xml'))}"/><link rel="alternate" type="text/html" href="${esc(abs('/intelligence/'))}"/><author><name>MarketDeck</name><uri>${esc(abs('/'))}</uri></author>${entries.map(i=>`<entry><id>${esc(abs(i.path))}</id><title>${esc(i.title)}</title><link rel="alternate" type="text/html" href="${esc(abs(i.path))}"/><published>${atomDate(i.date)}</published><updated>${atomDate(i.updated)}</updated><summary>${esc(i.summary)}</summary>${i.topics.map(t=>`<category term="${esc(t)}" label="${esc(TOPICS[t])}"/>`).join('')}</entry>`).join('')}</feed>`;
 }
 
