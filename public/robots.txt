@@ -1,36 +1,6 @@
 # MarketDeck public crawl policy.
-# Search/retrieval agents are explicitly allowed so acquisition pages can be discovered.
-# Page-level robots directives and application access controls remain authoritative for
-# non-indexable/private surfaces.
-#
-# Training crawlers (for example GPTBot and ClaudeBot) intentionally remain governed by
-# the wildcard section below. This preserves the pre-SG-01 production behavior until the
-# site owner makes a separate training-use decision; search access and training access
-# must not be coupled accidentally.
-
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Claude-SearchBot
-Allow: /
-
-User-agent: Claude-User
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: Perplexity-User
-Allow: /
+# Search indexing is allowed for public pages. Page-level robots directives
+# and application access controls govern non-indexable/private surfaces.
 
 User-agent: *
 Allow: /
