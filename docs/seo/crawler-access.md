@@ -1,6 +1,6 @@
 # MarketDeck crawler and AI-search access policy
 
-Version: 2026-09-25.11  
+Version: 2026-09-25.12  
 Owner: MarketDeck SEO / release engineering  
 Scope: `https://marketdeck.in`
 
@@ -404,3 +404,48 @@ SG-01F defaults:
 The 10/14 MiB values are operating headroom below Google's documented default 15 MB crawler/fetcher file-size boundary. Caddy's logged response size is treated as an operational transfer-size signal rather than asserted to be identical to every engine's fetch accounting.
 
 Status: implemented in GitHub; production execution and source-fetch verification still pending.
+
+
+## SG-01E/F verifier + response monitor acceptance — PASS
+
+Acceptance run: `2026-09-25T15:17:25Z`.
+
+Integrity and tests:
+
+- immutable tool revision:
+  `5289f9b5b1536d4e949b1c63db39f671576631a9`;
+- Git blob integrity checks: PASS;
+- Python syntax: PASS;
+- 5/5 unit tests: PASS;
+- live access log mode: `0600`;
+- official Cloudflare range source: PASS.
+
+Controlled spoof test:
+
+Eight deliberate crawler-UA claims were sent from a non-provider source. All eight public requests returned HTTP 200, but the verifier correctly refused to authenticate every one as the claimed crawler.
+
+Real verified traffic observed in the same one-hour window:
+
+- Googlebot: 34 verified requests;
+- ChatGPT-User: 3 verified requests;
+- ClaudeBot: 1,949 verified requests.
+
+The one observed claim each for bingbot, OAI-SearchBot, Claude-SearchBot, Claude-User, PerplexityBot and Perplexity-User was the controlled spoof probe and remained unverified as intended.
+
+Response-monitoring baseline over 2,054 records:
+
+- size p50: 37,932 bytes;
+- size p95: 79,048.85 bytes;
+- size p99: 148,162.14 bytes;
+- duration p50: 0.0307994995s;
+- duration p95: 0.6920941697s;
+- duration p99: 1.98670093067s;
+- largest observed response: 620,113 bytes at `/screener/company/IDEA.NS/`;
+- 0 responses crossed the 10 MiB warning threshold;
+- 0 responses crossed the 14 MiB critical threshold;
+- 0 responses crossed the 8s slow-response threshold.
+
+Private machine-readable evidence:
+`/opt/factory/seo-state/sg01-crawler-audit-20260925T151725Z.json` (mode `0600`).
+
+SG-01E and SG-01F are accepted complete operationally.
