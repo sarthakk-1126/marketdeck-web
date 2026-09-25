@@ -260,6 +260,19 @@ class PublisherTests(unittest.TestCase):
                 event,
             )
 
+    def test_change_event_unreadable_previous_public_state_degrades_without_blocking_release(self):
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td);public=base/'public';public.mkdir()
+            (public/'sitemap.xml').write_bytes(b'not-xml')
+            meta=publish_release(
+                six(),staging=base/'stage',public=public,private=base/'private',
+                publisher_revision=REV,activate=True,release_id='degraded',
+            )
+            self.assertEqual(meta['change_event']['previous_public_status'],'previous_public_unreadable')
+            self.assertTrue(meta['change_event']['initial_baseline'])
+            self.assertEqual(meta['change_event']['counts'],{'created':0,'updated':0,'withdrawn':0})
+            self.assertEqual((public/'sitemap.xml').read_bytes(),build_xml_release(admit_inventories(six()))['root'])
+
     def test_storage_paths_must_be_isolated(self):
         with tempfile.TemporaryDirectory() as td:
             base=Path(td);self.code('storage_paths_not_isolated',lambda:publish_release(six(),staging=base/'state'/'stage',public=base/'public',private=base/'state',publisher_revision=REV,release_id='bad-paths'))
