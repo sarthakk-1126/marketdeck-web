@@ -60,17 +60,64 @@ test('machine-readable policy separates search/retrieval from training', () => {
 
   for (const agent of ['OAI-SearchBot', 'Claude-SearchBot', 'PerplexityBot']) {
     assert.equal(byAgent.get(agent)?.purpose, 'search_index');
+    assert.equal(byAgent.get(agent)?.search_or_retrieval, true);
+    assert.equal(byAgent.get(agent)?.training, false);
     assert.equal(byAgent.get(agent)?.robots_policy, 'allow');
   }
 
   for (const agent of ['ChatGPT-User', 'Claude-User', 'Perplexity-User']) {
     assert.equal(byAgent.get(agent)?.purpose, 'user_initiated_retrieval');
+    assert.equal(byAgent.get(agent)?.search_or_retrieval, true);
+    assert.equal(byAgent.get(agent)?.training, false);
     assert.equal(byAgent.get(agent)?.robots_policy, 'allow');
   }
 
   for (const agent of ['GPTBot', 'ClaudeBot']) {
     assert.equal(byAgent.get(agent)?.purpose, 'model_training');
+    assert.equal(byAgent.get(agent)?.search_or_retrieval, false);
+    assert.equal(byAgent.get(agent)?.training, true);
     assert.equal(byAgent.get(agent)?.robots_policy, 'wildcard_preserve_existing');
+    assert.equal(byAgent.get(agent)?.desired_business_policy, 'pending_explicit_owner_training_decision');
+  }
+});
+
+test('every primary crawler row carries the SG-01 evidence fields', () => {
+  const expectedAgents = [
+    'Googlebot',
+    'Bingbot',
+    'OAI-SearchBot',
+    'GPTBot',
+    'ChatGPT-User',
+    'Claude-SearchBot',
+    'ClaudeBot',
+    'Claude-User',
+    'PerplexityBot',
+    'Perplexity-User',
+  ];
+  assert.deepEqual(policy.agents.map((entry) => entry.agent), expectedAgents);
+
+  const required = [
+    'provider',
+    'purpose',
+    'search_or_retrieval',
+    'training',
+    'robots_token',
+    'identity_verification',
+    'current_marketdeck_robots_policy',
+    'current_live_http_result',
+    'desired_business_policy',
+    'required_change',
+    'official_source',
+    'evidence_note',
+    'last_verified',
+  ];
+
+  for (const entry of policy.agents) {
+    for (const field of required) {
+      assert.ok(Object.hasOwn(entry, field), `${entry.agent}: missing ${field}`);
+    }
+    assert.equal(entry.last_verified, '2026-09-25');
+    assert.equal(entry.current_live_http_result, 'pending_sg_01a_vps_edge_gate');
   }
 });
 
@@ -78,4 +125,15 @@ test('training crawlers are not accidentally given dedicated robots groups', () 
   const parsed = groups(robots);
   assert.equal(parsed.has('GPTBot'), false);
   assert.equal(parsed.has('ClaudeBot'), false);
+});
+
+test('Google-Extended remains a separate pending owner control', () => {
+  const googleExtended = policy.additional_controls.find((entry) => entry.control === 'Google-Extended');
+  assert.ok(googleExtended);
+  assert.equal(googleExtended.training_or_grounding, true);
+  assert.equal(googleExtended.search_inclusion_or_ranking, false);
+  assert.equal(
+    googleExtended.desired_business_policy,
+    'pending_explicit_owner_training_and_grounding_decision',
+  );
 });
