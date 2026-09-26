@@ -1,7 +1,8 @@
 import { confirmedDestinations } from './community.mjs';
-import { readFileSync, writeFileSync, cpSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, cpSync, mkdirSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { buildEditorial } from './editorial.mjs';
+import { injectAnalytics, stripAnalytics } from './analytics.mjs';
 
 export const escapeHtml = (value) => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const safeUrl = (value) => {
@@ -41,4 +42,20 @@ html=buildEditorial({data,template:html,root:output,review});
 for (const [key, value] of Object.entries({ PRODUCT_NAV: productNav, PRODUCT_TABS: productTabs, PRODUCT_PANELS: productPanels, PRODUCT_OVERVIEW: productOverview, COMMUNITY_TABS: communityTabs, COMMUNITY_PANELS: communityPanels, COMMUNITY_LEGEND: communityLegend, CONTACTS: contacts, FOOTER_PRODUCTS: footerProducts, LEGAL: legal, NEWSLETTER: newsletter, NEWSLETTER_NOTE: newsletterNote, SCHEMA: JSON.stringify(schema).replace(/</g, '\\u003c') })) html = html.replaceAll(`{{${key}}}`, value);
 if (/\{\{\w+\}\}/.test(html)) throw new Error('Unresolved template token');
 writeFileSync(resolve(output,'index.html'), html);
+
+function rewriteHtmlTree(root, transform) {
+  for (const entry of readdirSync(root, { withFileTypes: true })) {
+    const path = resolve(root, entry.name);
+    if (entry.isDirectory()) {
+      rewriteHtmlTree(path, transform);
+      continue;
+    }
+    if (!entry.isFile() || !entry.name.endsWith('.html')) continue;
+    const before = readFileSync(path, 'utf8');
+    const after = transform(before);
+    if (after !== before) writeFileSync(path, after);
+  }
+}
+
+rewriteHtmlTree(output, review ? stripAnalytics : injectAnalytics);
 console.log(`Built ${output} (${review?'local editorial review':'production; drafts excluded'})`);
