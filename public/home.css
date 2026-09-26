@@ -3449,3 +3449,10 @@ body:not(.motion-enabled) .orbit-highlight { animation: none; }
 
 /* Editorial V2: center the card-safe artwork; preserve all card dimensions and motion. */
 .product-tab img { object-position: center; }
+
+/* Keep the mobile India poster alive while honoring the site motion controls. */
+@media (max-width: 799px) and (prefers-reduced-motion: no-preference) {
+  body.motion-enabled .earth-image {
+    animation: earth-drift 24s ease-in-out infinite alternate;
+  }
+}
