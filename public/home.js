@@ -1,4 +1,4 @@
-import { startExperience } from './experience.js';
+import { startExperience } from './experience.js?v=mobile-hero-20260926';
 const experience = startExperience();
 (() => {
   const loadPreview = panel => {
