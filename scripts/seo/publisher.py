@@ -212,7 +212,7 @@ GENERATOR_POLICY = {
 }
 
 FAMILY_GROUP = {
-    "WEB-01": "web", "WEB-02": "web",
+    "WEB-01": "web", "WEB-02": "web", "WEB-03": "web",
     "INT-01": "intelligence", "INT-02": "intelligence", "INT-03": "intelligence",
     "INT-04": "intelligence", "INT-05": "intelligence", "INT-08": "intelligence",
     "INT-09": "intelligence",
@@ -314,6 +314,8 @@ def _validate_mount(owner: str, code: str, url: str) -> None:
         if code == "WEB-01" and parsed.path != "/":
             _fail("invalid_owner_mount")
         if code == "WEB-02" and parsed.path != "/credits/":
+            _fail("invalid_owner_mount")
+        if code == "WEB-03" and parsed.path != "/research-standards/":
             _fail("invalid_owner_mount")
         if code.startswith("INT-") and not parsed.path.startswith("/intelligence/"):
             _fail("invalid_owner_mount")
