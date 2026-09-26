@@ -23,6 +23,7 @@ export function buildEditorial({data,template,root,review}) {
       <h2>Sources and provenance</h2>
       <p>Different products use different evidence. StockProof traces material company research back to stored filing evidence where available. Charting uses stored market history. F&amp;O distinguishes live market data, stored snapshots and historical archives. Commentary links back to the underlying third-party video/commentary source. Crypto World identifies material third-party market-data providers on the pages that use them. Intelligence links its research sources directly.</p>
       <p>A provider name does not mean MarketDeck independently verified every upstream observation. Source labels explain origin; they are not a guarantee that upstream data is error-free.</p>
+      <p>Public provenance uses the narrowest accurate class: primary source, company filing, exchange record, provider observation, MarketDeck-derived output or historical archive. A MarketDeck formula applied to an exchange or provider input remains MarketDeck-derived. Attribution does not imply endorsement, ownership, unrestricted redistribution rights or authority the source did not grant.</p>
 
       <h2>Live, stored, snapshot, historical, stale and unavailable</h2>
       <p>MarketDeck does not use “live” as a decorative label. Public products use a shared data-state vocabulary so the same word means the same thing across the suite.</p>
@@ -42,7 +43,20 @@ export function buildEditorial({data,template,root,review}) {
 
       <h2>Calculations, definitions and denominators</h2>
       <p>Material calculations should be reproducible from their stated inputs. A ratio is only interpretable when its numerator, denominator, reporting period and units are understood. Where assumptions materially change an output—such as a return window, confidence level, premium, strike, tax rule, or value basis—those assumptions belong next to the result or in a directly linked methodology.</p>
-      <p>MarketDeck does not treat a redeploy as a methodological change. When a methodology meaningfully changes, the relevant method should receive a stable version identifier and the change should be documented.</p>
+      <p>MarketDeck does not treat a redeploy as a methodological change. When a methodology meaningfully changes, the relevant method receives a stable version identifier and the change is documented.</p>
+
+      <h2 id="methodology-versioning">Methodology versioning and change history</h2>
+      <p>Public method identifiers use <code>PRODUCT-METHOD-major.minor</code>. A major change alters interpretation—such as a formula, denominator, model basis, eligibility rule or core assumption. A minor change adds an interpretation-sensitive method or materially clarifies scope without redefining existing results. Copy edits, styling, tests, infrastructure changes and ordinary deploys do not change a public method version.</p>
+      <p>The stable methodology URL does not change when its version changes. Affected outputs expose the current identifier where it materially helps interpretation. Historical outputs retain the method version that produced them when the product stores that relationship; they are not silently relabelled.</p>
+      <h3>Current public method history</h3>
+      <ul>
+        <li><code>SP-METHOD-1.0</code> — StockProof calculation definitions; effective 26 September 2026.</li>
+        <li><code>FO-METHOD-1.0</code> — F&amp;O calculation and model definitions; effective 26 September 2026.</li>
+        <li><code>CH-METHOD-1.0</code> — Charting indicators, breadth and evaluation definitions; effective 26 September 2026.</li>
+        <li><code>CR-METHOD-1.0</code> — Crypto World market, derivatives, tax and portfolio definitions; effective 26 September 2026.</li>
+        <li><code>INT-METHOD-1.0</code> — Intelligence worked-example definitions; effective 26 September 2026.</li>
+      </ul>
+      <p>This list is the public change-history baseline. A future interpretation-sensitive revision adds a dated entry describing what changed and why; prior entries remain visible.</p>
 
       <h2>Historical results are descriptive</h2>
       <p>Backtests, historical matches, seasonality, prior price moves and paper-trading records describe what happened under stated rules and available data. They are not forecasts, recommendations or promises of future returns. A single historical outcome is not a win rate or expectancy.</p>
@@ -54,7 +68,8 @@ export function buildEditorial({data,template,root,review}) {
       <p>MarketDeck provides research, education and analytical tools. It does not provide individualized buy, sell or hold instructions, price targets tailored to a user, or portfolio advice. Product-specific disclaimers remain in place where the domain needs more precise wording, including tax calculations, market-data snapshots, backtests and AI-generated interpretation.</p>
 
       <h2>Dates and freshness</h2>
-      <p>Publication dates, update dates, filing periods, market timestamps and source-review dates mean different things and should not be substituted for one another. An “updated” date should reflect a substantive change, not a cosmetic refresh. Time-sensitive facts should be checked against the current primary source before reliance.</p>
+      <p>Publication dates, substantive modified dates, filing periods, market/data as-of timestamps and source-review dates mean different things and are not substituted for one another. A publication date records first publication. A modified date changes only for substantive content or method changes. A source-review date records when a cited source was checked; it does not make the source newly published. A market/data as-of time belongs to the observation itself.</p>
+      <p>Canonical metadata and structured data must agree with the visible publication and modified dates they describe. Sitemap and Atom dates follow their own documented content-event rules and must not be advanced by a cosmetic build. An “updated” date is not a deployment timestamp, and no date is advanced merely to imply fresh research.</p>
 
       <h2>Corrections and limitations</h2>
       <p>When MarketDeck identifies a material error, the correction should be made at the affected source or methodology and the relevant date/version updated when that change affects interpretation. We do not claim an always-staffed research desk, guaranteed response time or independent professional review where none exists.</p>
@@ -72,8 +87,13 @@ export function buildEditorial({data,template,root,review}) {
     <h1>Definitions behind the worked examples.</h1>
     <p class="reading-lead">How MarketDeck Intelligence handles calculations, periods, units, sources, hypothetical inputs and unavailable evidence.</p>
     <article class="reading-body">
+      <p><strong>Method version:</strong> <code>INT-METHOD-1.0</code> · effective and method-reviewed <time datetime="2026-09-26">26 September 2026</time>. It changes only for interpretation-sensitive calculation or evidence rules, not for an ordinary deploy.</p>
       <h2>Scope and provenance</h2>
       <p>Intelligence articles are educational research. A calculation in an article is either reproduced from values in a linked source, derived from explicitly cited market or filing data, or a labelled hypothetical worked example. A hypothetical value is not live, stored or historical market data. When an article links to a MarketDeck product output, that product's methodology and data-state label govern the output.</p>
+
+      <h2>Source and provenance register</h2>
+      <p><strong>Primary sources and filings</strong> support claims drawn from official company, regulator, exchange or standards documents. <strong>Exchange and provider observations</strong> retain their named source and observation period. <strong>Research papers</strong> are attributed findings, not claims that MarketDeck independently replicated the study. <strong>MarketDeck-derived</strong> labels cover arithmetic, diagrams and interpretations created from stated inputs. <strong>Historical archives</strong> retain the period they describe. Each article's source list, scope note and reviewed date remain the specific evidence record.</p>
+      <p>Links and limited quotations respect the source's access and licensing boundary; the article does not become a substitute data feed or imply endorsement by the source.</p>
 
       <h2>Returns, growth and drawdowns</h2>
       <p>Simple return (%) = (ending value ÷ beginning value − 1) × 100. The beginning value is the denominator. CAGR (%) = [(ending value ÷ beginning value)^(1 ÷ years) − 1] × 100, using the stated number of years. Drawdown (%) = (current value ÷ prior peak − 1) × 100; the prior peak is the denominator. Price return excludes distributions unless the article explicitly uses an adjusted or total-return series.</p>
@@ -95,7 +115,9 @@ export function buildEditorial({data,template,root,review}) {
 
       <h2>Sources, assumptions and corrections</h2>
       <p>Primary filings, exchange documents, statutes, standards and provider definitions are preferred. Source dates and retrieval limitations belong with time-sensitive claims. Assumptions must be visible beside the example or linked directly from it. Material corrections update the affected article and its substantive update date; they do not create an invented authority or review signal.</p>
-      <p>See also <a href="/intelligence/editorial-policy/">Editorial standards</a> and <a href="/research-standards/">MarketDeck Research Standards</a>.</p>
+      <h2>Date and freshness semantics</h2>
+      <p>Article publication and modified dates come from the same editorial metadata used by structured data. Source-review dates belong to individual citations. Market/data as-of dates belong beside the observation or worked calculation. Sitemap and Atom dates follow publication/content-change events. A cosmetic release changes none of these and does not imply refreshed research.</p>
+      <p>See also <a href="/intelligence/editorial-policy/">Editorial standards</a> and <a href="/research-standards/">MarketDeck Research Standards</a>, including the <a href="/research-standards/#methodology-versioning">public methodology change-history policy</a>.</p>
     </article>`;
   write('/intelligence/methodology/', page(
     'Intelligence Calculation Methodology',
