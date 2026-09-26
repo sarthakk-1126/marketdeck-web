@@ -284,6 +284,26 @@ class PublisherTests(unittest.TestCase):
             self.assertEqual(result.returncode,0,result.stderr)
             exported=load_inventory(target,'marketdeck-web');self.assertEqual(exported['record_count'],24);self.assertEqual(sum(r['sitemap_eligible'] for r in exported['records']),21)
 
+    def test_research_standards_web03_is_admitted_and_mount_is_exact(self):
+        with tempfile.TemporaryDirectory() as td:
+            target=Path(td)/'web.json'
+            result=subprocess.run(['node','scripts/seo/export-web-inventory.mjs','--output',str(target),'--environment','test','--generated-at',NOW,'--run-id','web03-admission'],cwd=ROOT,capture_output=True,text=True)
+            self.assertEqual(result.returncode,0,result.stderr)
+            web=load_inventory(target,'marketdeck-web')
+            inventories=six()
+            inventories['marketdeck-web']=web
+            admitted=admit_inventories(inventories)
+            urls={row['url'] for row in admitted['web']}
+            self.assertIn('https://marketdeck.in/research-standards/',urls)
+            self.assertEqual(len(admitted['web']),3)
+            bad=copy.deepcopy(web)
+            row=next(r for r in bad['records'] if r['page_family'].startswith('WEB-03 '))
+            row['canonical_url']='https://marketdeck.in/wrong/'
+            row['declared_canonical']='https://marketdeck.in/wrong/'
+            bad=finalize_inventory(bad)
+            inventories['marketdeck-web']=bad
+            self.code('invalid_owner_mount',lambda:admit_inventories(inventories))
+
     def test_safe_retention_revocation_and_stale_rollback_prohibition(self):
         accepted=six();incoming=six();failed=copy.deepcopy(incoming['stockproof']);failed.update(records=[],enumeration_status='failed',enumeration_errors=[{'family':'SP-01','code':'source_failed'}]);incoming['stockproof']=finalize_inventory(failed)
         selected,status=select_generations(incoming,accepted);self.assertEqual(selected['stockproof']['run_id'],accepted['stockproof']['run_id']);self.assertEqual(status['stockproof'],'stale_degraded')
