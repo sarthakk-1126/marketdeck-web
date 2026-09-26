@@ -118,6 +118,42 @@ test('deep anchors, resize and history keep the selected product readable',async
   expect(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)).toBe(false);
   await page.goto('/intelligence/');await page.goBack();await expect(page.locator('#product-fno')).toBeVisible();
 });
+test('mobile hero keeps India prominent, actions usable and ambient motion optional',async({page})=>{
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  for(const [width,height] of [[360,800],[390,844],[430,932]]){
+    await page.setViewportSize({width,height});await page.goto('/');
+    await expect(hero(page)).toHaveAttribute('data-renderer','poster');
+    const layout=await page.evaluate(()=>{
+      const box=selector=>document.querySelector(selector).getBoundingClientRect();
+      const hero=box('.hero'),image=box('.earth-image'),galleryHeading=box('.story-gallery .section-heading');
+      return {
+        overflow:document.documentElement.scrollWidth>innerWidth,
+        heroHeight:hero.height,
+        imageWidth:image.width,
+        imageTop:image.top-hero.top,
+        galleryGap:galleryHeading.top-hero.bottom,
+        actions:[...document.querySelectorAll('.hero-actions .button')].map(button=>button.getBoundingClientRect().height),
+        animation:getComputedStyle(document.querySelector('.earth-image')).animationName
+      };
+    });
+    expect(layout.overflow).toBe(false);
+    expect(layout.heroHeight).toBeGreaterThanOrEqual(700);
+    expect(layout.heroHeight).toBeLessThanOrEqual(760);
+    expect(layout.imageWidth).toBeGreaterThanOrEqual(680);
+    expect(layout.imageTop).toBeGreaterThanOrEqual(249);
+    expect(layout.galleryGap).toBeGreaterThanOrEqual(35);
+    expect(layout.actions).toHaveLength(2);
+    expect(layout.actions.every(height=>height>=44)).toBe(true);
+    expect(layout.animation).toBe('mobile-earth-drift');
+  }
+  await page.getByRole('button',{name:'Disable motion',exact:true}).click();
+  await expect(page.locator('body')).toHaveClass(/motion-paused/);
+  expect(await page.locator('.earth-image').evaluate(image=>getComputedStyle(image).animationName)).toBe('none');
+  await page.getByRole('button',{name:'Enable motion',exact:true}).click();
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect(page.locator('body')).toHaveClass(/motion-paused/);
+  expect(await page.locator('.earth-image').evaluate(image=>getComputedStyle(image).animationName)).toBe('none');
+});
 test('community includes all planned entries with no fake links',async({page})=>{
   await page.goto('/#community');await expect(page.locator('.channel-grid li')).toHaveCount(25);
   await expect(page.locator('.channel-grid [data-status=planned] a')).toHaveCount(0);

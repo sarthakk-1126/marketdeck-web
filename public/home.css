@@ -3456,3 +3456,189 @@ body:not(.motion-enabled) .orbit-highlight { animation: none; }
     animation: earth-drift 24s ease-in-out infinite alternate;
   }
 }
+
+/* Mobile hero: separate the message from the image, then give India the stage. */
+@keyframes mobile-earth-drift {
+  from { transform:translate3d(-61%,0,0) scale(1); }
+  to { transform:translate3d(-60.35%,-.45%,0) scale(1.018); }
+}
+
+@media (max-width: 650px) {
+  .product-rail .container {
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+  }
+  .product-rail .container::-webkit-scrollbar {
+    display:none;
+  }
+  .product-rail {
+    border-bottom-color:#202d39;
+    box-shadow:0 8px 24px #02060b4d;
+  }
+  .product-rail-item {
+    min-height:48px;
+  }
+
+  .hero {
+    min-height:clamp(700px,calc(100svh - 114px),760px);
+    background:#070b10;
+  }
+  .hero-content {
+    padding-top:40px;
+    padding-bottom:268px;
+    z-index:2;
+  }
+  .hero-eyebrow {
+    margin-bottom:18px;
+    color:#b7c6d5;
+  }
+  .hero h1 {
+    max-width:390px;
+    font-size:clamp(34px,9.15vw,39px);
+    line-height:1.08;
+    letter-spacing:-1.55px;
+  }
+  .hero-description {
+    max-width:350px;
+    margin-top:19px;
+    color:#d8e1ea;
+    font-size:16px;
+    line-height:1.48;
+    letter-spacing:-.16px;
+    text-shadow:0 1px 18px #000;
+  }
+  .hero-detail {
+    max-width:355px;
+    margin-top:12px;
+    color:#b3c0ce;
+    font-size:11px;
+    line-height:1.7;
+    text-shadow:0 1px 16px #000;
+  }
+  .hero-actions {
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+    width:min(100%,355px);
+    margin-top:21px;
+  }
+  .hero-actions .button {
+    width:100%;
+    min-height:46px;
+    justify-content:space-between;
+    padding:12px 15px;
+    font-size:10px;
+  }
+  .hero-actions .button-quiet {
+    background:#09111bd9;
+    border-color:#405163;
+    color:#d2dce6;
+  }
+  .hero-trust {
+    display:grid;
+    grid-template-columns:repeat(3,max-content);
+    gap:0;
+    margin-top:18px;
+    color:#b6c4d1;
+    font-size:7px;
+    letter-spacing:.12px;
+    text-shadow:0 1px 12px #000;
+  }
+  .hero-trust span+span {
+    margin-left:11px;
+  }
+  .hero-trust span+span:before {
+    margin-right:7px;
+  }
+
+  .earth-scene picture {
+    position:relative;
+    overflow:hidden;
+  }
+  .earth-image {
+    position:absolute;
+    top:250px;
+    left:50%;
+    width:clamp(680px,184vw,790px);
+    height:auto;
+    max-width:none;
+    object-fit:contain;
+    object-position:center;
+    transform:translate3d(-61%,0,0);
+    transform-origin:61% 48%;
+    filter:saturate(.92) contrast(1.04);
+    will-change:transform;
+  }
+  .earth-shade {
+    z-index:1;
+    background:
+      linear-gradient(180deg,#070b10 0%,#070b10 27%,#070b10f5 39%,#070b10a8 53%,#070b1010 68%,#070b10d9 91%,#070b10 100%),
+      linear-gradient(90deg,#070b10b8 0%,transparent 36%,transparent 76%,#070b108c 100%);
+  }
+  .earth-caption {
+    z-index:2;
+    top:auto;
+    right:20px;
+    bottom:72px;
+    color:#9fb7ca;
+  }
+  .hero-bottom {
+    z-index:3;
+    bottom:17px;
+  }
+  .hero-index {
+    display:none;
+  }
+  .scroll-cue {
+    color:#aebdca;
+  }
+  .motion-toggle {
+    right:12px;
+    bottom:12px;
+    min-width:44px;
+    min-height:44px;
+    padding:9px 12px;
+    border-color:#3c4d5e;
+    border-radius:999px;
+    background:#0b131dd9;
+    box-shadow:0 8px 24px #0006;
+    backdrop-filter:blur(12px);
+  }
+  .story-gallery {
+    padding-top:36px;
+  }
+}
+
+@media (max-width: 370px) {
+  .hero-content {
+    padding-top:34px;
+  }
+  .hero h1 {
+    font-size:33px;
+  }
+  .hero-description {
+    font-size:15px;
+  }
+  .hero-actions .button {
+    font-size:10px;
+    padding-inline:14px;
+  }
+  .hero-trust span+span {
+    margin-left:8px;
+  }
+  .earth-image {
+    top:258px;
+  }
+}
+
+@media (max-width: 650px) and (prefers-reduced-motion: no-preference) {
+  body.motion-enabled .earth-image {
+    animation:mobile-earth-drift 28s ease-in-out infinite alternate;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .earth-image {
+    will-change:auto;
+  }
+}
