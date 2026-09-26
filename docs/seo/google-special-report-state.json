@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-09-26",
+  "site_url": "sc-domain:marketdeck.in",
+  "search_genai": {
+    "state": "not_observed",
+    "impressions": null,
+    "source": "google_search_console_generative_ai_report",
+    "dimensions_available": ["page", "country", "date", "device"],
+    "note": "Official report is globally rolled out, but no MarketDeck report values are observable in the connected measurement stack yet."
+  },
+  "multimodal": {
+    "state": "not_observed",
+    "impressions": null,
+    "source": "google_search_console_multimodal_filter",
+    "dimensions_available": ["search_performance", "generative_ai_performance"],
+    "note": "Multimodal reporting is rolling out globally; no MarketDeck values are observable in the connected measurement stack yet."
+  },
+  "accounting": {
+    "web_search_is_parent_total": true,
+    "search_genai_is_subset": true,
+    "multimodal_is_subset": true,
+    "never_add_subsets_to_web_total": true
+  }
+}
