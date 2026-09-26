@@ -42,6 +42,20 @@ class FirstPartyMeasurementTests(unittest.TestCase):
                 search_genai={"state": "zero", "impressions": 1},
             )
 
+
+    def test_multimodal_is_also_a_web_subset(self):
+        out = mod.build(
+            {"clicks": 4, "impressions": 80},
+            multimodal={"state": "observed", "impressions": 12},
+        )
+        self.assertEqual(out["accounting"]["headline_search_impressions"], 80)
+        self.assertEqual(out["multimodal_subset"]["share_of_parent"], 0.15)
+
+    def test_multimodal_not_observed_stays_unknown(self):
+        out = mod.build({"clicks": 0, "impressions": 0})
+        self.assertEqual(out["multimodal_subset"]["state"], "not_observed")
+        self.assertIsNone(out["multimodal_subset"]["impressions"])
+
     def test_private_output_mode(self):
         with tempfile.TemporaryDirectory() as td:
             p = Path(td) / "snapshot.json"
