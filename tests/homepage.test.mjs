@@ -106,13 +106,14 @@ test('deferred globe maps and real product preview assets are self-hosted',()=>{
   assert.equal(/<iframe|<embed|<object/.test(html),false);
 });
 
-test('all local visual and script dependencies exist; no third-party runtime requests', () => {
+test('runtime dependencies stay local except the approved canonical-only GA4 tag', () => {
   for (const match of html.matchAll(/\b(?:src|href)="(\/[^"#]+)(?:#[^"]*)?"/g)) {
     const path = match[1];
     if (['/screener/', '/charts/', '/futures-and-options/', '/commentary/', '/crypto/'].includes(path)) continue;
     assert.ok(existsSync(resolve('public', `.${path}`)), `Missing asset ${path}`);
   }
-  assert.equal(/<script[^>]+src="https?:/.test(html), false);
+  const externalScripts = [...html.matchAll(/<script[^>]+src="(https?:[^"]+)"/g)].map(match => match[1]);
+  assert.deepEqual(externalScripts, ['https://www.googletagmanager.com/gtag/js?id=G-KZ54EVX7T5']);
   assert.equal(/<link[^>]+href="https?:[^>]+rel="stylesheet"/.test(html), false);
   assert.ok(statSync('public/assets/india-earth.webp').size < 350_000);
   assert.ok(statSync('public/assets/india-earth-small.webp').size < 120_000);
