@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "site_url": "sc-domain:marketdeck.in",
+  "ga4_property_id": "properties/556037573",
+  "measurement_id": "G-KZ54EVX7T5",
+  "tracking_scope": "approved_public_canonical_pages",
+  "product_families": [
+    {"id":"marketdeck_intelligence","path_prefixes":["/","/intelligence/"]},
+    {"id":"stockproof","path_prefixes":["/screener/"]},
+    {"id":"charting","path_prefixes":["/charts/"]},
+    {"id":"fo","path_prefixes":["/futures-and-options/"]},
+    {"id":"commentary","path_prefixes":["/commentary/"]},
+    {"id":"crypto","path_prefixes":["/crypto/"]}
+  ],
+  "headline_metrics": [
+    "sessions",
+    "active_users",
+    "engagement_rate",
+    "page_views",
+    "bounce_rate",
+    "google_organic_landing_quality",
+    "ai_assistant_referral_quality"
+  ],
+  "approved_key_events": [],
+  "excluded_default_key_events": [
+    {
+      "name":"purchase",
+      "reason":"No MarketDeck purchase flow exists; do not treat as a business KPI."
+    }
+  ],
+  "privacy": {
+    "canonical_page_location_only": true,
+    "google_signals": false,
+    "ad_personalization_signals": false,
+    "private_routes_instrumented": false,
+    "pii_event_parameters_allowed": false
+  },
+  "baseline": {
+    "date":"2026-09-26",
+    "sessions":0,
+    "active_users":0,
+    "engagement_rate":0,
+    "identifiable_ai_assistant_sessions":0,
+    "note":"Initialization baseline immediately after GA4 installation."
+  }
+}
