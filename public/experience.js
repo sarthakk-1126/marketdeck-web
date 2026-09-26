@@ -12,7 +12,9 @@ export function startExperience() {
   let globe,raf=0,visible=true,dead=false,dirty=true,start=0,interrupted=scrollY>12||!!location.hash;
   let targetX=0,targetY=0,x=0,y=0,last=0,progress=0,bounds={top:0,height:1,width:1};
   const started=performance.now();
-  const off=()=>paused??reduce.matches;
+  // The OS accessibility preference is authoritative, even after a visitor has
+  // explicitly enabled ambient motion in this session.
+  const off=()=>reduce.matches||paused===true;
   const story=document.querySelector('.market-story'),gallery=document.querySelector('.story-gallery');
   const cards=[...gallery.querySelectorAll('.product-tab')];
   const heading=gallery.querySelector('.section-heading'),copy=hero.querySelector('.hero-content');
