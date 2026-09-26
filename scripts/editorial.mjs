@@ -7,11 +7,53 @@ export const isPublished=i=>i.publicationStatus==='published'&&Boolean(i.approve
 const refText=v=>esc(v).replace(/\[(S\d+)\]/g,'<a href="#$1">[$1]</a>');
 export function buildEditorial({data,template,root,review}) {
   const manifest=JSON.parse(readFileSync(data.editorial.manifest,'utf8'));
-  const urls=['/','/intelligence/','/intelligence/library/','/intelligence/issues/','/credits/'];
+  const urls=['/','/intelligence/','/intelligence/library/','/intelligence/issues/','/credits/','/research-standards/'];
   // Fail closed if a previously published issue is changed back to draft. Never silently retain it.
   if(!review) for(const issue of manifest.issues) if(!isPublished(issue)&&existsSync(resolve(root,`intelligence/issues/${issue.slug}`))) throw new Error(`Unpublished issue remains in public output: ${issue.slug}. Remove its generated directory before building.`);
   const page=(title,summary,path,body,draft=false)=>`<!doctype html><html lang="en-IN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} | MarketDeck Intelligence</title><meta name="description" content="${esc(summary)}">${draft||review?'<meta name="robots" content="noindex, nofollow">':`<link rel="canonical" href="${esc(new URL(path,data.brand.url).href)}">`}<link rel="icon" href="/assets/favicon.svg"><link rel="stylesheet" href="/home.css"><link rel="stylesheet" href="/reading.css"></head><body><a class="skip-link" href="#reading">Skip to reading</a><header class="reading-header"><a class="brand" href="/">MarketDeck<span class="brand-period">.</span></a><nav aria-label="Reading navigation"><a href="/intelligence/">Intelligence</a><a href="/intelligence/library/">Library</a><a href="/intelligence/issues/">Magazine archive</a><a href="/#products">The suite</a></nav></header><main id="reading" class="reading-main">${draft?'<p class="draft-banner">EDITORIAL DRAFT · Local owner review · Not published</p>':''}${body}</main><footer class="reading-footer">MarketDeck · Research and education. Not investment advice.<a href="/">Return to MarketDeck</a></footer></body></html>`;
   function write(path,html){const f=resolve(root,`.${path}index.html`);mkdirSync(dirname(f),{recursive:true});writeFileSync(f,html);}
+  const researchStandards = `
+    <p class="eyebrow">MARKETDECK / RESEARCH STANDARDS</p>
+    <h1>Research you can interrogate.</h1>
+    <p class="reading-lead">How MarketDeck handles sources, data freshness, calculations, AI assistance, uncertainty and the boundary between research tools and investment advice.</p>
+    <article class="reading-body">
+      <h2>Publisher and scope</h2>
+      <p>MarketDeck is the publisher of this product suite and MarketDeck Intelligence. We do not invent analyst identities, review boards, qualifications or first-hand trading records. Where a named author, credential or external reviewer is not real and documented, we do not claim one.</p>
+
+      <h2>Sources and provenance</h2>
+      <p>Different products use different evidence. StockProof traces material company research back to stored filing evidence where available. Charting uses stored market history. F&amp;O distinguishes live market data, stored snapshots and historical archives. Commentary links back to the underlying third-party video/commentary source. Crypto World identifies material third-party market-data providers on the pages that use them. Intelligence links its research sources directly.</p>
+      <p>A provider name does not mean MarketDeck independently verified every upstream observation. Source labels explain origin; they are not a guarantee that upstream data is error-free.</p>
+
+      <h2>Live, stored, historical and unavailable</h2>
+      <p>MarketDeck does not use “live” as a decorative label. A value should be described according to what the product actually knows: live, stored/cached, historical, stale, or unavailable. When a product has only a stored snapshot, the interface should say so and show the relevant time or period where available. Missing data should remain missing rather than being silently invented.</p>
+
+      <h2>Calculations, definitions and denominators</h2>
+      <p>Material calculations should be reproducible from their stated inputs. A ratio is only interpretable when its numerator, denominator, reporting period and units are understood. Where assumptions materially change an output—such as a return window, confidence level, premium, strike, tax rule, or value basis—those assumptions belong next to the result or in a directly linked methodology.</p>
+      <p>MarketDeck does not treat a redeploy as a methodological change. When a methodology meaningfully changes, the relevant method should receive a stable version identifier and the change should be documented.</p>
+
+      <h2>Historical results are descriptive</h2>
+      <p>Backtests, historical matches, seasonality, prior price moves and paper-trading records describe what happened under stated rules and available data. They are not forecasts, recommendations or promises of future returns. A single historical outcome is not a win rate or expectancy.</p>
+
+      <h2>AI assistance</h2>
+      <p>AI is used only where the product explicitly says so. MarketDeck Intelligence discloses AI assistance in its editorial policy. Commentary labels AI-generated interpretation separately from source-attributed commentary. StockProof AI Mode is bounded to general financial concepts and is designed to refuse security-specific or personalized advice-shaped requests. Deterministic financial figures do not become “AI generated” merely because AI helped write surrounding software or editorial copy.</p>
+
+      <h2>Research, not personalized investment advice</h2>
+      <p>MarketDeck provides research, education and analytical tools. It does not provide individualized buy, sell or hold instructions, price targets tailored to a user, or portfolio advice. Product-specific disclaimers remain in place where the domain needs more precise wording, including tax calculations, market-data snapshots, backtests and AI-generated interpretation.</p>
+
+      <h2>Dates and freshness</h2>
+      <p>Publication dates, update dates, filing periods, market timestamps and source-review dates mean different things and should not be substituted for one another. An “updated” date should reflect a substantive change, not a cosmetic refresh. Time-sensitive facts should be checked against the current primary source before reliance.</p>
+
+      <h2>Corrections and limitations</h2>
+      <p>When MarketDeck identifies a material error, the correction should be made at the affected source or methodology and the relevant date/version updated when that change affects interpretation. We do not claim an always-staffed research desk, guaranteed response time or independent professional review where none exists.</p>
+      <p>For long-form editorial standards and AI-assistance disclosure, see <a href="/intelligence/editorial-policy/">MarketDeck Intelligence editorial standards</a>.</p>
+    </article>`;
+
+  write('/research-standards/', page(
+    'Research Standards & Methodology',
+    'How MarketDeck handles sources, data freshness, calculations, AI assistance, uncertainty and the boundary between research tools and investment advice.',
+    '/research-standards/',
+    researchStandards
+  ));
   write('/credits/',page('Asset credits','Image and open-source credits for the MarketDeck homepage.','/credits/',`<p class="eyebrow">MARKETDECK</p><h1>Asset credits.</h1><article class="reading-body"><h2>Earth</h2><p>Earth surface, night lights, normal, cloud and ocean-specular maps: <a href="https://ftp.solarsystemscope.com/textures/">Solar System Scope</a>, used under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Resized and converted to self-hosted WebP; cloud coverage and ocean reflectivity are packed into separate channels of one map. The material uses restrained color grading and illustrative twilight lighting. Network geometry is decorative and does not depict live market data. Textures are representative global maps, not current weather imagery.</p><h2>Interface and editorial artwork</h2><p>The five product-card images are original AI-assisted editorial illustrations created for MarketDeck. They depict research concepts, not application interfaces or live market data. They are cropped and exported as self-hosted WebP assets. The immediate Earth poster and editorial illustrations were created for MarketDeck using Image Gen; they are illustrations, not satellite measurements.</p><h2>Open-source software and platform marks</h2><p>3D rendering: <a href="/licenses/three.txt">Three.js, MIT license</a>. Platform icons: <a href="https://simpleicons.org/">Simple Icons</a>, <a href="/licenses/simple-icons.txt">CC0</a>; brands retain their trademarks. Platform names and marks identify planned channels and imply no partnership or endorsement.</p></article>`));
   const noteSlugs=['business-before-the-stock','a-chart-is-a-question','five-research-lenses'];
   const notes=[];
