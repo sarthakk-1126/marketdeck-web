@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync,mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {inline,parseArticle,illustration,buildArticles} from '../scripts/articles.mjs';
+import {inline,parseArticle,illustration,buildArticles,displayDate} from '../scripts/articles.mjs';
 const meta=JSON.parse(readFileSync('content/articles/metadata.json','utf8'));
 const isolated=mkdtempSync(join(tmpdir(),'marketdeck-article-tests-'));
 buildArticles({root:isolated,review:false,baseNotes:[]});
@@ -19,6 +19,10 @@ test('ten substantial source-backed guides cover the intended editorial categori
 test('article SEO metadata is unique, readable and canonical; schema does not invent expertise',()=>{
  assert.equal(new Set(meta.map(a=>a.title)).size,10);assert.equal(new Set(meta.map(a=>a.description)).size,10);
  for(const a of meta){const h=get(a);assert.equal((h.match(/<h1\b/g)||[]).length,1);assert.equal((h.match(/rel="canonical"/g)||[]).length,1);assert.ok(h.includes(`href="${root}/intelligence/notes/${a.slug}/"`));assert.ok(a.description.length>=110&&a.description.length<=180);assert.ok(!h.includes('noindex'));assert.match(h,/<meta name="description"/);const ld=JSON.parse(h.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);assert.equal(ld['@graph'][0]['@type'],'Article');assert.equal(ld['@graph'][1]['@type'],'BreadcrumbList');assert.equal(ld['@graph'][0].author['@type'],'Organization');assert.equal(ld['@graph'][0].author.name,'MarketDeck');assert.equal(ld['@graph'][0].dateModified,a.modifiedAt);assert.ok(!h.includes('FAQPage'));assert.ok(!h.includes('aggregateRating'));assert.ok(!h.includes('Download PDF'));}
+});
+test('visible publication and modified dates use the same metadata as Article schema',()=>{
+ for(const a of meta){const h=get(a);assert.ok(h.includes(`Updated <time datetime="${a.modifiedAt}">${displayDate(a.modifiedAt)}</time>`));if(a.publishedAt)assert.ok(h.includes(`Published <time datetime="${a.publishedAt}">${displayDate(a.publishedAt)}</time>`));const ld=JSON.parse(h.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1])['@graph'][0];assert.equal(ld.dateModified,a.modifiedAt);assert.equal(ld.datePublished,a.publishedAt);}
+ assert.throws(()=>displayDate('26 September 2026'),/Invalid editorial date/);
 });
 test('all reference anchors, contents links, related guides and local image files resolve',()=>{
  for(const a of meta){const h=get(a),ids=[...h.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length,a.slug);
