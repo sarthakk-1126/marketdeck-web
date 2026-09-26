@@ -19,3 +19,21 @@ test('research standards page is canonical, substantive and discoverable', () =>
   assert.match(home, /href="\/research-standards\/">Research standards<\/a>/);
   assert.match(sitemap, /https:\/\/marketdeck\.in\/research-standards\//);
 });
+
+
+test('research standards expose the shared public data-state vocabulary', () => {
+  const page = readFileSync('public/research-standards/index.html', 'utf8');
+  for (const anchor of [
+    'data-state-live',
+    'data-state-stored',
+    'data-state-snapshot',
+    'data-state-historical',
+    'data-state-stale',
+    'data-state-unavailable',
+  ]) {
+    assert.match(page, new RegExp(`id="${anchor}"`));
+  }
+  assert.match(page, /“Real time” is a factual latency claim/);
+  assert.match(page, /should not silently substitute zero/);
+  assert.match(page, /prefers “stored” over the technical word “cached”/);
+});
