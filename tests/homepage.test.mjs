@@ -108,7 +108,7 @@ test('deferred globe maps and real product preview assets are self-hosted',()=>{
 
 test('runtime dependencies stay local except the approved canonical-only GA4 tag', () => {
   for (const match of html.matchAll(/\b(?:src|href)="(\/[^"#]+)(?:#[^"]*)?"/g)) {
-    const path = match[1];
+    const path = new URL(match[1], 'https://marketdeck.in').pathname;
     if (['/screener/', '/charts/', '/futures-and-options/', '/commentary/', '/crypto/'].includes(path)) continue;
     assert.ok(existsSync(resolve('public', `.${path}`)), `Missing asset ${path}`);
   }
