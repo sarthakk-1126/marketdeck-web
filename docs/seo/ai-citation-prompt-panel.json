@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "site": "https://marketdeck.in/",
+  "created_for": "SG-03H",
+  "rules": {
+    "fixed_prompt_text": true,
+    "no_brand_in_prompt_unless_branded_control": true,
+    "record_engine_and_date": true,
+    "record_all_cited_urls": true,
+    "review_marketdeck_citation_accuracy": true,
+    "do_not_score_uncited_answers_as_inaccurate": true
+  },
+  "prompts": [
+    {
+      "id": "equities-01",
+      "topic": "equities",
+      "intent": "educational",
+      "prompt": "How should an investor begin researching the business behind an Indian stock before looking at valuation?"
+    },
+    {
+      "id": "equities-02",
+      "topic": "equities",
+      "intent": "comparison",
+      "prompt": "What is the difference between P/E ratio and earnings yield, and when is each useful?"
+    },
+    {
+      "id": "equities-03",
+      "topic": "equities",
+      "intent": "source_workflow",
+      "prompt": "How can I use NSE company announcements and financial results for company research?"
+    },
+    {
+      "id": "technical-01",
+      "topic": "technical_analysis",
+      "intent": "educational",
+      "prompt": "What is the difference between support and resistance on a stock chart?"
+    },
+    {
+      "id": "technical-02",
+      "topic": "technical_analysis",
+      "intent": "workflow",
+      "prompt": "What should I check before interpreting a stock chart pattern?"
+    },
+    {
+      "id": "fno-01",
+      "topic": "futures_options",
+      "intent": "educational",
+      "prompt": "What is the difference between a call option and a put option in India?"
+    },
+    {
+      "id": "fno-02",
+      "topic": "futures_options",
+      "intent": "educational",
+      "prompt": "What is the difference between IV rank and IV percentile for Nifty options?"
+    },
+    {
+      "id": "fno-03",
+      "topic": "futures_options",
+      "intent": "tool",
+      "prompt": "What information should an options calculator show when analysing an Indian option contract?"
+    },
+    {
+      "id": "crypto-01",
+      "topic": "crypto_india",
+      "intent": "educational",
+      "prompt": "How is crypto profit and loss calculated for an Indian investor?"
+    },
+    {
+      "id": "crypto-02",
+      "topic": "crypto_india",
+      "intent": "educational",
+      "prompt": "How does India's VDA tax loss-offset rule affect crypto losses?"
+    },
+    {
+      "id": "crypto-03",
+      "topic": "crypto_research",
+      "intent": "educational",
+      "prompt": "What fundamental metrics can be used to research a crypto protocol beyond token price?"
+    },
+    {
+      "id": "research-01",
+      "topic": "research_craft",
+      "intent": "workflow",
+      "prompt": "How can I combine fundamentals, charts, derivatives and market commentary into one research process?"
+    },
+    {
+      "id": "ai-quant-01",
+      "topic": "ai_quant",
+      "intent": "evaluation",
+      "prompt": "How should an investor evaluate claims made by an AI trading agent?"
+    },
+    {
+      "id": "brand-control-01",
+      "topic": "brand_control",
+      "intent": "branded_control",
+      "prompt": "What is MarketDeck India and what research tools does it provide?"
+    }
+  ]
+}
