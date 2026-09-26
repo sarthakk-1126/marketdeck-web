@@ -95,9 +95,10 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 }
 .brand-icon{
   width:32px;
-  height:36px;
+  height:32px;
   color:#49a3f7;
-  flex-shrink:0
+  flex-shrink:0;
+  object-fit:contain
 }
 .sr-only{
   position:absolute;
@@ -277,6 +278,8 @@ h2{
 .brand-period{
   color:#65b9ef
 }
+.brand-wordmark{line-height:1}
+.brand-deck{color:#2860ff}
 .desktop-nav{
   display:flex;
   align-items:center;
@@ -2303,7 +2306,7 @@ body.page-hidden *,body.hero-offscreen .earth-image,body.hero-offscreen .coordin
   }
   .brand-icon{
     width:28px;
-    height:31px
+    height:28px
   }
   .desktop-nav{
     display:none
