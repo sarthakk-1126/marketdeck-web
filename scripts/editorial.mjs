@@ -7,10 +7,10 @@ export const isPublished=i=>i.publicationStatus==='published'&&Boolean(i.approve
 const refText=v=>esc(v).replace(/\[(S\d+)\]/g,'<a href="#$1">[$1]</a>');
 export function buildEditorial({data,template,root,review}) {
   const manifest=JSON.parse(readFileSync(data.editorial.manifest,'utf8'));
-  const urls=['/','/intelligence/','/intelligence/library/','/intelligence/issues/','/credits/','/research-standards/'];
+  const urls=['/','/intelligence/','/intelligence/library/','/intelligence/issues/','/intelligence/methodology/','/credits/','/research-standards/'];
   // Fail closed if a previously published issue is changed back to draft. Never silently retain it.
   if(!review) for(const issue of manifest.issues) if(!isPublished(issue)&&existsSync(resolve(root,`intelligence/issues/${issue.slug}`))) throw new Error(`Unpublished issue remains in public output: ${issue.slug}. Remove its generated directory before building.`);
-  const page=(title,summary,path,body,draft=false)=>`<!doctype html><html lang="en-IN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} | MarketDeck Intelligence</title><meta name="description" content="${esc(summary)}">${draft||review?'<meta name="robots" content="noindex, nofollow">':`<link rel="canonical" href="${esc(new URL(path,data.brand.url).href)}">`}<link rel="icon" href="/assets/favicon.svg"><link rel="stylesheet" href="/home.css"><link rel="stylesheet" href="/reading.css"></head><body><a class="skip-link" href="#reading">Skip to reading</a><header class="reading-header"><a class="brand" href="/">MarketDeck<span class="brand-period">.</span></a><nav aria-label="Reading navigation"><a href="/intelligence/">Intelligence</a><a href="/intelligence/library/">Library</a><a href="/intelligence/issues/">Magazine archive</a><a href="/#products">The suite</a></nav></header><main id="reading" class="reading-main">${draft?'<p class="draft-banner">EDITORIAL DRAFT · Local owner review · Not published</p>':''}${body}</main><footer class="reading-footer">MarketDeck · Research and education. Not investment advice.<a href="/">Return to MarketDeck</a></footer></body></html>`;
+  const page=(title,summary,path,body,draft=false)=>`<!doctype html><html lang="en-IN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)} | MarketDeck Intelligence</title><meta name="description" content="${esc(summary)}">${draft||review?'<meta name="robots" content="noindex, nofollow">':`<link rel="canonical" href="${esc(new URL(path,data.brand.url).href)}">`}<link rel="icon" href="/assets/favicon.svg"><link rel="stylesheet" href="/home.css"><link rel="stylesheet" href="/reading.css"></head><body><a class="skip-link" href="#reading">Skip to reading</a><header class="reading-header"><a class="brand" href="/">MarketDeck<span class="brand-period">.</span></a><nav aria-label="Reading navigation"><a href="/intelligence/">Intelligence</a><a href="/intelligence/library/">Library</a><a href="/intelligence/issues/">Magazine archive</a><a href="/#products">The suite</a></nav></header><main id="reading" class="reading-main">${draft?'<p class="draft-banner">EDITORIAL DRAFT · Local owner review · Not published</p>':''}${body}</main><footer class="reading-footer">MarketDeck · Research and education. Not investment advice.<a href="/intelligence/methodology/">Calculation methodology</a><a href="/">Return to MarketDeck</a></footer></body></html>`;
   function write(path,html){const f=resolve(root,`.${path}index.html`);mkdirSync(dirname(f),{recursive:true});writeFileSync(f,html);}
   const researchStandards = `
     <p class="eyebrow">MARKETDECK / RESEARCH STANDARDS</p>
@@ -66,6 +66,42 @@ export function buildEditorial({data,template,root,review}) {
     'How MarketDeck handles sources, data freshness, calculations, AI assistance, uncertainty and the boundary between research tools and investment advice.',
     '/research-standards/',
     researchStandards
+  ));
+  const intelligenceMethodology = `
+    <p class="eyebrow">MARKETDECK INTELLIGENCE / METHODOLOGY</p>
+    <h1>Definitions behind the worked examples.</h1>
+    <p class="reading-lead">How MarketDeck Intelligence handles calculations, periods, units, sources, hypothetical inputs and unavailable evidence.</p>
+    <article class="reading-body">
+      <h2>Scope and provenance</h2>
+      <p>Intelligence articles are educational research. A calculation in an article is either reproduced from values in a linked source, derived from explicitly cited market or filing data, or a labelled hypothetical worked example. A hypothetical value is not live, stored or historical market data. When an article links to a MarketDeck product output, that product's methodology and data-state label govern the output.</p>
+
+      <h2>Returns, growth and drawdowns</h2>
+      <p>Simple return (%) = (ending value ÷ beginning value − 1) × 100. The beginning value is the denominator. CAGR (%) = [(ending value ÷ beginning value)^(1 ÷ years) − 1] × 100, using the stated number of years. Drawdown (%) = (current value ÷ prior peak − 1) × 100; the prior peak is the denominator. Price return excludes distributions unless the article explicitly uses an adjusted or total-return series.</p>
+
+      <h2>Company and valuation ratios</h2>
+      <p>Margin (%) = the named profit measure ÷ the named revenue measure × 100. ROE = profit attributable to ordinary equity holders ÷ average ordinary equity × 100. ROCE = operating profit after the article's stated adjustments ÷ average capital employed × 100. Debt-to-equity = interest-bearing debt ÷ shareholder equity. Cash conversion is the named cash-flow measure ÷ the named profit measure. P/E = price per share ÷ earnings per share; earnings yield is its inverse, earnings per share ÷ price per share × 100. EV/EBITDA = enterprise value ÷ EBITDA. Articles must keep standalone/consolidated scope, currency, lakhs/crores conversion and reporting periods comparable.</p>
+
+      <h2>Options examples</h2>
+      <p>Intrinsic value is max(spot − strike, 0) for a call and max(strike − spot, 0) for a put. Time value = premium − intrinsic value. Expiry payoff is intrinsic value less premium paid for a long option, or premium received less intrinsic value for a short option, multiplied by the stated quantity where applicable. IV rank = (current IV − lookback minimum) ÷ (lookback maximum − lookback minimum) × 100. IV percentile = observations below the current IV ÷ valid lookback observations × 100; the article states its tie convention. A zero range or insufficient comparable history is unavailable.</p>
+
+      <h2>Crypto and portfolio examples</h2>
+      <p>India premium (%) = [Indian INR price ÷ (global USD price × USD/INR rate) − 1] × 100. DCA average cost = total acquisition cost ÷ total acquired quantity. Portfolio weight = position value ÷ total eligible portfolio value × 100. Correlation means Pearson correlation of the named paired return series over the stated window; volatility is the standard deviation of named returns with the stated annualisation factor.</p>
+
+      <h2>Windows, units and rounding</h2>
+      <p>Each worked calculation must name its observation dates or reporting periods and its currency, percentage, multiple, index-point or quantity units. Percentages and percentage points are not interchangeable. Values are computed before display rounding; the article states material rounding where a worked example cannot be reproduced from the displayed digits alone.</p>
+
+      <h2>Missing and unavailable evidence</h2>
+      <p>A missing source value, non-comparable period, zero or invalid denominator, insufficient history or unresolved definition remains unavailable. It is not replaced by zero, a nearby observation or an estimate unless the article explicitly labels a separate hypothetical assumption. Editorial prose must not turn an unavailable calculation into an authoritative claim.</p>
+
+      <h2>Sources, assumptions and corrections</h2>
+      <p>Primary filings, exchange documents, statutes, standards and provider definitions are preferred. Source dates and retrieval limitations belong with time-sensitive claims. Assumptions must be visible beside the example or linked directly from it. Material corrections update the affected article and its substantive update date; they do not create an invented authority or review signal.</p>
+      <p>See also <a href="/intelligence/editorial-policy/">Editorial standards</a> and <a href="/research-standards/">MarketDeck Research Standards</a>.</p>
+    </article>`;
+  write('/intelligence/methodology/', page(
+    'Intelligence Calculation Methodology',
+    'Formulas, periods, units, sources and unavailable-data treatment for calculations in MarketDeck Intelligence.',
+    '/intelligence/methodology/',
+    intelligenceMethodology
   ));
   write('/credits/',page('Asset credits','Image and open-source credits for the MarketDeck homepage.','/credits/',`<p class="eyebrow">MARKETDECK</p><h1>Asset credits.</h1><article class="reading-body"><h2>Earth</h2><p>Earth surface, night lights, normal, cloud and ocean-specular maps: <a href="https://ftp.solarsystemscope.com/textures/">Solar System Scope</a>, used under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Resized and converted to self-hosted WebP; cloud coverage and ocean reflectivity are packed into separate channels of one map. The material uses restrained color grading and illustrative twilight lighting. Network geometry is decorative and does not depict live market data. Textures are representative global maps, not current weather imagery.</p><h2>Interface and editorial artwork</h2><p>The five product-card images are original AI-assisted editorial illustrations created for MarketDeck. They depict research concepts, not application interfaces or live market data. They are cropped and exported as self-hosted WebP assets. The immediate Earth poster and editorial illustrations were created for MarketDeck using Image Gen; they are illustrations, not satellite measurements.</p><h2>Open-source software and platform marks</h2><p>3D rendering: <a href="/licenses/three.txt">Three.js, MIT license</a>. Platform icons: <a href="https://simpleicons.org/">Simple Icons</a>, <a href="/licenses/simple-icons.txt">CC0</a>; brands retain their trademarks. Platform names and marks identify planned channels and imply no partnership or endorsement.</p></article>`));
   const noteSlugs=['business-before-the-stock','a-chart-is-a-question','five-research-lenses'];
