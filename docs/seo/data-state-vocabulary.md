@@ -45,3 +45,25 @@ zero, an estimate, or a nearby observation.
 - Product-specific labels may be more precise, but must not contradict these
   definitions.
 
+## Public-product implementation (2026-09-26)
+
+- **MarketDeck / Intelligence** — the public Research Standards page exposes
+  the shared definitions and stable anchors for every preferred state.
+- **StockProof** — public filing, company, comparison and result copy uses
+  **stored** for persisted data; existing filing periods, stale-price markers
+  and unavailable reasons remain authoritative.
+- **Charting** — the public shell already uses historical/as-of framing and has
+  no user-visible persisted-data label that conflicts with this contract.
+- **F&O** — live requests, stored snapshots, historical archives, not-live
+  states and unavailable quotes remain distinct; the existing product-specific
+  controls satisfy this vocabulary without copy changes.
+- **Commentary** — persisted AI research outputs are described as **stored
+  digests**; source-attributed commentary and AI interpretation remain separate.
+- **Crypto World** — recorded market snapshots and stored order books remain
+  distinct from browser-live prices; unavailable values are not rendered as
+  zero.
+
+Technical implementation text may still use terms such as cache or cached.
+Those terms are not public data-state labels and must not leak into reader-facing
+provenance or freshness copy.
+
