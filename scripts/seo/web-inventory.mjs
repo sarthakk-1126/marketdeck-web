@@ -46,6 +46,7 @@ function record({path=null,route,family,id=null,classification='A',eligible=true
 const singletonDefinitions=[
   ['/', 'web:home','WEB-01 platform_home'],
   ['/credits/','web:credits','WEB-02 credits'],
+  ['/research-standards/','web:research_standards','WEB-03 research_standards'],
   ['/intelligence/','intelligence:home','INT-01 intelligence_home'],
   ['/intelligence/issues/','intelligence:issues','INT-02 issue_archive'],
   ['/intelligence/editorial-policy/','intelligence:editorial_policy','INT-05 editorial_policy'],
