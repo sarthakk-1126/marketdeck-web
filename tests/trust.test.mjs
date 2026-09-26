@@ -38,3 +38,16 @@ test('research standards expose the shared public data-state vocabulary', () => 
   assert.match(page, /prefers “stored” over the technical word “cached”/);
 });
 
+test('Intelligence methodology is canonical, linked and explicit about unavailable calculations', () => {
+  assert.ok(existsSync('public/intelligence/methodology/index.html'));
+  const page = readFileSync('public/intelligence/methodology/index.html', 'utf8');
+  const article = readFileSync('public/intelligence/notes/iv-rank-vs-iv-percentile-nifty-options/index.html', 'utf8');
+  const sitemap = readFileSync('public/sitemap.xml', 'utf8');
+  assert.match(page, /<link rel="canonical" href="https:\/\/marketdeck\.in\/intelligence\/methodology\/">/);
+  assert.match(page, /Simple return \(%\)/);
+  assert.match(page, /IV rank/);
+  assert.match(page, /remains unavailable/);
+  assert.match(article, /href="\/intelligence\/methodology\/">Calculation methodology<\/a>/);
+  assert.match(sitemap, /https:\/\/marketdeck\.in\/intelligence\/methodology\//);
+});
+
