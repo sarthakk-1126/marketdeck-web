@@ -24,8 +24,21 @@ export function buildEditorial({data,template,root,review}) {
       <p>Different products use different evidence. StockProof traces material company research back to stored filing evidence where available. Charting uses stored market history. F&amp;O distinguishes live market data, stored snapshots and historical archives. Commentary links back to the underlying third-party video/commentary source. Crypto World identifies material third-party market-data providers on the pages that use them. Intelligence links its research sources directly.</p>
       <p>A provider name does not mean MarketDeck independently verified every upstream observation. Source labels explain origin; they are not a guarantee that upstream data is error-free.</p>
 
-      <h2>Live, stored, historical and unavailable</h2>
-      <p>MarketDeck does not use “live” as a decorative label. A value should be described according to what the product actually knows: live, stored/cached, historical, stale, or unavailable. When a product has only a stored snapshot, the interface should say so and show the relevant time or period where available. Missing data should remain missing rather than being silently invented.</p>
+      <h2>Live, stored, snapshot, historical, stale and unavailable</h2>
+      <p>MarketDeck does not use “live” as a decorative label. Public products use a shared data-state vocabulary so the same word means the same thing across the suite.</p>
+      <h3 id="data-state-live">Live</h3>
+      <p>Obtained from an active provider, request or stream and current under that product’s stated freshness contract. When material, the source/provider and observation time should be visible. “Real time” is a factual latency claim and is not used unless it can be substantiated.</p>
+      <h3 id="data-state-stored">Stored</h3>
+      <p>Persisted by MarketDeck from an identified source. Stored does not mean current. The relevant source period or observation time should remain visible when it affects interpretation.</p>
+      <h3 id="data-state-snapshot">Snapshot</h3>
+      <p>A point-in-time capture of a market or product state. A snapshot must not be presented as live.</p>
+      <h3 id="data-state-historical">Historical</h3>
+      <p>Past observations, filings, results or replay data used descriptively. The relevant date or period belongs with the result.</p>
+      <h3 id="data-state-stale">Stale</h3>
+      <p>The latest available stored observation is older than the product’s acceptable freshness boundary, or the source has stopped updating. The last known observation or period should be shown rather than implying current data.</p>
+      <h3 id="data-state-unavailable">Unavailable</h3>
+      <p>No reliable value is available. MarketDeck should not silently substitute zero, an estimate or a nearby observation.</p>
+      <p>For persisted user-visible data, MarketDeck prefers “stored” over the technical word “cached”. Derived values inherit the time-state and limitations of their inputs.</p>
 
       <h2>Calculations, definitions and denominators</h2>
       <p>Material calculations should be reproducible from their stated inputs. A ratio is only interpretable when its numerator, denominator, reporting period and units are understood. Where assumptions materially change an output—such as a return window, confidence level, premium, strike, tax rule, or value basis—those assumptions belong next to the result or in a directly linked methodology.</p>

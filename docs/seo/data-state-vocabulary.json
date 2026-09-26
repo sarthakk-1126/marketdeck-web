@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "contract": "MarketDeck public data-state vocabulary",
+  "preferred_terms": {
+    "live": {
+      "meaning": "Obtained from an active provider/request/stream and current under the product's stated freshness contract.",
+      "required_context": ["source_or_provider", "observation_time_when_material"],
+      "must_not_imply": ["exchange_realtime_without_evidence"]
+    },
+    "stored": {
+      "meaning": "Persisted by MarketDeck from an identified source. Stored does not mean current.",
+      "required_context": ["source_or_provider", "stored_or_source_time_when_material"]
+    },
+    "snapshot": {
+      "meaning": "A point-in-time capture of a market or product state.",
+      "required_context": ["snapshot_time"],
+      "must_not_imply": ["live"]
+    },
+    "historical": {
+      "meaning": "Past observations, filings, results, or replay data used descriptively.",
+      "required_context": ["date_or_period"]
+    },
+    "stale": {
+      "meaning": "The latest available stored observation is older than the product's acceptable freshness boundary or the source has stopped updating.",
+      "required_context": ["last_observed_time_or_period"],
+      "must_not_imply": ["current"]
+    },
+    "unavailable": {
+      "meaning": "No reliable value is available for the requested field/state.",
+      "required_context": [],
+      "must_not_imply": ["zero", "estimated_value"]
+    }
+  },
+  "provenance_classes": {
+    "primary_source": "Issuer, regulator, exchange, filing, or other originating source where MarketDeck has direct source evidence.",
+    "provider": "Named external data provider supplying an observation or feed.",
+    "derived": "Calculated by MarketDeck from stated inputs; methodology and denominator conventions must be discoverable.",
+    "source_attributed_commentary": "A statement attributed to the underlying commentary/video/source rather than asserted as MarketDeck's own claim.",
+    "ai_assisted_interpretation": "AI-generated or AI-assisted interpretation that must remain visibly distinct from source-attributed facts."
+  },
+  "deprecated_or_context_only_terms": {
+    "cached": "Use only for transient technical caching. Prefer 'stored' for persisted user-visible data.",
+    "real_time": "Do not use unless the product can substantiate the provider/exchange latency claim."
+  }
+}
+
