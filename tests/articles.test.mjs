@@ -26,8 +26,8 @@ test('visible publication and modified dates use the same metadata as Article sc
 });
 test('all reference anchors, contents links, related guides and local image files resolve',()=>{
  for(const a of meta){const h=get(a),ids=[...h.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length,a.slug);
- for(const m of h.matchAll(/\bhref="([^"]+)"/g)){const u=m[1];if(u.startsWith('#'))assert.ok(ids.includes(u.slice(1)),a.slug+':'+u);else if(u.startsWith('/')){const path=u.split('#')[0];if(apps.has(path)||/^\/intelligence\/(equities|technical-analysis|futures-options)\/$/.test(path))continue;assert.ok(existsSync('public'+path+(path.endsWith('/')?'index.html':'')),a.slug+':'+path);}}
- for(const m of h.matchAll(/\b(?:src|href)="(\/[^"#]+\.(?:svg|webp|css))"/g))assert.ok(existsSync('public'+m[1]),m[1]);
+ for(const m of h.matchAll(/\bhref="([^"]+)"/g)){const u=m[1];if(u.startsWith('#'))assert.ok(ids.includes(u.slice(1)),a.slug+':'+u);else if(u.startsWith('/')){const path=u.split(/[?#]/)[0];if(apps.has(path)||/^\/intelligence\/(equities|technical-analysis|futures-options)\/$/.test(path))continue;assert.ok(existsSync('public'+path+(path.endsWith('/')?'index.html':'')),a.slug+':'+path);}}
+ for(const m of h.matchAll(/\b(?:src|href)="(\/[^"#]+\.(?:svg|webp|css))(?:\?[^\"]*)?"/g))assert.ok(existsSync('public'+m[1]),m[1]);
  for(const s of a.sources)assert.ok(h.includes(`id="source-${s.id}"`));assert.ok(h.includes('AI-assisted educational writing'));
  }
 });

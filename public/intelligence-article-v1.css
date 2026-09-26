@@ -1,7 +1,7 @@
 /* Scoped reading design. No homepage, product or magazine selectors. */
 .md-article{background:#080c12;color:#dce4ed;font-family:Inter,"Segoe UI",Arial,sans-serif}
 .md-article .a-header,.md-article .a-footer{max-width:1320px;width:calc(100% - 80px);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:28px;padding:28px 0;border-bottom:1px solid #263240}
-.md-article .a-brand{font-size:25px;font-weight:700;letter-spacing:-1px}.md-article .a-brand span{color:#8fc5f7}
+.md-article .a-brand{display:inline-flex;align-items:center;gap:9px;font-size:25px;font-weight:700;letter-spacing:-1px;white-space:nowrap}.md-article .a-brand .brand-icon{width:32px;height:32px;object-fit:contain}.md-article .a-brand .brand-deck{color:#2860ff}
 .md-article .a-header nav{display:flex;gap:28px;font-size:13px;color:#b4c2d1}.md-article a:focus-visible,.md-article summary:focus-visible,.md-article [tabindex]:focus-visible{outline:2px solid #97ceff;outline-offset:5px}
 .md-article .a-hero{width:calc(100% - 112px);max-width:1180px;margin:64px auto 0}.md-article .a-breadcrumb{display:flex;gap:16px;font-size:12px;color:#a3b7ca;margin-bottom:42px}
 .md-article .a-hero-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:55px;align-items:center}.md-article .a-kicker{font:10px/1.7 Consolas,monospace;letter-spacing:2px;color:#98c6ef;margin:0 0 20px}
