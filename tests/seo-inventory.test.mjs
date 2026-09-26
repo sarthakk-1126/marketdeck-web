@@ -39,10 +39,10 @@ test('complete empty and failed generation are distinct',()=>{
   assert.throws(()=>validateIntegrity({...empty,enumeration_status:'failed'}),/^ProtocolError: invalid_failed_generation$/);
 });
 
-test('current producer preserves all candidates and exactly the existing 20 eligible URLs',()=>{
+test('current producer preserves all candidates and exactly the existing 21 eligible URLs',()=>{
   const out=inventory(),eligible=out.records.filter(r=>r.sitemap_eligible);
-  assert.equal(out.record_count,23);assert.equal(eligible.length,20);
-  assert.equal(out.records_sha256,'c07a328683c71a9557748549f7824e9227e6299886bafd4ef715af935eec07a6');
+  assert.equal(out.record_count,24);assert.equal(eligible.length,21);
+  assert.equal(out.records_sha256,'a2457fb7f34b947a5f0832ef4616d1c96da68df4928c80517019064b638d201a');
   assert.equal(out.records.filter(r=>r.page_family.startsWith('INT-03 ')).length,10);
   assert.equal(out.records.filter(r=>r.page_family.startsWith('INT-08 ')).length,3);
   assert.equal(out.records.filter(r=>r.page_family.startsWith('INT-09 ')).length,1);
