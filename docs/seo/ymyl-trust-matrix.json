@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-09-26",
+  "phase": "SG-04",
+  "items": {
+    "SG-04A": {"state":"partial","priority":2,"summary":"Strong provenance in StockProof/Commentary/Crypto; inconsistent cross-product presentation."},
+    "SG-04B": {"state":"partial","priority":3,"summary":"Methodology exists but is fragmented between UI, docs and code."},
+    "SG-04C": {"state":"partial","priority":2,"summary":"Good as-of/snapshot patterns exist; standard vocabulary is missing."},
+    "SG-04D": {"state":"partial","priority":3,"summary":"Definitions and denominator conventions exist unevenly."},
+    "SG-04E": {"state":"partial","priority":1,"summary":"Intelligence policy exists; suite-wide discoverability is missing."},
+    "SG-04F": {"state":"complete","priority":0,"summary":"No fabricated human expertise; organizational authorship and explicit AI-assistance limits are established."},
+    "SG-04G": {"state":"complete","priority":0,"summary":"Research/education is separated from personalized recommendations across material product surfaces."},
+    "SG-04H": {"state":"partial","priority":4,"summary":"Date semantics exist but need visible-vs-machine consistency audit."},
+    "SG-04I": {"state":"gap","priority":5,"summary":"No shared methodology-version identifier convention yet."}
+  }
+}
