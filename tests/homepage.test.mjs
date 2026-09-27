@@ -124,9 +124,25 @@ test('metadata and structured data describe the public site without invented met
   assert.match(html, /<link rel="canonical" href="https:\/\/marketdeck\.in\/">/);
   assert.match(html, /name="description" content="[^"]{80,}/);
   const schema = JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
-  assert.equal(schema['@type'], 'WebSite');
-  assert.equal(schema.url, data.brand.url);
-  assert.equal('aggregateRating' in schema, false);
+  const organization=schema['@graph'].find(node=>node['@type']==='Organization');
+  const website=schema['@graph'].find(node=>node['@type']==='WebSite');
+  assert.equal(schema['@graph'].filter(node=>node['@type']==='Organization').length,1);
+  assert.equal(schema['@graph'].filter(node=>node['@type']==='WebSite').length,1);
+  assert.equal(organization['@id'],'https://marketdeck.in/#organization');
+  assert.equal(organization.name,'MarketDeck');
+  assert.equal(organization.url,data.brand.url);
+  assert.equal(organization.logo['@id'],'https://marketdeck.in/#logo');
+  assert.equal(organization.logo.url,'https://marketdeck.in/assets/marketdeck-logo.png');
+  assert.equal(organization.logo.contentUrl,organization.logo.url);
+  assert.equal(organization.logo.width,2048);
+  assert.equal(organization.logo.height,2048);
+  assert.equal(organization.publishingPrinciples,'https://marketdeck.in/research-standards/');
+  assert.equal(website['@id'],'https://marketdeck.in/#website');
+  assert.equal(website.url,data.brand.url);
+  assert.deepEqual(website.publisher,{'@id':'https://marketdeck.in/#organization'});
+  assert.equal(JSON.stringify(schema).includes('sameAs'),false);
+  assert.equal(JSON.stringify(schema).includes('SearchAction'),false);
+  assert.equal('aggregateRating' in organization,false);
   assert.equal(/\{\{\w+\}\}/.test(html), false);
 });
 

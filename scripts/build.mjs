@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync, cpSync, mkdirSync, readdirSync } from 'nod
 import { resolve } from 'node:path';
 import { buildEditorial } from './editorial.mjs';
 import { injectAnalytics, stripAnalytics } from './analytics.mjs';
+import { homepageIdentityGraph } from './structured-identity.mjs';
 
 export const escapeHtml = (value) => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const safeUrl = (value) => {
@@ -36,7 +37,7 @@ const footerProducts = data.products.map(p => `<li>${p.url ? `<a href="${safeUrl
 const legal = Object.entries(data.legal).map(([key, url]) => url ? `<a href="${safeUrl(url)}">${key === 'privacy' ? 'Privacy' : 'Terms'}</a>` : `<span>${key === 'privacy' ? 'Privacy' : 'Terms'} <small>(soon)</small></span>`).join('');
 const newsletter = data.newsletter.url ? `<a class="button button-primary" href="${safeUrl(data.newsletter.url)}"${external(data.newsletter.url)}>Join the MarketDeck Brief${arrow}</a>` : `<span class="coming-soon-pill">${icon('clock')} The Brief is coming soon</span>`;
 const newsletterNote = data.newsletter.url ? '<span>Research and learning, delivered thoughtfully.</span>' : '<span>No subscriptions are being collected yet.</span>';
-const schema = { '@context': 'https://schema.org', '@type': 'WebSite', 'name': data.brand.name, 'url': data.brand.url, 'description': 'Indian market research, charting, derivatives, commentary, and digital asset research in one connected product suite.', 'inLanguage': 'en-IN' };
+const schema = homepageIdentityGraph();
 let html = readFileSync(new URL('../src/index.template.html', import.meta.url), 'utf8');
 html=buildEditorial({data,template:html,root:output,review});
 for (const [key, value] of Object.entries({ PRODUCT_NAV: productNav, PRODUCT_TABS: productTabs, PRODUCT_PANELS: productPanels, PRODUCT_OVERVIEW: productOverview, COMMUNITY_TABS: communityTabs, COMMUNITY_PANELS: communityPanels, COMMUNITY_LEGEND: communityLegend, CONTACTS: contacts, FOOTER_PRODUCTS: footerProducts, LEGAL: legal, NEWSLETTER: newsletter, NEWSLETTER_NOTE: newsletterNote, SCHEMA: JSON.stringify(schema).replace(/</g, '\\u003c') })) html = html.replaceAll(`{{${key}}}`, value);

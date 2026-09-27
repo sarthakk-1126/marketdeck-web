@@ -2,7 +2,8 @@
 import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {resolve,dirname} from 'node:path';
 import {TOPICS,LEARNING_HUBS} from './intelligence.mjs';
-const ORIGIN='https://marketdeck.in';
+import {MARKETDECK,compactOrganization,organizationReference,webPageNode,websiteReference} from './structured-identity.mjs';
+const ORIGIN=MARKETDECK.origin;
 const E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const slug=v=>{if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(v))throw Error('Invalid article slug');return v;};
 export function displayDate(v){
@@ -102,7 +103,8 @@ export function buildArticles({root,review,baseNotes=[]}){
   const crumbs=[{'@type':'ListItem',position:1,name:'MarketDeck',item:ORIGIN+'/'},{'@type':'ListItem',position:2,name:'Intelligence',item:ORIGIN+'/intelligence/'}];
   if(a.primaryHub){slug(a.primaryHub.slug);if(!LEARNING_HUBS[a.primaryHub.slug]||!a.topics.includes(LEARNING_HUBS[a.primaryHub.slug].topic))throw Error('Invalid primary learning hub');crumbs.push({'@type':'ListItem',position:3,name:a.primaryHub.label,item:ORIGIN+'/intelligence/'+a.primaryHub.slug+'/'});}
   crumbs.push({'@type':'ListItem',position:crumbs.length+1,name:a.title,item:ORIGIN+path});
-  const schema={'@context':'https://schema.org','@graph':[{'@type':'Article','@id':ORIGIN+path+'#article',headline:a.title,description:a.description,mainEntityOfPage:{'@type':'WebPage','@id':ORIGIN+path},image:ORIGIN+a.coverArt,author:{'@type':'Organization',name:'MarketDeck',url:ORIGIN+'/'},publisher:{'@type':'Organization',name:'MarketDeck',url:ORIGIN+'/'},dateModified:a.modifiedAt,inLanguage:'en-IN',articleSection:TOPICS[a.topics[0]],wordCount:words,...(a.publishedAt?{datePublished:a.publishedAt}:{})},{'@type':'BreadcrumbList',itemListElement:crumbs}]};
+  const canonical=ORIGIN+path;
+  const schema={'@context':'https://schema.org','@graph':[{'@type':'Article','@id':canonical+'#article',headline:a.title,description:a.description,mainEntityOfPage:{'@id':canonical+'#webpage'},isPartOf:websiteReference(),image:ORIGIN+a.coverArt,author:organizationReference(),publisher:compactOrganization(),dateModified:a.modifiedAt,inLanguage:MARKETDECK.language,articleSection:TOPICS[a.topics[0]],wordCount:words,...(a.publishedAt?{datePublished:a.publishedAt}:{})},webPageNode(canonical),{'@type':'BreadcrumbList',itemListElement:crumbs}]};
   const schemas=`<meta property="og:image" content="${ORIGIN+a.coverArt}"><script type="application/ld+json">${JSON.stringify(schema).replace(/</g,'\\u003c')}</script>`;
   const sourceList=a.sources.map(s=>`<li id="source-${s.id}"><a href="${E(url(s.url))}"><span>${s.id}</span> ${E(s.title)} ↗</a><p>${E(s.scope)} Reviewed ${E(s.reviewedAt)}.</p></li>`).join('');
   const related=a.related.map(k=>{const b=metaMap.get(k);if(!b)throw Error('Unknown related article');return `<a href="/intelligence/notes/${k}/"><small>${E(TOPICS[b.topics[0]])}</small><strong>${E(b.title)}</strong><span>Continue reading ↗</span></a>`;}).join('');
