@@ -51,5 +51,15 @@ test('restricted Markdown escapes HTML and rejects unsafe URL schemes and unreso
  assert.throws(()=>parseArticle('## Same\n\n## Same',{sources:[]},''));assert.throws(()=>parseArticle('| A | B |\n|---|---|\n| only one |',{sources:[],title:'test'},''));
 });
 test('reader FAQ headings, original figures and contextual links exist on every guide',()=>{
- for(const a of meta){const h=get(a);assert.ok(h.includes('Frequently asked questions'));assert.ok((h.match(/<h3\b/g)||[]).length>=3);assert.ok(h.includes('class="a-figure"'));assert.equal(a.related.length,3);assert.ok(h.includes('class="a-toc"'));assert.ok(h.includes('class="a-related"'));assert.ok(h.includes('aria-label="Article contents"'));if(a.primaryHub){assert.ok(h.includes(`/intelligence/${a.primaryHub.slug}/`));assert.ok(h.includes('class="a-apply"'));assert.ok(h.includes(a.tool.url));}}
+ for(const a of meta){const h=get(a);assert.ok(h.includes('Frequently asked questions'));assert.ok((h.match(/<h3\b/g)||[]).length>=3);assert.ok(h.includes('class="a-figure"'));assert.equal(a.related.length,3);assert.ok(h.includes('class="a-toc"'));assert.ok(h.includes('class="a-related"'));assert.ok(h.includes('aria-label="Article contents"'));if(a.primaryHub)assert.ok(h.includes(`/intelligence/${a.primaryHub.slug}/`));if(a.tool){assert.ok(h.includes('class="a-apply"'));assert.ok(h.includes(a.tool.url));}else assert.ok(!h.includes('class="a-apply"'));}
+});
+test('apply links stay limited to guides with a direct product workflow',()=>{
+ const expected=new Map([
+  ['business-before-the-stock','/screener/'],['read-nse-company-announcements-results','/screener/'],['pe-ratio-vs-earnings-yield','/screener/'],
+  ['a-chart-is-a-question','/charts/'],['support-vs-resistance-stock-charts','/charts/'],
+  ['iv-rank-vs-iv-percentile-nifty-options','/futures-and-options/'],['call-option-vs-put-option-india','/futures-and-options/'],
+  ['crypto-fundamentals-fees-revenue-token-value','/crypto/'],
+ ]);
+ assert.equal(meta.filter(a=>a.tool).length,expected.size);
+ for(const a of meta){const h=get(a),target=expected.get(a.slug);if(target){assert.equal(a.tool.url,target);assert.ok(h.includes(`href="${target}"`));}else assert.ok(!h.includes('class="a-apply"'),a.slug);}
 });
