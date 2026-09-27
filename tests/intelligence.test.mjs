@@ -53,8 +53,9 @@ test('Intelligence landing, library and magazine archive are canonical crawlable
   assert.equal((html.match(/<h1\b/g)||[]).length,1);
   assert.match(html,new RegExp('rel="canonical" href="https://marketdeck.in/'+path+'"'));
   const ids=[...html.matchAll(/\bid="([^\"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length);
-  const schema=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);assert.equal(schema['@type'],'CollectionPage');
-  assert.equal(schema.mainEntity.itemListElement.length,path==='intelligence/issues/'?1:publicCount);
+  const schema=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]),collection=schema['@graph'].find(n=>n['@type']==='CollectionPage'),canonical='https://marketdeck.in/'+path;assert.ok(collection);
+  assert.equal(collection['@id'],canonical+'#webpage');assert.equal(collection.url,canonical);assert.deepEqual(collection.isPartOf,{'@id':'https://marketdeck.in/#website'});assert.deepEqual(collection.publisher,{'@id':'https://marketdeck.in/#organization'});
+  assert.equal(collection.mainEntity.itemListElement.length,path==='intelligence/issues/'?1:publicCount);
   assert.doesNotMatch(html,/aria-roledescription="carousel"|data-intel-entry[^>]+hidden|data-intel-slide[^>]+hidden/);
  }
  const all=readFileSync('public/intelligence/library/index.html','utf8');
@@ -72,5 +73,5 @@ test('client enhancement is small, local and non-autoplay',()=>{
 test('three primary learning hubs are substantial, canonical and connected to products',()=>{
  const notes=JSON.parse(readFileSync('content/articles/metadata.json')).map(a=>({slug:a.slug,path:'/intelligence/notes/'+a.slug+'/',title:a.title,summary:a.description,body:readFileSync(a.source,'utf8')}));
  const items=catalog(manifest,notes,{read:p=>JSON.parse(readFileSync(p,'utf8')),exists:p=>existsSync('public'+p)});
- for(const [slug,h] of Object.entries(LEARNING_HUBS)){const html=learningHub(items,slug);assert.equal((html.match(/<h1\b/g)||[]).length,1);assert.ok(html.includes(`rel="canonical" href="https://marketdeck.in/intelligence/${slug}/"`));assert.ok(html.includes(h.tool.url));assert.ok((html.match(/class="learning-card"/g)||[]).length>=2);const ld=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);assert.equal(ld['@graph'][0]['@type'],'CollectionPage');assert.equal(ld['@graph'][1]['@type'],'BreadcrumbList');}
+ for(const [slug,h] of Object.entries(LEARNING_HUBS)){const html=learningHub(items,slug),canonical=`https://marketdeck.in/intelligence/${slug}/`;assert.equal((html.match(/<h1\b/g)||[]).length,1);assert.ok(html.includes(`rel="canonical" href="${canonical}"`));assert.ok(html.includes(h.tool.url));assert.ok((html.match(/class="learning-card"/g)||[]).length>=2);const ld=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]),collection=ld['@graph'].find(n=>n['@type']==='CollectionPage'),crumbs=ld['@graph'].find(n=>n['@type']==='BreadcrumbList');assert.ok(collection);assert.ok(crumbs);assert.equal(collection['@id'],canonical+'#webpage');assert.deepEqual(collection.isPartOf,{'@id':'https://marketdeck.in/#website'});assert.deepEqual(collection.publisher,{'@id':'https://marketdeck.in/#organization'});}
 });
