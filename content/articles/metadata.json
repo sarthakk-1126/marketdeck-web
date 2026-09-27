@@ -379,6 +379,11 @@
     "publicationStatus": "published",
     "approvedAt": "2026-09-23",
     "publishedAt": "2026-09-23",
+    "tool": {
+      "name": "Crypto World",
+      "url": "/crypto/",
+      "label": "Explore Crypto World"
+    },
     "sources": [
       {
         "id": "S1",
