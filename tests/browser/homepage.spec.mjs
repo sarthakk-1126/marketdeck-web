@@ -154,11 +154,13 @@ test('mobile hero keeps India prominent, actions usable and ambient motion optio
   await expect(page.locator('body')).toHaveClass(/motion-paused/);
   expect(await page.locator('.earth-image').evaluate(image=>getComputedStyle(image).animationName)).toBe('none');
 });
-test('community includes all planned entries with no fake links',async({page})=>{
+test('community exposes confirmed official accounts and keeps unverified entries muted',async({page})=>{
   await page.goto('/#community');await expect(page.locator('.channel-grid li')).toHaveCount(25);
+  await expect(page.locator('.channel-grid [data-status=available]')).toHaveCount(15);
+  await expect(page.locator('.channel-grid [data-status=available] a')).toHaveCount(15);
   await expect(page.locator('.channel-grid [data-status=planned] a')).toHaveCount(0);
-  await expect(page.locator('.platform-unavailable')).toHaveCount(24);
-  await expect(page.locator('.community-legend')).toContainText('not yet linked');
+  await expect(page.locator('.platform-unavailable')).toHaveCount(10);
+  await expect(page.locator('.community-legend')).toContainText('14 confirmed community destinations');
 });
 test('HTML articles and local draft work without JavaScript; production excludes draft',async({browser,request})=>{
   const context=await browser.newContext({javaScriptEnabled:false});const page=await context.newPage();

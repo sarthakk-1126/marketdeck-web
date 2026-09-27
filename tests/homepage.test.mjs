@@ -23,16 +23,27 @@ test('all five confirmed application routes are emitted; pending channels are no
   assert.equal(/mailto:|<form\b|type="email"/.test(html), false);
 });
 
-test('all specified community platforms render with accessible pending semantics', () => {
+test('confirmed community accounts link to their official destinations while unverified entries stay muted', () => {
+  const expectedCommunityLinks = new Map([
+    ['YouTube','https://www.youtube.com/@MarketDeckIndia'], ['Instagram','https://www.instagram.com/marketdeckindia/'],
+    ['Facebook','https://www.facebook.com/marketdeckindia'], ['X','https://x.com/MarketDeckIndia'],
+    ['Threads','https://www.threads.com/@marketdeckindia'], ['Snapchat','https://www.snapchat.com/@marketdeck'],
+    ['LinkedIn','https://www.linkedin.com/company/marketdeck/'], ['Pinterest','https://www.pinterest.com/MarketDeck/'],
+    ['Bluesky','https://bsky.app/profile/marketdeck.in'], ['Reddit','https://www.reddit.com/user/MarketDeck/'],
+    ['Telegram','https://t.me/MarketDeckIndia'], ['WhatsApp Channel','https://whatsapp.com/channel/0029VbDS6wnJZg40dVWH5t37'],
+    ['Medium','https://medium.com/@MarketDeck'], ['Substack / newsletter','https://marketdeck.substack.com']
+  ]);
   const platforms = data.community.flatMap(group => group.platforms);
   assert.equal(platforms.length, 25);
   for (const platform of platforms) {
     assert.match(html, new RegExp(escapeHtml(platform.name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-    if(platform.type==='external')assert.equal(platform.url, null);
+    const expected = expectedCommunityLinks.get(platform.name);
+    if (expected) { assert.equal(platform.url, expected); assert.equal(platform.confirmed, true); assert.equal(platform.enabled, true); assert.equal(platform.status, 'available'); assert.ok(hrefs.includes(expected)); }
+    else if (platform.type === 'external') assert.equal(platform.url, null);
   }
-  assert.equal((html.match(/class="platform-unavailable"/g) || []).length, 24);
-  assert.equal((html.match(/planned, not linked/g) || []).length, 24);
-  assert.equal(confirmedDestinations(data.community).length,0);
+  assert.equal((html.match(/class="platform-unavailable"/g) || []).length, 10);
+  assert.equal((html.match(/planned, not linked/g) || []).length, 10);
+  assert.deepEqual(confirmedDestinations(data.community).sort(), [...expectedCommunityLinks.values()].map(url=>url.replace(/\/$/,'')).sort());
   assert.equal(html.includes('Google Search'),false);
 });
 
