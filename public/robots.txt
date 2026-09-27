@@ -1,6 +1,17 @@
 # MarketDeck public crawl policy.
-# Search indexing is allowed for public pages. Page-level robots directives
-# and application access controls govern non-indexable/private surfaces.
+# Public search/retrieval access is allowed. Model-training controls are
+# deliberately separated so blocking training does not disable search visibility.
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+# Keep Gemini Apps / Vertex AI grounding eligibility enabled. Google documents
+# Google-Extended as separate from Google Search inclusion and ranking.
+User-agent: Google-Extended
+Allow: /
 
 User-agent: *
 Allow: /
