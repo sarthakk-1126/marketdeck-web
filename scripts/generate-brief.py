@@ -13,6 +13,9 @@ ROOT=Path(__file__).resolve().parents[1]
 if len(sys.argv)>1 and sys.argv[1]=='agentic-trading-frontier-02':
     subprocess.run([sys.executable,str(ROOT/'scripts/prepare-agentic-magazine.py')],check=True)
     raise SystemExit(0)
+if len(sys.argv)>1 and sys.argv[1]=='ai-indian-finance-03':
+    subprocess.run([sys.executable,str(ROOT/'scripts/prepare-ai-indian-finance-magazine.py')],check=True)
+    raise SystemExit(0)
 manifest=json.loads((ROOT/'content/briefs.json').read_text(encoding='utf-8'))
 issue=next(i for i in manifest['issues'] if i['id']==(sys.argv[1] if len(sys.argv)>1 else 'research-foundations-01'))
 content=json.loads((ROOT/issue['source']).read_text(encoding='utf-8'))

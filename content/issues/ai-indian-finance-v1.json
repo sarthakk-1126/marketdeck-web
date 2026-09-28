@@ -1,0 +1,440 @@
+{
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Report of the Committee to develop a Framework for Responsible and Ethical Enablement of Artificial Intelligence (FREE-AI) in the Financial Sector",
+      "url": "https://rbidocs.rbi.org.in/rdocs/PublicationReport/Pdfs/FREEAIR130820250A24FF2D4578453F824C72ED9F5D5851.PDF",
+      "publicationDate": "13 August 2025",
+      "reviewedAt": "2026-09-28",
+      "note": "RBI committee report. It sets 7 foundational Sutras, 26 recommendations and six strategic pillars for responsible AI adoption in finance."
+    },
+    {
+      "id": "S2",
+      "title": "Reserve Bank of India Annual Report 2024-25 - Regulation, Supervision and Financial Stability",
+      "url": "https://www.rbi.org.in/scripts/AnnualReportPublications.aspx?Id=1436",
+      "publicationDate": "29 May 2025",
+      "reviewedAt": "2026-09-28",
+      "note": "Primary RBI annual-report chapter covering AI in complaint management, supervisory technology, fraud detection and the FREE-AI programme."
+    },
+    {
+      "id": "S3",
+      "title": "RBI Bulletin - Developmental and Regulatory Policies: FREE-AI and MuleHunter.AI",
+      "url": "https://www.rbi.org.in/Scripts/BS_ViewBulletin.aspx?Id=23057",
+      "publicationDate": "December 2024",
+      "reviewedAt": "2026-09-28",
+      "note": "Primary RBI policy statement describing the MuleHunter.AI pilot and the rationale for a responsible-AI framework."
+    },
+    {
+      "id": "S4",
+      "title": "RBI draft Guidance on Regulatory Principles for Model Risk Management",
+      "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=63006",
+      "publicationDate": "24 June 2026",
+      "reviewedAt": "2026-09-28",
+      "note": "Primary RBI press release for draft guidance. It applies to all models used by covered regulated entities, including third-party and AI/ML models. The guidance was released for public comment and is not presented here as final regulation."
+    },
+    {
+      "id": "S5",
+      "title": "SEBI Board Memorandum - Assigning responsibility for use of AI tools by regulated persons",
+      "url": "https://www.sebi.gov.in/sebi_data/meetingfiles/dec-2024/1735042007618_1.pdf",
+      "publicationDate": "18 December 2024",
+      "reviewedAt": "2026-09-28",
+      "note": "Primary SEBI board material listing observed AI/ML use cases across brokers, depositories, market infrastructure institutions and mutual funds."
+    },
+    {
+      "id": "S6",
+      "title": "SEBI (Intermediaries) (Amendment) Regulations, 2025 - responsibility for AI use",
+      "url": "https://www.sebi.gov.in/sebi_data/attachdocs/feb-2025/1739276753544.pdf",
+      "publicationDate": "6 February 2025",
+      "reviewedAt": "2026-09-28",
+      "note": "Final SEBI regulation making covered intermediaries solely responsible for data privacy/security/integrity, AI outputs they rely on, and compliance with law."
+    },
+    {
+      "id": "S7",
+      "title": "SEBI Consultation Paper - Guidelines for Responsible Usage of AI/ML in Indian Securities Markets",
+      "url": "https://www.sebi.gov.in/sebi_data/attachdocs/jun-2025/1750415065695.pdf",
+      "publicationDate": "20 June 2025",
+      "reviewedAt": "2026-09-28",
+      "note": "Primary SEBI consultation paper documenting current market use cases and proposed responsible-AI principles. It is a consultation paper, not final regulation."
+    },
+    {
+      "id": "S8",
+      "title": "SEBI Guidelines for Investment Advisers",
+      "url": "https://www.sebi.gov.in/sebi_data/attachdocs/jan-2025/1736338642778.pdf",
+      "publicationDate": "8 January 2025",
+      "reviewedAt": "2026-09-28",
+      "note": "Primary SEBI circular requiring advisers using AI tools to remain responsible for client data, information used, AI-based advice and legal compliance, and to disclose the extent of AI use."
+    },
+    {
+      "id": "S9",
+      "title": "Bajaj Finserv Limited - 19th Annual Report 2025-26",
+      "url": "https://www.bajajfinserv.in/finserv-digital-annual-report-fy26/index.html",
+      "publicationDate": "FY2025-26 annual report",
+      "reviewedAt": "2026-09-28",
+      "note": "Company-reported operating metrics for AI-enabled servicing, lending, document processing, voice-to-data conversion and claims automation. Metrics are reported by Bajaj Finserv and are not independently verified by MarketDeck."
+    },
+    {
+      "id": "S10",
+      "title": "Axis Bank Integrated Annual Report 2024-25",
+      "url": "https://www.axisbank.com/annual-reports/2024-2025/pdf/Axis%20Bank%20IR%2024-25.pdf",
+      "publicationDate": "FY2024-25 annual report",
+      "reviewedAt": "2026-09-28",
+      "note": "Company-reported deployment of Axis Deep Intelligence, a GenAI internal assistant across 5,500+ branches supporting 100,000+ employees."
+    }
+  ],
+  "pages": [
+    {
+      "kind": "cover",
+      "kicker": "THE MARKETDECK BRIEF / FIELDNOTES 03",
+      "title": "AI in Indian Finance",
+      "intro": "Where it is actually creating value - and why the important boundary is not AI versus humans, but assistance versus delegated authority.",
+      "sections": [
+        {
+          "title": "The working thesis",
+          "text": "The most defensible near-term value is showing up in workflow compression: service, document processing, fraud detection, risk support, research and operations. The higher the consequence of an automated decision, the stronger the case for provenance, human review and clear accountability."
+        }
+      ],
+      "callout": "Published 28 September 2026. Research and education only. This issue does not provide investment, credit or legal advice.",
+      "sourceIds": [
+        "S1",
+        "S2",
+        "S5",
+        "S9"
+      ]
+    },
+    {
+      "kind": "contents",
+      "kicker": "00 / THE RESEARCH MAP",
+      "title": "Useful AI is mostly workflow AI",
+      "intro": "Ignore the science-fiction framing. In Indian finance, the practical story is already visible in the operating layer.",
+      "sections": [
+        {
+          "title": "Five places to look",
+          "items": [
+            "Customer service: faster routing, retrieval and first-line resolution.",
+            "Fraud and surveillance: pattern detection that narrows what humans need to inspect.",
+            "Lending and credit: document processing and decision support around underwriting.",
+            "Research and compliance: summarisation, monitoring, document review and analyst assistance.",
+            "Operations: reconciliation, claims, voice-to-data conversion and employee copilots."
+          ]
+        },
+        {
+          "title": "The control question",
+          "text": "Automation can reduce friction without removing accountability. This issue separates low-consequence assistance from decisions that can deny credit, freeze money, shape advice or materially affect a customer. [S4] [S6] [S8]"
+        },
+        {
+          "title": "Evidence note",
+          "text": "Regulatory documents are treated as primary policy evidence. Company annual reports are used only for clearly labelled company-reported operating metrics. Drafts and consultations are labelled as drafts or consultations, not final rules."
+        }
+      ],
+      "callout": "Read the issue as a map of value plus control: what AI can accelerate, what must remain reviewable, and who remains responsible.",
+      "sourceIds": [
+        "S1",
+        "S4",
+        "S6",
+        "S9"
+      ]
+    },
+    {
+      "kind": "value_map",
+      "kicker": "01 / THE VALUE MAP",
+      "title": "Five workflows, one pattern",
+      "intro": "The recurring pattern is not autonomous finance. It is AI reducing the amount of information a person or system must manually process before the next decision.",
+      "sections": [
+        {
+          "title": "The useful middle",
+          "text": "SEBI's own inventory of market use cases includes surveillance, KYC/AML, risk management, data analysis, document review, cyber security, customer service and chatbots. RBI examples include fraud detection and complaint handling. [S2] [S5] [S7]"
+        },
+        {
+          "title": "Where value compounds",
+          "text": "AI becomes more useful when the input is high-volume, repetitive and reviewable: documents, conversations, transaction patterns, complaints, filings and internal knowledge. That does not make the downstream decision low-risk."
+        },
+        {
+          "title": "What this chart is - and is not",
+          "text": "The visual is a MarketDeck workflow map, not a ranking of returns or an estimate of market size. It shows where primary sources document actual use or deployment."
+        }
+      ],
+      "callout": "Editorial takeaway: the strongest evidence today is around throughput and decision support, not autonomous financial judgment.",
+      "sourceIds": [
+        "S2",
+        "S5",
+        "S7",
+        "S9",
+        "S10"
+      ],
+      "figure": "/intelligence/issues/ai-in-indian-finance-2026/figure-03.webp",
+      "figureAlt": "Editorial workflow map of five AI use-case lanes in Indian finance, from service to operations.",
+      "figureCaption": "MarketDeck editorial schematic; use-case evidence is cited in the surrounding text."
+    },
+    {
+      "kind": "service",
+      "kicker": "02 / CUSTOMER SERVICE",
+      "title": "The first win is response capacity",
+      "intro": "Service is a natural entry point because a bot can retrieve, classify and resolve routine work while preserving an escalation path for higher-stakes cases.",
+      "sections": [
+        {
+          "title": "A concrete operating metric",
+          "text": "Bajaj Finserv reports that 65% of customer servicing at Bajaj Finance was handled through AI voice and text bots in FY2026. It also reports that Bajaj Finserv Health resolved about 55% of customer queries using agentic AI. These are company-reported operating metrics, not independent quality scores. [S9]"
+        },
+        {
+          "title": "The regulator is experimenting too",
+          "text": "RBI's 2024-25 Annual Report says it is working with ReBIT to integrate AI into the Complaint Management System in phases: phase I for a conversational AI chatbot for complainants, followed by more advanced complaint-processing features. [S2]"
+        },
+        {
+          "title": "Design the handoff, not just the bot",
+          "text": "A service system should know when it is answering a routine question, when it is interpreting a rule, and when the customer needs a human. The practical KPI is not simply containment rate; it is resolution quality with a reliable escalation path."
+        }
+      ],
+      "callout": "Good service AI reduces waiting and repetitive work. It should not make a difficult complaint harder to reach a human with.",
+      "sourceIds": [
+        "S2",
+        "S9"
+      ],
+      "figure": "/intelligence/issues/ai-in-indian-finance-2026/figure-04.webp",
+      "figureAlt": "Company-reported FY2026 customer-service metrics from Bajaj Finserv businesses, shown with separate denominators.",
+      "figureCaption": "Company-reported operating metrics from Bajaj Finserv Limited; not independent quality scores."
+    },
+    {
+      "kind": "fraud",
+      "kicker": "03 / FRAUD & SURVEILLANCE",
+      "title": "AI is useful when it narrows the haystack",
+      "intro": "Fraud systems are a strong fit for machine learning because the first job is often to surface unusual behaviour quickly - not to declare guilt.",
+      "sections": [
+        {
+          "title": "MuleHunter.AI is a useful example",
+          "text": "RBI described MuleHunter.AI, developed by RBI Innovation Hub, as an AI/ML model for detecting mule bank accounts more efficiently. A pilot with two large public sector banks produced encouraging results, and banks were encouraged to collaborate further. [S3]"
+        },
+        {
+          "title": "Surveillance is already a securities-market use case",
+          "text": "SEBI's board material lists surveillance, KYC/AML, risk management, behaviour analysis and cyber security among observed AI/ML uses across brokers, depositories, market infrastructure institutions and mutual funds. [S5]"
+        },
+        {
+          "title": "The decision boundary matters",
+          "text": "A model can rank suspicious accounts or transactions without becoming the final authority. False positives have real costs: blocked payments, delayed access, additional verification and customer distress. The higher the impact, the stronger the case for documented review and redress."
+        }
+      ],
+      "callout": "Detection is not adjudication. The safest architecture separates anomaly scoring from the decision that affects the customer.",
+      "sourceIds": [
+        "S3",
+        "S5",
+        "S4"
+      ],
+      "figure": "/intelligence/issues/ai-in-indian-finance-2026/figure-05.webp",
+      "figureAlt": "Schematic separating fraud detection and triage from human review and downstream action.",
+      "figureCaption": "MarketDeck editorial schematic illustrating a reviewable fraud-control workflow."
+    },
+    {
+      "kind": "lending",
+      "kicker": "04 / LENDING & CREDIT",
+      "title": "Faster underwriting is valuable - but consequential",
+      "intro": "Lending combines exactly what AI likes - documents, repeated decisions and large datasets - with exactly what governance worries about: fairness, explainability and access to credit.",
+      "sections": [
+        {
+          "title": "AI is already connected to loan workflows",
+          "text": "Bajaj Finserv reports Rs 5,520 crore of conversational-AI-enabled loan disbursals at Bajaj Finance in FY2026 and more than 69 million application documents processed using Vision AI. 'AI-enabled' should not be read as 'AI made the credit decision by itself'. [S9]"
+        },
+        {
+          "title": "Document automation is not the same as credit judgment",
+          "text": "Extracting data from applications, checking completeness and routing cases can remove manual work. Credit approval, pricing and adverse decisions introduce different risks because model errors can directly change a customer's access to finance."
+        },
+        {
+          "title": "Model risk is moving to the centre",
+          "text": "RBI's June 2026 draft model-risk guidance expands the frame beyond credit models to all models used by covered regulated entities, including third-party and AI/ML models, across the model lifecycle. The document is a draft released for consultation, not final regulation. [S4]"
+        }
+      ],
+      "callout": "The more a model changes a customer's economic outcome, the less adequate 'the model said so' becomes as an explanation.",
+      "sourceIds": [
+        "S4",
+        "S9"
+      ],
+      "figure": "/intelligence/issues/ai-in-indian-finance-2026/figure-06.webp",
+      "figureAlt": "Bajaj Finance company-reported FY2026 AI-enabled loan and document-processing metrics alongside a consequence gradient.",
+      "figureCaption": "Company-reported operating metrics; AI-enabled does not mean autonomous credit approval."
+    },
+    {
+      "kind": "research",
+      "kicker": "05 / RESEARCH, ADVICE & COMPLIANCE",
+      "title": "AI can compress research; responsibility does not compress",
+      "intro": "Financial research is a high-leverage use case because models can search, summarise and compare. But the output can travel into advice, execution and compliance decisions.",
+      "sections": [
+        {
+          "title": "SEBI documents broad use across the market",
+          "text": "SEBI's 2025 consultation paper records AI/ML use by exchanges for surveillance, cyber security, member support and data automation; by brokers for KYC/document processing, recommendations, chatbots, account opening, surveillance, AML and order execution; and by mutual funds for customer support, surveillance, cyber security and segmentation. [S7]"
+        },
+        {
+          "title": "Accountability follows the regulated activity",
+          "text": "SEBI's 2025 Intermediaries Amendment Regulations make covered regulated persons solely responsible for investor and stakeholder data, the outputs from AI/ML tools they rely on, and compliance with applicable law - whether the tools are built internally or sourced from third parties. [S6]"
+        },
+        {
+          "title": "Advice adds disclosure duties",
+          "text": "SEBI's January 2025 investment-adviser guidelines state that advisers using AI tools remain responsible for client data, other information used to arrive at advice, AI-based advice and legal compliance, and must disclose the extent of AI use to clients. [S8]"
+        }
+      ],
+      "callout": "AI may shorten the path from document to insight. It does not outsource fiduciary or regulatory responsibility.",
+      "sourceIds": [
+        "S6",
+        "S7",
+        "S8"
+      ],
+      "figure": "/intelligence/issues/ai-in-indian-finance-2026/figure-07.webp",
+      "figureAlt": "Matrix of AI and ML use cases documented by SEBI across exchanges, brokers and mutual funds.",
+      "figureCaption": "Use cases are summarised from SEBI primary materials cited in the surrounding text."
+    },
+    {
+      "kind": "operations",
+      "kicker": "06 / OPERATIONS",
+      "title": "The quiet gains are in the back office",
+      "intro": "Operations is where AI can create large cumulative value without needing to pretend it can forecast markets.",
+      "sections": [
+        {
+          "title": "Voice and documents become structured data",
+          "text": "Bajaj Finserv reports 52 million voice-to-data conversions for customer conversations at Bajaj Finance in FY2026, alongside more than 69 million application documents processed using Vision AI. [S9]"
+        },
+        {
+          "title": "Claims and servicing become more automatable",
+          "text": "The same annual report says Bajaj General expects about a 67% reduction in turnaround time for motor claims through automated invoice processing. Because the figure is explicitly an expected reduction, this issue does not present it as an achieved outcome. [S9]"
+        },
+        {
+          "title": "Internal copilots can scale institutional knowledge",
+          "text": "Axis Bank's FY2024-25 annual report says Axis Deep Intelligence, its GenAI internal chatbot, was deployed across more than 5,500 branches and supported more than 100,000 employees. That is an internal productivity deployment, not a claim about investment returns or customer outcomes. [S10]"
+        }
+      ],
+      "callout": "The back office is a powerful proving ground: repetitive enough to automate, structured enough to measure, and close enough to human review to recover from errors.",
+      "sourceIds": [
+        "S9",
+        "S10"
+      ],
+      "figure": "/intelligence/issues/ai-in-indian-finance-2026/figure-08.webp",
+      "figureAlt": "Selected company-reported operating metrics for voice-to-data, document processing and Axis Bank's internal GenAI deployment.",
+      "figureCaption": "Company-reported deployment scale; not investment-performance evidence."
+    },
+    {
+      "kind": "governance",
+      "kicker": "07 / INDIA'S GOVERNANCE DIRECTION",
+      "title": "Enable innovation, keep responsibility visible",
+      "intro": "India's current policy direction is not a simple ban-or-permit choice. It increasingly combines encouragement of AI adoption with explicit responsibility for outcomes.",
+      "sections": [
+        {
+          "title": "FREE-AI is a framework, not a marketing slogan",
+          "text": "RBI's FREE-AI committee report sets seven foundational Sutras, 26 actionable recommendations and six strategic pillars. The RBI says the aim is to encourage innovation in harmony with risk mitigation. [S1]"
+        },
+        {
+          "title": "SEBI puts responsibility on the regulated person",
+          "text": "Under SEBI's 2025 Intermediaries Amendment Regulations, covered intermediaries remain responsible for data privacy/security/integrity, AI outputs they use, and legal compliance even when technology is procured from a third party. [S6]"
+        },
+        {
+          "title": "Policy status matters",
+          "text": "The FREE-AI report is a committee framework. SEBI's responsible-AI paper is a consultation paper. RBI's 2026 model-risk guidance is a draft. This issue labels each accordingly and does not describe proposals as binding final rules. [S1] [S4] [S7]"
+        }
+      ],
+      "callout": "The emerging principle is durable: innovation can be delegated to tools; accountability cannot be delegated away.",
+      "sourceIds": [
+        "S1",
+        "S4",
+        "S6",
+        "S7"
+      ],
+      "figure": "/intelligence/issues/ai-in-indian-finance-2026/figure-09.webp",
+      "figureAlt": "Editorial simplification of RBI FREE-AI: enabling pillars and governance pillars, anchored by seven Sutras.",
+      "figureCaption": "MarketDeck schematic based on the RBI FREE-AI committee report; see source S1."
+    },
+    {
+      "kind": "modelrisk",
+      "kicker": "08 / MODEL RISK & HUMAN OVERSIGHT",
+      "title": "The hard problem begins when the model can act",
+      "intro": "A summariser and an autonomous decision engine should not share the same control model. Consequence should determine governance.",
+      "sections": [
+        {
+          "title": "RBI is broadening the model-risk lens",
+          "text": "RBI's June 2026 draft guidance covers governance, risk tiering, lifecycle management, validation, continuous oversight, change management and business continuity across models used by covered regulated entities, including third-party and AI/ML models. [S4]"
+        },
+        {
+          "title": "Think in levels of authority",
+          "items": [
+            "Assist: retrieve, classify, summarise or draft. A human remains the decision-maker.",
+            "Recommend: score, rank or propose an action. Human review is explicit for material outcomes.",
+            "Act within bounds: execute only inside predetermined limits with logs, overrides and monitoring.",
+            "High-impact autonomous action: demands the strongest evidence, controls, accountability and redress."
+          ]
+        },
+        {
+          "title": "Explainability is a control surface",
+          "text": "The right explanation depends on the use case. A customer may need the reason an adverse decision occurred; a model-risk team needs reproducibility, validation and monitoring; an operations team needs failure modes and a rollback path. One generic 'AI explanation' cannot serve all three."
+        }
+      ],
+      "callout": "A useful rule: as reversibility falls and customer impact rises, human oversight and evidence requirements should rise with it.",
+      "sourceIds": [
+        "S4",
+        "S1",
+        "S7"
+      ],
+      "figure": "/intelligence/issues/ai-in-indian-finance-2026/figure-10.webp",
+      "figureAlt": "MarketDeck authority ladder from assistive AI to high-impact autonomous financial action.",
+      "figureCaption": "Editorial control framework: oversight should increase as authority and consequence rise."
+    },
+    {
+      "kind": "worksheet",
+      "kicker": "09 / PRACTICAL CONTROL CHECKLIST",
+      "title": "Before automating a financial decision",
+      "intro": "Use this page as a research worksheet. The goal is not to slow every deployment; it is to make authority, evidence and recovery explicit before the system goes live.",
+      "sections": [
+        {
+          "title": "Eight questions",
+          "items": [
+            "What exact task is the model performing - retrieval, recommendation or action?",
+            "What data is it allowed to use, and what is the provenance and freshness of that data?",
+            "What financial or customer consequence can follow from a wrong output?",
+            "Who owns the decision and who can override it?",
+            "What explanation is required for staff, auditors, regulators and customers?",
+            "How are bias, drift, edge cases and adversarial inputs tested?",
+            "What is monitored after deployment, and what triggers rollback or shutdown?",
+            "What grievance or human-review path exists for an affected customer?"
+          ]
+        },
+        {
+          "title": "The operating principle",
+          "text": "Do not evaluate only model accuracy. Evaluate the complete decision system: data, model, tools, people, controls, interfaces, monitoring and recovery."
+        }
+      ],
+      "callout": "A production AI system is a socio-technical control loop. Governance belongs around the whole loop, not only around the model.",
+      "sourceIds": [
+        "S1",
+        "S4",
+        "S6",
+        "S8"
+      ]
+    },
+    {
+      "kind": "sources",
+      "kicker": "10 / SOURCES & METHODOLOGY",
+      "title": "Primary sources first",
+      "intro": "Every material claim in this issue traces to a regulator document or a clearly labelled company annual report.",
+      "sections": [
+        {
+          "title": "How evidence was handled",
+          "text": "RBI and SEBI publications are treated as primary policy sources. Company annual reports are used for company-reported operating metrics and are not independently verified by MarketDeck. No company metric is used as proof that one AI system is superior to another."
+        },
+        {
+          "title": "Status labels are part of the evidence",
+          "text": "A committee report, consultation paper and draft guidance are identified as such. They are not described as final binding rules unless the cited source is a final regulation or circular."
+        },
+        {
+          "title": "No investment conclusion",
+          "text": "This issue evaluates operating use cases, controls and governance. It does not recommend securities, lenders, banks, fintechs or AI vendors and does not estimate investment returns from AI adoption."
+        }
+      ],
+      "callout": "Source review completed 28 September 2026. Recheck regulatory status before relying on any draft or consultation as current law.",
+      "sourceIds": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7",
+        "S8",
+        "S9",
+        "S10"
+      ]
+    }
+  ]
+}

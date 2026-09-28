@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {readFileSync,existsSync,readdirSync,statSync} from 'node:fs';
 import {catalog,shelf,library,hub,libraryPage,archivePage,learningHub,LEARNING_HUBS,localPath,readingTime} from '../scripts/intelligence.mjs';
 const manifest=JSON.parse(readFileSync('content/briefs.json'));
-const publicCount=manifest.issues.filter(i=>i.publicationStatus==='published'&&i.approvedAt).length+manifest.notes.filter(n=>n.publicationStatus==='published'&&n.approvedAt).length;
+const publishedIssueCount=manifest.issues.filter(i=>i.publicationStatus==='published'&&i.approvedAt).length;
+const publicCount=publishedIssueCount+manifest.notes.filter(n=>n.publicationStatus==='published'&&n.approvedAt).length;
 const fixture=(n=0)=>({id:'issue-'+n,title:'Research '+n,summary:'Evidence, not recommendations.',slug:'issue-'+n,edition:'Fieldnotes',cover:'/cover.webp',pdfPath:'/brief.pdf',pageCount:12,source:'source.json',approvedAt:'2026-09-22',publicationStatus:'published',topics:['ai-quant']});
 const opts={read:()=>({pages:[{intro:'A research idea'}]}),exists:()=>true};
 const issueHTML=readFileSync('public/intelligence/issues/agentic-trading-frontier-2026/index.html','utf8');
@@ -34,9 +35,9 @@ test('homepage, landing, unified library and magazine archive preserve approved 
  assert.equal((homepage.match(/data-intel-slide /g)||[]).length,Math.min(8,publicCount));
  assert.equal((page.match(/data-intel-entry /g)||[]).length,0,'The Intelligence landing should not duplicate the complete library');
  assert.equal((all.match(/data-intel-entry /g)||[]).length,publicCount);
- assert.equal((all.match(/data-kind="magazine"/g)||[]).length,1);
- assert.equal((all.match(/data-kind="note"/g)||[]).length,publicCount-1);
- assert.equal((archive.match(/data-intel-entry /g)||[]).length,1);
+ assert.equal((all.match(/data-kind="magazine"/g)||[]).length,publishedIssueCount);
+ assert.equal((all.match(/data-kind="note"/g)||[]).length,publicCount-publishedIssueCount);
+ assert.equal((archive.match(/data-intel-entry /g)||[]).length,publishedIssueCount);
  assert.match(page,/href="\/intelligence\/library\/"/);
  assert.match(archive,/Browse all MarketDeck Intelligence/);
  for(const html of [homepage,page,all,archive]){

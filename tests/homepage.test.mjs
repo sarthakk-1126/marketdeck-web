@@ -56,7 +56,8 @@ test('semantic content and deep links survive without JavaScript', () => {
     assert.ok(html.includes(escapeHtml(product.description)));
   }
   assert.equal((html.match(/<article class="editorial-card/g) || []).length, 3);
-  assert.ok(new Set(hrefs.filter(h=>h.startsWith('/intelligence/notes/'))).size>=7);
+  const publishedMagazines=JSON.parse(readFileSync('content/briefs.json','utf8')).issues.filter(i=>i.publicationStatus==='published'&&i.approvedAt).length;
+  assert.ok(new Set(hrefs.filter(h=>h.startsWith('/intelligence/notes/'))).size>=Math.max(0,8-publishedMagazines));
   for(const hub of ['/intelligence/equities/','/intelligence/technical-analysis/','/intelligence/futures-options/'])assert.ok(hrefs.includes(hub),hub);
   assert.equal(/class="(?:product-panel|community-panel)[^"]*"[^>]*hidden/.test(html), false);
 });

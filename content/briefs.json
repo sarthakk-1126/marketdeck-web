@@ -1,6 +1,29 @@
 {
   "issues": [
     {
+      "id": "ai-indian-finance-03",
+      "title": "AI in Indian Finance",
+      "slug": "ai-in-indian-finance-2026",
+      "edition": "Fieldnotes 03 · AI in Indian finance",
+      "summary": "An evidence-first look at where AI is creating operating value in Indian finance — from service and fraud detection to lending, research and back-office work — and how governance, model risk and human oversight should scale with decision authority.",
+      "cover": "/intelligence/issues/ai-in-indian-finance-2026/cover-v1.webp",
+      "pdfPath": "/intelligence/issues/ai-in-indian-finance-2026/marketdeck-brief-v1.pdf",
+      "pageCount": 12,
+      "sourceReviewedAt": "2026-09-28",
+      "publicationStatus": "published",
+      "approvedAt": "2026-09-28",
+      "publishedAt": "2026-09-28",
+      "source": "content/issues/ai-indian-finance-v1.json",
+      "assets": "content/issues/ai-in-indian-finance-2026",
+      "lastUpdated": "2026-09-28",
+      "pdfEdition": "1.0",
+      "topics": [
+        "ai-quant",
+        "india",
+        "research-craft"
+      ]
+    },
+    {
       "id": "agentic-trading-frontier-02",
       "title": "The agentic trading frontier",
       "slug": "agentic-trading-frontier-2026",
