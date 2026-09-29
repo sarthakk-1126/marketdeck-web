@@ -230,63 +230,6 @@
       ]
     },
     {
-      "id": "bharat",
-      "name": "Bharat & regional",
-      "label": "More voices. A wider India.",
-      "description": "A place for financial learning across regional communities, local conversations, and new audiences.",
-      "icon": "globe",
-      "platforms": [
-        {
-          "name": "ShareChat",
-          "url": null,
-          "label": "ShareChat",
-          "group": "bharat",
-          "type": "external",
-          "confirmed": false,
-          "enabled": false,
-          "joinable": true,
-          "status": "planned",
-          "icon": null
-        },
-        {
-          "name": "Moj",
-          "url": null,
-          "label": "Moj",
-          "group": "bharat",
-          "type": "external",
-          "confirmed": false,
-          "enabled": false,
-          "joinable": true,
-          "status": "planned",
-          "icon": null
-        },
-        {
-          "name": "Josh",
-          "url": null,
-          "label": "Josh",
-          "group": "bharat",
-          "type": "external",
-          "confirmed": false,
-          "enabled": false,
-          "joinable": true,
-          "status": "planned",
-          "icon": null
-        },
-        {
-          "name": "Dailyhunt",
-          "url": null,
-          "label": "Dailyhunt",
-          "group": "bharat",
-          "type": "external",
-          "confirmed": false,
-          "enabled": false,
-          "joinable": true,
-          "status": "planned",
-          "icon": null
-        }
-      ]
-    },
-    {
       "id": "finance",
       "name": "Finance & community",
       "label": "Better questions, together.",
@@ -307,14 +250,14 @@
         },
         {
           "name": "Quora",
-          "url": null,
+          "url": "https://marketdeck.quora.com/",
           "label": "Quora",
           "group": "finance",
           "type": "external",
-          "confirmed": false,
-          "enabled": false,
+          "confirmed": true,
+          "enabled": true,
           "joinable": true,
-          "status": "planned",
+          "status": "available",
           "icon": "quora"
         },
         {
@@ -367,27 +310,15 @@
         },
         {
           "name": "TradingView community",
-          "url": null,
+          "url": "https://in.tradingview.com/ideas/community/",
           "label": "TradingView community",
           "group": "finance",
           "type": "external",
-          "confirmed": false,
-          "enabled": false,
+          "confirmed": true,
+          "enabled": true,
           "joinable": true,
-          "status": "planned",
+          "status": "available",
           "icon": "tradingview"
-        },
-        {
-          "name": "ValuePickr / investing forums",
-          "url": null,
-          "label": "ValuePickr / investing forums",
-          "group": "finance",
-          "type": "external",
-          "confirmed": false,
-          "enabled": false,
-          "joinable": true,
-          "status": "planned",
-          "icon": null
         }
       ]
     },
@@ -408,18 +339,6 @@
           "enabled": true,
           "joinable": false,
           "status": "available",
-          "icon": null
-        },
-        {
-          "name": "StockProof learning / blog",
-          "url": null,
-          "label": "StockProof learning / blog",
-          "group": "reading",
-          "type": "external",
-          "confirmed": false,
-          "enabled": false,
-          "joinable": true,
-          "status": "planned",
           "icon": null
         },
         {
