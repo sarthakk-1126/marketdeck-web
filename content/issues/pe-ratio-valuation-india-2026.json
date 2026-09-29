@@ -1,0 +1,453 @@
+{
+  "sources": [
+    {
+      "id": "S1",
+      "title": "CFA Institute — Market-Based Valuation: Price and Enterprise Value Multiples",
+      "url": "https://www.cfainstitute.org/insights/professional-learning/refresher-readings/2026/market-based-valuation-price-enterprise-value-multiples",
+      "publicationDate": "2026 Curriculum",
+      "reviewedAt": "2026-09-29",
+      "note": "Professional valuation reference covering trailing, forward and normalized P/E, fundamental drivers, comparables and enterprise-value multiples."
+    },
+    {
+      "id": "S2",
+      "title": "CFA Institute — Discounted Dividend Valuation",
+      "url": "https://www.cfainstitute.org/insights/professional-learning/refresher-readings/2026/discounted-dividend-valuation",
+      "publicationDate": "2026 Curriculum",
+      "reviewedAt": "2026-09-29",
+      "note": "Professional valuation reference for stable-growth dividend models, required return and sustainable growth."
+    },
+    {
+      "id": "S3",
+      "title": "Aswath Damodaran — Price Earnings Ratio and valuation fundamentals",
+      "url": "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/invfables/peratio.htm",
+      "publicationDate": "Educational reference",
+      "reviewedAt": "2026-09-29",
+      "note": "Valuation reference connecting P/E to risk, growth, payout and return on equity."
+    },
+    {
+      "id": "S4",
+      "title": "McKinsey — All P/Es Are Not Created Equal",
+      "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/all-pes-are-not-created-equal",
+      "publicationDate": "1 March 2004",
+      "reviewedAt": "2026-09-29",
+      "note": "Research note on how growth and returns on capital combine to influence valuation multiples."
+    },
+    {
+      "id": "S5",
+      "title": "McKinsey — Balancing ROIC and growth to build value",
+      "url": "https://www.mckinsey.com/capabilities/strategy-and-corporate-finance/our-insights/balancing-roic-and-growth-to-build-value",
+      "publicationDate": "1 March 2006",
+      "reviewedAt": "2026-09-29",
+      "note": "Research on why growth creates more value when returns on invested capital are strong."
+    },
+    {
+      "id": "S6",
+      "title": "SEBI Investor — Buyback of Shares",
+      "url": "https://investor.sebi.gov.in/buy_back_of_shares.html",
+      "publicationDate": "Current investor education page",
+      "reviewedAt": "2026-09-29",
+      "note": "SEBI investor education on buybacks, including the effect of fewer outstanding shares on EPS."
+    },
+    {
+      "id": "S7",
+      "title": "IFRS Foundation — IAS 38 Intangible Assets",
+      "url": "https://www.ifrs.org/issued-standards/list-of-standards/ias-38-intangible-assets/",
+      "publicationDate": "Current standard overview",
+      "reviewedAt": "2026-09-29",
+      "note": "Accounting framework for research and development expenditure and intangible assets."
+    },
+    {
+      "id": "S8",
+      "title": "Berkshire Hathaway — 2008 Shareholder Letter",
+      "url": "https://www.berkshirehathaway.com/letters/2008ltr.pdf",
+      "publicationDate": "2008",
+      "reviewedAt": "2026-09-29",
+      "note": "Primary shareholder letter containing the distinction between price and value used as an editorial epigraph."
+    },
+    {
+      "id": "S9",
+      "title": "NSE India — Corporate Financial Results",
+      "url": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results",
+      "publicationDate": "Current issuer-disclosure resource",
+      "reviewedAt": "2026-09-29",
+      "note": "Official discovery surface for company financial results used to verify the earnings denominator in Indian stock research."
+    }
+  ],
+  "pages": [
+    {
+      "kind": "cover",
+      "kicker": "THE MARKETDECK BRIEF / FIELDNOTES 04",
+      "title": "P/E Is a Model in Disguise",
+      "intro": "How to reverse-engineer what a P/E ratio is really pricing in — from trailing versus forward earnings to ROE, sustainable growth, required return and valuation risk.",
+      "sections": [
+        {
+          "title": "The working thesis",
+          "text": "A low P/E ratio is not a valuation conclusion. It is the compressed output of assumptions about earnings quality, growth, reinvestment, return on equity and the return shareholders require. The useful move is to work backwards from the multiple and test what must be true."
+        },
+        {
+          "title": "A useful reminder",
+          "text": "“Price is what you pay; value is what you get.” The gap between those two ideas is where valuation work begins. [S8]"
+        }
+      ],
+      "callout": "Published 29 September 2026. Research and education only. This issue is not investment advice.",
+      "sourceIds": [
+        "S1",
+        "S2",
+        "S3",
+        "S8"
+      ]
+    },
+    {
+      "kind": "denominator",
+      "kicker": "01 / THE DENOMINATOR",
+      "title": "Before you compare P/E ratios, define the earnings",
+      "intro": "Price is observable. Earnings are constructed. Trailing P/E, forward P/E and normalized P/E can answer different questions.",
+      "sections": [
+        {
+          "title": "Trailing, forward and normalized are not interchangeable",
+          "text": "CFA Institute distinguishes trailing P/E based on recent reported EPS from forward P/E based on expected earnings, and discusses normalized EPS for cyclical businesses. A ratio inherits every weakness of the earnings number beneath it. [S1]"
+        },
+        {
+          "title": "A simple denominator shock",
+          "text": "At a ₹240 share price, ₹20 of peak-cycle EPS implies 12× P/E. If normalized EPS is closer to ₹12, the same price implies 20×. Nothing about the market value changed; only the analyst changed the denominator."
+        },
+        {
+          "title": "India research check",
+          "items": [
+            "Record whether earnings are trailing, forward or normalized.",
+            "Confirm consolidated versus standalone scope.",
+            "Trace unusual earnings back to company results and filings rather than relying only on a data-provider multiple. [S9]"
+          ]
+        }
+      ],
+      "callout": "The first serious P/E question is not “Is it low?” It is “What earnings are being capitalised?”",
+      "sourceIds": [
+        "S1",
+        "S9"
+      ]
+    },
+    {
+      "kind": "model",
+      "kicker": "02 / THE MODEL",
+      "title": "Read the P/E ratio backwards",
+      "intro": "A multiple becomes more useful when you treat it as a hypothesis and solve for the assumptions hidden inside it.",
+      "sections": [
+        {
+          "title": "A stable-growth bridge",
+          "text": "In a simplified stable-growth setting, sustainable growth can be linked to retention and ROE: g = retention ratio × ROE. Substituting payout capacity into a constant-growth equity model gives a justified forward P/E of (1 − g / ROE) ÷ (kₑ − g). [S2] [S3]"
+        },
+        {
+          "title": "What each variable means",
+          "items": [
+            "g: sustainable long-run growth.",
+            "ROE: sustainable return on equity, not a one-year spike.",
+            "kₑ: required return on equity, reflecting the risk borne by shareholders."
+          ]
+        },
+        {
+          "title": "Do not overextend the formula",
+          "text": "This is a stable-growth framework, not a universal valuation rule. Businesses with multiple growth stages, unstable returns or unusual capital structures require a richer model. [S2]"
+        }
+      ],
+      "callout": "P/E is the visible output. Growth, returns, reinvestment and risk are the hidden inputs.",
+      "sourceIds": [
+        "S2",
+        "S3"
+      ]
+    },
+    {
+      "kind": "worked_example",
+      "kicker": "03 / WORKED EXAMPLE",
+      "title": "What does a 12× forward P/E actually require?",
+      "intro": "Start with the observed multiple and reverse-engineer the growth rate that makes the assumptions internally consistent.",
+      "figure": "/intelligence/issues/pe-ratio-valuation-india-2026/figure-04.webp",
+      "figureAlt": "MarketDeck worked example showing 12 times forward P/E, 18 percent ROE and 12 percent required return implying about 6.8 percent sustainable growth.",
+      "figureCaption": "Illustrative stable-growth reverse-engineering example; not a company valuation or recommendation.",
+      "sections": [
+        {
+          "title": "Inputs",
+          "items": [
+            "Forward P/E = 12×",
+            "Sustainable ROE = 18%",
+            "Required return on equity = 12%"
+          ]
+        },
+        {
+          "title": "Solve for the implied growth rate",
+          "text": "Rearranging the stable-growth relationship gives g = (P/E × kₑ − 1) ÷ (P/E − 1/ROE). With 12×, 18% and 12%, the implied sustainable growth rate is approximately 6.83%."
+        },
+        {
+          "title": "Now the multiple becomes testable",
+          "items": [
+            "Can the business sustain roughly 6.8% growth?",
+            "How much reinvestment does that growth require?",
+            "Can ROE remain near 18% as the business scales?",
+            "Is the required return really 12%, or should risk push it higher?"
+          ]
+        }
+      ],
+      "callout": "Do not call 12× cheap. Ask what has to be true for 12× to make sense.",
+      "sourceIds": [
+        "S2",
+        "S3"
+      ]
+    },
+    {
+      "kind": "sensitivity",
+      "kicker": "04 / SENSITIVITY",
+      "title": "The same 12× multiple can imply very different growth",
+      "intro": "Required return is not a footnote. Change the hurdle rate and the growth burden inside the same P/E ratio moves sharply.",
+      "figure": "/intelligence/issues/pe-ratio-valuation-india-2026/figure-05.webp",
+      "figureAlt": "Sensitivity table showing the implied sustainable growth inside a 12 times P/E at different required returns.",
+      "figureCaption": "Illustrative sensitivity analysis holding P/E at 12× and ROE at 18%.",
+      "sections": [
+        {
+          "title": "Hold P/E at 12× and ROE at 18%",
+          "items": [
+            "Required return 10% → implied growth ≈ 3.1%.",
+            "Required return 12% → implied growth ≈ 6.8%.",
+            "Required return 14% → implied growth ≈ 10.6%.",
+            "Required return 16% → implied growth ≈ 14.3%."
+          ]
+        },
+        {
+          "title": "Why this matters",
+          "text": "A low multiple can be conservative under one required return and demanding under another. The discount rate is part of the thesis, not a cosmetic assumption."
+        },
+        {
+          "title": "Stress the valuation",
+          "text": "If the valuation only works at one precise combination of growth, ROE and required return, the thesis is fragile. Test a range instead of hiding uncertainty behind a single point estimate."
+        }
+      ],
+      "callout": "The headline P/E is static. The economic burden inside it changes with risk.",
+      "sourceIds": [
+        "S2",
+        "S3"
+      ]
+    },
+    {
+      "kind": "roe",
+      "kicker": "05 / RETURN ON EQUITY",
+      "title": "ROE changes how much growth costs",
+      "intro": "A business with high sustainable ROE can fund growth with less retained capital. A weak-return business may have to reinvest heavily just to grow.",
+      "figure": "/intelligence/issues/pe-ratio-valuation-india-2026/figure-06.webp",
+      "figureAlt": "MarketDeck schematic showing growth creates value when return on equity exceeds the required return.",
+      "figureCaption": "Equity-level simplification of the broader value-creation principle that returns should exceed the relevant cost of capital.",
+      "sections": [
+        {
+          "title": "Same P/E, same required return, different ROE",
+          "items": [
+            "ROE 15% → implied growth ≈ 8.3%.",
+            "ROE 18% → implied growth ≈ 6.8%.",
+            "ROE 24% → implied growth ≈ 5.6%.",
+            "ROE 30% → implied growth ≈ 5.1%."
+          ]
+        },
+        {
+          "title": "The value-creation rule",
+          "text": "Growth is attractive when incremental returns exceed the return investors require. McKinsey expresses the same principle at the firm level through ROIC versus cost of capital: growth creates more value when returns on capital are strong. [S4] [S5]"
+        },
+        {
+          "title": "A non-obvious result",
+          "text": "If sustainable ROE equals the required return, additional stable growth is approximately value-neutral in this framework because the extra growth requires proportionally more retention."
+        }
+      ],
+      "callout": "Fast growth is not the same thing as valuable growth.",
+      "sourceIds": [
+        "S4",
+        "S5"
+      ]
+    },
+    {
+      "kind": "quality",
+      "kicker": "06 / ROE QUALITY",
+      "title": "A high ROE number still needs an explanation",
+      "intro": "ROE can reflect genuine operating advantage, but it can also be amplified by leverage, buybacks, a small equity base or temporary margins.",
+      "sections": [
+        {
+          "title": "Leverage can flatter the ratio",
+          "text": "Debt can raise ROE when operating returns exceed borrowing costs because less equity capital supports the asset base. But higher leverage also changes shareholder risk, which should feed back into the required return."
+        },
+        {
+          "title": "Buybacks can lift EPS mechanically",
+          "text": "SEBI’s investor material notes that buybacks reduce shares outstanding and can improve EPS. That per-share improvement should be separated from operating growth when interpreting forward P/E and ROE. [S6]"
+        },
+        {
+          "title": "Ask what created the return",
+          "items": [
+            "Margins and pricing power?",
+            "Asset turns and capital efficiency?",
+            "Financial leverage?",
+            "A shrinking share count?",
+            "A temporary cyclical peak?"
+          ]
+        }
+      ],
+      "callout": "Do not plug a leveraged ROE into a valuation model while pretending risk stayed unchanged.",
+      "sourceIds": [
+        "S6",
+        "S3"
+      ]
+    },
+    {
+      "kind": "traps",
+      "kicker": "07 / LOW-P/E TRAPS",
+      "title": "Why a low P/E can be a mirage",
+      "intro": "Low multiples often appear where earnings are least representative. Cheap-looking screens can therefore concentrate exactly the situations that require the most normalization.",
+      "figure": "/intelligence/issues/pe-ratio-valuation-india-2026/figure-08.webp",
+      "figureAlt": "Checklist of common low P/E traps including peak-cycle earnings, buybacks, leverage, intangible accounting and recurring one-offs.",
+      "figureCaption": "MarketDeck research checklist for interpreting a low P/E before drawing a valuation conclusion.",
+      "sections": [
+        {
+          "title": "Peak-cycle earnings",
+          "text": "Cyclical businesses can look cheapest when margins and EPS are temporarily strongest. CFA Institute explicitly discusses normalizing EPS under mid-cycle conditions. [S1]"
+        },
+        {
+          "title": "Accounting can distort cross-company comparison",
+          "text": "IAS 38 requires research expenditure to be expensed while qualifying development expenditure can be capitalised. Economically similar investment programs can therefore affect reported earnings and capital bases differently. [S7]"
+        },
+        {
+          "title": "One-offs that keep coming back",
+          "text": "Asset sales, impairments, restructuring charges, tax items and unusual credit costs should be examined individually. The goal is not to remove every inconvenient expense; it is to estimate sustainable earning power."
+        }
+      ],
+      "callout": "A low P/E can reflect undervaluation. It can also reflect earnings that are too high, returns that are fading or risks the multiple does not explain.",
+      "sourceIds": [
+        "S1",
+        "S7",
+        "S9"
+      ]
+    },
+    {
+      "kind": "wrong_tool",
+      "kicker": "08 / WHEN P/E FAILS",
+      "title": "Sometimes P/E is the wrong valuation tool",
+      "intro": "The familiar ratio should be abandoned when the earnings denominator does not match the economic question.",
+      "sections": [
+        {
+          "title": "Negative or near-zero earnings",
+          "text": "Conventional P/E loses meaning when EPS is zero or negative. CFA Institute notes that earnings yield can remain usable for ranking where P/E itself becomes problematic. [S1]"
+        },
+        {
+          "title": "Different capital structures",
+          "text": "Enterprise-value multiples can be more useful when debt levels differ materially because EV relates the value of all capital providers to an operating measure such as EBITDA. [S1]"
+        },
+        {
+          "title": "Business-model exceptions",
+          "items": [
+            "Banks and insurers: book value, ROE, asset quality and capital strength often matter more.",
+            "Early-stage companies: revenue quality, unit economics, cash burn and a path to profit may dominate.",
+            "Cyclicals: normalized margins and mid-cycle earnings can matter more than the latest EPS.",
+            "Capital-intensive firms: explicit reinvestment and return-on-capital analysis can be more informative."
+          ]
+        }
+      ],
+      "callout": "A valuation multiple is useful only when its numerator and denominator fit the economics of the business.",
+      "sourceIds": [
+        "S1"
+      ]
+    },
+    {
+      "kind": "workflow",
+      "kicker": "09 / PRACTICAL WORKFLOW",
+      "title": "A repeatable P/E ratio valuation checklist",
+      "intro": "Use the multiple as the beginning of research, not the end of it.",
+      "sections": [
+        {
+          "title": "Nine steps",
+          "items": [
+            "Identify the earnings basis: trailing, forward or normalized.",
+            "Reconcile EPS and isolate genuine one-offs.",
+            "Place margins and earnings in the business cycle.",
+            "Explain ROE: margins, turns, leverage, buybacks and capital base.",
+            "Estimate a defensible required return.",
+            "Reverse-engineer the growth or payout assumptions in the current multiple.",
+            "Stress ROE, growth and required return rather than using one point estimate.",
+            "Cross-check with another valuation lens such as DCF, EV/EBITDA, P/B, earnings yield or normalized free cash flow.",
+            "Write the thesis in one sentence with the assumptions visible."
+          ]
+        },
+        {
+          "title": "A better thesis sentence",
+          "text": "Instead of writing “the P/E is low,” write: “The current multiple appears attractive only if normalized earnings remain near ___, ROE stays above ___, sustainable growth is near ___ and the required return is approximately ___.”"
+        },
+        {
+          "title": "Use the original evidence",
+          "text": "For Indian stocks, verify important earnings and capital figures against exchange filings and company results before trusting a screen or data-provider multiple. [S9]"
+        }
+      ],
+      "callout": "If you cannot fill in the blanks, you do not yet have a valuation thesis.",
+      "sourceIds": [
+        "S9",
+        "S1"
+      ]
+    },
+    {
+      "kind": "faq",
+      "kicker": "10 / SEARCH QUESTIONS",
+      "title": "Frequently asked P/E valuation questions",
+      "intro": "Short answers to the questions investors most often ask after seeing a low or high P/E ratio.",
+      "sections": [
+        {
+          "title": "Does a low P/E ratio mean a stock is undervalued?",
+          "text": "No. A low P/E can reflect undervaluation, weak growth expectations, peak-cycle earnings, leverage, business risk or deteriorating returns. The denominator and the economics behind it must be tested."
+        },
+        {
+          "title": "What is the difference between trailing P/E and forward P/E?",
+          "text": "Trailing P/E uses recently reported earnings; forward P/E uses expected future earnings. Forward P/E may be more relevant to future performance, but it adds forecast risk. [S1]"
+        },
+        {
+          "title": "What is a justified P/E ratio?",
+          "text": "A justified P/E is a multiple supported by explicit assumptions about fundamentals such as growth, payout, return on equity and the required return. [S1] [S2]"
+        },
+        {
+          "title": "Why can a stock with a high P/E still be attractive?",
+          "text": "A high multiple can be supported by durable growth, strong returns on capital and lower risk, although those expectations can also be too optimistic. The multiple itself does not settle the question. [S4]"
+        },
+        {
+          "title": "How do ROE and growth affect P/E?",
+          "text": "Higher sustainable ROE can make growth less capital-hungry, while higher expected growth can support a higher justified P/E when returns exceed the required return. The exact relationship depends on the valuation framework. [S2] [S3]"
+        }
+      ],
+      "callout": "Search for the assumptions, not a magic multiple.",
+      "sourceIds": [
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ]
+    },
+    {
+      "kind": "sources",
+      "kicker": "11 / SOURCES & METHODOLOGY",
+      "title": "Primary frameworks first",
+      "intro": "This issue separates valuation identities from editorial interpretation and uses professional valuation, accounting and Indian-market sources to anchor the claims.",
+      "sections": [
+        {
+          "title": "How the evidence was handled",
+          "text": "CFA Institute and Damodaran are used for valuation definitions and model relationships. McKinsey is used for the broader return-on-capital versus growth value-creation principle. SEBI and NSE provide India-specific investor education and filing context. IFRS is used for the accounting treatment of intangible investment."
+        },
+        {
+          "title": "What the worked example is — and is not",
+          "text": "The 12× P/E, 18% ROE and 12% required-return example is illustrative. The resulting 6.83% implied growth rate follows mechanically from the stated stable-growth assumptions; it is not a forecast for any company."
+        },
+        {
+          "title": "No investment conclusion",
+          "text": "This issue teaches a way to interrogate valuation multiples. It does not recommend a stock, sector, strategy or target price."
+        }
+      ],
+      "callout": "Source review completed 29 September 2026. Recheck company-specific inputs and current filings before applying any framework.",
+      "sourceIds": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7",
+        "S8",
+        "S9"
+      ]
+    }
+  ]
+}
