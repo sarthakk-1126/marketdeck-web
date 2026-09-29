@@ -89,7 +89,7 @@ Begin with a claim you want to investigate. Locate the issuer's announcement and
 
 Cross-check the most important values against a second presentation of the same primary information where possible, such as the attached statement and structured filing. This can catch extraction errors. It does not create a second independent economic source when both displays originate from the same company document.
 
-Use [MarketDeck Commentary](/commentary/) to explore how a company or topic is being discussed, then follow the underlying evidence. Use [StockProof](/screener/) for the quantitative research lens. Neither step should erase the original filing trail. The [stock-screening guide](/intelligence/notes/business-before-the-stock/) explains how ratios become more useful once their components can be verified.
+Use [MarketDeck Commentary](/commentary/) to explore how a company or topic is being discussed, then follow the underlying evidence. Use [Screener](/screener/) for the quantitative research lens. Neither step should erase the original filing trail. The [stock-screening guide](/intelligence/notes/business-before-the-stock/) explains how ratios become more useful once their components can be verified.
 
 Finally, save a concise result: confirmed facts, interpretation, uncertainties and the next document that could change the analysis. The [five-lens checklist](/intelligence/notes/five-research-lenses/) provides a structure for that memo. A good research record should become easier—not harder—to challenge as it grows.
 

@@ -92,7 +92,7 @@ Attach calculations where necessary. A ratio should show its inputs, units, peri
 
 End with the next research action. That could be reading a specific note, checking a later filing or resolving a metric mismatch. It need not be a trade. A decision to wait for clearer evidence is a legitimate research outcome rather than a failure to produce a recommendation.
 
-Use [StockProof](/screener/) for available fundamental exploration, [Charting](/charts/) for price context and [F&O](/futures-and-options/) where derivatives information is relevant. Do not force every tool into every memo. A lens earns its place by answering part of the question, not because it is available on the homepage.
+Use [Screener](/screener/) for available fundamental exploration, [Charting](/charts/) for price context and [F&O](/futures-and-options/) where derivatives information is relevant. Do not force every tool into every memo. A lens earns its place by answering part of the question, not because it is available on the homepage.
 
 ## Review the process after new information arrives
 

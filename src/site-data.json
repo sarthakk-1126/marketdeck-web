@@ -7,7 +7,7 @@
   "products": [
     {
       "id": "stockproof",
-      "name": "StockProof",
+      "name": "Screener",
       "category": "Fundamental research",
       "url": "/screener/",
       "icon": "fundamentals",
@@ -20,7 +20,7 @@
         "Fundamental screening",
         "Peer comparisons"
       ],
-      "action": "Explore StockProof",
+      "action": "Explore Screener",
       "preview": "/assets/products/editorial-v2/stockproof.webp",
       "thumbnail": "/assets/products/editorial-v2/stockproof-small.webp",
       "previewKind": "Original editorial illustration",

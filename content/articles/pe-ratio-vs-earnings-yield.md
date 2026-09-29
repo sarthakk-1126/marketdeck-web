@@ -44,7 +44,7 @@ Imagine a commodity producer earning ₹30 per share during an unusually strong 
 
 Nothing about the price changed in that example. Only the earnings denominator changed. This is why a low P/E at peak profitability can be misleading for cyclical businesses. Instead of asking only “what is the current P/E?”, ask where current margins and earnings sit relative to a normal cycle.
 
-A practical beginner check is to look at several years of revenue, operating margin, profit and cash flow before treating the latest year as representative. Use [MarketDeck StockProof](/screener/) to inspect available company fundamentals, then verify important figures against original filings.
+A practical beginner check is to look at several years of revenue, operating margin, profit and cash flow before treating the latest year as representative. Use [MarketDeck Screener](/screener/) to inspect available company fundamentals, then verify important figures against original filings.
 
 ## Loss-making companies need a different lens
 
