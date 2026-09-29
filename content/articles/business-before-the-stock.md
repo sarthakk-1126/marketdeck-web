@@ -87,7 +87,7 @@ For every surviving company, produce a one-page memo before adding more filters.
 
 NSE's announcement and financial-results pages are useful routes to issuer disclosures. Use the actual document, including its notes, rather than assuming a search result or data-provider summary contains the whole explanation. [S3] [S4] The companion guide to [reading NSE announcements](/intelligence/notes/read-nse-company-announcements-results/) explains how to keep the filing date, reporting period and consolidation basis separate.
 
-Start the numerical shortlist in [MarketDeck StockProof](/screener/), then verify the important inputs against the original filing. Use [chart context](/intelligence/notes/a-chart-is-a-question/) to understand the price question separately. MarketDeck's [five-lens research checklist](/intelligence/notes/five-research-lenses/) helps bring those observations into one decision record without pretending they are independent confirmations.
+Start the numerical shortlist in [MarketDeck Screener](/screener/), then verify the important inputs against the original filing. Use [chart context](/intelligence/notes/a-chart-is-a-question/) to understand the price question separately. MarketDeck's [five-lens research checklist](/intelligence/notes/five-research-lenses/) helps bring those observations into one decision record without pretending they are independent confirmations.
 
 ## Common screening mistakes to catch before saving
 
