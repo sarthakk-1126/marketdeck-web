@@ -38,9 +38,10 @@ const legal = Object.entries(data.legal).map(([key, url]) => url ? `<a href="${s
 const newsletter = data.newsletter.url ? `<a class="button button-primary" href="${safeUrl(data.newsletter.url)}"${external(data.newsletter.url)}>Join the MarketDeck Brief${arrow}</a>` : `<span class="coming-soon-pill">${icon('clock')} The Brief is coming soon</span>`;
 const newsletterNote = data.newsletter.url ? '<span>Research and learning, delivered thoughtfully.</span>' : '<span>No subscriptions are being collected yet.</span>';
 const schema = homepageIdentityGraph();
+const companionSection = readFileSync(new URL('../src/companion-section.html', import.meta.url), 'utf8');
 let html = readFileSync(new URL('../src/index.template.html', import.meta.url), 'utf8');
 html=buildEditorial({data,template:html,root:output,review});
-for (const [key, value] of Object.entries({ PRODUCT_NAV: productNav, PRODUCT_TABS: productTabs, PRODUCT_PANELS: productPanels, PRODUCT_OVERVIEW: productOverview, COMMUNITY_TABS: communityTabs, COMMUNITY_PANELS: communityPanels, COMMUNITY_LEGEND: communityLegend, CONTACTS: contacts, FOOTER_PRODUCTS: footerProducts, LEGAL: legal, NEWSLETTER: newsletter, NEWSLETTER_NOTE: newsletterNote, SCHEMA: JSON.stringify(schema).replace(/</g, '\\u003c') })) html = html.replaceAll(`{{${key}}}`, value);
+for (const [key, value] of Object.entries({ PRODUCT_NAV: productNav, PRODUCT_TABS: productTabs, PRODUCT_PANELS: productPanels, PRODUCT_OVERVIEW: productOverview, COMPANION_SECTION: companionSection, COMMUNITY_TABS: communityTabs, COMMUNITY_PANELS: communityPanels, COMMUNITY_LEGEND: communityLegend, CONTACTS: contacts, FOOTER_PRODUCTS: footerProducts, LEGAL: legal, NEWSLETTER: newsletter, NEWSLETTER_NOTE: newsletterNote, SCHEMA: JSON.stringify(schema).replace(/</g, '\\u003c') })) html = html.replaceAll(`{{${key}}}`, value);
 if (/\{\{\w+\}\}/.test(html)) throw new Error('Unresolved template token');
 writeFileSync(resolve(output,'index.html'), html);
 
