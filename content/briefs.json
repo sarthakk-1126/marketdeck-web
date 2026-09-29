@@ -1,6 +1,50 @@
 {
   "issues": [
     {
+      "id": "pe-ratio-valuation-04",
+      "title": "P/E Ratio Valuation: What a Stock Multiple Is Really Pricing In",
+      "slug": "pe-ratio-valuation-india-2026",
+      "edition": "Fieldnotes 04 · P/E ratio valuation",
+      "summary": "An advanced P/E ratio valuation guide for Indian stocks: trailing vs forward earnings, normalized EPS, justified P/E, sustainable growth, ROE, required return and low-P/E traps.",
+      "cover": "/intelligence/issues/pe-ratio-valuation-india-2026/cover.webp",
+      "pdfPath": "/intelligence/issues/pe-ratio-valuation-india-2026/marketdeck-brief.pdf",
+      "pageCount": 12,
+      "sourceReviewedAt": "2026-09-29",
+      "publicationStatus": "published",
+      "approvedAt": "2026-09-29",
+      "publishedAt": "2026-09-29",
+      "source": "content/issues/pe-ratio-valuation-india-2026.json",
+      "assets": "content/issues/pe-ratio-valuation-india-2026",
+      "lastUpdated": "2026-09-29",
+      "pdfEdition": "1.0",
+      "topics": [
+        "equities",
+        "india",
+        "research-craft"
+      ],
+      "coverBackground": "public/assets/products/editorial-v2/stockproof.webp",
+      "relatedLinks": [
+        {
+          "label": "Equity Research & Fundamental Analysis",
+          "url": "/intelligence/equities/"
+        },
+        {
+          "label": "P/E Ratio vs Earnings Yield",
+          "url": "/intelligence/notes/pe-ratio-vs-earnings-yield/"
+        },
+        {
+          "label": "How to Screen Indian Stocks",
+          "url": "/intelligence/notes/business-before-the-stock/"
+        },
+        {
+          "label": "Explore MarketDeck Screener",
+          "url": "/screener/"
+        }
+      ],
+      "seoTitle": "P/E Ratio Valuation Guide: Forward P/E, ROE & Growth",
+      "seoDescription": "P/E ratio valuation guide for Indian stocks: trailing vs forward P/E, normalized earnings, justified P/E, ROE, sustainable growth, required return, buybacks, leverage and cyclical traps."
+    },
+    {
       "id": "ai-indian-finance-03",
       "title": "AI in Indian Finance",
       "slug": "ai-in-indian-finance-2026",

@@ -31,7 +31,8 @@ for index,page in enumerate(content['pages']):
     c.setFillColor(HexColor(bg));c.rect(0,0,595.28,841.89,fill=1,stroke=0)
     c.setFillColor(HexColor('#3997f2'));c.rect(40,792,29,3,fill=1,stroke=0)
     c.setFillColor(HexColor(muted));c.setFont('Helvetica',8);c.drawString(80,791,page['kicker'])
-    c.setFont('Helvetica',7.5);c.drawRightString(554,791,'EDITORIAL DRAFT')
+    status_label='PUBLISHED EDITION' if issue['publicationStatus']=='published' else 'EDITORIAL DRAFT'
+    c.setFont('Helvetica',7.5);c.drawRightString(554,791,status_label)
     y=760
     def para(text,size=11,leading=16,color=fg,font='Helvetica',space=10):
         global y
@@ -44,22 +45,18 @@ for index,page in enumerate(content['pages']):
     if cover:
         c.saveState()
         crop=c.beginPath();crop.rect(40,y-155,515,155);c.clipPath(crop,stroke=0)
-        c.drawImage(str(ROOT/'public/assets/india-earth-small.webp'),40,y-240,width=515,height=322,mask='auto')
+        cover_bg=ROOT/issue.get('coverBackground','public/assets/india-earth-small.webp')
+        c.drawImage(str(cover_bg),40,y-240,width=515,height=322,mask='auto')
         c.restoreState()
         y-=179
     for section in page['sections']:
         para(escape(section['title']),12,16,font='Helvetica-Bold',space=7)
         if 'text' in section:para(escape(section['text']),10.5 if index!=5 else 10,15 if index!=5 else 14,space=14)
         for item in section.get('items',[]):para('&#8226; '+escape(item),10.5 if index!=5 else 10,15 if index!=5 else 14,space=6)
-    if index==5:
-        for sid in page['sourceIds']:
-            s=sources[sid]
-            para(f'<b>{sid}</b> / <link href="{escape(s["url"])}" color="#225e90">{escape(s["title"])}</link>',8,11,space=3)
-    else:
-        para('Sources: '+(', '.join(f'<link href="{escape(sources[s]["url"])}">{s}</link>' for s in page['sourceIds']) or 'Original editorial introduction')+'. Reviewed '+issue['sourceReviewedAt']+'.',8,11,color=muted,space=10)
+    para('Sources: '+(', '.join(f'<link href="{escape(sources[s]["url"])}">{s}</link>' for s in page['sourceIds']) or 'Original editorial introduction')+'. Reviewed '+issue['sourceReviewedAt']+'.',8,11,color=muted,space=10)
     para(escape(page['callout']),9,13,color=muted,space=0)
     c.setStrokeColor(HexColor('#293846'));c.line(40,43,555,43)
-    c.setFillColor(HexColor(muted));c.setFont('Helvetica',8);c.drawString(40,27,'MARKETDECK / RESEARCH FOUNDATIONS / DRAFT');c.drawRightString(555,27,f'{index+1:02d} / {len(content["pages"]):02d}')
+    c.setFillColor(HexColor(muted));c.setFont('Helvetica',8);c.drawString(40,27,f'MARKETDECK / THE BRIEF / {status_label}');c.drawRightString(555,27,f'{index+1:02d} / {len(content["pages"]):02d}')
     c.showPage()
 c.save()
 count=len(PdfReader(target).pages)
