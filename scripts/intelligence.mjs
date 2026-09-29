@@ -86,7 +86,7 @@ export const LEARNING_HUBS = Object.freeze({
 function hubCards(items){return items.map(i=>`<article class="learning-card"><p class="intel-kicker">${esc(i.kind==='magazine'?'MAGAZINE':TOPICS[i.topics[0]])}</p><h2><a href="${esc(i.path)}">${esc(i.title)}</a></h2><p>${esc(i.summary)}</p><a class="learning-card-link" href="${esc(i.path)}">Read the guide <span aria-hidden="true">→</span></a></article>`).join('');}
 export function learningHub(items,slug,{review=false}={}){
   const h=LEARNING_HUBS[slug];if(!h)throw new Error('Unknown learning hub');
-  const relevant=items.filter(i=>i.kind==='note'&&i.topics.includes(h.topic));
+  const relevant=items.filter(i=>i.topics.includes(h.topic));
   if(relevant.length<2)throw new Error('Learning hub requires at least two published guides: '+slug);
   const starts={equities:['business-before-the-stock','read-nse-company-announcements-results','pe-ratio-vs-earnings-yield'],'technical-analysis':['a-chart-is-a-question','support-vs-resistance-stock-charts','a-chart-is-a-question'],'futures-options':['call-option-vs-put-option-india','call-option-vs-put-option-india','iv-rank-vs-iv-percentile-nifty-options']}[slug];
   const sequence=starts.map(id=>{const entry=relevant.find(i=>i.id===id);if(!entry)throw Error('Missing learning-path guide: '+id);return entry;});
