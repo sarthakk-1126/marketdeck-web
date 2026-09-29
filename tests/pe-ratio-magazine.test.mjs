@@ -22,3 +22,9 @@ test('P/E valuation magazine preserves worked example, figures and internal rese
   assert.match(html,/\/intelligence\/notes\/pe-ratio-vs-earnings-yield\//);
   assert.match(html,/\/screener\//);
 });
+
+test('P/E valuation magazine is linked from the Equities learning hub',()=>{
+  const equities=readFileSync('public/intelligence/equities/index.html','utf8');
+  assert.match(equities,/\/intelligence\/issues\/pe-ratio-valuation-india-2026\//);
+  assert.match(equities,/P\/E Ratio Valuation: What a Stock Multiple Is Really Pricing In/);
+});
