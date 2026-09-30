@@ -298,14 +298,14 @@
         },
         {
           "name": "Discord",
-          "url": null,
+          "url": "https://discord.gg/NTc5gPTr7N",
           "label": "Discord",
           "group": "finance",
           "type": "external",
-          "confirmed": false,
-          "enabled": false,
+          "confirmed": true,
+          "enabled": true,
           "joinable": true,
-          "status": "planned",
+          "status": "available",
           "icon": "discord"
         },
         {
