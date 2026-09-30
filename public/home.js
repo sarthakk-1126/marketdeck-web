@@ -1,11 +1,6 @@
 import { startExperience } from './experience.js?v=mobile-hero-20260926';
 const experience = startExperience();
 (() => {
-  const pageTitle = document.title;
-  document.addEventListener('visibilitychange', () => {
-    document.title = document.hidden ? 'Your research awaits · MarketDeck' : pageTitle;
-  });
-
   const loadPreview = panel => {
     const image = panel?.querySelector('[data-preview-src]');
     if (image && !image.hasAttribute('src')) image.src = image.dataset.previewSrc;
