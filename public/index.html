@@ -17,6 +17,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080c12">
   <title>MarketDeck — Indian markets. A bigger perspective.</title>
+  <script>
+    (() => {
+      const activeTitle = document.title;
+      const updateTitle = () => {
+        document.title = document.hidden ? 'Your research awaits · MarketDeck' : activeTitle;
+      };
+      document.addEventListener('visibilitychange', updateTitle);
+      window.addEventListener('pageshow', updateTitle);
+      updateTitle();
+    })();
+  </script>
   <meta name="description" content="Explore Indian stock market research, charting tools, options analytics, market commentary, and crypto research. Five focused products. One MarketDeck.">
   <link rel="canonical" href="https://marketdeck.in/">
   <meta property="og:type" content="website">
