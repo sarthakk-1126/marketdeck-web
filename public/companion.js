@@ -27,12 +27,22 @@ if (section) {
   }
   const placements = new Set(['homepage', 'homepage_channel', 'homepage_demo', 'homepage_radar', 'homepage_compare']);
   const features = new Set(['home', 'channel', 'research', 'radar', 'compare']);
+  const discordPlacements = new Set(['homepage', 'homepage_research_desk']);
+  const discordFeatures = new Set(['join', 'research_desk']);
   section.addEventListener('click', event => {
-    const link = event.target.closest?.('a[data-telegram-entry]');
-    if (!link || !placements.has(link.dataset.telegramEntry) || !features.has(link.dataset.telegramFeature)) return;
-    // Use the site's existing analytics only. Never send account IDs or URL payloads.
-    if (typeof window.gtag === 'function') window.gtag('event', 'telegram_open', {
-      placement: link.dataset.telegramEntry, feature: link.dataset.telegramFeature,
+    const telegram = event.target.closest?.('a[data-telegram-entry]');
+    if (telegram && placements.has(telegram.dataset.telegramEntry) && features.has(telegram.dataset.telegramFeature)) {
+      // Use the site's existing analytics only. Never send account IDs or URL payloads.
+      if (typeof window.gtag === 'function') window.gtag('event', 'telegram_open', {
+        placement: telegram.dataset.telegramEntry, feature: telegram.dataset.telegramFeature,
+        page_location: 'https://marketdeck.in/', transport_type: 'beacon'
+      });
+      return;
+    }
+    const discord = event.target.closest?.('a[data-discord-entry]');
+    if (!discord || !discordPlacements.has(discord.dataset.discordEntry) || !discordFeatures.has(discord.dataset.discordFeature)) return;
+    if (typeof window.gtag === 'function') window.gtag('event', 'discord_open', {
+      placement: discord.dataset.discordEntry, feature: discord.dataset.discordFeature,
       page_location: 'https://marketdeck.in/', transport_type: 'beacon'
     });
   });

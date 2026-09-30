@@ -31,7 +31,8 @@ test('confirmed community accounts link to their official destinations while unv
     ['LinkedIn','https://www.linkedin.com/company/marketdeck/'], ['Pinterest','https://www.pinterest.com/MarketDeck/'],
     ['Bluesky','https://bsky.app/profile/marketdeck.in'], ['Reddit','https://www.reddit.com/user/MarketDeck/'],
     ['Quora','https://marketdeck.quora.com/'], ['Telegram','https://t.me/MarketDeckIndia'],
-    ['WhatsApp Channel','https://whatsapp.com/channel/0029VbDS6wnJZg40dVWH5t37'], ['TradingView community','https://in.tradingview.com/ideas/community/'],
+    ['WhatsApp Channel','https://whatsapp.com/channel/0029VbDS6wnJZg40dVWH5t37'], ['Discord','https://discord.gg/NTc5gPTr7N'],
+    ['TradingView community','https://in.tradingview.com/ideas/community/'],
     ['Medium','https://medium.com/@MarketDeck'], ['Substack / newsletter','https://marketdeck.substack.com']
   ]);
   const platforms = data.community.flatMap(group => group.platforms);
@@ -42,8 +43,9 @@ test('confirmed community accounts link to their official destinations while unv
     if (expected) { assert.equal(platform.url, expected); assert.equal(platform.confirmed, true); assert.equal(platform.enabled, true); assert.equal(platform.status, 'available'); assert.ok(hrefs.includes(expected)); }
     else if (platform.type === 'external') assert.equal(platform.url, null);
   }
-  assert.equal((html.match(/class="platform-unavailable"/g) || []).length, 2);
-  assert.equal((html.match(/planned, not linked/g) || []).length, 2);
+  assert.equal((html.match(/class="platform-unavailable"/g) || []).length, 1);
+  assert.equal((html.match(/planned, not linked/g) || []).length, 1);
+  assert.doesNotMatch(html,/__MARKETDECK_INVITE__/,'Replace the Discord invite placeholder before release');
   assert.equal(html.includes('Bharat & regional'),false);
   assert.equal(html.includes('ShareChat'),false);
   assert.equal(html.includes('Moj'),false);

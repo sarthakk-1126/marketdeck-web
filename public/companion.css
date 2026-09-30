@@ -77,3 +77,22 @@
 @media(max-width:760px){.md-bots{padding:68px 0}.md-bots-intro{display:block;margin-bottom:26px}.md-bots-intro>p{margin-top:20px;max-width:none}.md-bots-deck{grid-template-columns:1fr;padding:25px;gap:30px;border-radius:19px}.md-bots-description{max-width:480px}.md-bots-product{margin-top:25px}.md-bots-lead{font-size:38px}.md-bots-demo{max-width:480px;width:100%;justify-self:center}.md-bots-features{grid-template-columns:1fr;gap:18px}.md-bots-features p{max-width:none}.md-bots-features article{padding:5px 0 5px 15px}.md-bots-roadmap{gap:20px}.md-bots-roadmap>div{flex-wrap:wrap;gap:9px}.md-bots-roadmap strong{margin-left:33px}.md-bots-preview{min-height:0}.md-bots-intro h2{letter-spacing:-1px}}
 @media(max-width:400px){.md-bots-deck{padding:18px}.md-bots-lead{font-size:32px}.md-bots-actions{align-items:stretch;flex-direction:column;gap:3px}.md-bots-secondary{text-align:center}.md-bots-demo-top{padding:14px 12px;gap:8px;font-size:8px}.md-bots-preview{padding:14px 12px 0}.md-bots-tabs{padding:11px 12px 0}.md-bots-tabs button{padding:7px 11px}.md-bots-prompt{margin-left:14px;gap:7px}.md-bots-prompt code{font-size:10px}.md-bots-preview-content{padding:16px 13px}.md-bots-roadmap{grid-template-columns:1fr}.md-bots-roadmap>div{flex-wrap:nowrap}.md-bots-roadmap strong{margin-left:auto}.md-bots-preview-note{font-size:7px;padding:12px}.md-bots-no-gate{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.md-bots *{transition:none!important;animation:none!important}.md-bots-primary:hover{transform:none}}
+
+.md-bots-subhead{display:flex;align-items:end;justify-content:space-between;gap:24px;margin:28px 0 8px;padding-top:18px;border-top:1px solid #22313f}
+.md-bots-subhead span{font:9px var(--mono);letter-spacing:1.15px;color:#8fb2c5}.md-bots-subhead p{font-size:10px;color:#8294a8}
+.md-bots-platform-divider{display:flex;align-items:center;gap:14px;margin:58px 0 28px;color:#7690a6;font:9px var(--mono);letter-spacing:1.2px}
+.md-bots-platform-divider::before,.md-bots-platform-divider::after{content:"";height:1px;background:#273746;flex:1}.md-bots-platform-divider span{white-space:nowrap}
+.md-bots-discord-deck{background:radial-gradient(ellipse at 88% 5%,#5865f23b,transparent 62%),linear-gradient(130deg,#111827,#0c141e 65%);border-color:#3d4964}
+.md-bots-discord-live{color:#b7bdfd}.md-bots-discord-live i{background:#7289da;box-shadow:0 0 13px #7289da77}
+.md-bots-platform-discord{border-color:#6772c980;background:linear-gradient(140deg,#303a72,#17213b)}
+.md-bots-primary-discord{background:#bfc6ff;border-color:#e2e5ff99;color:#11172e}.md-bots-primary-discord:hover{background:#d4d8ff;box-shadow:0 0 25px #8d98ff2d}
+.md-bots-discord-demo{transform:rotate(-.7deg);border-color:#454f6b;background:#0c1421}
+.md-discord-nav{display:flex;gap:5px;padding:12px 15px;border-bottom:1px solid #29364a;overflow:hidden}
+.md-discord-nav span{padding:6px 9px;border-radius:6px;color:#869ab0;font:8px var(--mono);white-space:nowrap}.md-discord-nav .is-active{background:#1c2e46;color:#d8e6ff;border:1px solid #405a7d}
+.md-discord-terminal{padding:21px 20px 18px}.md-discord-kicker{font:8px var(--mono);letter-spacing:1px;color:#7bd7e7}.md-discord-terminal h3{font-size:25px;font-weight:560;letter-spacing:-.7px;margin:10px 0 8px}.md-discord-terminal p{color:#9eafc2;font-size:11px;line-height:1.65}
+.md-discord-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:16px}.md-discord-grid span{padding:8px 9px;border:1px solid #31445a;border-radius:7px;background:#111f2d;color:#b4c8dd;font-size:9px}
+.md-discord-lab{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:0 20px 18px}.md-discord-lab>.md-bots-code{grid-column:1/-1}.md-discord-lab div{border:1px solid #323f57;border-radius:8px;padding:9px;background:#101a2a}.md-discord-lab strong{display:block;font-size:10px}.md-discord-lab small{display:block;color:#7f91a7;font-size:8px;margin-top:3px}
+.md-bots-subhead-discord span{color:#aab2ff}.md-bots-discord-features .md-bots-feature-index{color:#aeb6ff}
+.md-bots-roadmap-single{grid-template-columns:.95fr 1fr}.md-bots-roadmap-single>p{grid-column:auto}
+@media(max-width:760px){.md-bots-subhead{display:block}.md-bots-subhead p{margin-top:7px}.md-bots-platform-divider{margin-top:44px}.md-discord-grid{grid-template-columns:1fr 1fr}.md-discord-lab{grid-template-columns:1fr}.md-bots-roadmap-single{grid-template-columns:1fr}.md-bots-roadmap-single>p{grid-column:1/-1}}
+@media(max-width:400px){.md-discord-nav{overflow-x:auto}.md-discord-grid{grid-template-columns:1fr}.md-discord-terminal h3{font-size:22px}}
