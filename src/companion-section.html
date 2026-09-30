@@ -2,84 +2,56 @@
   <div class="container">
     <div class="md-bots-intro">
       <div><p class="eyebrow">MARKETDECK BOTS &amp; INTEGRATIONS</p><h2 id="md-bots-heading">Less tab switching.<br><span>Your research, in the chat.</span></h2></div>
-      <p>Same MarketDeck. A different way in.<br>Research on your own. Share with your people.</p>
+      <p>MarketDeck is live in Telegram and Discord, with more community-native research tools being explored.</p>
     </div>
-    <div class="md-bots-deck">
-      <div class="md-bots-copy">
-        <div class="md-bots-status"><span class="md-bots-live"><i aria-hidden="true"></i> TELEGRAM · LIVE</span><span class="md-bots-build">COMPANION / 01</span></div>
-        <div class="md-bots-product"><span class="md-bots-platform"><img src="/assets/platforms/telegram.svg" width="26" height="26" alt="" loading="lazy"></span><span>Telegram Research<br><strong>Companion</strong></span></div>
-        <p class="md-bots-lead">A research desk.<br>That fits in your chat.</p>
-        <p class="md-bots-description">Look up a company. Open the evidence. Bring your watchlist and saved scans along—then share the research, not your private data.</p>
-        <div class="md-bots-capabilities" aria-label="Available Telegram features"><span>Company research</span><span>Research Radar</span><span>Compare &amp; share</span><span>Mini App</span></div>
-        <div class="md-bots-actions"><a class="md-bots-primary" href="https://t.me/MarketDeckIndiaBot?start=web_home" target="_blank" rel="noopener noreferrer" data-telegram-entry="homepage" data-telegram-feature="home">Open Telegram bot <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a><a class="md-bots-secondary" href="https://t.me/MarketDeckIndia" target="_blank" rel="noopener noreferrer" data-telegram-entry="homepage_channel" data-telegram-feature="channel">Join the channel ↗</a></div>
-        <p class="md-bots-no-gate">Free to explore. Link MarketDeck for your private workspace.</p>
-      </div>
-      <div class="md-bots-demo" aria-label="Interactive Research Companion preview">
-        <div class="md-bots-demo-top"><span class="md-bots-demo-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>MARKETDECK / TELEGRAM</span><span class="md-bots-demo-label">PREVIEW</span></div>
-        <div class="md-bots-tabs" data-bot-tabs hidden role="tablist" aria-label="Preview a bot feature">
-          <button id="bot-tab-research" role="tab" aria-selected="true" aria-controls="bot-preview-research" tabindex="0" data-bot-tab="research">Research</button>
-          <button id="bot-tab-radar" role="tab" aria-selected="false" aria-controls="bot-preview-radar" tabindex="-1" data-bot-tab="radar">Your Radar</button>
-          <button id="bot-tab-compare" role="tab" aria-selected="false" aria-controls="bot-preview-compare" tabindex="-1" data-bot-tab="compare">Compare</button>
-        </div>
-        <div class="md-bots-preview" id="bot-preview-research" role="tabpanel" aria-labelledby="bot-tab-research" tabindex="0">
-          <div class="md-bots-prompt"><span>YOU</span><code>/research RELIANCE</code><span aria-hidden="true">↵</span></div>
-          <div class="md-bots-reply"><div class="md-bots-reply-brand"><img src="/assets/marketdeck-mark.png" width="26" height="26" alt="" loading="lazy"><span>MarketDeck <small>RESEARCH COMPANION</small></span><span class="md-bots-bot-tag">BOT</span></div>
-            <div class="md-bots-preview-content"><span class="md-bots-code">RELIANCE / COMPANY RESEARCH</span><h3>Start with the business.<br>Keep the source close.</h3><p>Open reporting context, original filings and charts. Form your own view.</p><div class="md-bots-evidence"><span><i aria-hidden="true">↗</i> Company research</span><span><i aria-hidden="true">↗</i> Original sources</span></div></div>
+
+    <div class="md-platform-selector" data-platform-tabs hidden role="tablist" aria-label="Choose a MarketDeck community platform">
+      <button id="platform-tab-telegram" type="button" role="tab" aria-selected="true" aria-controls="platform-panel-telegram" tabindex="0" data-platform-tab="telegram"><span class="md-selector-icon"><img src="/assets/platforms/telegram.svg" width="18" height="18" alt=""></span><span>Telegram <small><i aria-hidden="true"></i>LIVE</small></span></button>
+      <button id="platform-tab-discord" type="button" role="tab" aria-selected="false" aria-controls="platform-panel-discord" tabindex="-1" data-platform-tab="discord"><span class="md-selector-icon"><img src="/assets/platforms/discord.svg" width="18" height="18" alt=""></span><span>Discord <small><i aria-hidden="true"></i>LIVE</small></span></button>
+      <button id="platform-tab-reddit" type="button" role="tab" aria-selected="false" aria-controls="platform-panel-reddit" tabindex="-1" data-platform-tab="reddit"><span class="md-selector-icon"><img src="/assets/platforms/reddit.svg" width="18" height="18" alt=""></span><span>Reddit <small>EXPLORING</small></span></button>
+    </div>
+
+    <div class="md-platform-stage" data-platform-stage aria-label="MarketDeck community platform showcase">
+      <article id="platform-panel-telegram" class="md-platform-card md-platform-telegram" role="tabpanel" aria-labelledby="platform-tab-telegram" data-platform-panel="telegram" data-position="active" data-active="true">
+        <div class="md-platform-card-top"><span class="md-platform-status md-platform-status-live"><i aria-hidden="true"></i>TELEGRAM · LIVE</span><span>COMPANION / 01</span></div>
+        <div class="md-platform-card-body">
+          <div class="md-platform-copy">
+            <div class="md-platform-product"><span><img src="/assets/platforms/telegram.svg" width="25" height="25" alt=""></span><p>Telegram Research<strong>Companion</strong></p></div>
+            <h3>A research desk.<br>That fits in your chat.</h3>
+            <p class="md-platform-description">Move from a company question to source-linked evidence, your Research Radar, comparisons and shareable research—inside Telegram.</p>
+            <div class="md-platform-chips" aria-label="Available Telegram features"><span>Company research</span><span>Research Radar</span><span>Compare &amp; share</span><span>Mini App</span></div>
+            <div class="md-platform-actions"><a class="md-platform-primary" href="https://t.me/MarketDeckIndiaBot?start=web_home" target="_blank" rel="noopener noreferrer" data-telegram-entry="homepage" data-telegram-feature="home">Open Telegram bot <span aria-hidden="true">↗</span></a><a class="md-platform-secondary" href="https://t.me/MarketDeckIndia" target="_blank" rel="noopener noreferrer" data-telegram-entry="homepage_channel" data-telegram-feature="channel">Join the channel ↗</a></div>
+            <p class="md-platform-note">Public research is open. Link MarketDeck only for your private workspace.</p>
           </div>
-          <a class="md-bots-demo-cta" href="https://t.me/MarketDeckIndiaBot?start=web_demo_UkVMSUFOQ0U" target="_blank" rel="noopener noreferrer" data-telegram-entry="homepage_demo" data-telegram-feature="research">Try RELIANCE in Telegram <span aria-hidden="true">↗</span></a>
-        </div>
-        <div class="md-bots-preview" id="bot-preview-radar" role="tabpanel" aria-labelledby="bot-tab-radar" tabindex="0" hidden>
-          <div class="md-bots-prompt"><span>YOU</span><code>/radar</code><span aria-hidden="true">↵</span></div>
-          <div class="md-bots-reply"><div class="md-bots-reply-brand"><img src="/assets/marketdeck-mark.png" width="26" height="26" alt="" loading="lazy"><span>MarketDeck <small>RESEARCH COMPANION</small></span><span class="md-bots-bot-tag">BOT</span></div>
-            <div class="md-bots-preview-content"><span class="md-bots-code">YOUR ACCOUNT / RESEARCH RADAR</span><h3>Pick up where<br>your research left off.</h3><p>Review stored filings, announcements and scan matches for the companies you follow.</p><div class="md-bots-evidence"><span><i aria-hidden="true">◎</i> Your watchlist</span><span><i aria-hidden="true">⌁</i> Your saved scans</span></div></div>
+          <div class="md-platform-demo md-telegram-demo" aria-label="Interactive Telegram Research Companion preview">
+            <div class="md-demo-bar"><span class="md-demo-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>MARKETDECK / TELEGRAM</span><b>PREVIEW</b></div>
+            <div class="md-bots-tabs" data-bot-tabs hidden role="tablist" aria-label="Preview a Telegram feature"><button id="bot-tab-research" type="button" role="tab" aria-selected="true" aria-controls="bot-preview-research" tabindex="0" data-bot-tab="research">Research</button><button id="bot-tab-radar" type="button" role="tab" aria-selected="false" aria-controls="bot-preview-radar" tabindex="-1" data-bot-tab="radar">Your Radar</button><button id="bot-tab-compare" type="button" role="tab" aria-selected="false" aria-controls="bot-preview-compare" tabindex="-1" data-bot-tab="compare">Compare</button></div>
+            <div class="md-bots-preview" id="bot-preview-research" role="tabpanel" aria-labelledby="bot-tab-research"><div class="md-bots-prompt"><span>YOU</span><code>/research RELIANCE</code><span aria-hidden="true">↵</span></div><div class="md-bots-reply"><div class="md-bots-reply-brand"><img src="/assets/marketdeck-mark.png" width="24" height="24" alt=""><span>MarketDeck <small>RESEARCH COMPANION</small></span><b>BOT</b></div><div class="md-bots-preview-content"><span>RELIANCE / COMPANY RESEARCH</span><h4>Start with the business.<br>Keep the source close.</h4><p>Open reporting context, original filings and charts. Form your own view.</p><div><span>↗ Company research</span><span>↗ Original sources</span></div></div></div><a class="md-bots-demo-cta" href="https://t.me/MarketDeckIndiaBot?start=web_demo_UkVMSUFOQ0U" target="_blank" rel="noopener noreferrer" data-telegram-entry="homepage_demo" data-telegram-feature="research">Try RELIANCE in Telegram <span aria-hidden="true">↗</span></a></div>
+            <div class="md-bots-preview" id="bot-preview-radar" role="tabpanel" aria-labelledby="bot-tab-radar" hidden><div class="md-bots-prompt"><span>YOU</span><code>/radar</code><span aria-hidden="true">↵</span></div><div class="md-bots-reply"><div class="md-bots-reply-brand"><img src="/assets/marketdeck-mark.png" width="24" height="24" alt=""><span>MarketDeck <small>RESEARCH COMPANION</small></span><b>BOT</b></div><div class="md-bots-preview-content"><span>YOUR ACCOUNT / RESEARCH RADAR</span><h4>Pick up where<br>your research left off.</h4><p>Review stored filings, announcements and scan matches for the companies you follow.</p><div><span>◎ Your watchlist</span><span>⌁ Your saved scans</span></div></div></div><a class="md-bots-demo-cta" href="https://t.me/MarketDeckIndiaBot?start=web_radar" target="_blank" rel="noopener noreferrer" data-telegram-entry="homepage_radar" data-telegram-feature="radar">Open your Radar in Telegram <span aria-hidden="true">↗</span></a></div>
+            <div class="md-bots-preview" id="bot-preview-compare" role="tabpanel" aria-labelledby="bot-tab-compare" hidden><div class="md-bots-prompt"><span>YOU</span><code>/compare TCS INFY</code><span aria-hidden="true">↵</span></div><div class="md-bots-reply"><div class="md-bots-reply-brand"><img src="/assets/marketdeck-mark.png" width="24" height="24" alt=""><span>MarketDeck <small>RESEARCH COMPANION</small></span><b>BOT</b></div><div class="md-bots-preview-content"><span>TCS × INFY / SIDE BY SIDE</span><h4>Compare the context.<br>Not a “buy” or “sell”.</h4><p>Check reporting periods, open the full comparison and share a research card.</p><div><span>⇄ Company comparison</span><span>↗ Shareable cards</span></div></div></div><a class="md-bots-demo-cta" href="https://t.me/MarketDeckIndiaBot?start=web_compare_VENTLElORlk" target="_blank" rel="noopener noreferrer" data-telegram-entry="homepage_compare" data-telegram-feature="compare">Try this comparison in Telegram <span aria-hidden="true">↗</span></a></div>
+            <p class="md-demo-footnote">Feature preview · not a live feed or a trading signal.</p>
           </div>
-          <a class="md-bots-demo-cta" href="https://t.me/MarketDeckIndiaBot?start=web_radar" target="_blank" rel="noopener noreferrer" data-telegram-entry="homepage_radar" data-telegram-feature="radar">Open your Radar in Telegram <span aria-hidden="true">↗</span></a>
         </div>
-        <div class="md-bots-preview" id="bot-preview-compare" role="tabpanel" aria-labelledby="bot-tab-compare" tabindex="0" hidden>
-          <div class="md-bots-prompt"><span>YOU</span><code>/compare TCS INFY</code><span aria-hidden="true">↵</span></div>
-          <div class="md-bots-reply"><div class="md-bots-reply-brand"><img src="/assets/marketdeck-mark.png" width="26" height="26" alt="" loading="lazy"><span>MarketDeck <small>RESEARCH COMPANION</small></span><span class="md-bots-bot-tag">BOT</span></div>
-            <div class="md-bots-preview-content"><span class="md-bots-code">TCS × INFY / SIDE BY SIDE</span><h3>Compare the context.<br>Not a “buy” or “sell”.</h3><p>Check reporting periods, open the full comparison and send a research card to your group.</p><div class="md-bots-evidence"><span><i aria-hidden="true">⇄</i> Company comparison</span><span><i aria-hidden="true">↗</i> Shareable cards</span></div></div>
-          </div>
-          <a class="md-bots-demo-cta" href="https://t.me/MarketDeckIndiaBot?start=web_compare_VENTLElORlk" target="_blank" rel="noopener noreferrer" data-telegram-entry="homepage_compare" data-telegram-feature="compare">Try this comparison in Telegram <span aria-hidden="true">↗</span></a>
+      </article>
+
+      <article id="platform-panel-discord" class="md-platform-card md-platform-discord" role="tabpanel" aria-labelledby="platform-tab-discord" data-platform-panel="discord" data-position="next" data-active="false">
+        <div class="md-platform-card-top"><span class="md-platform-status md-platform-status-live"><i aria-hidden="true"></i>DISCORD · LIVE</span><span>TERMINAL / 02</span></div>
+        <div class="md-platform-card-body">
+          <div class="md-platform-copy"><div class="md-platform-product"><span><img src="/assets/platforms/discord.svg" width="26" height="26" alt=""></span><p>Discord Research<strong>Terminal</strong></p></div><h3>Research together.<br>Without leaving the server.</h3><p class="md-platform-description">Open persistent Research Rooms, source-linked company research, charts, screeners, crypto tools and shared F&amp;O strategy work.</p><div class="md-platform-chips" aria-label="Available Discord features"><span>Research Rooms</span><span>Company research</span><span>Research Terminal</span><span>Shared F&amp;O Lab</span><span>Historical replay</span></div><div class="md-platform-actions"><a class="md-platform-primary" href="https://discord.gg/NTc5gPTr7N" target="_blank" rel="noopener noreferrer" data-discord-entry="homepage" data-discord-feature="join">Join MarketDeck on Discord <span aria-hidden="true">↗</span></a><a class="md-platform-secondary" href="https://discord.com/channels/1553393794324373614/1553412312919052441" target="_blank" rel="noopener noreferrer" data-discord-entry="homepage_research_desk" data-discord-feature="research_desk">Already joined? Open research-desk ↗</a></div><p class="md-platform-note">Research and education only. No trade execution or broker connection.</p></div>
+          <div class="md-platform-demo md-discord-demo" aria-label="Discord Research Terminal preview"><div class="md-demo-bar"><span class="md-demo-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>MARKETDECK / DISCORD</span><b>LIVE</b></div><div class="md-discord-nav" aria-hidden="true"><span>Overview</span><span class="is-active">Equities</span><span>Charts</span><span>F&amp;O Lab</span></div><div class="md-discord-terminal"><span>EQUITIES / PUBLIC RESEARCH</span><h4>Company research desk.</h4><p>Carry one researched company through the terminal.</p><div><span>Source-linked research</span><span>Compare companies</span><span>Open original sources</span><span>Create /room</span></div></div><div class="md-discord-lab"><span>F&amp;O / STRATEGY LAB</span><div><strong>Payoff + Greeks</strong><small>Shared strategy state</small></div><div><strong>Scenario P&amp;L</strong><small>Manual/model inputs</small></div><div><strong>Historical replay</strong><small>Archived NSE records</small></div></div><p class="md-demo-footnote">Interactive Discord Activity · public research · no live Kite quote redistribution.</p></div>
         </div>
-        <p class="md-bots-preview-note">Feature preview · not a live feed or a trading signal.</p>
-      </div>
+      </article>
+
+      <article id="platform-panel-reddit" class="md-platform-card md-platform-reddit" role="tabpanel" aria-labelledby="platform-tab-reddit" data-platform-panel="reddit" data-position="prev" data-active="false">
+        <div class="md-platform-card-top"><span class="md-platform-status">REDDIT · EXPLORING</span><span>COMMUNITY / 03</span></div>
+        <div class="md-platform-card-body">
+          <div class="md-platform-copy"><div class="md-platform-product"><span><img src="/assets/platforms/reddit.svg" width="26" height="26" alt=""></span><p>Community-native<strong>Research</strong></p></div><h3>Bring research.<br>Into the discussion.</h3><p class="md-platform-description">MarketDeck is exploring ways to make evidence, explainers and research context easier to share in Reddit communities.</p><div class="md-platform-chips md-platform-concepts" aria-label="Reddit concepts being explored"><span>Research summaries</span><span>Thread-friendly explainers</span><span>Community Q&amp;A</span><span>Source cards</span></div><div class="md-platform-actions"><a class="md-platform-primary" href="https://www.reddit.com/user/MarketDeck/" target="_blank" rel="noopener noreferrer">Follow MarketDeck on Reddit <span aria-hidden="true">↗</span></a><span class="md-platform-secondary md-platform-exploring">Tools in exploration</span></div><p class="md-platform-note">The MarketDeck Reddit profile is live. The integration is not launched.</p></div>
+          <div class="md-platform-demo md-reddit-demo" aria-label="Concept preview for community-native Reddit research"><div class="md-demo-bar"><span class="md-demo-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>MARKETDECK / REDDIT</span><b>CONCEPT</b></div><div class="md-reddit-thread"><div class="md-reddit-vote" aria-hidden="true"><span>△</span><b>—</b><span>▽</span></div><div><span>CONCEPT / RESEARCH SUMMARY</span><h4>Evidence that travels<br>with the discussion.</h4><p>A compact, source-aware explainer shaped for a thread—not a live integration or market signal.</p><div class="md-reddit-sources"><span>Reporting context</span><span>Original sources</span><span>Research questions</span></div></div></div><div class="md-reddit-direction"><span>EXPLORATION DIRECTION</span><div><b>01</b><p>Thread-friendly explainers</p></div><div><b>02</b><p>Community Q&amp;A</p></div><div><b>03</b><p>Source cards</p></div></div><p class="md-demo-footnote">Concept preview · no launch date or live Reddit tool is implied.</p></div>
+        </div>
+      </article>
     </div>
-    <div class="md-bots-subhead"><span>TELEGRAM / WHAT YOU CAN DO</span><p>Fast research, personal workspace access and sharing from chat.</p></div>
-    <div class="md-bots-features">
-      <article><span class="md-bots-feature-index">01 / LOOK IT UP</span><h3>A company. A command.</h3><p>Type a name or ticker. Open source-linked research without connecting an account.</p></article>
-      <article><span class="md-bots-feature-index">02 / MAKE IT YOURS</span><h3>Your existing workspace.</h3><p>Link MarketDeck to review your watchlist, saved scans and Research Radar in the Mini App.</p></article>
-      <article><span class="md-bots-feature-index">03 / PASS IT ON</span><h3>Bring research to the group.</h3><p>Share a public card, or type <code>@MarketDeckIndiaBot TCS</code> in a Telegram chat.</p></article>
-    </div>
-    <div class="md-bots-platform-divider" aria-hidden="true"><span>OR RESEARCH TOGETHER</span></div>
-    <div class="md-bots-deck md-bots-discord-deck">
-      <div class="md-bots-copy">
-        <div class="md-bots-status"><span class="md-bots-live md-bots-discord-live"><i aria-hidden="true"></i> DISCORD · LIVE</span><span class="md-bots-build">TERMINAL / 02</span></div>
-        <div class="md-bots-product"><span class="md-bots-platform md-bots-platform-discord"><img src="/assets/platforms/discord.svg" width="27" height="27" alt="" loading="lazy"></span><span>Discord Research<br><strong>Terminal</strong></span></div>
-        <p class="md-bots-lead">Research together.<br>Without leaving the server.</p>
-        <p class="md-bots-description">Open persistent company Research Rooms, launch the MarketDeck Research Terminal, compare equities, jump to charts and screeners, explore crypto, and shape F&amp;O strategies together.</p>
-        <div class="md-bots-capabilities" aria-label="Available Discord features"><span>Research Rooms</span><span>Company research</span><span>Research Terminal</span><span>Shared F&amp;O Lab</span><span>Historical replay</span><span>Share Activity</span></div>
-        <div class="md-bots-actions"><a class="md-bots-primary md-bots-primary-discord" href="https://discord.gg/NTc5gPTr7N" target="_blank" rel="noopener noreferrer" data-discord-entry="homepage" data-discord-feature="join">Join MarketDeck on Discord <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a><a class="md-bots-secondary" href="https://discord.com/channels/1553393794324373614/1553412312919052441" target="_blank" rel="noopener noreferrer" data-discord-entry="homepage_research_desk" data-discord-feature="research_desk">Already joined? Open research-desk ↗</a></div>
-        <p class="md-bots-no-gate">Free to join. Research &amp; education only. No trade calls or broker connection.</p>
-      </div>
-      <div class="md-bots-demo md-bots-discord-demo" aria-label="Discord Research Terminal preview">
-        <div class="md-bots-demo-top"><span class="md-bots-demo-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>MARKETDECK / DISCORD</span><span class="md-bots-demo-label">LIVE</span></div>
-        <div class="md-discord-nav" aria-hidden="true"><span>Overview</span><span class="is-active">Equities</span><span>Charts</span><span>F&amp;O Lab</span></div>
-        <div class="md-discord-terminal"><div class="md-discord-kicker">EQUITIES / PUBLIC RESEARCH</div><h3>Company research desk.</h3><p>Search a company once. Move between research, charts, commentary and Research Rooms.</p><div class="md-discord-grid"><span>Source-linked research</span><span>Compare companies</span><span>Open original sources</span><span>Create /room</span></div></div>
-        <div class="md-discord-lab"><span class="md-bots-code">F&amp;O / STRATEGY LAB</span><div><strong>Payoff + Greeks</strong><small>Shared strategy state</small></div><div><strong>Scenario P&amp;L</strong><small>Manual/model inputs</small></div><div><strong>Historical replay</strong><small>Archived NSE records</small></div></div>
-        <p class="md-bots-preview-note">Interactive Discord Activity · public research · no live Kite quote redistribution.</p>
-      </div>
-    </div>
-    <div class="md-bots-subhead md-bots-subhead-discord"><span>DISCORD / WHAT YOU CAN DO</span><p>A collaborative research workspace built directly inside your MarketDeck server.</p></div>
-    <div class="md-bots-features md-bots-discord-features">
-      <article><span class="md-bots-feature-index">01 / RESEARCH TOGETHER</span><h3>Persistent company rooms.</h3><p>Use <code>/research</code>, <code>/compare</code> and <code>/room</code> to move from a question into a reusable Research Room.</p></article>
-      <article><span class="md-bots-feature-index">02 / OPEN THE TERMINAL</span><h3>More than a bot reply.</h3><p>Launch Equities, Charts, Screener, Intelligence, Crypto and the collaborative F&amp;O Lab from one Discord Activity.</p></article>
-      <article><span class="md-bots-feature-index">03 / MODEL &amp; SHARE</span><h3>Work on strategies together.</h3><p>Build option structures, inspect payoff and Greeks, run one historical replay, sync shared state and pass the Activity to another researcher.</p></article>
-    </div>
-    <div class="md-bots-roadmap md-bots-roadmap-single" aria-label="Other platform integrations and their current status">
-      <p>WHAT WE'RE EXPLORING NEXT<span>Different platforms. Different experiences.</span></p>
-      <div><img src="/assets/platforms/reddit.svg" width="24" height="24" alt="" loading="lazy"><span>Reddit <small>Community-native research tools</small></span><strong>EXPLORING</strong></div>
-    </div>
-    <p class="md-bots-footnote">Telegram and Discord are live. Proactive Telegram notifications are not live yet. The Discord Research Copilot interface is deployed; AI answers remain disabled until API access is switched on.</p>
+
+    <div class="md-platform-controls" data-platform-controls hidden><button type="button" data-platform-prev aria-label="Show previous platform"><span aria-hidden="true">←</span></button><p><span data-platform-count aria-live="polite">TELEGRAM 01 / 03</span><small>Drag or swipe to explore</small></p><button type="button" data-platform-next aria-label="Show next platform"><span aria-hidden="true">→</span></button></div>
+    <p class="md-bots-footnote">Telegram and Discord are live. Proactive Telegram notifications are not live yet. The Discord Research Copilot interface is ready; AI answers remain disabled.</p>
   </div>
 </section>

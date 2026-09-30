@@ -1,36 +1,81 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-const read = file => readFileSync(new URL('../' + file, import.meta.url),'utf8');
+import { gzipSync } from 'node:zlib';
+
+const read = file => readFileSync(new URL('../' + file, import.meta.url), 'utf8');
 const section = read('src/companion-section.html');
-test('bot section publishes Telegram and Discord while future tools stay explicit',()=>{
-  assert.match(section,/TELEGRAM · LIVE/);assert.match(section,/DISCORD · LIVE/);assert.match(section,/EXPLORING/);
-  assert.match(section,/Research Rooms/);assert.match(section,/Research Terminal/);assert.match(section,/Shared F&amp;O Lab/);
-  assert.match(section,/Proactive Telegram notifications are not live yet/);
-  const roadmap = section.split('class="md-bots-roadmap md-bots-roadmap-single"')[1];
-  assert.doesNotMatch(roadmap,/<a\b/);
-});
-test('all launch links are Telegram-safe bounded public routes',()=>{
-  const links=[...section.matchAll(/href="(https:\/\/t.me\/MarketDeckIndiaBot\?start=[^"]+)"/g)].map(m=>new URL(m[1]));
-  assert.equal(links.length,4);
-  for(const url of links){const p=url.searchParams.get('start');assert.ok(p.length<=64);assert.match(p,/^[A-Za-z0-9_-]+$/);assert.equal(url.hash,'');}
-  assert.ok(links.some(u=>u.searchParams.get('start')==='web_demo_UkVMSUFOQ0U'));
-});
-test('Discord launch links are bounded and require a real public invite before release',()=>{
-  const join=section.match(/href="(https:\/\/discord\.gg\/[^"]+)"[^>]+data-discord-entry="homepage"/)?.[1];
-  assert.ok(join);
-  assert.doesNotMatch(join,/__MARKETDECK_INVITE__/,'Replace the Discord invite placeholder before release');
-  assert.match(section,/https:\/\/discord\.com\/channels\/1553393794324373614\/1553412312919052441/);
-  assert.match(read('public/companion.js'),/discord_open/);
+const script = read('public/companion.js');
+const styles = read('public/companion.css');
+
+test('community showcase truthfully publishes two live platforms and one exploration', () => {
+  assert.match(section, /TELEGRAM · LIVE/);
+  assert.match(section, /DISCORD · LIVE/);
+  assert.match(section, /REDDIT · EXPLORING/);
+  assert.match(section, /The MarketDeck Reddit profile is live\. The integration is not launched\./);
+  assert.match(section, /Proactive Telegram notifications are not live yet/);
+  assert.match(section, /AI answers remain disabled/);
+  assert.doesNotMatch(section, /Discord[^<]{0,40}(?:planned|coming soon)/i);
 });
 
-test('preview has connected tab semantics and a no-JS primary link',()=>{
-  for(const key of ['research','radar','compare']){assert.ok(section.includes('id="bot-tab-'+key+'"'));assert.ok(section.includes('id="bot-preview-'+key+'"'));}
-  assert.match(section,/Feature preview · not a live feed/);assert.match(section,/\?start=web_home/);
+test('platform selector and all three panels exist in static semantic HTML', () => {
+  assert.match(section, /data-platform-tabs[^>]+role="tablist"/);
+  for (const platform of ['telegram', 'discord', 'reddit']) {
+    assert.match(section, new RegExp(`data-platform-tab="${platform}"`));
+    assert.match(section, new RegExp(`data-platform-panel="${platform}"`));
+    assert.match(section, new RegExp(`id="platform-panel-${platform}"`));
+  }
+  const ids = [...section.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
+  assert.equal(new Set(ids).size, ids.length, 'Carousel IDs must be unique');
 });
-test('visuals and script stay local, lightweight and reduced-motion safe',()=>{
-  for(const file of ['public/companion.css','public/companion.js'])assert.ok(read(file).length<15000);
-  assert.match(read('public/companion.css'),/prefers-reduced-motion/);
-  assert.doesNotMatch(read('public/companion.js'),/fetch\(|localStorage|sessionStorage|user_id|platform_user_id/);
-  for(const icon of ['telegram','discord','reddit'])assert.ok(existsSync(new URL('../public/assets/platforms/'+icon+'.svg',import.meta.url)));
+
+test('all Telegram launch links remain bounded public routes', () => {
+  assert.match(section, /https:\/\/t\.me\/MarketDeckIndiaBot\?start=web_home/);
+  assert.match(section, /https:\/\/t\.me\/MarketDeckIndia"/);
+  const links = [...section.matchAll(/href="(https:\/\/t\.me\/MarketDeckIndiaBot\?start=[^"]+)"/g)].map(match => new URL(match[1]));
+  assert.equal(links.length, 4);
+  for (const url of links) {
+    const payload = url.searchParams.get('start');
+    assert.ok(payload.length <= 64);
+    assert.match(payload, /^[A-Za-z0-9_-]+$/);
+    assert.equal(url.hash, '');
+  }
+  assert.ok(links.some(url => url.searchParams.get('start') === 'web_demo_UkVMSUFOQ0U'));
+});
+
+test('Discord launch links are exact and analytics stay bounded', () => {
+  assert.match(section, /href="https:\/\/discord\.gg\/NTc5gPTr7N"[^>]+data-discord-entry="homepage"/);
+  assert.match(section, /https:\/\/discord\.com\/channels\/1553393794324373614\/1553412312919052441/);
+  assert.doesNotMatch(section, /__MARKETDECK_INVITE__/);
+  assert.match(script, /discord_open/);
+  assert.match(script, /new Set\(\['join', 'research_desk'\]\)/);
+});
+
+test('Reddit profile is the only Reddit destination and no live integration link is invented', () => {
+  const redditPanel = section.match(/<article id="platform-panel-reddit"[\s\S]*?<\/article>/)?.[0];
+  assert.ok(redditPanel);
+  const links = [...redditPanel.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
+  assert.deepEqual(links, ['https://www.reddit.com/user/MarketDeck/']);
+  assert.doesNotMatch(redditPanel, /data-reddit|Open Reddit (?:bot|integration)|Launch Reddit/i);
+});
+
+test('Telegram preview keeps connected tabs and source-safety language', () => {
+  for (const key of ['research', 'radar', 'compare']) {
+    assert.ok(section.includes(`id="bot-tab-${key}"`));
+    assert.ok(section.includes(`id="bot-preview-${key}"`));
+  }
+  assert.match(section, /Feature preview · not a live feed or a trading signal/);
+  assert.match(section, /no live Kite quote redistribution/);
+});
+
+test('carousel remains local, lightweight, reduced-motion safe and private', () => {
+  assert.ok(gzipSync(styles).length < 5_000, 'Carousel CSS should stay under 5 KB gzipped');
+  assert.ok(gzipSync(script).length < 3_500, 'Carousel JS should stay under 3.5 KB gzipped');
+  assert.match(styles, /prefers-reduced-motion:reduce/);
+  assert.match(styles, /overflow:(?:hidden|clip)/);
+  assert.match(script, /community_platform_view/);
+  assert.match(script, /new Set\(\['telegram', 'discord', 'reddit'\]\)/);
+  assert.doesNotMatch(script, /fetch\(|localStorage|sessionStorage|user_id|platform_user_id|invite_token|account_id/);
+  assert.doesNotMatch(section + styles + script, /swiper|three\.js|framer-motion/i);
+  for (const icon of ['telegram', 'discord', 'reddit']) assert.ok(existsSync(new URL(`../public/assets/platforms/${icon}.svg`, import.meta.url)));
 });
