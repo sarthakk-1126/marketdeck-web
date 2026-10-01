@@ -126,7 +126,8 @@ export function buildArticles({root,review,baseNotes=[]}){
   const path=`/intelligence/notes/${a.slug}/`,md=readFileSync(a.source,'utf8'),words=md.replace(/\[([^\]]+)\]\([^)]+\)/g,'$1').split(/\s+/).filter(Boolean).length;
   if(words<1500)throw Error('Article is below approved depth: '+a.slug);
   const fig=illustration(a),figpath=`/assets/intelligence/articles/${a.slug}.svg`;mkdirSync(dirname(resolve(root,'.'+figpath)),{recursive:true});writeFileSync(resolve(root,'.'+figpath),fig.svg);
-  const {body,toc}=parseArticle(md,a,`<figure class="a-figure"><img src="${figpath}" width="960" height="480" loading="lazy" alt="${E(fig.desc)}"><figcaption>${E(fig.desc)}</figcaption></figure>`);
+  const figsrc=a.topics.includes('portfolio-analysis')?`${figpath}?v=${a.modifiedAt.replaceAll('-','')}`:figpath;
+  const {body,toc}=parseArticle(md,a,`<figure class="a-figure"><img src="${figsrc}" width="960" height="480" loading="lazy" alt="${E(fig.desc)}"><figcaption>${E(fig.desc)}</figcaption></figure>`);
   const crumbs=[{'@type':'ListItem',position:1,name:'MarketDeck',item:ORIGIN+'/'},{'@type':'ListItem',position:2,name:'Intelligence',item:ORIGIN+'/intelligence/'}];
   if(a.primaryHub){slug(a.primaryHub.slug);if(!LEARNING_HUBS[a.primaryHub.slug]||!a.topics.includes(LEARNING_HUBS[a.primaryHub.slug].topic))throw Error('Invalid primary learning hub');crumbs.push({'@type':'ListItem',position:3,name:a.primaryHub.label,item:ORIGIN+'/intelligence/'+a.primaryHub.slug+'/'});}
   crumbs.push({'@type':'ListItem',position:crumbs.length+1,name:a.title,item:ORIGIN+path});
