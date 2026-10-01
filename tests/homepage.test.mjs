@@ -11,6 +11,18 @@ const data = JSON.parse(readFileSync(new URL('../src/site-data.json', import.met
 const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
 const hrefs = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map(match => match[1]);
 
+test('Portfolio terminal uses homepage tokens and eight model-specific planes', () => {
+  const css = readFileSync(new URL('../public/portfolio-flagship.css', import.meta.url), 'utf8');
+  const js = readFileSync(new URL('../public/portfolio-flagship.js', import.meta.url), 'utf8');
+  assert.equal((html.match(/data-pa-view="/g) ?? []).length, 8);
+  assert.equal((html.match(/data-pa-mode="/g) ?? []).length, 8);
+  assert.match(html, /pa-plane-matrix/);
+  assert.match(css, /--pa-accent:var\(--blue\)/);
+  assert.doesNotMatch(css, /#9be9d5|#91e1cc/i);
+  assert.match(js, /prefers-reduced-motion/);
+  assert.match(js, /pointermove/);
+});
+
 test('all five confirmed application routes are emitted; pending channels are not links', () => {
   assert.deepEqual([...new Set(hrefs.filter(href => ['/charts/', '/screener/', '/futures-and-options/', '/commentary/', '/crypto/'].includes(href)))].sort(), ['/charts/', '/commentary/', '/crypto/', '/futures-and-options/', '/screener/'].sort());
   assert.equal(data.products.filter(product => product.url == null).length, 0);
@@ -102,8 +114,8 @@ test('portfolio research has a first-class, lightweight public discovery path', 
   assert.match(html, /Go beyond <span>portfolio P&amp;L\.<\/span>/);
   assert.equal((html.match(/data-pa-mode="/g) || []).length, 8);
   assert.ok(html.indexOf('id="portfolio-analysis"') < html.indexOf('id="bots"'));
-  assert.match(html, /href="\/portfolio-flagship\.css\?v=1"/);
-  assert.match(html, /src="\/portfolio-flagship\.js\?v=1"/);
+  assert.match(html, /href="\/portfolio-flagship\.css\?v=2"/);
+  assert.match(html, /src="\/portfolio-flagship\.js\?v=2"/);
   assert.match(readFileSync('public/portfolio-flagship.css', 'utf8'), /prefers-reduced-motion/);
   assert.doesNotMatch(html, /₹\s*[0-9]|recommended allocation|optimal portfolio/i);
 });
