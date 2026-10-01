@@ -74,14 +74,14 @@ test('client enhancement is small, local and non-autoplay',()=>{
  assert.ok(Buffer.byteLength(js)<12000);assert.match(js,/pointercancel/);assert.match(js,/ArrowLeft/);
 });
 
-test('three primary learning hubs are substantial, canonical and connected to products',()=>{
+test('four primary learning hubs are substantial, canonical and connected to products',()=>{
  const notes=JSON.parse(readFileSync('content/articles/metadata.json')).map(a=>({slug:a.slug,path:'/intelligence/notes/'+a.slug+'/',title:a.title,summary:a.description,body:readFileSync(a.source,'utf8')}));
  const items=catalog(manifest,notes,{read:p=>JSON.parse(readFileSync(p,'utf8')),exists:p=>existsSync('public'+p)});
- for(const [slug,h] of Object.entries(LEARNING_HUBS)){const html=learningHub(items,slug),canonical=`https://marketdeck.in/intelligence/${slug}/`;assert.equal((html.match(/<h1\b/g)||[]).length,1);assert.ok(html.includes(`rel="canonical" href="${canonical}"`));assert.ok(html.includes(h.tool.url));assert.ok((html.match(/class="learning-card"/g)||[]).length>=2);const ld=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]),collection=ld['@graph'].find(n=>n['@type']==='CollectionPage'),crumbs=ld['@graph'].find(n=>n['@type']==='BreadcrumbList');assert.ok(collection);assert.ok(crumbs);assert.equal(collection['@id'],canonical+'#webpage');assert.deepEqual(collection.isPartOf,{'@id':'https://marketdeck.in/#website'});assert.deepEqual(collection.publisher,{'@id':'https://marketdeck.in/#organization'});}
+ for(const [slug,h] of Object.entries(LEARNING_HUBS)){const html=learningHub(items,slug),canonical=`https://marketdeck.in/intelligence/${slug}/`;assert.equal((html.match(/<h1\b/g)||[]).length,1);assert.ok(html.includes(`rel="canonical" href="${canonical}"`));assert.ok(html.includes(h.tool.url));if(slug==='portfolio-analysis'){assert.equal((html.match(/class="pa-intel-guide"/g)||[]).length,4);assert.equal((html.match(/class="pa-intel-lenses"/g)||[]).length,1);assert.ok(html.includes('/intelligence-portfolio-v1.css'));assert.ok(html.includes('/screener/methodology/#portfolio-analysis'));}else assert.ok((html.match(/class="learning-card"/g)||[]).length>=2);const ld=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]),collection=ld['@graph'].find(n=>n['@type']==='CollectionPage'),crumbs=ld['@graph'].find(n=>n['@type']==='BreadcrumbList');assert.ok(collection);assert.ok(crumbs);assert.equal(collection['@id'],canonical+'#webpage');assert.deepEqual(collection.isPartOf,{'@id':'https://marketdeck.in/#website'});assert.deepEqual(collection.publisher,{'@id':'https://marketdeck.in/#organization'});}
 });
-test('CollectionPage schema stays limited to the six visible Intelligence collections',()=>{
+test('CollectionPage schema stays limited to the seven visible Intelligence collections',()=>{
  const walk=dir=>readdirSync(dir).flatMap(name=>{const path=dir+'/'+name;return statSync(path).isDirectory()?walk(path):[path];});
- const expected=['/intelligence/','/intelligence/equities/','/intelligence/futures-options/','/intelligence/issues/','/intelligence/library/','/intelligence/technical-analysis/'];
+ const expected=['/intelligence/','/intelligence/equities/','/intelligence/futures-options/','/intelligence/issues/','/intelligence/library/','/intelligence/portfolio-analysis/','/intelligence/technical-analysis/'];
  const pages=walk('public').filter(path=>path.endsWith('.html')).map(file=>{
   const html=readFileSync(file,'utf8'),match=html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
   const graph=match?(JSON.parse(match[1])['@graph']??[]):[];
