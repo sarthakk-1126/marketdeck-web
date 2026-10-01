@@ -213,6 +213,50 @@
       "source": "content/articles/call-option-vs-put-option-india.md",
       "publicationStatus": "published",
       "approvedAt": "2026-09-23"
+    },
+    {
+      "slug": "xirr-vs-portfolio-return",
+      "topics": [
+        "portfolio-analysis",
+        "research-craft"
+      ],
+      "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+      "source": "content/articles/xirr-vs-portfolio-return.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-10-01"
+    },
+    {
+      "slug": "portfolio-var-historical-parametric-cornish-fisher",
+      "topics": [
+        "portfolio-analysis",
+        "research-craft"
+      ],
+      "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+      "source": "content/articles/portfolio-var-historical-parametric-cornish-fisher.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-10-01"
+    },
+    {
+      "slug": "efficient-frontier-long-only-unconstrained",
+      "topics": [
+        "portfolio-analysis",
+        "research-craft"
+      ],
+      "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+      "source": "content/articles/efficient-frontier-long-only-unconstrained.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-10-01"
+    },
+    {
+      "slug": "black-litterman-implied-returns",
+      "topics": [
+        "portfolio-analysis",
+        "research-craft"
+      ],
+      "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+      "source": "content/articles/black-litterman-implied-returns.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-10-01"
     }
   ]
 }
