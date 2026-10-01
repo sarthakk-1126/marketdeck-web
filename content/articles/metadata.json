@@ -686,5 +686,300 @@
         "reviewedAt": "2026-09-23"
       }
     ]
+  },
+  {
+    "slug": "xirr-vs-portfolio-return",
+    "title": "XIRR vs Portfolio Return: Cash Flows and Holdings History",
+    "h1": "XIRR and portfolio history answer different questions.",
+    "description": "Understand XIRR versus portfolio return: dated cash flows, reconstructed holdings history, worked examples, assumptions and MarketDeck implementation details.",
+    "topics": [
+      "portfolio-analysis",
+      "research-craft"
+    ],
+    "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+    "source": "content/articles/xirr-vs-portfolio-return.md",
+    "modifiedAt": "2026-10-01",
+    "sourceReviewedAt": "2026-10-01",
+    "primaryKeyword": "XIRR vs portfolio return",
+    "relatedKeywords": [
+      "portfolio XIRR explained",
+      "money weighted return vs portfolio return",
+      "current holdings historical return"
+    ],
+    "related": [
+      "portfolio-var-historical-parametric-cornish-fisher",
+      "efficient-frontier-long-only-unconstrained",
+      "black-litterman-implied-returns"
+    ],
+    "takeaways": [
+      "XIRR follows the timing and amount of actual cash flows.",
+      "A reconstructed current-book series asks how today's quantities behaved historically.",
+      "Do not read one measure as a substitute for the other."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-10-01",
+    "publishedAt": "2026-10-01",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "Microsoft Support: XIRR function",
+        "url": "https://support.microsoft.com/en-us/excel/functions/xirr-function",
+        "scope": "Authoritative function definition: irregular dated cash flows, 365-day discounting and the XNPV-zero relationship.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S2",
+        "title": "Zerodha Support: What is XIRR and how to check it in Zerodha?",
+        "url": "https://support.zerodha.com/category/console/portfolio/console-holdings/articles/portfolio-xirr",
+        "scope": "India-market product context showing that portfolio XIRR implementations depend on which historical trades are included.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S3",
+        "title": "MarketDeck Screener: Portfolio Analysis methodology",
+        "url": "/screener/methodology/#portfolio-analysis",
+        "scope": "MarketDeck implementation source for transaction-ledger XIRR and reconstructed current-book portfolio history.",
+        "reviewedAt": "2026-10-01"
+      }
+    ],
+    "primaryHub": {
+      "slug": "portfolio-analysis",
+      "label": "Portfolio Analysis"
+    },
+    "tool": {
+      "url": "/screener/portfolio-analysis/",
+      "label": "Explore Portfolio Analysis",
+      "name": "MarketDeck Portfolio Analysis"
+    }
+  },
+  {
+    "slug": "portfolio-var-historical-parametric-cornish-fisher",
+    "title": "Portfolio VaR: Historical vs Parametric vs Cornish-Fisher",
+    "h1": "Three VaR methods can disagree for good reasons.",
+    "description": "Compare Historical, Parametric and Cornish-Fisher portfolio VaR, including assumptions, skew and kurtosis, confidence levels and Kupiec calibration.",
+    "topics": [
+      "portfolio-analysis",
+      "research-craft"
+    ],
+    "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+    "source": "content/articles/portfolio-var-historical-parametric-cornish-fisher.md",
+    "modifiedAt": "2026-10-01",
+    "sourceReviewedAt": "2026-10-01",
+    "primaryKeyword": "historical vs parametric vs Cornish-Fisher VaR",
+    "relatedKeywords": [
+      "portfolio VaR methods",
+      "Cornish Fisher VaR explained",
+      "Kupiec VaR backtest"
+    ],
+    "related": [
+      "xirr-vs-portfolio-return",
+      "efficient-frontier-long-only-unconstrained",
+      "black-litterman-implied-returns"
+    ],
+    "takeaways": [
+      "Historical, Gaussian and Cornish-Fisher VaR encode different distribution assumptions.",
+      "A confidence level is a tail threshold, not a maximum-loss promise.",
+      "MarketDeck's current Kupiec check is an in-sample calibration diagnostic, not out-of-sample proof."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-10-01",
+    "publishedAt": "2026-10-01",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "Reserve Bank of Australia: Measuring Traded Market Risk — Value-at-Risk",
+        "url": "https://www.rba.gov.au/publications/rdp/1997/9708/value-at-risk.html",
+        "scope": "Official research discussion of historical simulation, variance-covariance VaR, confidence levels and model limitations.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S2",
+        "title": "Fed in Print: Kupiec — Techniques for verifying the accuracy of risk measurement models",
+        "url": "https://fedinprint.org/item/fedgfe/34596/original",
+        "scope": "Federal Reserve bibliographic/full-text record for Kupiec's 1995 VaR verification work.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S3",
+        "title": "MSCI: 1996 RiskMetrics Technical Document",
+        "url": "https://www.msci.com/research-and-insights/paper/1996-riskmetrics-technical-document",
+        "scope": "Historical market-risk methodology reference for variance-covariance risk measurement and distributional treatment.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S4",
+        "title": "MarketDeck Screener: Portfolio Analysis methodology",
+        "url": "/screener/methodology/#portfolio-analysis",
+        "scope": "MarketDeck implementation source for the three one-day VaR methods and calibration display.",
+        "reviewedAt": "2026-10-01"
+      }
+    ],
+    "primaryHub": {
+      "slug": "portfolio-analysis",
+      "label": "Portfolio Analysis"
+    },
+    "tool": {
+      "url": "/screener/portfolio-analysis/",
+      "label": "Explore Portfolio Analysis",
+      "name": "MarketDeck Portfolio Analysis"
+    }
+  },
+  {
+    "slug": "efficient-frontier-long-only-unconstrained",
+    "title": "Efficient Frontier: Long-Only vs Unconstrained Portfolios",
+    "h1": "The frontier changes when the constraints change.",
+    "description": "Understand long-only versus unconstrained efficient frontiers, covariance, shorting and leverage, with a worked example and MarketDeck's non-prescriptive implementation.",
+    "topics": [
+      "portfolio-analysis",
+      "research-craft"
+    ],
+    "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+    "source": "content/articles/efficient-frontier-long-only-unconstrained.md",
+    "modifiedAt": "2026-10-01",
+    "sourceReviewedAt": "2026-10-01",
+    "primaryKeyword": "long-only vs unconstrained efficient frontier",
+    "relatedKeywords": [
+      "efficient frontier explained",
+      "Markowitz long only portfolio",
+      "unconstrained portfolio short selling"
+    ],
+    "related": [
+      "xirr-vs-portfolio-return",
+      "portfolio-var-historical-parametric-cornish-fisher",
+      "black-litterman-implied-returns"
+    ],
+    "takeaways": [
+      "A frontier is conditional on expected returns, covariance and constraints.",
+      "Long-only weights stay non-negative and sum to one; unconstrained weights may imply shorts or leverage.",
+      "MarketDeck maps the historical geometry without selecting a target portfolio."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-10-01",
+    "publishedAt": "2026-10-01",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "Markowitz (1952): Portfolio Selection, The Journal of Finance",
+        "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1540-6261.1952.tb01525.x",
+        "scope": "Original mean-variance portfolio-selection reference.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S2",
+        "title": "Zerodha Varsity: Portfolio Optimization — Efficient Frontier",
+        "url": "https://zerodha.com/varsity/chapter/po2/",
+        "scope": "India-focused educational treatment of portfolio weights and the efficient frontier; MarketDeck does not adopt its prescriptive portfolio-selection language.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S3",
+        "title": "MathWorks: Portfolios on constrained efficient frontier",
+        "url": "https://www.mathworks.com/help/finance/portopt.html",
+        "scope": "Technical documentation illustrating a fully invested long-only frontier with non-negative weights.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S4",
+        "title": "MarketDeck Screener: Portfolio Analysis methodology",
+        "url": "/screener/methodology/#portfolio-analysis",
+        "scope": "MarketDeck implementation source for aligned returns, annualisation, covariance and the two displayed frontiers.",
+        "reviewedAt": "2026-10-01"
+      }
+    ],
+    "primaryHub": {
+      "slug": "portfolio-analysis",
+      "label": "Portfolio Analysis"
+    },
+    "tool": {
+      "url": "/screener/portfolio-analysis/",
+      "label": "Explore Portfolio Analysis",
+      "name": "MarketDeck Portfolio Analysis"
+    }
+  },
+  {
+    "slug": "black-litterman-implied-returns",
+    "title": "Black-Litterman Implied Returns: Prior, Views and Confidence",
+    "h1": "Black-Litterman can be read as a return model before it becomes an allocation model.",
+    "description": "Understand Black-Litterman implied returns, reverse optimisation, absolute and relative views, confidence and why MarketDeck stops before allocation weights.",
+    "topics": [
+      "portfolio-analysis",
+      "research-craft"
+    ],
+    "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+    "source": "content/articles/black-litterman-implied-returns.md",
+    "modifiedAt": "2026-10-01",
+    "sourceReviewedAt": "2026-10-01",
+    "primaryKeyword": "Black-Litterman implied returns",
+    "relatedKeywords": [
+      "Black Litterman reverse optimization",
+      "Black Litterman views confidence",
+      "equilibrium implied returns"
+    ],
+    "related": [
+      "xirr-vs-portfolio-return",
+      "portfolio-var-historical-parametric-cornish-fisher",
+      "efficient-frontier-long-only-unconstrained"
+    ],
+    "takeaways": [
+      "Reverse optimisation asks which excess returns are implied by an existing mix and covariance matrix.",
+      "Views modify a prior through a stated confidence model; they do not become facts.",
+      "MarketDeck deliberately stops at return implications and does not compute Black-Litterman target weights."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-10-01",
+    "publishedAt": "2026-10-01",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "Black & Litterman (1992): Global Portfolio Optimization",
+        "url": "https://rpc.cfainstitute.org/research/financial-analysts-journal/1992/faj-v48-n5-28",
+        "scope": "Original published description of equilibrium returns as a neutral starting point combined with investor views and confidence.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S2",
+        "title": "He & Litterman (1999): The Intuition Behind Black-Litterman Model Portfolios",
+        "url": "https://people.duke.edu/~charvey/Teaching/BA453_2002/GS_The_intuition_behind.pdf",
+        "scope": "Primary technical exposition of the intuition and portfolio-view construction behind the model.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S3",
+        "title": "Idzorek: A Step-by-Step Guide to the Black-Litterman Model",
+        "url": "https://people.duke.edu/~charvey/Teaching/BA453_2005/Idzorek_onBL.pdf",
+        "scope": "Technical reference for expressing absolute/relative views and user-specified confidence.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S4",
+        "title": "Walters (2014): The Black-Litterman Model in Detail",
+        "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1314585",
+        "scope": "Detailed survey and derivation reference for Black-Litterman parameters and posterior-return formulations.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S5",
+        "title": "Sharpe (1974): Imputing Expected Security Returns from Portfolio Composition",
+        "url": "https://www.cambridge.org/core/journals/journal-of-financial-and-quantitative-analysis/article/abs/imputing-expected-security-returns-from-portfolio-composition/CEDB8FB4DE2108A0523E578C777139FB",
+        "scope": "Foundational reference for reasoning backward from observed portfolio composition to implied expected returns.",
+        "reviewedAt": "2026-10-01"
+      },
+      {
+        "id": "S6",
+        "title": "MarketDeck Screener: Portfolio Analysis methodology",
+        "url": "/screener/methodology/#portfolio-analysis",
+        "scope": "MarketDeck implementation source for reverse-implied returns, views, covariance conventions and the no-allocation boundary.",
+        "reviewedAt": "2026-10-01"
+      }
+    ],
+    "primaryHub": {
+      "slug": "portfolio-analysis",
+      "label": "Portfolio Analysis"
+    },
+    "tool": {
+      "url": "/screener/portfolio-analysis/",
+      "label": "Explore Portfolio Analysis",
+      "name": "MarketDeck Portfolio Analysis"
+    }
   }
 ]
