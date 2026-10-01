@@ -12,7 +12,7 @@ const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
 const hrefs = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map(match => match[1]);
 
 test('all five confirmed application routes are emitted; pending channels are not links', () => {
-  assert.deepEqual([...new Set(hrefs.filter(href => /^\/(charts|screener|futures-and-options|commentary|crypto)\//.test(href)))].sort(), ['/charts/', '/commentary/', '/crypto/', '/futures-and-options/', '/screener/'].sort());
+  assert.deepEqual([...new Set(hrefs.filter(href => ['/charts/', '/screener/', '/futures-and-options/', '/commentary/', '/crypto/'].includes(href)))].sort(), ['/charts/', '/commentary/', '/crypto/', '/futures-and-options/', '/screener/'].sort());
   assert.equal(data.products.filter(product => product.url == null).length, 0);
   for (const product of data.products) {
     const panel = html.match(new RegExp(`<article[^>]+id="product-${product.id}"[\\s\\S]*?</article>`))[0];
@@ -95,6 +95,18 @@ test('homepage explains all five products together with premium cards before the
   const panelsStart = html.indexOf('class="product-panels"', railStart);
   assert.ok(overviewStart > 0 && overviewEnd > overviewStart && railStart > overviewEnd && panelsStart > railStart, 'Overview should precede the existing interactive showcase');
 });
+
+test('portfolio research has a first-class, lightweight public discovery path', () => {
+  assert.ok(hrefs.includes('/screener/portfolio-analysis/'));
+  assert.match(html, /id="portfolio-analysis"/);
+  assert.match(html, /Go beyond <span>portfolio P&amp;L\.<\/span>/);
+  assert.equal((html.match(/data-pa-mode="/g) || []).length, 8);
+  assert.ok(html.indexOf('id="portfolio-analysis"') < html.indexOf('id="bots"'));
+  assert.match(html, /href="\/portfolio-flagship\.css\?v=1"/);
+  assert.match(html, /src="\/portfolio-flagship\.js\?v=1"/);
+  assert.match(readFileSync('public/portfolio-flagship.css', 'utf8'), /prefers-reduced-motion/);
+  assert.doesNotMatch(html, /₹\s*[0-9]|recommended allocation|optimal portfolio/i);
+});
 test('approved magazine is public while the older draft stays excluded',()=>{
   const issues=JSON.parse(readFileSync('content/briefs.json')).issues;
   const published=issues.find(i=>i.id==='agentic-trading-frontier-02');
@@ -131,7 +143,7 @@ test('deferred globe maps and real product preview assets are self-hosted',()=>{
 test('runtime dependencies stay local except the approved canonical-only GA4 tag', () => {
   for (const match of html.matchAll(/\b(?:src|href)="(\/[^"#]+)(?:#[^"]*)?"/g)) {
     const path = new URL(match[1], 'https://marketdeck.in').pathname;
-    if (['/screener/', '/charts/', '/futures-and-options/', '/commentary/', '/crypto/'].includes(path)) continue;
+    if (['/screener/', '/screener/portfolio-analysis/', '/charts/', '/futures-and-options/', '/commentary/', '/crypto/'].includes(path)) continue;
     assert.ok(existsSync(resolve('public', `.${path}`)), `Missing asset ${path}`);
   }
   const externalScripts = [...html.matchAll(/<script[^>]+src="(https?:[^"]+)"/g)].map(match => match[1]);
