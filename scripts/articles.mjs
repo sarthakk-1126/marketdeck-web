@@ -71,6 +71,33 @@ export function illustration(a){
   const plot=(fn,color)=>`<path d="M${vals.map(v=>[X(v),Y(fn(v))].join(' ')).join(' L')}" fill="none" stroke="${color}" stroke-width="4"/>`;
   art+=plot(s=>Math.max(s-20000,0)-200,'#72b9f9')+plot(s=>Math.max(20000-s,0)-180,'#f1a7be');
   art+=tx(160,134,'PUT BUYER · ₹180 premium',17,'#f3b7ca')+tx(542,134,'CALL BUYER · ₹200 premium',17,'#9bc7ed')+tx(337,422,'Underlying index at expiry',18)+tx(50,458,'Synthetic example · no charges or lot multiplier · full premium loss is possible',17);
+ }else if(id==='xirr-vs-portfolio-return'){
+  title='Two histories, two questions';desc='Synthetic diagram contrasting dated investor cash flows used by XIRR with a reconstructed current-book history that holds today’s quantities constant through stored historical closes. No market data is shown.';
+  art+=tx(44,126,'ACTUAL CASH-FLOW TIMELINE',16,'#9bc7ed')+line(62,190,900,190,'#456987');
+  const flows=[[120,'BUY','−₹100k','#f3b7ca'],[360,'BUY','−₹50k','#f3b7ca'],[610,'SELL','+₹20k','#a8e2c1'],[850,'TERMINAL','+₹155k','#a8e2c1']];flows.forEach(([x,l,v,c])=>{art+=`<circle cx="${x}" cy="190" r="8" fill="${c}"/>`+tx(x-28,163,l,14,c)+tx(x-35,226,v,18,'#edf1f6');});
+  art+=tx(44,292,'RECONSTRUCTED CURRENT BOOK',16,'#9bc7ed')+line(62,410,900,410,'#456987');
+  art+=`<path d="M70 382 C170 340 230 402 330 348 S510 326 600 360 S760 300 892 315" fill="none" stroke="#72b9f9" stroke-width="4"/>`;
+  art+=`<path d="M70 400 C180 365 265 370 352 388 S510 340 610 372 S760 352 892 330" fill="none" stroke="#5f7891" stroke-width="3"/>`;
+  art+=tx(640,448,'today’s quantities × stored closes',16,'#c8d6e5');
+ }else if(id==='portfolio-var-historical-parametric-cornish-fisher'){
+  title='Three tail models. One loss question.';desc='Conceptual return distribution with separate Historical, Parametric and Cornish-Fisher 95 percent loss thresholds, plus a calibration strip. Thresholds are illustrative and not portfolio data.';
+  art+=line(54,337,910,337)+tx(42,114,'1-DAY LOSS TAIL',16,'#9bc7ed');
+  art+=`<path d="M62 330 C150 328 190 300 244 258 C306 210 348 128 476 118 C607 108 684 182 732 245 C780 307 836 329 906 331" fill="none" stroke="#7bbbf1" stroke-width="4"/>`;
+  const marks=[[180,'CF'],[220,'PARAM'],[246,'HIST']];marks.forEach(([x,l],i)=>{art+=`<path d="M${x} 164 V337" stroke="${i===0?'#f1a7be':'#9bc7ed'}" stroke-width="2" stroke-dasharray="6 6"/>`+tx(x-18,151,l,14,i===0?'#f3b7ca':'#9bc7ed');});
+  art+=`<rect x="54" y="372" width="852" height="58" rx="8" fill="#142637"/>`+tx(75,407,'KUPIEC / OBSERVED BREACH RATE ↔ STATED CONFIDENCE',17,'#c8d6e5')+tx(675,407,'IN-SAMPLE CHECK',14,'#f3b7ca');
+ }else if(id==='efficient-frontier-long-only-unconstrained'){
+  title='Constraint changes the frontier';desc='Conceptual risk-return plane showing a long-only frontier, an unconstrained frontier that extends through shorting or leverage, and a neutral current-mix marker. Curves are schematic, not market data.';
+  art+=line(92,386,900,386)+line(92,386,92,96)+tx(704,424,'VOLATILITY →',16,'#c8d6e5')+tx(28,112,'RETURN ↑',16,'#c8d6e5');
+  art+=`<path d="M145 350 C220 265 330 205 455 168 C585 130 710 120 858 132" fill="none" stroke="#72b9f9" stroke-width="5"/>`;
+  art+=`<path d="M122 360 C198 242 318 155 455 112 C615 62 746 72 875 88" fill="none" stroke="#8d9caf" stroke-width="3" stroke-dasharray="9 8"/>`;
+  art+=tx(608,151,'LONG-ONLY',16,'#9bc7ed')+tx(650,83,'UNCONSTRAINED',16,'#c8d6e5');
+  art+=`<circle cx="390" cy="275" r="10" fill="#edf1f6"/>`+tx(410,282,'CURRENT MIX',15,'#edf1f6')+tx(535,447,'solid = no short weights · dashed = geometry may short / lever',15);
+ }else if(id==='black-litterman-implied-returns'){
+  title='Prior → views → posterior returns';desc='Conceptual Black-Litterman flow from reverse-implied prior returns through reader-stated views and confidence to posterior expected returns, with an explicit stop before allocation weights. No portfolio data is shown.';
+  const boxes=[[46,164,240,126,'PRIOR','Π = δΣw'],[360,164,240,126,'VIEWS','P · Q · Ω'],[674,164,240,126,'POSTERIOR','μ_BL']];
+  boxes.forEach(([x,y,w,h,l,v])=>{art+=rect(x,y,w,h,x===674?'#254e70':'#163653')+tx(x+18,y+36,l,15,'#9bc7ed')+tx(x+18,y+84,v,28,'#edf1f6');});
+  art+=line(286,227,360,227,'#72b9f9')+line(600,227,674,227,'#72b9f9');
+  art+=`<rect x="298" y="342" width="364" height="66" rx="8" fill="#2e1f2b" stroke="#6b4458"/>`+tx(334,382,'STOP BEFORE TARGET WEIGHTS',18,'#f3b7ca')+tx(249,447,'Return implications only · no allocation, tilt or recommended mix',17);
  }else if(id==='evaluate-ai-trading-agents'){
   title='A result has four layers to verify';desc='Proposed assessment framework: evidence checks sources and time; analysis checks units and calculations; decision checks rules and limits; operations checks authoritative state and retries. Each layer can fail independently.';
   const labels=[['01 / EVIDENCE','Source & time','Late document'],['02 / ANALYSIS','Units & maths','Wrong denominator'],['03 / DECISION','Rules & limits','Exposure breach'],['04 / OPERATIONS','State & retries','Duplicate action']];
