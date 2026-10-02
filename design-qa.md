@@ -1,12 +1,12 @@
-# Kinetic Market Block — tactile refinement QA
+# Kinetic Market Block — market identity refinement QA
 
 final result: passed
 
 ## Approved scope
 
-Upgrade the existing genuine 3D hero with brighter steel-blue metal, silver highlights, soft blue backlighting, desktop hover ripples, phone tap ripples and an approximately six-second automatic transformation. Preserve all copy, controls, layout outside the artwork, functionality, calculations, data, SEO and concurrent work.
+Make the existing emerging candles clearly recognisable as candlesticks, strengthen the decorative price trace, and slow only the interaction ripples by 10–15%. Preserve the approved lighting, 6.2-second automatic cycle, copy, controls, layout, functionality, calculations, data, SEO and concurrent work.
 
-Base: main `551a27f`, including both Bots carousel corrections (#60 and #61). The approved visual direction comes from the current Kinetic Market Block and the user’s screenshot/lighting/ripple feedback. No new concept or unrelated redesign.
+Base: main `5103465`, including the approved tactile hero (#62) and both Bots carousel corrections (#60 and #61). The approved visual direction comes from the current Kinetic Market Block and the user’s screenshot/lighting/ripple feedback. No new concept or unrelated redesign.
 
 ## Rendered evidence
 
@@ -17,11 +17,11 @@ Native Chromium/SwiftShader captures:
 - `.preview/kinetic-320-v1.png`, `.preview/kinetic-390-v1.png`, `.preview/kinetic-768-v1.png`, `.preview/kinetic-1024-v1.png`: responsive composition, unchanged typography/actions and no overflow.
 - `.preview/ripple-motion-strip.jpg`: actual 400px native renders at elapsed offsets 0, 900, 2400 and 5900ms. Solid → open within the first second → open → solid. Cycle duration 6200ms.
 
-Visually inspected desktop, phone and full-cycle captures. Complete sculpture and candle wicks fit inside the existing composition. Refined the initial bright pass to preserve darker recesses and stronger face contrast. No remaining material hero findings in the reviewed states.
+Visually inspected desktop, 320px/390px phone and full-cycle captures. Six candle bodies now float separately along the front edge, narrow in width/depth, and retain visible upper and lower wicks of different lengths. Three teal accents alternate with steel-blue bodies. Candle heights are bounded within the existing camera composition; no hero layout change is needed. The foreground price trace is thicker and unobscured, with quiet axes/ticks and no labels or numbers. Complete sculpture and candle wicks fit inside the existing composition. No remaining material hero findings in the reviewed states.
 
 ## Interaction and accessibility
 
-Raycasting picks the actual instanced block. That block moves slightly outward; neighbouring tiles receive a bounded travelling ripple and settle through a damped spring. A single instanced lighting attribute produces local blue highlights without extra meshes or bloom. The existing fill light follows the hit.
+Raycasting picks the actual instanced block. That block moves slightly outward; neighbouring tiles receive a bounded travelling ripple and settle through a damped spring. A single instanced lighting attribute produces local blue highlights without extra block meshes or bloom. The existing fill light follows the hit. Ripple travel, fade, expiry and spring settling use a 1.12 timeline factor (12% longer), while the automatic cycle stays at 6200ms.
 
 Phone tap briefly depresses the selected tile and emits a ripple. Tap state survives the touch pointerleave event. Passive input listeners do not prevent native scrolling; gestures beyond the tap threshold do not emit ripples. Links and buttons are excluded from artwork input. No pointer capture, scroll hijacking or new UI controls.
 
@@ -37,9 +37,9 @@ Exact template/generated-HTML comparison against main passes after normalizing o
 
 ## Resource and deployment boundary
 
-216 existing instanced blocks; no added geometry per block. At most four ripples. Hover raycasting capped around 30Hz. Existing drawing-buffer caps and slow-GPU scaling retained (650,000 phone pixels; 1,300,000 desktop pixels). No new dependencies, postprocessing or server processes.
+216 existing instanced blocks; six top-front blocks morph into slimmer candlestick bodies and return to neutral full-sized blocks when closed. Existing six wick instances are reused. One lightweight line-segments geometry adds decorative chart axes; no geometry is added per block. At most four ripples. Hover raycasting capped around 30Hz. Existing drawing-buffer caps and slow-GPU scaling retained (650,000 phone pixels; 1,300,000 desktop pixels). No new dependencies, postprocessing or server processes.
 
-Builds/tests ran locally. Production deployment uses committed static public assets and the existing clean-main fast-forward deploy workflow. No VPS build or shared infrastructure changes. Caddy, Docker Compose, systemd, firewall, cron, databases and other projects untouched. VPS initial available memory approximately 1.05 GiB.
+Builds/tests ran locally. Production deployment uses committed static public assets and the existing clean-main fast-forward deploy workflow. No VPS build or shared infrastructure changes. Caddy, Docker Compose, systemd, firewall, cron, databases and other projects untouched. The deployment is a static asset fast-forward; no VPS build or service restart is required.
 
 Cloud browser has WebGL disabled: live visual verification covers its exported poster/HTML/control path. Native 3D and interactions are verified in the local browser against the same assets; do not claim native cloud motion verification.
 

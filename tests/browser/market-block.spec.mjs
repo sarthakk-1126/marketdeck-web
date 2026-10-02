@@ -22,7 +22,7 @@ test('3D sculpture compiles, animates, pauses and preserves the product handoff'
   // Export the actual scene as the poster used when WebGL or save-data disallows motion.
   if(process.env.KINETIC_EXPORT_POSTER==='1'){
   const data=await page.evaluate(async()=>{
-    const {createMarketBlock}=await import('/assets/market-block.js?v=ripples-20261002');
+    const {createMarketBlock}=await import('/assets/market-block.js?v=candles-20261002');
     const c=document.createElement('canvas');const art=await createMarketBlock(c,()=>{});
     art.resize(900,900);art.render({time:1,moving:false});
     art.render({moving:false});const output=c.toDataURL('image/webp',.94);art.dispose();return output;
@@ -56,7 +56,7 @@ test('desktop picks individual 3D tiles, ripples settle, and pausing freezes int
 test('the first second transforms the sculpture and the full cycle returns to solid',async({page})=>{
   await page.goto('/');await expect(page.locator('.hero')).toHaveAttribute('data-renderer','webgl');
   const frames=await page.evaluate(async()=>{
-    const {createMarketBlock}=await import('/assets/market-block.js?v=ripples-20261002');
+    const {createMarketBlock}=await import('/assets/market-block.js?v=candles-20261002');
     const c=document.createElement('canvas'),art=await createMarketBlock(c,()=>{});
     art.resize(400,400);art.render({time:1});
     const output=[{at:0,phase:c.dataset.phase,image:c.toDataURL('image/png')}];

@@ -131,7 +131,7 @@ export function startExperience() {
     hero.dataset.renderer='loading';
     let abandoned=false;
     const timeout=setTimeout(()=>{abandoned=true;fail('timeout');},12000);
-    import('/assets/market-block.js?v=ripples-20261002').then(m=>m.createMarketBlock(canvas,fail)).then(instance=>{
+    import('/assets/market-block.js?v=candles-20261002').then(m=>m.createMarketBlock(canvas,fail)).then(instance=>{
       clearTimeout(timeout);if(dead||abandoned){instance.dispose();return;}globe=instance;measure();
       if(performance.now()-started>1800)interrupted=true;
       start=performance.now();hero.dataset.intro=seen?'return':interrupted?'skipped':'fresh';

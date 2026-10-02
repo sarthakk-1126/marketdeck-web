@@ -61,13 +61,17 @@ export async function createMarketBlock(canvas, onFailure) {
   const voxels = [], pitch=.475, transform=new THREE.Object3D();
   for(let ix=0;ix<6;ix++) for(let iy=0;iy<6;iy++) for(let iz=0;iz<6;iz++) {
     const index=voxels.length;
-    const candle=iy===5&&((iz===5&&ix>=2)||(iz===4&&ix>=4));
-    const height=[.28,.52,.35,.72,.44,.82][ix] + (iz===4?.14:0);
-    voxels.push({ix,iy,iz,index,candle,height,x:(ix-2.5)*pitch,y:(iy-2.5)*pitch,z:(iz-2.5)*pitch,offset:0,velocity:0,normal:new THREE.Vector3(0,0,1)});
-    blocks.setColorAt(index,new THREE.Color().setScalar(.88+((ix*7+iy*3+iz)%9)*.017));
+    // Six separated candles read as a market sequence along the front edge.
+    const candle=iy===5&&iz===5;
+    const height=[.28,.52,.35,.72,.44,.82][ix];
+    const color=new THREE.Color().setScalar(.88+((ix*7+iy*3+iz)%9)*.017);
+    const tint=new THREE.Color(ix%2===0?0x77edcc:0xd6e8ff).multiplyScalar(1.25);
+    voxels.push({ix,iy,iz,index,candle,height,color,tint,x:(ix-2.5)*pitch,y:(iy-2.5)*pitch,z:(iz-2.5)*pitch,offset:0,velocity:0,normal:new THREE.Vector3(0,0,1)});
+    blocks.setColorAt(index,color);
   }
-  const wickGeometry=own(new THREE.CylinderGeometry(.008,.008,1,6));
-  const wickMaterial=own(new THREE.MeshBasicMaterial({color:0x91caf5,transparent:true,opacity:0}));
+  const candleColor=new THREE.Color();
+  const wickGeometry=own(new THREE.CylinderGeometry(.012,.012,1,6));
+  const wickMaterial=own(new THREE.MeshBasicMaterial({color:0xc0e2f8,transparent:true,opacity:0}));
   const candles=voxels.filter(v=>v.candle);
   const wicks=new THREE.InstancedMesh(wickGeometry,wickMaterial,candles.length);
   wicks.frustumCulled=false; sculpture.add(wicks);
@@ -75,11 +79,17 @@ export async function createMarketBlock(canvas, onFailure) {
   const seam=new THREE.Mesh(own(new THREE.BoxGeometry(2.7,.018,2.7)),seamMaterial);
   sculpture.add(seam);
   // An irregular, deliberately non-data trace sits in the opening between rows.
-  const points=[[-1.30,-.46],[-1.16,-.26],[-1.04,-.31],[-.89,-.13],[-.73,-.18],[-.59,-.03],[-.44,-.09],[-.32,-.28],[-.17,-.17],[-.01,-.04],[.12,.20],[.25,.12],[.37,.32],[.52,.23],[.65,.45],[.78,.29],[.91,.42],[1.05,.35],[1.18,.58],[1.30,.53]].map(([a,b])=>new THREE.Vector3(a,b,1.48));
+  const points=[[-1.30,-.29],[-1.10,-.10],[-.91,-.18],[-.71,.00],[-.51,-.08],[-.31,.12],[-.11,.04],[.09,.23],[.29,.12],[.49,.31],[.70,.24],[.90,.38],[1.10,.25],[1.30,.43]].map(([a,b])=>new THREE.Vector3(a,b,1.82));
   const curve=new THREE.CatmullRomCurve3(points,false,'catmullrom',.08);
-  const traceGeometry=own(new THREE.TubeGeometry(curve,110,.011,5,false));
+  const traceGeometry=own(new THREE.TubeGeometry(curve,110,.015,5,false));
   const traceMaterial=own(new THREE.MeshBasicMaterial({color:0x80c5ff,transparent:true,opacity:1}));
   const trace=new THREE.Mesh(traceGeometry,traceMaterial); sculpture.add(trace);
+  // Quiet chart axes add market context without labels, prices or extra UI.
+  const axisPoints=[[-1.40,-.40],[1.40,-.40],[-1.40,-.40],[-1.40,.48]];
+  for(const a of [-1,-.5,0,.5,1])axisPoints.push([a,-.40],[a,-.45]);
+  const axisMaterial=own(new THREE.LineBasicMaterial({color:0x729dc7,transparent:true,opacity:0,depthWrite:false}));
+  const axes=new THREE.LineSegments(own(new THREE.BufferGeometry().setFromPoints(axisPoints.map(([a,b])=>new THREE.Vector3(a,b,1.81)))),axisMaterial);
+  sculpture.add(axes);
   const haloMaterial=own(new THREE.MeshBasicMaterial({color:0x2588e7,transparent:true,opacity:.18,depthWrite:false,blending:THREE.AdditiveBlending}));
   const halo=new THREE.Mesh(own(new THREE.TubeGeometry(curve,110,.032,5,false)),haloMaterial); sculpture.add(halo);
   const signal=new THREE.Mesh(own(new THREE.SphereGeometry(.023,10,8)),own(new THREE.MeshBasicMaterial({color:0xd0f2ff})));
@@ -106,6 +116,8 @@ export async function createMarketBlock(canvas, onFailure) {
   const ripples=[];
   let disposed=false,painted=false,width=1,height=1,elapsed=350,previous=0,quality=1,slowFrames=0;
   const cycleMs=6200;
+  // Stretch only the interaction timeline by 12%; the automatic cycle is unchanged.
+  const ripplePace=1.12;
   function setPointer(point){
     pointerActive=!!point;if(point)pointer.set(point.x,point.y);
   }
@@ -162,7 +174,7 @@ export async function createMarketBlock(canvas, onFailure) {
       if(pendingTap){pendingTap=false;pointerActive=false;canvas.dataset.interaction='tap';}
       else canvas.dataset.interaction=hover?'hover':'idle';
       fill.position.lerp(hitLight,1-Math.exp(-dt*12));
-      for(let i=ripples.length-1;i>=0;i--)if(elapsed-ripples[i].at>1400)ripples.splice(i,1);
+      for(let i=ripples.length-1;i>=0;i--)if(elapsed-ripples[i].at>1400*ripplePace)ripples.splice(i,1);
     }
     let maxOffset=0;
     for(const v of voxels){
@@ -176,10 +188,12 @@ export async function createMarketBlock(canvas, onFailure) {
       transform.scale.set(1,1,1);transform.rotation.set(0,0,0);
       if(v.candle){
         const candleOpen=THREE.MathUtils.clamp(rowOpen*(1+.065*Math.sin(elapsed*.0028+v.ix)),0,1.03);
-        transform.scale.y=1+candleOpen*(v.height/.43);
-        transform.position.y+=candleOpen*(v.height*.5 + (v.ix%2?.13:0));
+        const bodyHeight=.22+v.height*.62;
+        transform.scale.set(1-rowOpen*.42,1+candleOpen*(bodyHeight/.43-1),1-rowOpen*.52);
+        transform.position.y+=candleOpen*(.60+v.height*.28+(v.ix%2?.15:0));
         transform.position.x+=rowOpen*.08*(v.ix-1);
         transform.position.z+=rowOpen*.12;
+        blocks.setColorAt(v.index,candleColor.copy(v.color).lerp(v.tint,rowOpen));
       }
       if(front&&(v.iy===2||v.iy===3)){
         transform.position.y+=rowOpen*(v.iy===3?.17:-.17);
@@ -194,7 +208,7 @@ export async function createMarketBlock(canvas, onFailure) {
           if(influence>.01)v.normal.copy(hover.normal);
         }
         for(const ripple of ripples){
-          const age=(elapsed-ripple.at)/1000;
+          const age=(elapsed-ripple.at)/1000/ripplePace;
           const distance=Math.hypot(v.ix-ripple.v.ix,v.iy-ripple.v.iy,v.iz-ripple.v.iz);
           const wave=Math.exp(-((distance-age*4.4)**2)/.38)*Math.exp(-age*1.65);
           const press=ripple.pressed?Math.exp(-distance*distance*2)*Math.exp(-age*age/ .008):0;
@@ -203,7 +217,8 @@ export async function createMarketBlock(canvas, onFailure) {
         }
         target=THREE.MathUtils.clamp(target,-.11,.12);
         // Bounded spring steps keep the tiles stable on slower phone GPUs.
-        const steps=Math.max(1,Math.ceil(dt/.016)),step=dt/steps;
+        const springDt=dt/ripplePace;
+        const steps=Math.max(1,Math.ceil(springDt/.016)),step=springDt/steps;
         for(let n=0;n<steps;n++){v.velocity+=(target-v.offset)*240*step;v.velocity*=Math.exp(-24*step);v.offset+=v.velocity*step;}
         touchLight.setX(v.index,Math.min(.9,glint));
       }
@@ -211,16 +226,19 @@ export async function createMarketBlock(canvas, onFailure) {
       maxOffset=Math.max(maxOffset,Math.abs(v.offset));
       transform.updateMatrix();blocks.setMatrixAt(v.index,transform.matrix);
       if(v.candle){
-        const wickHeight=.43*transform.scale.y+.32*open;
+        const upperWick=(.19+v.ix%3*.04)*rowOpen,lowerWick=(.20+(v.ix+1)%3*.04)*rowOpen;
+        const wickHeight=.43*transform.scale.y+upperWick+lowerWick;
+        transform.position.y+=(upperWick-lowerWick)*.5;
         transform.scale.set(1,wickHeight,1);transform.updateMatrix();
         wicks.setMatrixAt(candles.indexOf(v),transform.matrix);
       }
     }
-    blocks.instanceMatrix.needsUpdate=true;wicks.instanceMatrix.needsUpdate=true;touchLight.needsUpdate=true;
-    wickMaterial.opacity=open*.85;
+    blocks.instanceMatrix.needsUpdate=true;blocks.instanceColor.needsUpdate=true;wicks.instanceMatrix.needsUpdate=true;touchLight.needsUpdate=true;
+    wickMaterial.opacity=open*.95;
     seamMaterial.opacity=.025+open*.075;
     seam.position.y=.02;
     traceMaterial.opacity=ease((open-.15)/.65)*.95;
+    axisMaterial.opacity=traceMaterial.opacity*.24;
     haloMaterial.opacity=traceMaterial.opacity*.20;
     signal.visible=signalHalo.visible=open>.35;
     signal.position.copy(curve.getPoint(THREE.MathUtils.clamp((cycle-.75)/2.7,0,1)));signalHalo.position.copy(signal.position);
