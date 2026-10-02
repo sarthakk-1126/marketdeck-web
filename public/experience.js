@@ -43,7 +43,7 @@ export function startExperience() {
     hero.querySelector('.hero-bottom').style.opacity=String(1-smooth(progress/.18));
     scene.style.opacity=String(1-smooth((progress-.55)/.43)*.96);
     heading.style.opacity=String(smooth((progress-.58)/.25));
-    gallery.inert=progress<.92;
+    gallery.inert=progress<.70;
     const dock=smooth((progress-.55)/.45);
     const emerge=smooth((progress-.19)/.36);
     const offsets=[[-.22,-.06,12], [.03,-.12,-8], [.22,.00,8],[-.13,.17,-10],[.14,.22,10]];
