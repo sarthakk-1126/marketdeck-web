@@ -11,30 +11,28 @@ const data = JSON.parse(readFileSync(new URL('../src/site-data.json', import.met
 const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
 const hrefs = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map(match => match[1]);
 
-test('Portfolio terminal uses homepage tokens and eight model-specific planes', () => {
+test('Portfolio terminal keeps eight lens controls and the shared aperture', () => {
   const css = readFileSync(new URL('../public/portfolio-flagship.css', import.meta.url), 'utf8');
   const js = readFileSync(new URL('../public/portfolio-flagship.js', import.meta.url), 'utf8');
-  assert.equal((html.match(/data-pa-view="/g) ?? []).length, 8);
   assert.equal((html.match(/data-pa-mode="/g) ?? []).length, 8);
-  assert.match(html, /pa-plane-matrix/);
+  assert.match(html, /<canvas class="pa-flagship-aperture" data-pa-aperture><\/canvas>/);
   assert.match(css, /--pa-accent:var\(--blue\)/);
-  assert.doesNotMatch(css, /#9be9d5|#91e1cc/i);
+  assert.match(js, /data-pa-active/);
   assert.match(js, /prefers-reduced-motion/);
   assert.match(js, /pointermove/);
 });
-
-test('all five confirmed application routes are emitted; pending channels are not links', () => {
+test('all five product cards open their application routes directly', () => {
   assert.deepEqual([...new Set(hrefs.filter(href => ['/charts/', '/screener/', '/futures-and-options/', '/commentary/', '/crypto/'].includes(href)))].sort(), ['/charts/', '/commentary/', '/crypto/', '/futures-and-options/', '/screener/'].sort());
   assert.equal(data.products.filter(product => product.url == null).length, 0);
   for (const product of data.products) {
-    const panel = html.match(new RegExp(`<article[^>]+id="product-${product.id}"[\\s\\S]*?</article>`))[0];
-    assert.match(panel, new RegExp(`<a\\b[^>]+href="${product.url}"`));
-    assert.doesNotMatch(panel, /Destination link pending/);
+    const card = html.match(new RegExp(`<a href="${product.url}" class="product-tab [^"]+" id="tab-${product.id}"[^>]*>`))?.[0];
+    assert.ok(card, `Direct card link missing for ${product.id}`);
   }
+  assert.doesNotMatch(html, /class="product-panels"|class="product-rail"/);
+  assert.equal(hrefs.some(href => href.startsWith('#product-')), false);
   assert.equal(hrefs.includes('#'), false);
   assert.equal(/mailto:|<form\b|type="email"/.test(html), false);
 });
-
 test('confirmed community accounts link to their official destinations while unverified entries stay muted', () => {
   const expectedCommunityLinks = new Map([
     ['YouTube','https://www.youtube.com/@MarketDeckIndia'], ['Instagram','https://www.instagram.com/marketdeckindia/'],
@@ -69,22 +67,20 @@ test('confirmed community accounts link to their official destinations while unv
   assert.equal(html.includes('Google Search'),false);
 });
 
-test('semantic content and deep links survive without JavaScript', () => {
+test('semantic product links and content survive without JavaScript', () => {
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.equal(new Set(ids).size, ids.length, 'IDs must be unique');
   for (const href of hrefs.filter(href => href.startsWith('#'))) assert.ok(ids.includes(href.slice(1)), `Missing anchor ${href}`);
   for (const product of data.products) {
-    assert.ok(ids.includes(`product-${product.id}`));
-    assert.ok(html.includes(escapeHtml(product.description)));
+    assert.ok(html.includes(`data-overview-product="${product.id}"`));
+    assert.ok(hrefs.includes(product.url));
   }
   assert.equal((html.match(/<article class="editorial-card/g) || []).length, 3);
   const publishedMagazines=JSON.parse(readFileSync('content/briefs.json','utf8')).issues.filter(i=>i.publicationStatus==='published'&&i.approvedAt).length;
   assert.ok(new Set(hrefs.filter(h=>h.startsWith('/intelligence/notes/'))).size>=Math.max(0,8-publishedMagazines));
   for(const hub of ['/intelligence/equities/','/intelligence/technical-analysis/','/intelligence/futures-options/'])assert.ok(hrefs.includes(hub),hub);
-  assert.equal(/class="(?:product-panel|community-panel)[^"]*"[^>]*hidden/.test(html), false);
 });
-
-test('homepage explains all five products together with premium cards before the interactive detail panels', () => {
+test('homepage retains five overview cards after direct product links', () => {
   assert.equal((html.match(/class="suite-overview-card /g) || []).length, 5);
   assert.match(html, /id="suite-overview-heading"[^>]*>One market\./);
   assert.match(html, /href="\/product-overview-v2\.css"/);
@@ -99,23 +95,18 @@ test('homepage explains all five products together with premium cards before the
     assert.ok(card.includes(`srcset="${product.thumbnail} 1x, ${product.thumbnail2x} 2x"`));
     for (const feature of product.features) assert.ok(card.includes(`<li>${escapeHtml(feature)}</li>`));
     assert.ok(card.includes(`href="${product.url}"`));
-    assert.doesNotMatch(card, /<script\b|data-preview-src/);
   }
-  const overviewStart = html.indexOf('class="suite-overview-section"');
-  const overviewEnd = html.indexOf('</section>', overviewStart);
-  const railStart = html.indexOf('class="product-rail"', overviewEnd);
-  const panelsStart = html.indexOf('class="product-panels"', railStart);
-  assert.ok(overviewStart > 0 && overviewEnd > overviewStart && railStart > overviewEnd && panelsStart > railStart, 'Overview should precede the existing interactive showcase');
+  assert.ok(html.indexOf('class="product-tabs"') < html.indexOf('class="suite-overview-section"'));
+  assert.ok(html.indexOf('class="suite-overview-section"') < html.indexOf('id="portfolio-analysis"'));
 });
-
 test('portfolio research has a first-class, lightweight public discovery path', () => {
   assert.ok(hrefs.includes('/screener/portfolio-analysis/'));
   assert.match(html, /id="portfolio-analysis"/);
   assert.match(html, /Go beyond <span>portfolio P&amp;L\.<\/span>/);
   assert.equal((html.match(/data-pa-mode="/g) || []).length, 8);
   assert.ok(html.indexOf('id="portfolio-analysis"') < html.indexOf('id="bots"'));
-  assert.match(html, /href="\/portfolio-flagship\.css\?v=2"/);
-  assert.match(html, /src="\/portfolio-flagship\.js\?v=2"/);
+  assert.match(html, /href="\/portfolio-flagship\.css\?v=aperture-20261002"/);
+  assert.match(html, /src="\/portfolio-flagship\.js\?v=aperture-20261002"/);
   assert.match(readFileSync('public/portfolio-flagship.css', 'utf8'), /prefers-reduced-motion/);
   assert.doesNotMatch(html, /₹\s*[0-9]|recommended allocation|optimal portfolio/i);
 });
