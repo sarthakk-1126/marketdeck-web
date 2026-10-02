@@ -1,4 +1,4 @@
-// One native-scroll controller for intro, pointer response, globe and product handoff.
+// One native-scroll controller for intro, pointer response, hero and product handoff.
 const clamp = x => Math.max(0,Math.min(1,x));
 const smooth = x => {x=clamp(x);return x*x*(3-2*x);};
 export function startExperience() {
@@ -30,7 +30,7 @@ export function startExperience() {
     dirty=true;request();
   }
   function measure(){
-    bounds={top:hero.getBoundingClientRect().top+scrollY,height:hero.offsetHeight,width:hero.offsetWidth};globe?.resize(bounds.width,bounds.height);
+    bounds={top:hero.getBoundingClientRect().top+scrollY,height:hero.offsetHeight,width:hero.offsetWidth};globe?.resize(scene.clientWidth,scene.clientHeight);
     storyTop=story.getBoundingClientRect().top+scrollY;travel=Math.max(1,story.offsetHeight-innerHeight);
     positions=cards.map(c=>({x:c.offsetLeft,y:c.offsetTop,w:c.offsetWidth,h:c.offsetHeight}));galleryWidth=gallery.clientWidth;dirty=false;
   }
@@ -88,7 +88,7 @@ export function startExperience() {
   document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0;}else{last=0;request();}});
   new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)request();else{cancelAnimationFrame(raf);raf=0;}},{rootMargin:'100px'}).observe(hero);
   function fail(reason){hero.dataset.renderer=reason;scene.classList.remove('globe-ready');globe?.dispose();globe=null;canvas.remove();cancelAnimationFrame(raf);raf=0;}
-  // Essentials are painted first. No WebGL module on small screens or data-saving connections.
+  // Essentials are painted first. A static sculpture serves data-saving connections.
   hero.dataset.renderer='poster';
   document.body.classList.toggle('motion-paused',off());document.body.classList.toggle('motion-enabled',!off());button.hidden=false;
   button.setAttribute('aria-pressed',String(off()));button.setAttribute('aria-label',off()?'Enable motion':'Disable motion');button.querySelector('span').textContent=off()?'Motion off':'Motion on';
@@ -99,11 +99,14 @@ export function startExperience() {
   if(location.hash==='#products')requestAnimationFrame(bypass);
   window.addEventListener('hashchange',()=>{if(location.hash==='#products')bypass();});
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
-    if(innerWidth<800||navigator.connection?.saveData){canvas.remove();return;}
+    if(navigator.connection?.saveData){canvas.remove();return;}
+    // Skip the 3D download on browsers without WebGL2; keep the sculpture poster.
+    try{if(!canvas.getContext('webgl2',{alpha:true,antialias:true,powerPreference:'low-power'})){canvas.remove();return;}}
+    catch{canvas.remove();return;}
     hero.dataset.renderer='loading';
     let abandoned=false;
     const timeout=setTimeout(()=>{abandoned=true;fail('timeout');},12000);
-    import('/assets/globe.js').then(m=>m.createGlobe(canvas,fail)).then(instance=>{
+    import('/assets/market-block.js?v=20261002').then(m=>m.createMarketBlock(canvas,fail)).then(instance=>{
       clearTimeout(timeout);if(dead||abandoned){instance.dispose();return;}globe=instance;measure();
       if(performance.now()-started>1800)interrupted=true;
       start=performance.now();hero.dataset.intro=seen?'return':interrupted?'skipped':'fresh';

@@ -1,4 +1,4 @@
-import { startExperience } from './experience.js?v=direct-products-20261002';
+import { startExperience } from './experience.js?v=kinetic-20261002';
 const experience = startExperience();
 (() => {
   // Old product-panel bookmarks now open the matching product directly.
