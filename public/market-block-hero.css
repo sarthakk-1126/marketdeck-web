@@ -22,6 +22,48 @@
 }
 .market-block-hero .hero-content { z-index:1; }
 .market-block-hero .hero-bottom { z-index:2; }
+.market-block-hero .earth-scene:focus-visible { outline:1px solid #729dc7;outline-offset:-20px; }
+/* The existing renderer temporarily fills the viewport; no second WebGL context. */
+.market-block-reveal {
+  --reveal:0;--quote:0;
+  position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;
+  margin:0;padding:0;border:0;overflow:hidden;background:rgb(4 9 16 / var(--reveal));color:#dfebf7;
+}
+.market-block-reveal::backdrop { background:transparent; }
+.market-block-reveal .earth-canvas { position:absolute;inset:0;width:100%;height:100%;opacity:1;transition:none;pointer-events:none; }
+.market-reveal-light {
+  position:absolute;inset:0;pointer-events:none;opacity:var(--reveal);
+  background:radial-gradient(ellipse at 50% 50%,#102b4670 0%,#070c1470 48%,#050910e8 100%);
+}
+.market-reveal-quote {
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  margin:0;padding:24px;text-align:center;opacity:var(--quote);
+  transform:translateY(calc((1 - var(--quote))*12px));pointer-events:none;
+}
+.market-reveal-rule { width:40px;height:1px;background:#77b7f3;margin-bottom:28px;box-shadow:0 0 14px #77b7f340; }
+.market-reveal-quote blockquote {
+  margin:0;font-family:inherit;font-size:clamp(29px,4.3vw,66px);font-weight:450;
+  line-height:1.18;letter-spacing:-.04em;text-wrap:balance;text-shadow:0 2px 32px #050910;
+}
+.market-reveal-quote figcaption { margin-top:30px;color:#b2c5d9;font-size:11px;letter-spacing:.2em;text-transform:uppercase; }
+.market-reveal-quote a {
+  display:block;margin-top:12px;font-size:10px;letter-spacing:.04em;text-transform:none;color:#7791ab;
+  text-decoration:none;pointer-events:auto;
+}
+.market-reveal-quote a:hover { color:#c5def5; }
+.market-reveal-close {
+  position:absolute;top:max(20px,env(safe-area-inset-top));right:max(20px,env(safe-area-inset-right));
+  display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid #729dc735;border-radius:50%;
+  color:#b2c5d9;background:#0b1522b0;font-size:25px;font-weight:300;line-height:1;cursor:pointer;
+  opacity:var(--reveal);
+}
+.market-reveal-close:focus-visible,.market-reveal-quote a:focus-visible { outline:2px solid #77b7f3;outline-offset:4px; }
+@media(max-width:650px) {
+  .market-reveal-quote { padding:20px; }
+  .market-reveal-quote blockquote { font-size:clamp(27px,7.4vw,39px); }
+  .market-reveal-rule { margin-bottom:22px; }
+  .market-reveal-quote figcaption { margin-top:24px;font-size:10px; }
+}
 @media (min-width:1000px) {
   .market-block-hero { min-height:720px; }
   .market-block-hero h1 { font-size:clamp(45px,4.4vw,68px);max-width:58%; }

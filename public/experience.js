@@ -10,6 +10,40 @@ export function startExperience() {
   let paused=null,seen=false;
   try{const preference=sessionStorage.getItem('marketdeck:motion-paused');paused=preference===null?null:preference==='true';seen=sessionStorage.getItem('marketdeck:intro-seen')==='true';}catch{}
   let globe,raf=0,visible=true,dead=false,dirty=true,start=0,interrupted=scrollY>12||!!location.hash;
+  let revealDialog=null,revealActive=false,revealFocus=null,revealOrigin=null;
+  function reveal(event,state){
+    if(event==='start'){
+      const rect=scene.getBoundingClientRect();
+      if(off()||rect.bottom<0||rect.top>innerHeight)return null;
+      revealFocus=document.activeElement;revealActive=true;
+      revealDialog=document.createElement('dialog');revealDialog.className='market-block-reveal';
+      revealDialog.setAttribute('aria-label','A moment of market perspective');
+      // Attribution verified against Buffett's 2008 Berkshire shareholder letter,
+      // which explicitly credits Benjamin Graham. No external quote request.
+      revealDialog.innerHTML='<div class="market-reveal-light" aria-hidden="true"></div><figure class="market-reveal-quote"><span class="market-reveal-rule" aria-hidden="true"></span><blockquote>“Price is what you pay;<br>value is what you get.”</blockquote><figcaption>Benjamin Graham<a href="https://www.berkshirehathaway.com/letters/2008ltr.pdf#page=4" target="_blank" rel="noopener noreferrer">As quoted by Warren Buffett · 2008</a></figcaption></figure><button type="button" class="market-reveal-close" aria-label="Return to MarketDeck"><span aria-hidden="true">×</span></button>';
+      revealDialog.querySelector('button').addEventListener('click',()=>globe?.returnReveal());
+      revealDialog.querySelector('button').autofocus=true;
+      revealDialog.addEventListener('cancel',e=>{e.preventDefault();globe?.returnReveal();request();});
+      document.body.append(revealDialog);
+      requestAnimationFrame(()=>{
+        if(!revealActive)return;
+        revealDialog.querySelector('.market-reveal-light').after(canvas);revealDialog.showModal();measure();request();
+      });
+      revealOrigin=rect.toJSON();return revealOrigin;
+    }
+    if(event==='frame'&&revealDialog){
+      revealDialog.style.setProperty('--reveal',state.amount.toFixed(4));
+      revealDialog.style.setProperty('--quote',state.quote.toFixed(4));
+      revealDialog.dataset.phase=state.phase;
+    }
+    if(event==='end'){
+      revealActive=false;scene.append(canvas);
+      revealDialog?.close();revealDialog?.remove();revealDialog=null;revealOrigin=null;
+      if(revealFocus?.isConnected)revealFocus.focus({preventScroll:true});
+      dirty=true;measure();request();
+    }
+    return null;
+  }
   let targetX=0,targetY=0,x=0,y=0,last=0,progress=0,bounds={top:0,height:1,width:1};
   const started=performance.now();
   // The OS accessibility preference is authoritative, even after a visitor has
@@ -30,7 +64,8 @@ export function startExperience() {
     dirty=true;request();
   }
   function measure(){
-    bounds={top:hero.getBoundingClientRect().top+scrollY,height:hero.offsetHeight,width:hero.offsetWidth};globe?.resize(scene.clientWidth,scene.clientHeight);
+    if(revealActive&&revealOrigin)Object.assign(revealOrigin,scene.getBoundingClientRect().toJSON());
+    bounds={top:hero.getBoundingClientRect().top+scrollY,height:hero.offsetHeight,width:hero.offsetWidth};globe?.resize(revealActive?innerWidth:scene.clientWidth,revealActive?innerHeight:scene.clientHeight);
     storyTop=story.getBoundingClientRect().top+scrollY;travel=Math.max(1,story.offsetHeight-innerHeight);
     positions=cards.map(c=>({x:c.offsetLeft,y:c.offsetTop,w:c.offsetWidth,h:c.offsetHeight}));galleryWidth=gallery.clientWidth;dirty=false;
   }
@@ -56,7 +91,7 @@ export function startExperience() {
     });
   }
   function frame(time){
-    raf=0;if(dead||document.hidden||!visible)return;
+    raf=0;if(dead||document.hidden||!visible&&!revealActive)return;
     if(!dirty&&time-last<15){request();return;}
     if(dirty)measure();
     paintStory();
@@ -67,9 +102,11 @@ export function startExperience() {
     if(globe)globe.render({progress,entrance:intro,time,x:off()?0:x,y:off()?0:y,moving:!off()});
     if(!off()&&globe)request();
   }
-  function request(){if(!raf&&!dead&&!document.hidden&&visible)raf=requestAnimationFrame(frame);}
+  function request(){if(!raf&&!dead&&!document.hidden&&(visible||revealActive))raf=requestAnimationFrame(frame);}
   function interrupt(){interrupted=true;hero.dataset.interrupted='true';request();}
   function apply(){
+    if(off())globe?.returnReveal(true);
+    scene.tabIndex=off()?-1:0;
     document.body.classList.toggle('motion-paused',off());document.body.classList.toggle('motion-enabled',!off());
     button.hidden=false;button.setAttribute('aria-pressed',String(off()));button.setAttribute('aria-label',off()?'Enable motion':'Disable motion');
     button.querySelector('span').textContent=off()?'Motion off':'Motion on';
@@ -84,7 +121,7 @@ export function startExperience() {
   // Resolve artwork input from the hero so the decorative canvas never covers
   // links. Taps are passive and a scroll gesture never becomes an art interaction.
   const artPoint=e=>{
-    if(e.target.closest('a,button,input,select,textarea')||off())return null;
+    if(e.target.closest('a,button,input,select,textarea')||off()||revealActive)return null;
     const rect=scene.getBoundingClientRect();
     const u=(e.clientX-rect.left)/rect.width,v=(e.clientY-rect.top)/rect.height;
     return u>=0&&u<=1&&v>=0&&v<=1?{x:u*2-1,y:1-v*2}:null;
@@ -96,23 +133,27 @@ export function startExperience() {
   hero.addEventListener('pointerleave',()=>globe?.setPointer(null));
   let touchStart;
   hero.addEventListener('pointerdown',e=>{
-    if(e.pointerType!=='touch'||off())return;
+    if(e.button!==0||off()||!artPoint(e))return;
     touchStart={id:e.pointerId,x:e.clientX,y:e.clientY,scroll:scrollY,at:performance.now()};
   },{passive:true});
   hero.addEventListener('pointerup',e=>{
-    if(e.pointerType!=='touch'||!touchStart||touchStart.id!==e.pointerId)return;
+    if(!touchStart||touchStart.id!==e.pointerId)return;
     const gesture=touchStart;touchStart=null;
     if(Math.hypot(e.clientX-gesture.x,e.clientY-gesture.y)>10||Math.abs(scrollY-gesture.scroll)>3||performance.now()-gesture.at>600)return;
     const point=artPoint(e);if(point){globe?.tap(point);request();}
   },{passive:true});
   hero.addEventListener('pointercancel',()=>{touchStart=null;},{passive:true});
-  window.addEventListener('scroll',()=>{if(scrollY>12)interrupt();request();},{passive:true});
+  scene.addEventListener('keydown',e=>{
+    if(off()||!['Enter',' '].includes(e.key)||e.repeat)return;
+    e.preventDefault();globe?.press();request();
+  });
+  window.addEventListener('scroll',()=>{if(scrollY>12)interrupt();if(revealActive)globe?.returnReveal();request();},{passive:true});
   document.addEventListener('pointerdown',interrupt,{passive:true});
   document.addEventListener('keydown',interrupt);
   window.addEventListener('resize',()=>{dirty=true;request();},{passive:true});
   document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0;}else{last=0;request();}});
-  new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)request();else{cancelAnimationFrame(raf);raf=0;}},{rootMargin:'100px'}).observe(hero);
-  function fail(reason){hero.dataset.renderer=reason;scene.classList.remove('globe-ready');globe?.dispose();globe=null;canvas.remove();cancelAnimationFrame(raf);raf=0;}
+  new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible||revealActive)request();else{cancelAnimationFrame(raf);raf=0;}},{rootMargin:'100px'}).observe(hero);
+  function fail(reason){if(revealActive)globe?.returnReveal(true);hero.dataset.renderer=reason;scene.classList.remove('globe-ready');scene.tabIndex=-1;scene.setAttribute('aria-hidden','true');globe?.dispose();globe=null;canvas.remove();cancelAnimationFrame(raf);raf=0;}
   // Essentials are painted first. A static sculpture serves data-saving connections.
   hero.dataset.renderer='poster';
   document.body.classList.toggle('motion-paused',off());document.body.classList.toggle('motion-enabled',!off());button.hidden=false;
@@ -131,13 +172,14 @@ export function startExperience() {
     hero.dataset.renderer='loading';
     let abandoned=false;
     const timeout=setTimeout(()=>{abandoned=true;fail('timeout');},12000);
-    import('/assets/market-block.js?v=candles-20261002').then(m=>m.createMarketBlock(canvas,fail)).then(instance=>{
+    import('/assets/market-block.js?v=reveal-20261002').then(m=>m.createMarketBlock(canvas,fail,reveal)).then(instance=>{
       clearTimeout(timeout);if(dead||abandoned){instance.dispose();return;}globe=instance;measure();
       if(performance.now()-started>1800)interrupted=true;
       start=performance.now();hero.dataset.intro=seen?'return':interrupted?'skipped':'fresh';
       try{sessionStorage.setItem('marketdeck:intro-seen','true');}catch{}
       globe.render({entrance:seen||interrupted||off()?1:0,moving:!off()});
       hero.dataset.renderer='webgl';scene.classList.add('globe-ready');request();
+      scene.removeAttribute('aria-hidden');scene.setAttribute('role','button');scene.tabIndex=off()?-1:0;scene.setAttribute('aria-label','Interactive market sculpture. Press five times to reveal an investor quote.');
     }).catch(()=>{clearTimeout(timeout);fail('failed');});
   }));
   window.addEventListener('pagehide',e=>{cancelAnimationFrame(raf);raf=0;if(!e.persisted){dead=true;globe?.dispose();}});
