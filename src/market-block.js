@@ -119,8 +119,8 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
   const cycleMs=6200;
   // Stretch only the interaction timeline by 12%; the automatic cycle is unchanged.
   const ripplePace=1.12;
-  // The whole reveal, including the reading pause, is 12% shorter.
-  const revealPace=.88;
+  // Restore the original reveal timeline and roughly five-second quote visibility.
+  const revealPace=1;
   let presses=0,lastPress=-100000,cooldown=0,reveal=null;
   const stagePoint=new THREE.Vector3(),stageRotation=new THREE.Quaternion();
   function setPointer(point){

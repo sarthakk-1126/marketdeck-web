@@ -180,7 +180,7 @@ export function startExperience() {
     hero.dataset.renderer='loading';
     let abandoned=false;
     const timeout=setTimeout(()=>{abandoned=true;fail('timeout');},12000);
-    import('/assets/market-block.js?v=blast-quotes-20261002').then(m=>m.createMarketBlock(canvas,fail,reveal)).then(instance=>{
+    import('/assets/market-block.js?v=reading-time-20261002').then(m=>m.createMarketBlock(canvas,fail,reveal)).then(instance=>{
       clearTimeout(timeout);if(dead||abandoned){instance.dispose();return;}globe=instance;measure();
       if(performance.now()-started>1800)interrupted=true;
       start=performance.now();hero.dataset.intro=seen?'return':interrupted?'skipped':'fresh';
