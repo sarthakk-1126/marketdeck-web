@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+import {MARKET_QUOTES} from '../../src/market-quotes.js';
 
 async function setup(page){
   await page.route('https://www.googletagmanager.com/**',r=>r.fulfill({status:200,contentType:'text/javascript',body:''}));
@@ -23,15 +24,47 @@ for(const width of [320,390,1440])test(`five real block presses reveal and reass
   const before=await page.evaluate(()=>({scroll:scrollY,h1:document.querySelector('h1').textContent,links:[...document.querySelectorAll('.hero-actions a')].map(a=>[a.textContent,a.href])}));
   await pressBlocks(page,canvas,phone);
   const dialog=page.getByRole('dialog',{name:'A moment of market perspective'});
-  await expect(dialog).toBeVisible();await expect(dialog).toHaveAttribute('data-phase','quote');
+  await expect(dialog).toBeVisible();
+  await page.evaluate(()=>{
+    const dialog=document.querySelector('.market-block-reveal');
+    const samples=[];
+    window.revealSamples=samples;
+    new MutationObserver(()=>{
+      samples.push({age:Number(dialog.dataset.age),quote:Number(dialog.style.getPropertyValue('--quote')),burst:Number(dialog.style.getPropertyValue('--burst')),launch:Number(dialog.style.getPropertyValue('--launch'))});
+    }).observe(dialog,{attributes:true,attributeFilter:['data-age']});
+  });
+  await expect(dialog).toHaveAttribute('data-phase','quote');
   expect(await page.locator('.earth-canvas').count()).toBe(1);
   expect(await canvas.evaluate(c=>c.width*c.height)).toBeLessThanOrEqual(phone?650000:1300000);
-  await expect(dialog.locator('blockquote')).toContainText('Price is what you pay;');
-  await expect(dialog.locator('figcaption')).toContainText('Benjamin Graham');
+  const quoteId=await dialog.getAttribute('data-quote-id');
+  const selected=MARKET_QUOTES.find(q=>q.id===quoteId);
+  expect(selected).toBeDefined();
+  await expect(dialog.locator('blockquote')).toHaveText(`“${selected.text}”`);
+  await expect(dialog.locator('.market-reveal-author')).toHaveText(selected.author);
+  await expect(dialog.locator('figcaption a')).toHaveAttribute('href',selected.sourceUrl);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)).toBe(false);
   const quoteRect=await dialog.locator('blockquote').boundingBox();expect(quoteRect.x).toBeGreaterThanOrEqual(15);expect(quoteRect.x+quoteRect.width).toBeLessThanOrEqual(width-15);
+  const clipped=await page.evaluate(quotes=>{
+    const dialog=document.querySelector('.market-block-reveal'),text=dialog.querySelector('blockquote');
+    const original=text.textContent,originalLength=dialog.dataset.quoteLength,bad=[];
+    for(const q of quotes){
+      text.textContent=`“${q.text}”`;dialog.dataset.quoteLength=q.text.length>90?'long':'short';
+      const r=text.getBoundingClientRect();
+      if(r.left<15||r.right>innerWidth-15||r.height>innerHeight*.55||text.scrollWidth>text.clientWidth+1)bad.push(q.id);
+    }
+    text.textContent=original;dialog.dataset.quoteLength=originalLength;return bad;
+  },MARKET_QUOTES);
+  expect(clipped).toEqual([]);
   await page.screenshot({path:`.preview/reveal-verified-${width}.png`});
   await expect(dialog).toHaveCount(0,{timeout:15000});
+  const timing=await page.evaluate(()=>window.revealSamples);
+  expect(timing.at(-1).age).toBeGreaterThanOrEqual(7.216);
+  expect(timing.at(-1).age).toBeLessThan(7.32);
+  const readable=timing.filter(s=>s.quote>.99);
+  expect(readable.at(-1).age-readable[0].age).toBeGreaterThan(3.3);
+  expect(readable.at(-1).age-readable[0].age).toBeLessThan(3.7);
+  expect(Math.max(...timing.map(s=>s.burst))).toBeGreaterThan(.65);
+  expect(timing.some(s=>s.age<1.05&&s.launch>.95)).toBe(true);
   await expect(canvas).toHaveAttribute('data-reveal','idle');await expect(canvas).toHaveAttribute('data-presses','0');
   expect(await canvas.evaluate(c=>c.parentElement.classList.contains('earth-scene'))).toBe(true);
   const restored=await canvas.boundingBox();expect(restored.width).toBe(initial.width);expect(restored.height).toBe(initial.height);

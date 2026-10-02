@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { nextMarketQuote } from './market-quotes.js';
 
 // Decorative sculpture, never a representation of live prices. The existing
 // experience controller owns the clock, visibility and visitor motion preference.
@@ -118,6 +119,8 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
   const cycleMs=6200;
   // Stretch only the interaction timeline by 12%; the automatic cycle is unchanged.
   const ripplePace=1.12;
+  // The whole reveal, including the reading pause, is 12% shorter.
+  const revealPace=.88;
   let presses=0,lastPress=-100000,cooldown=0,reveal=null;
   const stagePoint=new THREE.Vector3(),stageRotation=new THREE.Quaternion();
   function setPointer(point){
@@ -141,7 +144,7 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
     if(elapsed-lastPress>12000)presses=0;
     lastPress=elapsed;presses++;
     if(presses===5){
-      const origin=onReveal('start');
+      const origin=onReveal('start',nextMarketQuote());
       if(origin){reveal={at:elapsed,pose:elapsed,origin,amount:0};hover=null;pointerActive=false;}
       else presses=0;
     }
@@ -179,13 +182,17 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
     const cycle=(poseTime%cycleMs)/1000;
     const opening=delay=>ease((cycle-.10-delay)/1.05)*(1-ease((cycle-3.65-delay)/1.65));
     const open=opening(.22),turn=Math.sin(poseTime/cycleMs*Math.PI*2);
-    let scatter=0,quote=0;
+    let scatter=0,quote=0,burst=0,anticipation=0;
     if(reveal){
-      const age=(elapsed-reveal.at)/1000;
-      scatter=reveal.leaveAt===undefined?ease((age-.35)/1.5)*(1-ease((age-6.25)/1.95)):reveal.leaveFrom*(1-ease((elapsed-reveal.leaveAt)/1400));
+      const age=(elapsed-reveal.at)/1000/revealPace;
+      const launch=1-(1-THREE.MathUtils.clamp((age-.32)/1.05,0,1))**3;
+      anticipation=ease(age/.32)*(1-ease((age-.32)/.24));
+      burst=Math.sin(Math.PI*THREE.MathUtils.clamp((age-.32)/1.3,0,1))*(1-ease((age-1)/.65));
+      if(reveal.leaveAt!==undefined){anticipation=burst=0;}
+      scatter=reveal.leaveAt===undefined?launch*(1-ease((age-6.25)/1.95)):reveal.leaveFrom*(1-ease((elapsed-reveal.leaveAt)/(1400*revealPace)));
       reveal.amount=scatter;
       quote=ease((age-1.25)/.75)*(1-ease((age-5.95)/.6));
-      if(reveal.leaveAt!==undefined)quote*=1-ease((elapsed-reveal.leaveAt)/350);
+      if(reveal.leaveAt!==undefined)quote*=1-ease((elapsed-reveal.leaveAt)/(350*revealPace));
       // Extend the original camera window to the viewport, then gently centre it.
       // The first fullscreen frame matches the hero pose instead of jumping.
       const origin=reveal.origin,aspect=origin.width/origin.height,span=origin.width<600?6.4:6.25;
@@ -200,13 +207,14 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
         THREE.MathUtils.lerp(halfY*(1+2*origin.top/origin.height),halfY,scatter),
         THREE.MathUtils.lerp(halfY*(1-2*(height-origin.top)/origin.height),-halfY,scatter),camera.near,camera.far);
       camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
-      onReveal('frame',{amount:scatter,quote,phase:age<.35?'tension':scatter>.98?'quote':age<3?'sweep':'return'});
-      if(age>=8.2||reveal.leaveAt!==undefined&&elapsed-reveal.leaveAt>=1400){finishReveal();scatter=quote=0;}
+      onReveal('frame',{amount:scatter,quote,burst,launch,age:age*revealPace,phase:age<.32?'tension':scatter>.98&&quote>.98?'quote':age<3?'sweep':'return'});
+      if(age>=8.2||reveal.leaveAt!==undefined&&elapsed-reveal.leaveAt>=1400*revealPace){finishReveal();scatter=quote=burst=anticipation=0;}
     }
     sculpture.rotation.set(.27+y*.055+turn*.015,-.65+turn*.17+x*.07,-.035);
     sculpture.position.set(0,.05+Math.sin(poseTime*.001)*.055-(1-entrance)*.12,0);
     const pressure=presses/5*Math.exp(-(elapsed-lastPress)/12000)*(reveal?1-ease((elapsed-reveal.at)/700):1);
-    sculpture.scale.setScalar((1+Math.min(progress,.5)*.06)*(1-pressure*.035));
+    sculpture.scale.setScalar((1+Math.min(progress,.5)*.06)*(1-pressure*.035-anticipation*.075));
+    rim.intensity=1.6+burst*1.1;fill.intensity=3+burst*2.8;
     stageRotation.copy(sculpture.quaternion).invert();
     if(moving&&!reveal){
       sculpture.updateMatrixWorld(true);camera.updateMatrixWorld(true);
@@ -283,11 +291,15 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
         const angle=v.angle+scatter*.22+Math.sin((elapsed-reveal.at)*.00045+v.iy)*.012*scatter;
         const ringWidth=width/height<.8?1.06:.83;
         stagePoint.set(Math.cos(angle)*halfHeight*(width/height)*ringWidth*v.band,Math.sin(angle)*halfHeight*.78*v.band,Math.sin(v.ix*1.7+v.iz)*.7).applyQuaternion(stageRotation);
+        // A bounded outward overshoot and depth arc add force, then resolve to
+        // precisely the existing frame around the quote. No new meshes or passes.
+        stagePoint.multiplyScalar(1+burst*.085);
+        stagePoint.z+=burst*.9*Math.sin(v.index*2.31+v.ix);
         const stagger=ease(scatter*(1.06+v.iz*.018));
         transform.position.lerp(stagePoint,stagger);
-        transform.rotation.set(stagger*Math.sin(v.index)*.65,stagger*Math.cos(v.index*1.3)*.85,stagger*Math.sin(v.index*.7)*.7);
+        transform.rotation.set((stagger+burst*.6)*Math.sin(v.index)*.65,(stagger+burst*.6)*Math.cos(v.index*1.3)*.85,stagger*Math.sin(v.index*.7)*.7);
         transform.scale.multiplyScalar(1-stagger*(.48+v.iz*.02));
-        touchLight.setX(v.index,Math.min(.6,pressure*.28+scatter*.14));
+        touchLight.setX(v.index,Math.min(.85,pressure*.28+scatter*.14+burst*.5+anticipation*.34));
       }
       maxOffset=Math.max(maxOffset,Math.abs(v.offset));
       transform.updateMatrix();blocks.setMatrixAt(v.index,transform.matrix);

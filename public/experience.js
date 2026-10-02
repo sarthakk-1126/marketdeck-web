@@ -18,9 +18,14 @@ export function startExperience() {
       revealFocus=document.activeElement;revealActive=true;
       revealDialog=document.createElement('dialog');revealDialog.className='market-block-reveal';
       revealDialog.setAttribute('aria-label','A moment of market perspective');
-      // Attribution verified against Buffett's 2008 Berkshire shareholder letter,
-      // which explicitly credits Benjamin Graham. No external quote request.
-      revealDialog.innerHTML='<div class="market-reveal-light" aria-hidden="true"></div><figure class="market-reveal-quote"><span class="market-reveal-rule" aria-hidden="true"></span><blockquote>“Price is what you pay;<br>value is what you get.”</blockquote><figcaption>Benjamin Graham<a href="https://www.berkshirehathaway.com/letters/2008ltr.pdf#page=4" target="_blank" rel="noopener noreferrer">As quoted by Warren Buffett · 2008</a></figcaption></figure><button type="button" class="market-reveal-close" aria-label="Return to MarketDeck"><span aria-hidden="true">×</span></button>';
+      revealDialog.innerHTML='<div class="market-reveal-light" aria-hidden="true"></div><div class="market-reveal-wave" aria-hidden="true"></div><figure class="market-reveal-quote"><span class="market-reveal-rule" aria-hidden="true"></span><blockquote></blockquote><figcaption><span class="market-reveal-author"></span><a target="_blank" rel="noopener noreferrer"></a></figcaption></figure><button type="button" class="market-reveal-close" aria-label="Return to MarketDeck"><span aria-hidden="true">×</span></button>';
+      revealDialog.dataset.quoteId=state.id;
+      revealDialog.dataset.quoteLength=state.text.length>90?'long':'short';
+      revealDialog.querySelector('blockquote').textContent=`“${state.text}”`;
+      revealDialog.querySelector('.market-reveal-author').textContent=state.author;
+      const source=revealDialog.querySelector('figcaption a');source.href=state.sourceUrl;source.textContent=state.sourceLabel;
+      revealDialog.style.setProperty('--wave-x',`${rect.left+rect.width*.5}px`);
+      revealDialog.style.setProperty('--wave-y',`${rect.top+rect.height*.65}px`);
       revealDialog.querySelector('button').addEventListener('click',()=>globe?.returnReveal());
       revealDialog.querySelector('button').autofocus=true;
       revealDialog.addEventListener('cancel',e=>{e.preventDefault();globe?.returnReveal();request();});
@@ -34,7 +39,10 @@ export function startExperience() {
     if(event==='frame'&&revealDialog){
       revealDialog.style.setProperty('--reveal',state.amount.toFixed(4));
       revealDialog.style.setProperty('--quote',state.quote.toFixed(4));
+      revealDialog.style.setProperty('--burst',state.burst.toFixed(4));
+      revealDialog.style.setProperty('--launch',state.launch.toFixed(4));
       revealDialog.dataset.phase=state.phase;
+      revealDialog.dataset.age=state.age.toFixed(3);
     }
     if(event==='end'){
       revealActive=false;scene.append(canvas);
@@ -172,7 +180,7 @@ export function startExperience() {
     hero.dataset.renderer='loading';
     let abandoned=false;
     const timeout=setTimeout(()=>{abandoned=true;fail('timeout');},12000);
-    import('/assets/market-block.js?v=reveal-20261002').then(m=>m.createMarketBlock(canvas,fail,reveal)).then(instance=>{
+    import('/assets/market-block.js?v=blast-quotes-20261002').then(m=>m.createMarketBlock(canvas,fail,reveal)).then(instance=>{
       clearTimeout(timeout);if(dead||abandoned){instance.dispose();return;}globe=instance;measure();
       if(performance.now()-started>1800)interrupted=true;
       start=performance.now();hero.dataset.intro=seen?'return':interrupted?'skipped':'fresh';
