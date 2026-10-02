@@ -25,7 +25,7 @@
 .market-block-hero .earth-scene:focus-visible { outline:1px solid #729dc7;outline-offset:-20px; }
 /* The existing renderer temporarily fills the viewport; no second WebGL context. */
 .market-block-reveal {
-  --reveal:0;--quote:0;
+  --reveal:0;--quote:0;--burst:0;--launch:0;
   position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;
   margin:0;padding:0;border:0;overflow:hidden;background:rgb(4 9 16 / var(--reveal));color:#dfebf7;
 }
@@ -35,6 +35,13 @@
   position:absolute;inset:0;pointer-events:none;opacity:var(--reveal);
   background:radial-gradient(ellipse at 50% 50%,#102b4670 0%,#070c1470 48%,#050910e8 100%);
 }
+.market-reveal-wave {
+  position:absolute;left:var(--wave-x);top:var(--wave-y);pointer-events:none;
+  width:max(100vw,100vh);aspect-ratio:1;border:1px solid #9acbff60;border-radius:50%;
+  box-shadow:0 0 18px #77b7f31a,inset 0 0 18px #77b7f31a;
+  opacity:calc(var(--burst)*.45);
+  transform:translate(-50%,-50%) scale(calc(.04 + var(--launch)*1.65));
+}
 .market-reveal-quote {
   position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   margin:0;padding:24px;text-align:center;opacity:var(--quote);
@@ -42,13 +49,14 @@
 }
 .market-reveal-rule { width:40px;height:1px;background:#77b7f3;margin-bottom:28px;box-shadow:0 0 14px #77b7f340; }
 .market-reveal-quote blockquote {
-  margin:0;font-family:inherit;font-size:clamp(29px,4.3vw,66px);font-weight:450;
+  margin:0;max-width:min(72vw,960px);font-family:inherit;font-size:clamp(29px,4.3vw,66px);font-weight:450;
   line-height:1.18;letter-spacing:-.04em;text-wrap:balance;text-shadow:0 2px 32px #050910;
 }
+.market-block-reveal[data-quote-length="long"] blockquote { font-size:clamp(29px,3.5vw,54px);max-width:min(70vw,900px); }
 .market-reveal-quote figcaption { margin-top:30px;color:#b2c5d9;font-size:11px;letter-spacing:.2em;text-transform:uppercase; }
 .market-reveal-quote a {
   display:block;margin-top:12px;font-size:10px;letter-spacing:.04em;text-transform:none;color:#7791ab;
-  text-decoration:none;pointer-events:auto;
+  max-width:360px;margin-inline:auto;line-height:1.5;text-decoration:none;pointer-events:auto;
 }
 .market-reveal-quote a:hover { color:#c5def5; }
 .market-reveal-close {
@@ -60,7 +68,8 @@
 .market-reveal-close:focus-visible,.market-reveal-quote a:focus-visible { outline:2px solid #77b7f3;outline-offset:4px; }
 @media(max-width:650px) {
   .market-reveal-quote { padding:20px; }
-  .market-reveal-quote blockquote { font-size:clamp(27px,7.4vw,39px); }
+  .market-reveal-quote blockquote { max-width:100%;font-size:clamp(27px,7.4vw,39px); }
+  .market-block-reveal[data-quote-length="long"] blockquote { max-width:100%;font-size:clamp(25px,6.8vw,34px); }
   .market-reveal-rule { margin-bottom:22px; }
   .market-reveal-quote figcaption { margin-top:24px;font-size:10px; }
 }
