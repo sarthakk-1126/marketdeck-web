@@ -3,7 +3,7 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 
 // Decorative sculpture, never a representation of live prices. The existing
 // experience controller owns the clock, visibility and visitor motion preference.
-export async function createMarketBlock(canvas, onFailure) {
+export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
   const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true, powerPreference:'low-power'});
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -66,7 +66,7 @@ export async function createMarketBlock(canvas, onFailure) {
     const height=[.28,.52,.35,.72,.44,.82][ix];
     const color=new THREE.Color().setScalar(.88+((ix*7+iy*3+iz)%9)*.017);
     const tint=new THREE.Color(ix%2===0?0x77edcc:0xd6e8ff).multiplyScalar(1.25);
-    voxels.push({ix,iy,iz,index,candle,height,color,tint,x:(ix-2.5)*pitch,y:(iy-2.5)*pitch,z:(iz-2.5)*pitch,offset:0,velocity:0,normal:new THREE.Vector3(0,0,1)});
+    voxels.push({ix,iy,iz,index,candle,height,color,tint,x:(ix-2.5)*pitch,y:(iy-2.5)*pitch,z:(iz-2.5)*pitch,offset:0,velocity:0,normal:new THREE.Vector3(0,0,1),angle:index/216*Math.PI*2+iz*.11,band:.95+(iy%3)*.09+(iz<3?.38:0)});
     blocks.setColorAt(index,color);
   }
   const candleColor=new THREE.Color();
@@ -112,16 +112,40 @@ export async function createMarketBlock(canvas, onFailure) {
   backlight.position.set(0,.3,-2.7);scene.add(backlight);
   const raycaster=new THREE.Raycaster(), pointer=new THREE.Vector2();
   const hitLight=new THREE.Vector3(2,-.6,3);
-  let pointerActive=false,hover=null,pendingTap=false,lastRipple=-1000,lastPick=-1000,pickedHit;
+  let pointerActive=false,hover=null,pendingTap=false,pendingKey=false,lastRipple=-1000,lastPick=-1000,pickedHit;
   const ripples=[];
   let disposed=false,painted=false,width=1,height=1,elapsed=350,previous=0,quality=1,slowFrames=0;
   const cycleMs=6200;
   // Stretch only the interaction timeline by 12%; the automatic cycle is unchanged.
   const ripplePace=1.12;
+  let presses=0,lastPress=-100000,cooldown=0,reveal=null;
+  const stagePoint=new THREE.Vector3(),stageRotation=new THREE.Quaternion();
   function setPointer(point){
     pointerActive=!!point;if(point)pointer.set(point.x,point.y);
   }
-  function tap(point){setPointer(point);pendingTap=true;}
+  function tap(point){if(reveal)return;setPointer(point);pendingTap=true;}
+  function press(){if(!reveal)pendingKey=true;}
+  function returnReveal(immediate=false){
+    if(!reveal)return;
+    if(immediate){finishReveal();return;}
+    if(reveal.leaveAt===undefined){reveal.leaveAt=elapsed;reveal.leaveFrom=reveal.amount;}
+  }
+  function finishReveal(){
+    const pose=reveal.pose;reveal=null;elapsed=pose;presses=0;cooldown=elapsed+1800;
+    pointerActive=false;hover=null;pendingTap=pendingKey=false;ripples.length=0;
+    voxels.forEach(v=>{v.offset=v.velocity=0;});
+    onReveal('end');
+  }
+  function registerPress(){
+    if(elapsed<cooldown)return;
+    if(elapsed-lastPress>12000)presses=0;
+    lastPress=elapsed;presses++;
+    if(presses===5){
+      const origin=onReveal('start');
+      if(origin){reveal={at:elapsed,pose:elapsed,origin,amount:0};hover=null;pointerActive=false;}
+      else presses=0;
+    }
+  }
   function emit(v,normal,pressed=false){
     ripples.push({v,normal:normal.clone(),at:elapsed,pressed});
     if(ripples.length>4)ripples.shift();lastRipple=elapsed;
@@ -149,13 +173,42 @@ export async function createMarketBlock(canvas, onFailure) {
     if(!painted&&!moving)elapsed=2200; // Accessible static pose also exports the poster.
     elapsed+=dt*1000;painted=true;
     previous=time;
-    const cycle=(elapsed%cycleMs)/1000;
+    if(!moving&&reveal)finishReveal();
+    if(!reveal&&elapsed-lastPress>12000)presses=0;
+    const poseTime=reveal?reveal.pose:elapsed;
+    const cycle=(poseTime%cycleMs)/1000;
     const opening=delay=>ease((cycle-.10-delay)/1.05)*(1-ease((cycle-3.65-delay)/1.65));
-    const open=opening(.22),turn=Math.sin(elapsed/cycleMs*Math.PI*2);
+    const open=opening(.22),turn=Math.sin(poseTime/cycleMs*Math.PI*2);
+    let scatter=0,quote=0;
+    if(reveal){
+      const age=(elapsed-reveal.at)/1000;
+      scatter=reveal.leaveAt===undefined?ease((age-.35)/1.5)*(1-ease((age-6.25)/1.95)):reveal.leaveFrom*(1-ease((elapsed-reveal.leaveAt)/1400));
+      reveal.amount=scatter;
+      quote=ease((age-1.25)/.75)*(1-ease((age-5.95)/.6));
+      if(reveal.leaveAt!==undefined)quote*=1-ease((elapsed-reveal.leaveAt)/350);
+      // Extend the original camera window to the viewport, then gently centre it.
+      // The first fullscreen frame matches the hero pose instead of jumping.
+      const origin=reveal.origin,aspect=origin.width/origin.height,span=origin.width<600?6.4:6.25;
+      const originalZ=Math.max(span/2,span/(2*aspect))/Math.tan(THREE.MathUtils.degToRad(17));
+      const halfY=Math.tan(THREE.MathUtils.degToRad(17))*camera.near,halfX=halfY*aspect;
+      const fullHalfX=halfY*width/height;
+      camera.position.z=THREE.MathUtils.lerp(originalZ,Math.max(6.25/2,6.25/(2*width/height))/Math.tan(THREE.MathUtils.degToRad(17)),scatter);
+      camera.lookAt(0,.1,0);
+      camera.projectionMatrix.makePerspective(
+        THREE.MathUtils.lerp(halfX*(-1-2*origin.left/origin.width),-fullHalfX,scatter),
+        THREE.MathUtils.lerp(halfX*(-1+2*(width-origin.left)/origin.width),fullHalfX,scatter),
+        THREE.MathUtils.lerp(halfY*(1+2*origin.top/origin.height),halfY,scatter),
+        THREE.MathUtils.lerp(halfY*(1-2*(height-origin.top)/origin.height),-halfY,scatter),camera.near,camera.far);
+      camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+      onReveal('frame',{amount:scatter,quote,phase:age<.35?'tension':scatter>.98?'quote':age<3?'sweep':'return'});
+      if(age>=8.2||reveal.leaveAt!==undefined&&elapsed-reveal.leaveAt>=1400){finishReveal();scatter=quote=0;}
+    }
     sculpture.rotation.set(.27+y*.055+turn*.015,-.65+turn*.17+x*.07,-.035);
-    sculpture.position.set(0,.05+Math.sin(elapsed*.001)*.055-(1-entrance)*.12,0);
-    sculpture.scale.setScalar(1+Math.min(progress,.5)*.06);
-    if(moving){
+    sculpture.position.set(0,.05+Math.sin(poseTime*.001)*.055-(1-entrance)*.12,0);
+    const pressure=presses/5*Math.exp(-(elapsed-lastPress)/12000)*(reveal?1-ease((elapsed-reveal.at)/700):1);
+    sculpture.scale.setScalar((1+Math.min(progress,.5)*.06)*(1-pressure*.035));
+    stageRotation.copy(sculpture.quaternion).invert();
+    if(moving&&!reveal){
       sculpture.updateMatrixWorld(true);camera.updateMatrixWorld(true);
       // Touch releases also fire pointerleave. Keep the queued tap independent
       // of hover so it survives until the next shared animation frame.
@@ -164,14 +217,16 @@ export async function createMarketBlock(canvas, onFailure) {
       }
       const hit=pointerActive||pendingTap?pickedHit:null;
       const next=hit?voxels[hit.instanceId]:null;
-      if(next){
-        const normal=hit.face.normal.clone().normalize();
-        if(pendingTap||next!==hover&&elapsed-lastRipple>100)emit(next,normal,pendingTap);
-        next.normal.copy(normal);
-        hitLight.copy(hit.point).addScaledVector(normal.clone().transformDirection(sculpture.matrixWorld),.9);
+      if(next||pendingKey){
+        const selected=pendingKey?voxels[122]:next;
+        const normal=pendingKey?new THREE.Vector3(0,0,1):hit.face.normal.clone().normalize();
+        if(pendingTap||pendingKey||next!==hover&&elapsed-lastRipple>100)emit(selected,normal,pendingTap||pendingKey);
+        selected.normal.copy(normal);
+        if(hit)hitLight.copy(hit.point).addScaledVector(normal.clone().transformDirection(sculpture.matrixWorld),.9);
+        if(pendingTap||pendingKey)registerPress();
       }else hitLight.set(2,-.6,3);
       hover=pendingTap?null:next;
-      if(pendingTap){pendingTap=false;pointerActive=false;canvas.dataset.interaction='tap';}
+      if(pendingTap||pendingKey){pendingTap=pendingKey=false;pointerActive=false;canvas.dataset.interaction='tap';}
       else canvas.dataset.interaction=hover?'hover':'idle';
       fill.position.lerp(hitLight,1-Math.exp(-dt*12));
       for(let i=ripples.length-1;i>=0;i--)if(elapsed-ripples[i].at>1400*ripplePace)ripples.splice(i,1);
@@ -181,13 +236,13 @@ export async function createMarketBlock(canvas, onFailure) {
       const rowOpen=opening(v.ix*.045+v.iy*.025);
       const front=v.iz>=3;
       const upper=v.iy>=3;
-      const reveal=front?rowOpen:rowOpen*.42;
-      const spread=reveal*(upper?.29:-.20);
-      const stagger=front?reveal*(v.ix/5)*.10:0;
-      transform.position.set(v.x+stagger,v.y+spread,v.z+(front?reveal*.12:0));
+      const rowReveal=front?rowOpen:rowOpen*.42;
+      const spread=rowReveal*(upper?.29:-.20);
+      const stagger=front?rowReveal*(v.ix/5)*.10:0;
+      transform.position.set(v.x+stagger,v.y+spread,v.z+(front?rowReveal*.12:0));
       transform.scale.set(1,1,1);transform.rotation.set(0,0,0);
       if(v.candle){
-        const candleOpen=THREE.MathUtils.clamp(rowOpen*(1+.065*Math.sin(elapsed*.0028+v.ix)),0,1.03);
+        const candleOpen=THREE.MathUtils.clamp(rowOpen*(1+.065*Math.sin(poseTime*.0028+v.ix)),0,1.03);
         const bodyHeight=.22+v.height*.62;
         transform.scale.set(1-rowOpen*.42,1+candleOpen*(bodyHeight/.43-1),1-rowOpen*.52);
         transform.position.y+=candleOpen*(.60+v.height*.28+(v.ix%2?.15:0));
@@ -223,6 +278,17 @@ export async function createMarketBlock(canvas, onFailure) {
         touchLight.setX(v.index,Math.min(.9,glint));
       }
       transform.position.addScaledVector(v.normal,v.offset);
+      if(reveal){
+        const halfHeight=Math.max(6.25/2,6.25/(2*width/height));
+        const angle=v.angle+scatter*.22+Math.sin((elapsed-reveal.at)*.00045+v.iy)*.012*scatter;
+        const ringWidth=width/height<.8?1.06:.83;
+        stagePoint.set(Math.cos(angle)*halfHeight*(width/height)*ringWidth*v.band,Math.sin(angle)*halfHeight*.78*v.band,Math.sin(v.ix*1.7+v.iz)*.7).applyQuaternion(stageRotation);
+        const stagger=ease(scatter*(1.06+v.iz*.018));
+        transform.position.lerp(stagePoint,stagger);
+        transform.rotation.set(stagger*Math.sin(v.index)*.65,stagger*Math.cos(v.index*1.3)*.85,stagger*Math.sin(v.index*.7)*.7);
+        transform.scale.multiplyScalar(1-stagger*(.48+v.iz*.02));
+        touchLight.setX(v.index,Math.min(.6,pressure*.28+scatter*.14));
+      }
       maxOffset=Math.max(maxOffset,Math.abs(v.offset));
       transform.updateMatrix();blocks.setMatrixAt(v.index,transform.matrix);
       if(v.candle){
@@ -234,15 +300,16 @@ export async function createMarketBlock(canvas, onFailure) {
       }
     }
     blocks.instanceMatrix.needsUpdate=true;blocks.instanceColor.needsUpdate=true;wicks.instanceMatrix.needsUpdate=true;touchLight.needsUpdate=true;
-    wickMaterial.opacity=open*.95;
-    seamMaterial.opacity=.025+open*.075;
+    wickMaterial.opacity=open*.95*(1-scatter);
+    seamMaterial.opacity=(.025+open*.075+pressure*.10)*(1-scatter);
     seam.position.y=.02;
-    traceMaterial.opacity=ease((open-.15)/.65)*.95;
+    traceMaterial.opacity=ease((open-.15)/.65)*.95*(1-scatter);
     axisMaterial.opacity=traceMaterial.opacity*.24;
     haloMaterial.opacity=traceMaterial.opacity*.20;
-    signal.visible=signalHalo.visible=open>.35;
+    signal.visible=signalHalo.visible=open>.35&&scatter<.4;
     signal.position.copy(curve.getPoint(THREE.MathUtils.clamp((cycle-.75)/2.7,0,1)));signalHalo.position.copy(signal.position);
     ground.material.uniforms.uOpen.value=open;
+    ground.visible=scatter<.3;
     renderer.render(scene,camera);
     // Gradually reduce only the artwork's buffer on a consistently slow GPU.
     if(performance.now()-start>24)slowFrames++;else slowFrames=Math.max(0,slowFrames-1);
@@ -252,6 +319,8 @@ export async function createMarketBlock(canvas, onFailure) {
     canvas.dataset.ripples=String(ripples.length);
     canvas.dataset.displacement=maxOffset.toFixed(4);
     canvas.dataset.cycle=String(cycleMs);
+    canvas.dataset.presses=String(presses);
+    canvas.dataset.reveal=reveal?'active':'idle';
   }
   const lost=event=>{event.preventDefault();onFailure('context-lost');};
   canvas.addEventListener('webglcontextlost',lost);
@@ -263,5 +332,5 @@ export async function createMarketBlock(canvas, onFailure) {
     blocks.dispose();wicks.dispose();resources.forEach(resource=>resource.dispose());
     environment.dispose();renderer.dispose();
   }
-  return {resize,render,setPointer,tap,dispose};
+  return {resize,render,setPointer,tap,press,returnReveal,dispose};
 }
