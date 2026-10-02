@@ -15,20 +15,14 @@ test('refined Earth shaders compile and respect a limited texture device',async(
   expect(maps.some(u=>u.includes('4k'))).toBe(false);
   expect(errors).toEqual([]);
 });
-test('full product previews load on demand and the selected image is real',async({page})=>{
+test('product gallery uses thumbnails and direct destinations without full preview downloads',async({page})=>{
   const requests=[];page.on('request',r=>{if(/\/assets\/products\/[^/]+\.webp$/.test(r.url())&&!r.url().includes('-small'))requests.push(r.url());});
   await page.goto('/');await expect(page.locator('.hero')).toHaveAttribute('data-renderer','webgl');
-  expect(requests).toEqual([]);
   await page.getByRole('link',{name:'Explore the suite',exact:true}).click();
-  await page.locator('#tab-charting').click();
-  await expect.poll(()=>page.locator('#product-charting img[data-preview-src]').evaluate(i=>i.naturalWidth)).toBeGreaterThan(0);
-  expect(requests.some(u=>u.endsWith('/charting.webp'))).toBe(true);
-  expect(requests.some(u=>u.endsWith('/commentary.webp')||u.endsWith('/crypto.webp'))).toBe(false);
+  await expect(page.locator('#tab-charting')).toHaveAttribute('href','/charts/');
+  await expect(page.locator('#tab-charting img')).toHaveAttribute('src',/charting-small\.webp$/);
+  expect(requests).toEqual([]);
 });
-const hero=page=>page.locator('.hero');
-const progress=page=>page.locator('.market-story').getAttribute('data-progress');
-async function scrollStory(page,p){await page.evaluate(p=>{const el=document.querySelector('.market-story');window.scrollTo({top:el.offsetTop+(el.offsetHeight-innerHeight)*p,behavior:'instant'});},p);await expect.poll(async()=>Number(await progress(page))).toBeCloseTo(p,2);}
-
 test('first useful paint and CTA work while WebGL module is blocked',async({page})=>{
   await page.route('**/assets/globe.js',route=>route.abort());await page.goto('/');
   await expect(page.getByRole('heading',{level:1})).toBeVisible();await expect(page.locator('.earth-image')).toBeVisible();
@@ -63,7 +57,8 @@ test('motion off mid-story collapses the spacer and leaves usable gallery',async
   await expect(page.locator('.market-story')).not.toHaveClass(/story-enabled/);
   await expect(page.locator('.story-gallery')).not.toHaveAttribute('inert','');
   await expect(page.locator('#tab-charting')).toBeVisible();
-  await page.locator('#tab-charting').click();await expect(page.locator('#product-charting')).toBeVisible();
+  await page.route('**/charts/',route=>route.fulfill({status:200,contentType:'text/html',body:'Charting destination'}));
+  await page.locator('#tab-charting').click();await expect(page).toHaveURL(/\/charts\/$/);
   await page.reload();await expect(page.locator('.market-story')).not.toHaveClass(/story-enabled/);
 });
 test('OS reduced motion has no travel and responds to preference changes',async({page})=>{
@@ -93,30 +88,26 @@ test('slow initialization times out to a functional poster story',async({page})=
   await page.route('**/assets/globe.js',async route=>{await new Promise(r=>setTimeout(r,14000));await route.abort();});
   await page.goto('/');await expect(hero(page)).toHaveAttribute('data-renderer','timeout',{timeout:15000});
   await page.getByRole('link',{name:'Explore the suite',exact:true}).click();await expect.poll(()=>progress(page)).toBe('1.000');
-  await page.locator('#tab-fno').click();await expect(page.locator('#product-fno')).toBeVisible();
+  await page.route('**/futures-and-options/',route=>route.fulfill({status:200,contentType:'text/html',body:'F&O destination'}));
+  await page.locator('#tab-fno').click();await expect(page).toHaveURL(/\/futures-and-options\/$/);
 });
-test('five selections, keyboard roving focus and configured destinations',async({page})=>{
+test('all five gallery cards open their configured products in one click',async({page})=>{
   await page.goto('/#products');await expect.poll(()=>progress(page)).toBe('1.000');
-  for(const id of ['stockproof','charting','fno','commentary','crypto']){
-    await page.getByRole('link',{name:'The product suite',exact:true}).click();
-    await page.locator(`#tab-${id}`).click();await expect(page.locator(`#product-${id}`)).toBeVisible();
-    await expect(page.locator(`#tab-${id}`)).toHaveAttribute('aria-selected','true');
-    await expect(page.locator(`#product-${id}`)).toBeFocused();
+  const destinations={stockproof:'/screener/',charting:'/charts/',fno:'/futures-and-options/',commentary:'/commentary/',crypto:'/crypto/'};
+  for(const [id,path] of Object.entries(destinations)){
+    await expect(page.locator(`#tab-${id}`)).toHaveAttribute('href',path);
+    await expect(page.locator(`.suite-overview-card[data-overview-product="${id}"] a`)).toHaveAttribute('href',path);
   }
-  await page.locator('.product-rail a[href="#product-charting"]').click();
-  await expect(page.locator('#product-charting')).toBeVisible();
-  await page.getByRole('link',{name:'The product suite',exact:true}).click();
-  await page.locator('#tab-crypto').focus();await page.keyboard.press('Home');await expect(page.locator('#tab-stockproof')).toBeFocused();
-  await page.keyboard.press('ArrowRight');await expect(page.locator('#tab-charting')).toBeFocused();
-  await expect(page.locator('#product-charting a')).toHaveAttribute('href','/charts/');
-  await expect(page.locator('#product-commentary a')).toHaveAttribute('href','/commentary/');
-  await expect(page.locator('#product-crypto a')).toHaveAttribute('href','/crypto/');
+  await page.route('**/charts/',route=>route.fulfill({status:200,contentType:'text/html',body:'Charting destination'}));
+  await page.locator('#tab-charting').click();
+  await expect(page).toHaveURL(/\/charts\/$/);
 });
-test('deep anchors, resize and history keep the selected product readable',async({page})=>{
-  await page.goto('/#product-fno');await expect(page.locator('#product-fno')).toBeVisible();
-  await page.setViewportSize({width:390,height:844});await expect(page.locator('#product-fno')).toBeVisible();
+test('legacy product bookmarks open their destination and mobile layout has no overflow',async({page})=>{
+  await page.route('**/futures-and-options/',route=>route.fulfill({status:200,contentType:'text/html',body:'F&O destination'}));
+  await page.goto('/#product-fno');await expect(page).toHaveURL(/\/futures-and-options\/$/);
+  await page.setViewportSize({width:390,height:844});await page.goto('/#products');
+  await expect(page.locator('#tab-fno')).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)).toBe(false);
-  await page.goto('/intelligence/');await page.goBack();await expect(page.locator('#product-fno')).toBeVisible();
 });
 test('mobile hero keeps India prominent, actions usable and ambient motion optional',async({page})=>{
   await page.emulateMedia({reducedMotion:'no-preference'});
@@ -177,6 +168,6 @@ for(const width of [320,375,390,430,768,1024,1440,1920,2560])test(`layout at ${w
   if(width>=1000){await scrollStory(page,.5);expect(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)).toBe(false);await scrollStory(page,1);}
   else {await expect(page.locator('.market-story')).not.toHaveClass(/story-enabled/);}
   expect(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)).toBe(false);
-  await page.locator('#tab-crypto').click();await expect(page.locator('#product-crypto')).toBeVisible();
+  await expect(page.locator('#tab-crypto')).toHaveAttribute('href','/crypto/');
   await page.screenshot({path:`.preview/v2/width-${width}.png`,fullPage:true});
 });
