@@ -8,8 +8,9 @@ const section = read('src/companion-section.html');
 const script = read('public/companion.js');
 const styles = read('public/companion.css');
 
-test('community showcase truthfully publishes two live platforms and one exploration', () => {
+test('community showcase truthfully publishes three live platforms and one exploration', () => {
   assert.match(section, /TELEGRAM · LIVE/);
+  assert.match(section, /WHATSAPP · LIVE/);
   assert.match(section, /DISCORD · LIVE/);
   assert.match(section, /REDDIT · EXPLORING/);
   assert.match(section, /The MarketDeck Reddit profile is live\. The integration is not launched\./);
@@ -18,9 +19,9 @@ test('community showcase truthfully publishes two live platforms and one explora
   assert.doesNotMatch(section, /Discord[^<]{0,40}(?:planned|coming soon)/i);
 });
 
-test('platform selector and all three panels exist in static semantic HTML', () => {
+test('platform selector and all four panels exist in static semantic HTML', () => {
   assert.match(section, /data-platform-tabs[^>]+role="tablist"/);
-  for (const platform of ['telegram', 'discord', 'reddit']) {
+  for (const platform of ['telegram', 'whatsapp', 'discord', 'reddit']) {
     assert.match(section, new RegExp(`data-platform-tab="${platform}"`));
     assert.match(section, new RegExp(`data-platform-panel="${platform}"`));
     assert.match(section, new RegExp(`id="platform-panel-${platform}"`));
@@ -41,6 +42,14 @@ test('all Telegram launch links remain bounded public routes', () => {
     assert.equal(url.hash, '');
   }
   assert.ok(links.some(url => url.searchParams.get('start') === 'web_demo_UkVMSUFOQ0U'));
+});
+
+test('WhatsApp launch links open the live assistant and analytics stay bounded', () => {
+  assert.match(section, /href="https:\/\/wa\.me\/917054433446\?text=MENU"[^>]+data-whatsapp-entry="homepage"/);
+  assert.match(section, /href="https:\/\/wa\.me\/917054433446\?text=MARKET"[^>]+data-whatsapp-entry="homepage_demo"/);
+  assert.match(section, /https:\/\/whatsapp\.com\/channel\/0029VbDS6wnJZg40dVWH5t37/);
+  assert.match(script, /whatsapp_open/);
+  assert.match(script, /new Set\(\['menu', 'channel', 'market'\]\)/);
 });
 
 test('Discord launch links are exact and analytics stay bounded', () => {
@@ -74,8 +83,8 @@ test('carousel remains local, lightweight, reduced-motion safe and private', () 
   assert.match(styles, /prefers-reduced-motion:reduce/);
   assert.match(styles, /overflow:(?:hidden|clip)/);
   assert.match(script, /community_platform_view/);
-  assert.match(script, /new Set\(\['telegram', 'discord', 'reddit'\]\)/);
+  assert.match(script, /new Set\(\['telegram', 'whatsapp', 'discord', 'reddit'\]\)/);
   assert.doesNotMatch(script, /fetch\(|localStorage|sessionStorage|user_id|platform_user_id|invite_token|account_id/);
   assert.doesNotMatch(section + styles + script, /swiper|three\.js|framer-motion/i);
-  for (const icon of ['telegram', 'discord', 'reddit']) assert.ok(existsSync(new URL(`../public/assets/platforms/${icon}.svg`, import.meta.url)));
+  for (const icon of ['telegram', 'whatsapp', 'discord', 'reddit']) assert.ok(existsSync(new URL(`../public/assets/platforms/${icon}.svg`, import.meta.url)));
 });

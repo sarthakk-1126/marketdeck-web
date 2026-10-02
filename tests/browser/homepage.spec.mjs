@@ -147,11 +147,11 @@ test('mobile hero keeps India prominent, actions usable and ambient motion optio
 });
 test('community exposes confirmed official accounts and keeps unverified entries muted',async({page})=>{
   await page.goto('/#community');await expect(page.locator('.channel-grid li')).toHaveCount(25);
-  await expect(page.locator('.channel-grid [data-status=available]')).toHaveCount(15);
-  await expect(page.locator('.channel-grid [data-status=available] a')).toHaveCount(15);
+  await expect(page.locator('.channel-grid [data-status=available]')).toHaveCount(16);
+  await expect(page.locator('.channel-grid [data-status=available] a')).toHaveCount(16);
   await expect(page.locator('.channel-grid [data-status=planned] a')).toHaveCount(0);
-  await expect(page.locator('.platform-unavailable')).toHaveCount(10);
-  await expect(page.locator('.community-legend')).toContainText('14 confirmed community destinations');
+  await expect(page.locator('.platform-unavailable')).toHaveCount(9);
+  await expect(page.locator('.community-legend')).toContainText('15 confirmed community destinations');
 });
 test('HTML articles and local draft work without JavaScript; production excludes draft',async({browser,request})=>{
   const context=await browser.newContext({javaScriptEnabled:false});const page=await context.newPage();

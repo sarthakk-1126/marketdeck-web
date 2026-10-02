@@ -41,7 +41,7 @@ if (section) {
   const counter = section.querySelector('[data-platform-count]');
   const stage = section.querySelector('[data-platform-stage]');
   const focusable = 'a[href],button:not([disabled]),[tabindex]';
-  const allowedPlatforms = new Set(['telegram', 'discord', 'reddit']);
+  const allowedPlatforms = new Set(['telegram', 'whatsapp', 'discord', 'reddit']);
   let activeIndex = 0;
 
   function setPanelFocusable(panel, active) {
@@ -74,7 +74,7 @@ if (section) {
 
     platformPanels.forEach((panel, panelIndex) => {
       const distance = (panelIndex - activeIndex + platformPanels.length) % platformPanels.length;
-      const position = distance === 0 ? 'active' : distance === 1 ? 'next' : 'prev';
+      const position = distance === 0 ? 'active' : distance === 1 ? 'next' : distance === platformPanels.length - 1 ? 'prev' : 'far';
       const active = position === 'active';
       panel.dataset.position = position;
       panel.dataset.active = String(active);
@@ -87,12 +87,12 @@ if (section) {
       tab.tabIndex = active ? 0 : -1;
     });
 
-    if (counter) counter.textContent = `${activePlatform.toUpperCase()} 0${activeIndex + 1} / 03`;
+    if (counter) counter.textContent = `${activePlatform.toUpperCase()} ${String(activeIndex + 1).padStart(2, '0')} / ${String(platformPanels.length).padStart(2, '0')}`;
     if (focusTab) platformTabs[activeIndex].focus();
     if (track) trackPlatform(activePlatform);
   }
 
-  if (platformTablist && controls && stage && platformPanels.length === 3) {
+  if (platformTablist && controls && stage && platformPanels.length === platformTabs.length && platformPanels.length >= 3) {
     platformTablist.hidden = false;
     controls.hidden = false;
     section.classList.add('is-enhanced');
@@ -161,6 +161,8 @@ if (section) {
 
   const telegramPlacements = new Set(['homepage', 'homepage_channel', 'homepage_demo', 'homepage_radar', 'homepage_compare']);
   const telegramFeatures = new Set(['home', 'channel', 'research', 'radar', 'compare']);
+  const whatsappPlacements = new Set(['homepage', 'homepage_channel', 'homepage_demo']);
+  const whatsappFeatures = new Set(['menu', 'channel', 'market']);
   const discordPlacements = new Set(['homepage', 'homepage_research_desk']);
   const discordFeatures = new Set(['join', 'research_desk']);
 
@@ -170,6 +172,17 @@ if (section) {
       if (typeof window.gtag === 'function') window.gtag('event', 'telegram_open', {
         placement: telegram.dataset.telegramEntry,
         feature: telegram.dataset.telegramFeature,
+        page_location: 'https://marketdeck.in/',
+        transport_type: 'beacon'
+      });
+      return;
+    }
+
+    const whatsapp = event.target.closest?.('a[data-whatsapp-entry]');
+    if (whatsapp && whatsappPlacements.has(whatsapp.dataset.whatsappEntry) && whatsappFeatures.has(whatsapp.dataset.whatsappFeature)) {
+      if (typeof window.gtag === 'function') window.gtag('event', 'whatsapp_open', {
+        placement: whatsapp.dataset.whatsappEntry,
+        feature: whatsapp.dataset.whatsappFeature,
         page_location: 'https://marketdeck.in/',
         transport_type: 'beacon'
       });
