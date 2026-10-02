@@ -273,15 +273,15 @@
           "icon": "telegram"
         },
         {
-          "name": "WhatsApp Business",
-          "url": null,
-          "label": "WhatsApp Business",
+          "name": "WhatsApp Research Assistant",
+          "url": "https://wa.me/917054433446?text=MENU",
+          "label": "WhatsApp Assistant",
           "group": "finance",
           "type": "external",
-          "confirmed": false,
-          "enabled": false,
+          "confirmed": true,
+          "enabled": true,
           "joinable": true,
-          "status": "planned",
+          "status": "available",
           "icon": "whatsapp"
         },
         {
