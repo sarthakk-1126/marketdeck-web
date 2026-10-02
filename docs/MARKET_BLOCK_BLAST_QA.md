@@ -2,7 +2,7 @@
 
 Base: production main `0fdcf728485825a81495415047401bdbf578b5b9`, tree `5c2feffe87782dbc0a566fac5e0442dbfa2252b9`.
 
-The five-press reveal now lasts 7.216 seconds (12% shorter than 8.2). Quote visibility including fades is 4.664 seconds, with a 3.476-second fully opaque reading pause. Close/Escape returns in 1.232 seconds. Ordinary 6.2-second sculpture motion and 12% slower tactile ripples are unchanged.
+Following the reading-time feedback, the five-press reveal again uses the original 8.2-second timeline. Quote visibility including fades is 5.3 seconds, with a 3.95-second fully opaque reading pause. Close/Escape returns in 1.4 seconds. The stronger blast, fifty random quotes, ordinary 6.2-second sculpture motion and 12% slower tactile ripples are unchanged.
 
 The blast compresses the sculpture before a fast cubic outward launch. Existing blocks briefly overshoot by at most 8.5%, arc in depth and recoil into the original frame around the quotation. A restrained blue emissive lift and one faint CSS pressure ring reinforce the launch. The settled frame, native dialog, single canvas/renderer and reconstruction remain intact. No camera shake, audio, particles, added 3D objects, bloom or postprocessing.
 
