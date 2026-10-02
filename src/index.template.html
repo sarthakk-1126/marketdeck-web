@@ -30,10 +30,10 @@
   <link rel="icon" href="/favicon.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preload" as="image" href="/assets/india-earth.webp" imagesrcset="/assets/india-earth-small.webp 1000w, /assets/india-earth.webp 1920w" imagesizes="100vw" fetchpriority="high">
-  <link rel="stylesheet" href="/home.css?v=brand-20260926"><link rel="stylesheet" href="/product-overview-v2.css"><link rel="stylesheet" href="/portfolio-flagship.css?v=2"><link rel="stylesheet" href="/companion.css?v=20260930-carousel"><noscript><style>img[data-preview-src]{display:none}</style></noscript>
+  <link rel="stylesheet" href="/home.css?v=brand-20260926"><link rel="stylesheet" href="/product-overview-v2.css"><link rel="stylesheet" href="/portfolio-flagship.css?v=aperture-20261002"><link rel="stylesheet" href="/companion.css?v=20260930-carousel"><noscript><style>img[data-preview-src]{display:none}</style></noscript>
   <script type="application/ld+json">{{SCHEMA}}</script>
   <script src="/home.js?v=return-tab-20261001" type="module"></script>
-  <script src="/portfolio-flagship.js?v=2" defer></script>
+  <script src="/portfolio-flagship.js?v=aperture-20261002" defer></script>
   <script src="/companion.js?v=20260930-carousel" type="module"></script>
 </head>
 <body>
@@ -89,18 +89,8 @@
         <div class="pa-flagship-copy"><p class="pa-flagship-kicker">PORTFOLIO RESEARCH / FLAGSHIP WORKSPACE</p><h2 id="pa-flagship-title">Go beyond <span>portfolio P&amp;L.</span></h2><p class="pa-flagship-lede">Performance is only the beginning. Study a portfolio through volatility, downside risk, return distributions, factor exposures, diversification, historical risk–return trade-offs and implied returns.</p><p class="pa-flagship-context">Data windows, assumptions, estimator uncertainty and model limits remain visible. Historical evidence is never turned into a target allocation.</p><div class="pa-flagship-actions"><a class="pa-flagship-cta" href="/screener/portfolio-analysis/">Explore Portfolio Analysis <span aria-hidden="true">↗</span></a><span>8 research lenses. One connected workspace.</span></div></div>
         <div class="pa-flagship-console" data-pa-flagship data-pa-active="performance"><div class="pa-console-top"><span>MARKETDECK / PORTFOLIO RESEARCH</span><span>MODEL MAP 01–08</span></div>
           <div class="pa-console-stage" aria-hidden="true">
-            <div class="pa-plane pa-plane-matrix"><span>INPUT STRUCTURE / COVARIANCE</span><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-            <div class="pa-plane pa-plane-network"><svg viewBox="0 0 500 250" focusable="false"><g fill="none" stroke="currentColor"><path d="M55 176 134 90 230 158 336 58 445 139M55 176 230 158 445 139M134 90 336 58M230 158 336 58"/><path d="M55 203Q158 175 230 188T445 84" stroke-dasharray="5 8"/></g><g fill="currentColor"><circle cx="55" cy="176" r="4"/><circle cx="134" cy="90" r="4"/><circle cx="230" cy="158" r="4"/><circle cx="336" cy="58" r="4"/><circle cx="445" cy="139" r="4"/></g></svg></div>
-            <div class="pa-plane pa-plane-model"><svg viewBox="0 0 500 250" focusable="false" fill="none" stroke="currentColor">
-              <g data-pa-view="performance"><path d="M42 196 98 179 148 185 207 136 263 147 316 93 377 114 457 46"/><circle cx="207" cy="136" r="5"/><circle cx="377" cy="114" r="5"/><text x="45" y="51">XIRR / RETURN / DRAWDOWN</text></g>
-              <g data-pa-view="risk"><path d="M45 160Q150 82 250 132T455 68M45 190Q150 112 250 162T455 98"/><path d="M45 175Q150 97 250 147T455 83" stroke-dasharray="5 7"/><text x="45" y="52">σ / SHARPE ± SE / β</text></g>
-              <g data-pa-view="tail"><path d="M42 199Q118 193 177 181Q226 165 252 67Q278 165 327 181Q390 194 458 199"/><path d="M153 146v83M190 128v101" stroke-dasharray="5 5"/><text x="45" y="53">HIST / PARA / CF / KUPIEC</text></g>
-              <g data-pa-view="distribution"><path d="M43 195Q111 188 161 163Q205 76 245 85Q283 92 303 145Q341 192 458 199"/><path d="M73 185 122 178M339 186 419 194" stroke-width="5"/><text x="45" y="53">SKEW / KURT / JB / SW / AD</text></g>
-              <g data-pa-view="factors"><path d="M239 183 239 54M239 183 77 118M239 183 413 89M239 183 145 215M239 183 365 213"/><circle cx="239" cy="183" r="6"/><text x="45" y="52">β / SMB / HML / RMW / CMA</text></g>
-              <g data-pa-view="diversification"><path d="M80 88 172 147 260 75 355 152 427 97M80 88 260 75 355 152M172 147 427 97"/><circle cx="80" cy="88" r="5"/><circle cx="172" cy="147" r="5"/><circle cx="260" cy="75" r="5"/><circle cx="355" cy="152" r="5"/><circle cx="427" cy="97" r="5"/><text x="45" y="52">ρ / PAIRWISE / COV</text></g>
-              <g data-pa-view="frontier"><path d="M48 205Q152 203 226 154T452 55"/><path d="M48 222Q187 170 266 120T453 41" stroke-dasharray="6 6"/><circle cx="266" cy="120" r="6"/><text x="45" y="53">LONG ONLY / UNCONSTRAINED</text></g>
-              <g data-pa-view="implied"><path d="M75 155h101m-9-7 9 7-9 7M200 155h101m-9-7 9 7-9 7M325 155h100"/><text x="73" y="120">Π</text><text x="207" y="120">VIEW</text><text x="358" y="120">μ</text><text x="45" y="53">BL / δ / Ω / CONFIDENCE</text></g>
-            </svg></div>
+            <canvas class="pa-flagship-aperture" data-pa-aperture></canvas>
+            <div class="pa-flagship-aperture-fallback"></div>
             <div class="pa-plane pa-plane-core"><span>PORTFOLIO</span><strong>RESEARCH CORE</strong><small>MODEL / 01–08</small></div>
             <div class="pa-plane pa-plane-hud"><span>SCHEMATIC / NO LIVE DATA</span><span>INPUT → MODEL → INTERPRETATION</span></div>
           </div>

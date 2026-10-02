@@ -50,3 +50,16 @@
 @media(max-width:1080px){.pa-flagship-inner{grid-template-columns:1fr}.pa-flagship-copy{max-width:750px}.pa-flagship-console{max-width:800px}}
 @media(max-width:650px){.pa-flagship{padding:60px 0 35px}.pa-flagship h2{font-size:clamp(39px,10vw,60px)}.pa-console-top{font-size:8px}.pa-console-stage{min-height:230px}.pa-plane-matrix{left:10%;right:7%;top:23%;bottom:7%}.pa-plane-network{inset:12% 2% 6%}.pa-plane-model{inset:14% 2% 12%}.pa-plane-model g text{font-size:12px}.pa-plane-core{right:17px;bottom:14px;width:118px;height:50px}.pa-plane-hud{left:16px;right:16px;font-size:7px}.pa-plane-hud span:last-child{display:none}.pa-console-readout{display:block;min-height:86px}.pa-console-readout p{margin-top:9px}.pa-console-lenses li{flex-basis:112px}.pa-console-lenses button{min-height:65px}.pa-flagship-vocabulary{text-align:left}}
 @media(prefers-reduced-motion:reduce){.pa-flagship-console,.pa-plane,.pa-plane-model g,.pa-flagship-cta,.pa-console-lenses button{transition:none!important}.pa-flagship-cta:hover,.pa-console-lenses button[aria-pressed="true"]{transform:none}}
+
+
+/* The homepage portfolio model uses the Screener aperture without changing its controls. */
+.pa-console-stage{isolation:isolate;perspective:none;background:#0b111e}
+.pa-console-stage:before{z-index:3;border-color:rgba(118,158,211,.17)}
+.pa-flagship-aperture{display:block;position:absolute;inset:0;width:100%;height:100%}
+.pa-flagship-aperture-fallback{position:absolute;inset:15% 19%;border:30px solid #263344;border-top-color:#3477dc;transform:perspective(600px) rotateX(52deg) rotateZ(-12deg);box-shadow:0 18px 28px #060a13,inset 0 0 24px #397de766}
+.pa-flagship-aperture-fallback:before{content:"";position:absolute;inset:12% 18%;border-top:2px solid #70b9ff;border-radius:50%;box-shadow:0 -18px 25px #397de766,0 20px 25px #397de766}
+.pa-flagship-aperture[data-ready="true"] + .pa-flagship-aperture-fallback{display:none}
+.pa-console-stage .pa-plane-core{z-index:4;border-color:rgba(94,146,220,.38);border-top:2px solid #61aaff;background:rgba(12,22,38,.91);box-shadow:0 10px 28px #050a16a3;transform:none;backdrop-filter:blur(9px)}
+.pa-console-stage .pa-plane-core span,.pa-console-stage .pa-plane-core small{color:#8da9d0}
+.pa-console-stage .pa-plane-core strong{color:#e7f2ff}
+.pa-console-stage .pa-plane-hud{z-index:4;transform:none;color:#8da9d0}
