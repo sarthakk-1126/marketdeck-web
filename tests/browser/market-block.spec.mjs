@@ -22,14 +22,76 @@ test('3D sculpture compiles, animates, pauses and preserves the product handoff'
   // Export the actual scene as the poster used when WebGL or save-data disallows motion.
   if(process.env.KINETIC_EXPORT_POSTER==='1'){
   const data=await page.evaluate(async()=>{
-    const {createMarketBlock}=await import('/assets/market-block.js?v=20261002');
+    const {createMarketBlock}=await import('/assets/market-block.js?v=ripples-20261002');
     const c=document.createElement('canvas');const art=await createMarketBlock(c,()=>{});
-    art.resize(900,900);art.render({time:1});
+    art.resize(900,900);art.render({time:1,moving:false});
     art.render({moving:false});const output=c.toDataURL('image/webp',.94);art.dispose();return output;
   });
   writeFileSync('public/assets/market-block-poster.webp',Buffer.from(data.split(',')[1],'base64'));
   }
   expect(errors).toEqual([]);
+});
+
+test('desktop picks individual 3D tiles, ripples settle, and pausing freezes interaction',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});await page.goto('/');
+  const canvas=page.locator('.earth-canvas');
+  await expect(page.locator('.hero')).toHaveAttribute('data-renderer','webgl');
+  await expect(canvas).toHaveAttribute('data-cycle','6200');
+  const box=await canvas.boundingBox();
+  await page.mouse.move(box.x+box.width*.50,box.y+box.height*.55);
+  await expect(canvas).toHaveAttribute('data-hover',/\d+/);
+  const first=await canvas.getAttribute('data-hover');
+  await expect.poll(async()=>Number(await canvas.getAttribute('data-displacement'))).toBeGreaterThan(.025);
+  await page.screenshot({path:'.preview/kinetic-hover-ripple.png'});
+  await page.mouse.move(box.x+box.width*.62,box.y+box.height*.56);
+  await expect.poll(()=>canvas.getAttribute('data-hover')).not.toBe(first);
+  await page.mouse.move(10,10);
+  await expect.poll(async()=>Number(await canvas.getAttribute('data-displacement')),{timeout:10000}).toBeLessThan(.002);
+  await page.getByRole('button',{name:'Disable motion',exact:true}).click();
+  await page.waitForTimeout(100);const frozen=await canvas.screenshot();
+  await page.mouse.move(box.x+box.width*.50,box.y+box.height*.55);
+  await page.waitForTimeout(250);expect((await canvas.screenshot()).equals(frozen)).toBe(true);
+});
+
+test('the first second transforms the sculpture and the full cycle returns to solid',async({page})=>{
+  await page.goto('/');await expect(page.locator('.hero')).toHaveAttribute('data-renderer','webgl');
+  const frames=await page.evaluate(async()=>{
+    const {createMarketBlock}=await import('/assets/market-block.js?v=ripples-20261002');
+    const c=document.createElement('canvas'),art=await createMarketBlock(c,()=>{});
+    art.resize(400,400);art.render({time:1});
+    const output=[{at:0,phase:c.dataset.phase,image:c.toDataURL('image/png')}];
+    for(let i=1;i<=59;i++){
+      art.render({time:1+i*100});
+      if([9,24,59].includes(i))output.push({at:i*100,phase:c.dataset.phase,image:c.toDataURL('image/png')});
+    }
+    art.dispose();return output;
+  });
+  expect(frames.map(f=>f.phase)).toEqual(['solid','open','open','solid']);
+  expect(new Set(frames.map(f=>f.image)).size).toBe(4);
+  frames.forEach(f=>writeFileSync(`.preview/ripple-motion-${f.at}.png`,Buffer.from(f.image.split(',')[1],'base64')));
+});
+
+test('phone tap produces a tile ripple while scrolling and CTA taps remain native',async({browser})=>{
+  const context=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true});
+  const page=await context.newPage();await page.goto('/');
+  const canvas=page.locator('.earth-canvas');
+  await expect(page.locator('.hero')).toHaveAttribute('data-renderer','webgl');
+  await canvas.scrollIntoViewIfNeeded();const box=await canvas.boundingBox();
+  // The lower front surface remains a solid tile across the opening cycle.
+  await page.touchscreen.tap(box.x+box.width*.55,box.y+box.height*.72);
+  await expect.poll(async()=>Number(await canvas.getAttribute('data-displacement'))).toBeGreaterThan(.005);
+  await page.screenshot({path:'.preview/kinetic-phone-ripple.png'});
+  await expect.poll(async()=>Number(await canvas.getAttribute('data-ripples')),{timeout:10000}).toBe(0);
+  // A real touch drag must scroll; it must not start another artwork ripple.
+  const session=await context.newCDPSession(page);const before=await page.evaluate(()=>scrollY);
+  const sx=box.x+box.width*.5,sy=Math.min(700,box.y+box.height*.55);
+  await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:sx,y:sy}]});
+  for(const delta of [25,70,130])await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:sx,y:sy-delta}]});
+  await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  await expect.poll(()=>page.evaluate(()=>scrollY)).toBeGreaterThan(before+30);
+  expect(await canvas.getAttribute('data-ripples')).toBe('0');
+  await page.getByRole('link',{name:'Explore the suite',exact:true}).tap();
+  await expect(page.locator('#tab-charting')).toBeVisible();await context.close();
 });
 
 for(const width of [320,360,390,430,768,1024,1440,1920,2560]) test(`sculpture composes at ${width}px without overflow`,async({page})=>{

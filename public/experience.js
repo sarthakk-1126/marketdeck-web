@@ -81,6 +81,31 @@ export function startExperience() {
   desktop.addEventListener('change',configureStory);
   hero.addEventListener('pointermove',e=>{if(off()||e.pointerType==='touch')return;targetX=e.clientX/bounds.width-.5;targetY=(e.clientY-(bounds.top-scrollY))/bounds.height-.5;request();},{passive:true});
   hero.addEventListener('pointerleave',()=>{targetX=targetY=0;request();});
+  // Resolve artwork input from the hero so the decorative canvas never covers
+  // links. Taps are passive and a scroll gesture never becomes an art interaction.
+  const artPoint=e=>{
+    if(e.target.closest('a,button,input,select,textarea')||off())return null;
+    const rect=scene.getBoundingClientRect();
+    const u=(e.clientX-rect.left)/rect.width,v=(e.clientY-rect.top)/rect.height;
+    return u>=0&&u<=1&&v>=0&&v<=1?{x:u*2-1,y:1-v*2}:null;
+  };
+  hero.addEventListener('pointermove',e=>{
+    if(e.pointerType==='touch'||off())return;
+    globe?.setPointer(artPoint(e));request();
+  },{passive:true});
+  hero.addEventListener('pointerleave',()=>globe?.setPointer(null));
+  let touchStart;
+  hero.addEventListener('pointerdown',e=>{
+    if(e.pointerType!=='touch'||off())return;
+    touchStart={id:e.pointerId,x:e.clientX,y:e.clientY,scroll:scrollY,at:performance.now()};
+  },{passive:true});
+  hero.addEventListener('pointerup',e=>{
+    if(e.pointerType!=='touch'||!touchStart||touchStart.id!==e.pointerId)return;
+    const gesture=touchStart;touchStart=null;
+    if(Math.hypot(e.clientX-gesture.x,e.clientY-gesture.y)>10||Math.abs(scrollY-gesture.scroll)>3||performance.now()-gesture.at>600)return;
+    const point=artPoint(e);if(point){globe?.tap(point);request();}
+  },{passive:true});
+  hero.addEventListener('pointercancel',()=>{touchStart=null;},{passive:true});
   window.addEventListener('scroll',()=>{if(scrollY>12)interrupt();request();},{passive:true});
   document.addEventListener('pointerdown',interrupt,{passive:true});
   document.addEventListener('keydown',interrupt);
@@ -106,7 +131,7 @@ export function startExperience() {
     hero.dataset.renderer='loading';
     let abandoned=false;
     const timeout=setTimeout(()=>{abandoned=true;fail('timeout');},12000);
-    import('/assets/market-block.js?v=20261002').then(m=>m.createMarketBlock(canvas,fail)).then(instance=>{
+    import('/assets/market-block.js?v=ripples-20261002').then(m=>m.createMarketBlock(canvas,fail)).then(instance=>{
       clearTimeout(timeout);if(dead||abandoned){instance.dispose();return;}globe=instance;measure();
       if(performance.now()-started>1800)interrupted=true;
       start=performance.now();hero.dataset.intro=seen?'return':interrupted?'skipped':'fresh';
