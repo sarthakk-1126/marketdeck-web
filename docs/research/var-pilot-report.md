@@ -1,6 +1,6 @@
 # MARKETDECK PHASE 9 — VaR SIMULATION RESEARCH PILOT REPORT
 
-Status: research and local release acceptance PASS; **NOT PUBLISHED**. Production and central publisher are unchanged. Awaiting CEO scope decision on an unrelated, already-published P/E magazine that the current repo approves but the accepted central inventory does not contain. No SG-09 checkbox has been completed. No next study started.
+Current status: **VaR-only publication authorized; exact publisher dry-run PASS; live publication pending**. Accepted baseline12,888 plus VaR only yields12,889 (created1/updated0/withdrawn0). The P/E discrepancy is isolated in issue69; its source approval and page are unchanged. Latest clean production c297b89 (Lens PR71) is incorporated and rollback-protected. Current full web91/92 (same baseline artwork failure), Python16/16. Detailed current release evidence: `var-only-release.md`. The older baseline/hold evidence below records the initial investigation, not a continuing request to admit P/E. No SG-09 checkbox has been completed; no next study started.
 
 ## 1. Preserved reporting-coverage study
 
