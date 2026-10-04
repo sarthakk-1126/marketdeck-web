@@ -2,6 +2,7 @@
 import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {resolve,dirname} from 'node:path';
 import {TOPICS,LEARNING_HUBS} from './intelligence.mjs';
+import {buildResearch,researchManuscript} from './research-page.mjs';
 import {MARKETDECK,compactOrganization,organizationReference,webPageNode,websiteReference} from './structured-identity.mjs';
 const ORIGIN=MARKETDECK.origin;
 const E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -125,6 +126,12 @@ export function buildArticles({root,review,baseNotes=[]}){
   if(new Set(a.sources.map(s=>s.id)).size!==a.sources.length)throw Error('Duplicate sources');a.sources.forEach(s=>url(s.url));url(a.coverArt);if(!existsSync(resolve('public','.'+a.coverArt)))throw Error('Missing cover artwork');
   const path=`/intelligence/notes/${a.slug}/`,md=readFileSync(a.source,'utf8'),words=md.replace(/\[([^\]]+)\]\([^)]+\)/g,'$1').split(/\s+/).filter(Boolean).length;
   if(words<1500)throw Error('Article is below approved depth: '+a.slug);
+  if(a.originalResearch){
+    if(a.slug!=='when-var-methods-disagree')throw Error('Unregistered original research');
+    const result=JSON.parse(readFileSync('content/research/var-simulation-results.json','utf8'));
+    if(md!==researchManuscript(result))throw Error('Frozen research manuscript drift');
+    output.push(buildResearch({root,review}));continue;
+  }
   const fig=illustration(a),figpath=`/assets/intelligence/articles/${a.slug}.svg`;mkdirSync(dirname(resolve(root,'.'+figpath)),{recursive:true});writeFileSync(resolve(root,'.'+figpath),fig.svg);
   const figsrc=a.topics.includes('portfolio-analysis')?`${figpath}?v=${a.modifiedAt.replaceAll('-','')}`:figpath;
   const {body,toc}=parseArticle(md,a,`<figure class="a-figure"><img src="${figsrc}" width="960" height="480" loading="lazy" alt="${E(fig.desc)}"><figcaption>${E(fig.desc)}</figcaption></figure>`);

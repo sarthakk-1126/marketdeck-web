@@ -1,0 +1,20 @@
+{
+  "research_id": "var_simulation",
+  "canonical_url": "https://marketdeck.in/intelligence/notes/when-var-methods-disagree/",
+  "method_version": "INT-VAR-SIM-1.0",
+  "state": "pre-publication",
+  "publication_at": null,
+  "first_verified_crawler_hit": {"value": null, "state": "pending_publication", "source": "bounded Caddy log cohort; verify identity, exclude QA requests"},
+  "google_discovery": {"value": null, "state": "not_checked", "source": "native Google Search Console; no GSC Wizard dependency"},
+  "google_indexing": {"value": null, "state": "not_checked", "source": "native URL Inspection; sitemap inclusion is not indexing"},
+  "impressions": {"value": null, "state": "unavailable_before_publication", "source": "native Google Search Console, dated URL cohort"},
+  "clicks": {"value": null, "state": "unavailable_before_publication", "source": "native Google Search Console, same reporting window"},
+  "bing_discovery_and_citations": {"value": null, "state": "not_checked", "source": "native Bing Webmaster Tools / AI Performance where available"},
+  "referring_domains": {"value": null, "state": "not_checked", "source": "documented observed referrals and externally verified links; not a complete backlink census"},
+  "external_mentions": {"value": null, "state": "not_checked", "source": "verified external mention URLs and observation dates"},
+  "ai_citations": {"value": null, "state": "not_checked", "source": "native reports or externally observed citations; SG-07C stays paused"},
+  "citation_correctness": {"value": null, "state": "not_applicable_until_a_citation_is_observed", "rule": "check scenario, n, confidence, method, metric/units, synthetic scope and in/out-of-sample distinction against frozen table"},
+  "ai_referral_traffic": {"value": null, "state": "unavailable_before_publication", "source": "existing GA4 and first-party referral analytics; exclude QA"},
+  "portfolio_handoffs": {"value": null, "state": "instrumentation_ready_not_live", "event": "research_product_handoff", "destination": "portfolio_analysis_overview", "qualification": "public overview click, not authenticated analysis usage or conversion"},
+  "review_policy": "After production PASS, record exact UTC activation and IndexNow receipt. Review URL-specific discovery/traffic and observed citations at 7 and 30 days when requested. No automation or citation prompts started; unavailable is not zero."
+}
