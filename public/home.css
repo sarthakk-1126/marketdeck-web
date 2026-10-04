@@ -3645,3 +3645,24 @@ body:not(.motion-enabled) .orbit-highlight { animation: none; }
     will-change:auto;
   }
 }
+
+/* Keep the optional motion control in the footer, out of the research workspace. */
+.site-footer .footer-column .motion-toggle {
+  position:static;
+  inset:auto;
+  z-index:auto;
+  display:inline-flex;
+  min-width:0;
+  min-height:44px;
+  max-width:none;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:none;
+  box-shadow:none;
+  backdrop-filter:none;
+  font:inherit;
+  color:inherit;
+}
+.site-footer .footer-column .motion-toggle[hidden] { display:none; }
+.site-footer .footer-column .motion-toggle:hover { color:var(--text); }
