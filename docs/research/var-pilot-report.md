@@ -1,6 +1,6 @@
 # MARKETDECK PHASE 9 — VaR SIMULATION RESEARCH PILOT REPORT
 
-Current status: **VaR-only publication authorized; exact publisher dry-run PASS; live publication pending**. Accepted baseline12,888 plus VaR only yields12,889 (created1/updated0/withdrawn0). The P/E discrepancy is isolated in issue69; its source approval and page are unchanged. Latest clean production c297b89 (Lens PR71) is incorporated and rollback-protected. Current full web91/92 (same baseline artwork failure), Python16/16. Detailed current release evidence: `var-only-release.md`. The older baseline/hold evidence below records the initial investigation, not a continuing request to admit P/E. No SG-09 checkbox has been completed; no next study started.
+Current status: **LIVE — VaR-only production acceptance PASS**. Final evidence: `var-production-acceptance.md`. Production11ba1f9; exact accepted inventory12,889 (created VaR1/updated0/withdrawn0), IndexNow200 for VaR only. P/E page/approval unchanged; discrepancy isolated in issue69. Focused63/63, Python16/16; full91/92 versus baseline83/84 has the identical existing artwork failure. The older baseline/hold evidence below is historical, superseded by the final production report, not a continuing request to admit P/E. SG-09A/B/C/E/F satisfied; SG-09D remains observation-open. No next study started.
 
 ## 1. Preserved reporting-coverage study
 
@@ -97,7 +97,7 @@ NumPy quantile/random-stream documentation; NIST skew/kurtosis definitions; Glyn
 
 ## 21. Reproduction
 
-Python3.12.14, NumPy2.3.5. Install NumPy2.3.5; run `python scripts/research/var_simulation.py --replications 8000`; `python -m unittest discover -s scripts/research -p "test_*.py"`; `python scripts/research/validate_run.py`. No production/VPS simulation job. Frozen code/results intended to be pinned by `research-var-sim-1.0` release tag after acceptance; tag/publication not yet activated.
+Python3.12.14, NumPy2.3.5. Install NumPy2.3.5; run `python scripts/research/var_simulation.py --replications 8000`; `python -m unittest discover -s scripts/research -p "test_*.py"`; `python scripts/research/validate_run.py`. No production/VPS simulation job. Frozen code/results are pinned by the public `research-var-sim-1.0` tag atb1581d7; tagged result HTTP bytes verified against the approved digest.
 
 ## 22. Version and corrections
 
@@ -118,13 +118,13 @@ Accepted current production inventory remains12,888, ten families. Current web S
 1. Installed SG04 export helper predates the Portfolio topic and fails `invalid_article_topic` against existing current source. Candidate helper must use the exact current editorial topic/hub module; do not change the installed publisher's admission policy.
 2. Current manifest includes the already-published P/E magazine `/intelligence/issues/pe-ratio-valuation-india-2026/`, absent from accepted central inventory. Fresh complete source would admit it in addition to VaR. Preserve already-accepted Research Standards and Intelligence methodology singleton policies.
 
-Expected bounded change if CEO approves both: created2, updated0, withdrawn0, total12,890; if VaR only is authorized, do not silently omit a source-approved record or activate an unexplained extra URL. Atomic publisher dry run/activation NOT executed. Final publisher truth must be checked before activation; counts above are candidate expectations, not an accepted release.
+The preceding discrepancy observations describe the initial source re-enumeration investigation, not release scope. CEO subsequently authorized a bounded accepted-generation retention plus VaR only. Final dry-run and atomic activation PASS:12,888→12,889, created VaR1/updated0/withdrawn0; Intelligence25→26 only. All32 accepted web records retained, all other producer generations unchanged. No P/E approval alteration or admission. Separate lifecycle follow-up issue69; final evidence in `var-production-acceptance.md`.
 
 ## 26. IndexNow
 
-No new event/submission because publication has not activated. Existing behavior/state/key untouched. After accepted atomic activation, submit only exact created/substantively-updated/withdrawn event and retain the idempotency receipt; acceptance is not indexing or citation proof. Never expose the private key.
+Immutable release event `sg09-var-only-20261004-live1` submitted in isolation: exactly VaR1, one chunk/attempt, HTTP200 accepted16:26:00.563Z. Shared idempotency state retained; receipt saved privately. No P/E or historical baseline submission. Acceptance is not indexing or citation proof; private key never exposed.
 
-## 27. Production verification and resources
+## 27. Initial pre-publication checks (historical; final acceptance supersedes)
 
 No production changes, Docker build or full crawl. New Contabo source baseline clean, apps healthy. Preflight14:06UTC4Oct2026:8.4GiB available RAM,173GiB disk,4GiB swap virtually unused, load0.05/0.11/0.14. All computation off-VPS and sequential. Rollback/deploy/live HTML/canonical/GA4/sitemap/robots/Atom/IndexNow checks remain gated. Existing images/rollback and platform-core untouched. Live study acceptance is NOT claimed.
 
@@ -134,23 +134,23 @@ Research release preserved in draft PR https://github.com/sarthakk-1126/marketde
 
 ## 28. SG-09A–F individually
 
-- A: process implemented and tested; OPEN pending successful publication.
-- B: research completed locally; OPEN pending publication.
-- C: source/table/figure architecture locally verified; OPEN pending live assets.
-- D: measurement definitions and bounded handoff event ready; OPEN, no earned outcome claimed.
-- E: distinctive evidence selected and produced; OPEN pending first accepted asset.
-- F: high-quality visual pilot locally tested; OPEN pending live review; no Discover/multimodal traffic guarantee.
+- A: satisfied — repeatable rights/source/design/calculation/reproduction/correction/release process used successfully.
+- B: satisfied — research published with explicit connection to the product's actual frozen transformations.
+- C: satisfied — stable tables/methods/figures and permitted method references verified live.
+- D: OPEN — baseline/live bounded handoff event established; earned outcomes and qualified authenticated product use not yet observed.
+- E: satisfied — original controlled findings, not a commodity definition page.
+- F: satisfied — original desktop/mobile visual research production-verified; no Discover/multimodal traffic guarantee.
 
-Roadmap#19 unchanged. Phase9 not declared complete. SG07C remains paused/frozen; no citation prompts or subsequent project started.
+Roadmap#19 authorized for SG-09A/B/C/E/F only after production acceptance; SG-09D remains open. Phase9 not declared complete. SG07C remains paused/frozen; no citation prompts or subsequent project started.
 
 ## 29. Measurement baseline
 
-See `var-measurement-baseline.json`. Publication/crawler/discovery/indexing/impressions/clicks/referring domains/mentions/AI citations/correctness/referrals/handoffs are unavailable or not checked—not zero. Native GSC/Bing, existing GA4, bounded verified Caddy logs and first-party referral analytics; no GSC Wizard dependency. `research_product_handoff` is a click to public Portfolio overview only, not authenticated usage/conversion. Actual publication time and notification receipt must be recorded after PASS; QA requests excluded. No monitoring automation or SG07C experiment started.
+See `var-measurement-baseline.json`: exact successful deployment time16:17:32Z, activation16:24:13Z and IndexNow receipt16:26:00.563Z recorded. Crawler/discovery/indexing/impressions/clicks/referring domains/mentions/AI citations/correctness/referrals/handoffs remain not checked—not zero. Native GSC/Bing, existing GA4, bounded verified Caddy logs and first-party referral analytics; no GSC Wizard dependency. `research_product_handoff` is a click to public Portfolio overview only, not authenticated usage/conversion. QA excluded. No monitoring automation or SG07C experiment started.
 
 ## 30. Recommended next study — not started
 
 Generated volatility persistence and train/holdout distribution shifts: when iid VaR coverage hides clustered breaches. Prespecify a small controlled process, compare unconditional coverage with dependence diagnostics, retain rights-clean generated inputs. Present for CEO consideration only after this pilot is accepted; no second project automatically begun.
 
-## Decision required before production
+## Historical decision request — superseded by VaR-only authorization
 
-Authorize validating/admitting both the new VaR note and the existing P/E magazine, or retain unchanged production while the unrelated magazine reconciliation is resolved separately. Then fresh baseline guard → rollback → PR/merge/static deployment → bounded live QA → complete source inventory → publisher dry run → atomic activation → exact IndexNow event → production PASS evidence → individually justified roadmap update.
+Superseded: CEO authorized VaR-only publication, with the P/E discrepancy separately recorded. The bounded dry-run, guarded PR merge/deployment, live acceptance, exact atomic activation and VaR-only IndexNow submission have passed. Do not interpret this historical heading as authorization to admit P/E.

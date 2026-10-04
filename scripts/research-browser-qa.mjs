@@ -20,6 +20,8 @@ try{
   await page.locator('#figure-thresholds').scrollIntoViewIfNeeded();
   await page.locator('#figure-thresholds').screenshot({path:resolve(out,name+'-figure.png')});
   await page.locator('#figure-breaches').scrollIntoViewIfNeeded();
+  await page.waitForFunction(()=>[...document.querySelectorAll('figure img')].every(i=>i.complete&&i.naturalWidth>0),{},{timeout:15000});
+  await page.locator('figure img').evaluateAll(images=>Promise.all(images.map(i=>i.decode())));
   await page.locator('#figure-breaches').screenshot({path:resolve(out,name+'-breaches.png')});
   const state=await page.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,
    canonical:document.querySelector('link[rel="canonical"]')?.href,

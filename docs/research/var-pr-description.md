@@ -12,7 +12,9 @@ The company-reporting study at bf2a6f1 remains paused and unchanged.
 - Browser1440px/390px PASS: no overflow/JS errors,84 displayed result rows, responsive figure bytes match, GA4once/canonical-only.
 - Public source registry uses the existing INT-03 note contract; no additional scenario/result URL or Dataset/FAQ/rating markup.
 
-## VaR-only authorization — production acceptance pending
+## VaR-only production acceptance — LIVE / PASS
+
+Production SHA11ba1f9fccfb880d8256d415e84518cdd5edce6d; deployed16:17:32Z4Oct2026. Atomic central release `sg09-var-only-20261004-live1`16:24:13Z:12,889 unique canonicals, exactly VaR created1/updated0/withdrawn0; nine unrelated families byte-identical. Live desktop/mobile, all four SVG HTTP bytes/rendering, canonical/Article/Breadcrumb/GA4/discovery/private-route safeguards PASS. Robots/Atom/P/E bytes and source approval unchanged. IndexNow accepted only VaR,HTTP20016:26:00Z. SG-09A/B/C/E/F satisfied; SG-09D observation-open. SG-07C/reporting study remain paused. Full evidence: docs/research/var-production-acceptance.md. Earlier preparation steps below remain release history, not pending deployment requirements.
 
 CEO explicitly authorized retention of the accepted 12,888 baseline plus only the new VaR canonical. Do not admit or change the pre-existing P/E magazine/approval. Separate reconciliation record: https://github.com/sarthakk-1126/marketdeck-web/issues/69. Current production advanced to 5ce7e43 (Lens PR #68), incorporated without conflicts and without losing newer work.
 
