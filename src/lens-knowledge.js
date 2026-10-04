@@ -55,18 +55,18 @@ export function searchFaqs(query, category = categories[0]) {
 }
 
 const companyAliases = [
-  ['TCS', ['tcs', 'tata consultancy services']], ['Infosys', ['infosys', 'infy']],
-  ['Reliance Industries', ['reliance', 'reliance industries', 'ril']], ['HDFC Bank', ['hdfc bank', 'hdfcbank']],
-  ['ICICI Bank', ['icici bank', 'icicibank']], ['ITC', ['itc']], ['State Bank of India', ['sbi', 'state bank of india', 'sbin']],
-  ['Larsen & Toubro', ['larsen and toubro', 'l and t', 'lt']], ['Tata Motors', ['tata motors', 'tatamotors']],
-  ['Wipro', ['wipro']], ['Bharti Airtel', ['bharti airtel', 'airtel']], ['Bajaj Finance', ['bajaj finance', 'bajfinance']],
+  ['TCS', ['tcs', 'tata consultancy services'], 'TCS.NS'], ['Infosys', ['infosys', 'infy'], 'INFY.NS'],
+  ['Reliance Industries', ['reliance', 'reliance industries', 'ril'], 'RELIANCE.NS'], ['HDFC Bank', ['hdfc bank', 'hdfcbank'], 'HDFCBANK.NS'],
+  ['ICICI Bank', ['icici bank', 'icicibank'], 'ICICIBANK.NS'], ['ITC', ['itc'], 'ITC.NS'], ['State Bank of India', ['sbi', 'state bank of india', 'sbin'], 'SBIN.NS'],
+  ['Larsen & Toubro', ['larsen and toubro', 'l and t', 'lt'], 'LT.NS'],
+  ['Wipro', ['wipro'], 'WIPRO.NS'], ['Bharti Airtel', ['bharti airtel', 'airtel'], 'BHARTIARTL.NS'], ['Bajaj Finance', ['bajaj finance', 'bajfinance'], 'BAJFINANCE.NS'],
 ];
 const phrasePresent = (q, phrase) => ` ${q} `.includes(` ${normalize(phrase)} `);
 const cleanCompany = s => s.replace(/[?.!,]+$/g, '').replace(/^(?:the company|company|stock)\s+/i, '').replace(/\s+(?:stock|shares|company|chart|financials)$/i, '').trim();
 function companyQuery(raw, q, context) {
   const known = companyAliases.filter(([, aliases]) => aliases.some(a => phrasePresent(q, a) || phrasePresent(q, `${a}.ns`)));
   if (known.length > 1) return { ambiguous: true };
-  if (known.length === 1) return { name: known[0][0], known: true };
+  if (known.length === 1) return { name: known[0][0], symbol: known[0][2], known: true };
   let candidate = raw.match(/^(?:show|open)(?: me)?\s+(?:a |the )?chart(?: for| of)?\s+(.+)$/i)?.[1]
     || raw.match(/^(?:where can i (?:research|find)|research|find|search(?: for)?|look up|open|show me)\s+(.+)$/i)?.[1]
     || raw.match(/^(?:chart|financials|fundamentals)\s+(?:for|of)\s+(.+)$/i)?.[1];
@@ -107,9 +107,10 @@ export function answerQuestion(input, context = {}) {
   if (company?.ambiguous) return { answer: 'Which company would you like to open first? Enter one company name or NSE ticker so I can route you to the right search.', suggestions: ['Research a company'], context: { awaitingCompany: true } };
   if (company?.name) {
     const encoded = encodeURIComponent(company.name);
+    const symbol = company.symbol || (/^[A-Z0-9&.-]+\.NS$/i.test(company.name) ? company.name.toUpperCase() : null);
     return {
-      answer: company.known ? 'Start with the company page. Explore financials and source traces, then open the chart for price context.' : `Search for “${company.name}” in Screener. A unique match opens its company page; otherwise, you can choose from the matches. The chart search resolves available instruments separately.`,
-      links: [link(company.known ? `Open ${company.name} company` : 'Find company matches', `/screener/search/?q=${encoded}`, 'Financials, filings and fundamental research'), link(company.known ? `View ${company.name} chart` : 'Search in Charting', `/charts/jump/?symbol_input=${encoded}`, 'Price history and technical context')],
+      answer: company.known ? 'Start with the company page. Explore financials and source traces, then open the chart for price context.' : `Search for “${company.name}” in Screener. A unique match opens its company page; otherwise, you can choose from the matches. In Charting, select the matching instrument from its search suggestions.`,
+      links: [link(company.known ? `Open ${company.name} company` : 'Find company matches', `/screener/search/?q=${encoded}`, 'Financials, filings and fundamental research'), link(company.known ? `View ${company.name} chart` : 'Open Charting search', symbol ? `/charts/jump/?symbol_input=${encodeURIComponent(symbol)}` : '/charts/', symbol ? 'Price history and technical context' : 'Choose an instrument from the search suggestions')],
       context: { company: company.name }
     };
   }

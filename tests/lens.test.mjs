@@ -21,7 +21,7 @@ test('known companies use the actual product resolvers, including name aliases',
     const reply = answerQuestion(query);
     assert.equal(reply.context.company, 'TCS');
     assert.equal(reply.links[0].href, '/screener/search/?q=TCS');
-    assert.equal(reply.links[1].href, '/charts/jump/?symbol_input=TCS');
+    assert.equal(reply.links[1].href, '/charts/jump/?symbol_input=TCS.NS');
   }
   assert.equal(answerQuestion('How do I research INFY?').context.company, 'Infosys');
 });
@@ -29,6 +29,9 @@ test('unknown and ambiguous names route to choices without invented company fact
   const reply = answerQuestion('Adani Enterprises');
   assert.equal(reply.links[0].href, '/screener/search/?q=Adani%20Enterprises');
   assert.match(reply.answer, /choose from the matches/);
+  assert.equal(reply.links[1].href, '/charts/');
+  assert.equal(answerQuestion('Tata Motors').links[1].href, '/charts/', 'Demerger names need the product’s instrument choices');
+  assert.equal(answerQuestion('ASIANPAINT.NS').links[1].href, '/charts/jump/?symbol_input=ASIANPAINT.NS');
   assert.equal(answerQuestion('Show me a chart of Adani Enterprises').context.company, 'Adani Enterprises');
   assert.equal(answerQuestion('TCS and Infosys').context.awaitingCompany, true);
   assert.equal(answerQuestion('compare TCS vs Infosys').links[0].href, '/screener/compare/');
