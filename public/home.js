@@ -1,4 +1,4 @@
-import { startExperience } from './experience.js?v=reading-time-20261002';
+import { startExperience } from './experience.js?v=footer-motion-20261004';
 const experience = startExperience();
 (() => {
   // Old product-panel bookmarks now open the matching product directly.

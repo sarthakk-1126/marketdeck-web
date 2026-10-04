@@ -4,11 +4,10 @@ const smooth = x => {x=clamp(x);return x*x*(3-2*x);};
 export function startExperience() {
   const hero=document.querySelector('.hero'), scene=document.querySelector('.earth-scene');
   const button=document.querySelector('.motion-toggle');
-  document.body.append(button);
   const reduce=matchMedia('(prefers-reduced-motion: reduce)'),desktop=matchMedia('(min-width: 1000px) and (min-height: 650px)');
   const canvas=document.createElement('canvas');canvas.className='earth-canvas';canvas.setAttribute('aria-hidden','true');scene.append(canvas);
-  let paused=null,seen=false;
-  try{const preference=sessionStorage.getItem('marketdeck:motion-paused');paused=preference===null?null:preference==='true';seen=sessionStorage.getItem('marketdeck:intro-seen')==='true';}catch{}
+  let paused=false,seen=false;
+  try{seen=sessionStorage.getItem('marketdeck:intro-seen')==='true';}catch{}
   let globe,raf=0,visible=true,dead=false,dirty=true,start=0,interrupted=scrollY>12||!!location.hash;
   let revealDialog=null,revealActive=false,revealFocus=null,revealOrigin=null;
   function reveal(event,state){
@@ -117,11 +116,11 @@ export function startExperience() {
     scene.tabIndex=off()?-1:0;
     document.body.classList.toggle('motion-paused',off());document.body.classList.toggle('motion-enabled',!off());
     button.hidden=false;button.setAttribute('aria-pressed',String(off()));button.setAttribute('aria-label',off()?'Enable motion':'Disable motion');
-    button.querySelector('span').textContent=off()?'Motion off':'Motion on';
+    button.querySelector('span').textContent=off()?'Resume motion':'Pause motion';
     hero.dispatchEvent(new CustomEvent('motionchange',{detail:{off:off()}}));interrupt();request();
     configureStory();
   }
-  button.addEventListener('click',()=>{paused=!off();try{sessionStorage.setItem('marketdeck:motion-paused',String(paused));}catch{}apply();});
+  button.addEventListener('click',()=>{paused=!off();apply();});
   reduce.addEventListener('change',apply);
   desktop.addEventListener('change',configureStory);
   hero.addEventListener('pointermove',e=>{if(off()||e.pointerType==='touch')return;targetX=e.clientX/bounds.width-.5;targetY=(e.clientY-(bounds.top-scrollY))/bounds.height-.5;request();},{passive:true});
@@ -165,7 +164,7 @@ export function startExperience() {
   // Essentials are painted first. A static sculpture serves data-saving connections.
   hero.dataset.renderer='poster';
   document.body.classList.toggle('motion-paused',off());document.body.classList.toggle('motion-enabled',!off());button.hidden=false;
-  button.setAttribute('aria-pressed',String(off()));button.setAttribute('aria-label',off()?'Enable motion':'Disable motion');button.querySelector('span').textContent=off()?'Motion off':'Motion on';
+  button.setAttribute('aria-pressed',String(off()));button.setAttribute('aria-label',off()?'Enable motion':'Disable motion');button.querySelector('span').textContent=off()?'Resume motion':'Pause motion';
   configureStory();
   const bypass=()=>{if(storyEnabled){window.scrollTo({top:storyTop+travel,behavior:'instant'});progress=1;paintStory();request();}};
   document.querySelectorAll('a[href="#products"]').forEach(a=>a.addEventListener('click',e=>{if(storyEnabled){e.preventDefault();interrupt();history.pushState(null,'','#products');bypass();gallery.tabIndex=-1;gallery.focus({preventScroll:true});}}));
