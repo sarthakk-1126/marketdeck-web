@@ -1,54 +1,67 @@
 # Homepage product-card preview QA
 
-final result: blocked
+final result: passed
 
-## Target and scope
+## Scope and source visual truth
 
-- Source visual truth: `/workspace/scratch/adf03b8116c5/upload/image(20261004-175404).png` (user-selected playable-preview concept; attached file `libfile_12e02e8054a48191a7552d39f7e6e2a5`).
-- The attachment is a screenshot of the concept with viewer controls overlapping its lower corners. Those viewer controls are not product UI.
-- User overrides: update only the five research-stack cards; retain current site colours and compact sizing; keep the work undeployed until the other deployment is finished.
-- Baseline: `09442cb`, including the merged Research Desk changes.
-- Implementation: homepage served by an isolated local preview rooted at `.preview/cards-site`.
-- Implementation screenshot: unavailable. No screenshot or browser verification is claimed.
-- Intended desktop comparison: 1440 × 1024 CSS pixels, DPR 1, Charting selected with a visible crosshair.
-- Intended responsive checks: 390 and 320 CSS-pixel widths, all five cards, keyboard and touch controls.
-- Source/implementation density normalization and focused/full-view comparison: not performed because the browser cannot load the preview.
+User-selected playable-preview attachment: `/workspace/scratch/adf03b8116c5/upload/image(20261004-175404).png`, 1099 × 802, with viewer overlays. The clean original of that exact displayed concept is `/workspace/scratch/adf03b8116c5/generated_images/exec-91523bad-6147-4b62-a4db-949c9198ccb7.png`, 1488 × 1057. Both were opened; the clean original was used for comparisons without viewer overlays.
 
-## Blocking finding
+User constraints: modify only the five research-stack cards, retain current colours, keep cards compact and preserve all other homepage content. The earlier deployment hold was lifted by the user's explicit instruction to check, merge and deploy.
 
-[P1] Browser-rendered verification is unavailable in this session.
+## Browser-rendered evidence and normalization
 
-The cloud browser rejected `http://terminal.local:4173/` with `ERR_BLOCKED_BY_CLIENT`, followed by an explicit browser security-policy rejection. No alternate browser surface or navigation workaround was attempted after that policy rejection. Desktop/mobile screenshots, primary browser interactions, console-error inspection, and visual comparison remain required before merge/deployment.
+Cloud browser, local preview, actual homepage inside same-origin QA frames. Desktop frame: 1440 × 1100 CSS pixels, DPR 1; full browser capture 1440 × 1136. Frame scrollbar takes 15 CSS pixels. Phone frames: 390 × 844 and 320 × 844, DPR 1, corresponding content widths 375 and 305. These are browser responsive viewport checks, not claims of physical-device testing.
+
+- Initial implementation capture: `.preview/cards-desktop-before.jpg`.
+- Final desktop capture: `.preview/cards-desktop-final.jpg`.
+- Full card-grid comparison: `.preview/cards-comparison-final.jpg`.
+- Focused Charting comparison: `.preview/cards-charting-comparison-final.jpg`.
+- Phone screenshots: `.preview/cards-phone-390.jpg`, `.preview/cards-phone-390-lower.jpg`, `.preview/cards-phone-320-payoff.jpg`.
+- Combined phone evidence: `.preview/cards-phone-evidence.jpg`.
+- No-JavaScript capture: `.preview/cards-nojs-full.jpg`.
+
+The final reference grid was cropped at x=80–1409/y=274–1046; actual grid at x=56–1370/y=393–1128. Reference was scaled uniformly to actual grid width for a combined side-by-side comparison. Focused Charting cards were also compared at matched width. These comparisons were opened and inspected together. Surrounding section heading and copy intentionally stay as the current site renders them, rather than taking the generated concept's different heading layout. Final state: Growth, Price with an inspected crosshair, Long call at ₹250, Earnings excerpt 00:42, BTC.
+
+## Findings and comparison history
+
+[P2, fixed] Inherited article padding added a second layer of spacing, producing 441px top cards and 380px lower cards, plus a legacy accent stripe. The first rendered comparison showed excessive blank space. Card-only `padding:0` and disabling the inherited pseudo-elements fixed it. Final top cards are 389px; lower cards 328px; combined grid 735px. The post-fix full and focused comparisons show no remaining actionable P0/P1/P2 findings.
+
+Earlier browser access was blocked while selecting an internal browser error page. A fresh allowed HTTP tab successfully loaded the running preview. Browser verification and actual captures then completed; the earlier blocked result is superseded by this pass.
 
 ## Required fidelity surfaces
 
-- Typography: uses the existing homepage font tokens and icons; rendered wrapping and readability remain unverified.
-- Spacing: card-only styles use 22/24px desktop padding, compact plots, 32px controls; mobile padding 19/20px and controls 36px. Actual layout and overflow remain unverified.
-- Colours: existing `--surface`, `--blue` (#59a7f5), slate labels and borders; no global token changes. Visual comparison remains pending.
-- Assets: existing icon sprite and original artwork retained for the no-JavaScript fallback. The preview charts are functional canvas plots of the bundled fictional datasets and calculated option payoff, not decorative replacements.
-- Copy: existing product names, categories, leads and Explore links retained. Fictional sample labels added directly to the previews; no live feed or actual transcript is claimed.
+| Surface | Result |
+| --- | --- |
+| Fonts and typography | Existing Inter/Segoe UI family, 24px desktop titles, 23px mobile titles, 13px leads, restrained category labels. Legible without truncation in the tested views. Current site product copy is retained. |
+| Spacing and layout | Three upper/two lower cards on desktop, one column on phones. 22/24px desktop and 19/20px phone content padding. 390px cards: 316–341px tall; 320px cards: 316–383px, with F&O chips deliberately wrapping. No page or card overflow at either phone width. |
+| Colours and tokens | Existing surface/background, homepage blue #59a7f5, slate text and borders. Muted selected controls adapt the more saturated concept to the current palette. Active border communicates focus without card travel. |
+| Image quality and assets | Original icon sprite retained. Existing artwork remains in the no-JavaScript fallback. Real canvas plots use local fictional samples and calculated piecewise-linear payoff; no decorative approximations or fake live imagery. |
+| Copy and content | Current product names/categories/leads/Explore links preserved. Fictional companies, illustrative excerpts and sample chart data are identified directly in the cards. F&O strike, premium, expiry and per-unit assumptions are visible. |
 
-## Completed non-browser verification
+Intentional adaptations: compact charts and no y-axis clutter; accurate option payoff instead of the mock's smooth illustrative curve; Commentary displays excerpts without a pretend audio player; all charts use the site's blue rather than the mock's orange crypto line. These honor the current-colour/compactness requirement and avoid implying live feeds or audio that does not exist.
 
-- Production bundle/build and review build succeeded.
-- New calculation/data tests: 4/4 passed. Checked sorting, long-call/long-put premium losses, breakevens, covered-call cap and underlying loss, positive finite samples, and date endpoints.
-- Full suite: 100/102 passed. Current-main baseline: 96/98 passed. The same two pre-existing failures occur in both: stale external-script allowlist and stale product-art preview assertions.
-- A portfolio-specific assertion now checks its portfolio section rather than prohibiting educational sample rupee values anywhere on the homepage.
-- JS syntax checks and `git diff --check` passed.
-- Exact normalized HTML comparison: all markup outside the card grid is unchanged, apart from the two new preview asset tags.
-- Existing global CSS/JS, original overview CSS, bot CSS/JS, portfolio CSS/JS and product destinations are byte-identical to baseline.
-- Added JS/model/CSS transfer: 18,188 bytes raw; 5,790 bytes gzip, with no polling, new API calls or dependencies.
+## Primary browser interactions checked
 
-## Comparison history
+- Growth → Quality changed metric to ROCE and reordered Zenith/Nova/Apex; Low debt reordered 0.1×/0.3×/0.6×. Growth restored original rows.
+- Price/Volume switched selected state and plot; End selected sample 63 and 30 Sep volume 29.5M; Home selected 01 Jul 18.0M on the narrow phone frame. Pointer click selected sample 32.
+- Covered call at ₹350 showed capped ₹20/unit with purchase assumption; Long put at ₹150 and Long call at ₹350 showed ₹80/unit. At-the-money call correctly shows −₹20 premium loss.
+- Earnings timestamp 02:18 changed the excerpt; Filings changed timestamps into Note 1/Note 2, and Note 2 changed the filing excerpt.
+- ETH changed the accessible chart description and sample label; BTC restored the other series. All five Explore hrefs match their existing application destinations.
+- Phone filter, F&O slider, source/excerpt and crypto controls exercised. Controls remain visible; narrow F&O wrapping is intentional.
+- No-JavaScript sandbox: zero enhanced cards, hidden demo controls, five original artwork images, all 15 original feature labels and five Explore links remain.
+- Default motion remains on (`aria-pressed=false` on Disable motion). Existing manual pause was exercised during desktop accessibility verification; card controls continue working while paused. New plots have no idle animation; reduced-motion stylesheet rules remain present. Physical touch hardware and a separate OS preference toggle were not available.
+- Browser console inspected: no page-origin/product-preview errors. The browser extension logged metadata-transport errors; those are outside the application. Expected sandbox script-block messages belong only to the deliberate no-JavaScript test.
 
-No rendered comparison was possible. Do not interpret build or unit-test success as design QA passing.
+## Automated and scope verification
 
-## Before deployment
+Production and review builds pass. New tests 4/4 pass; full suite 100/102 versus base main 96/98. The identical two pre-existing failures are the stale analytics script allowlist and old artwork assertions. Syntax and diff checks pass. Exact normalized comparison confirms markup outside the card grid is unchanged apart from loading the two new assets. Global CSS/JS, original overview CSS, bots, portfolio assets and product destinations are unchanged. No new dependencies, LLM, paid feeds, polling, API or VPS changes.
 
-1. Confirm the user's other work/deployment is finished. Keep this draft unmerged in the meantime.
-2. Rebase or merge the latest `main`, retaining concurrent changes.
-3. Open the local preview in an allowed cloud-browser session; capture desktop and phone layouts.
-4. Compare the card grid with the selected concept, allowing the requested current-palette, compact-sizing and unchanged-page adaptations.
-5. Verify all filters, chart pointer/keyboard interaction, strategy switches and range control, source/excerpt switches, BTC/ETH, and Explore destinations.
-6. Check 320/390px overflow, touch scrolling, reduced motion, no-JavaScript fallback and browser console errors.
-7. Fix any P0/P1/P2 findings, re-capture, and update this report to `final result: passed` before merge/deploy.
+## Release checklist
+
+- [x] Source and implementation opened and compared in combined full/focused inputs.
+- [x] Excess inherited padding fixed and final evidence inspected.
+- [x] Desktop, 390px, 320px, keyboard/pointer, no-JavaScript and motion-pause checks.
+- [x] Production build, calculation tests, baseline comparison and scope verification.
+- [ ] Merge the exact reviewed head and verify the production workflow and served assets.
+
+P3 follow-up: optional finer chart axis labels can be revisited only if users need them. No additional layout work is required for this release.
