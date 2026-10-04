@@ -19,6 +19,8 @@ try{
   await page.screenshot({path:resolve(out,name+'-hero.png')});
   await page.locator('#figure-thresholds').scrollIntoViewIfNeeded();
   await page.locator('#figure-thresholds').screenshot({path:resolve(out,name+'-figure.png')});
+  await page.locator('#figure-breaches').scrollIntoViewIfNeeded();
+  await page.locator('#figure-breaches').screenshot({path:resolve(out,name+'-breaches.png')});
   const state=await page.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,
    canonical:document.querySelector('link[rel="canonical"]')?.href,
    ga4:document.documentElement.innerHTML.match(/gtag\('config'/g)?.length??0,
