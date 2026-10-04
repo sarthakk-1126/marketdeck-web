@@ -128,6 +128,10 @@ No new event/submission because publication has not activated. Existing behavior
 
 No production changes, Docker build or full crawl. New Contabo source baseline clean, apps healthy. Preflight14:06UTC4Oct2026:8.4GiB available RAM,173GiB disk,4GiB swap virtually unused, load0.05/0.11/0.14. All computation off-VPS and sequential. Rollback/deploy/live HTML/canonical/GA4/sitemap/robots/Atom/IndexNow checks remain gated. Existing images/rollback and platform-core untouched. Live study acceptance is NOT claimed.
 
+Final read-only check14:24UTC: production web SHA remains9de75db with clean working tree;8.5GiB available RAM,173GiB disk, load0.05/0.10/0.10. A default Python HTTPS request from the VPS to the existing P/E URL returned403. This does not establish page indexability or a browser-wide failure. If its admission is authorized, verify browser/origin behavior before adding it; no WAF/auth/infrastructure repair has been started.
+
+Research release preserved in draft PR https://github.com/sarthakk-1126/marketdeck-web/pull/67 (OPEN/DRAFT, mergeable). Initial research commit3bf4fbe80396785d48d7b9b1e6a163d106bef256. GitHub rollback branch `rollback/sg09-var-baseline-20261004` verified at9de75dbb3d430302229417a06f4104d65822d1d4. This preserves Git source; production static/state archives and live acceptance must still precede deployment/activation. No production merge or deployment was performed.
+
 ## 28. SG-09A–F individually
 
 - A: process implemented and tested; OPEN pending successful publication.
