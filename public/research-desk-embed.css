@@ -8,3 +8,14 @@
 .md-desk-embed .marketdeck-skip,.md-desk-embed .md-skip{position:absolute;top:-80px}
 .md-desk-embed .marketdeck-skip:focus,.md-desk-embed .md-skip:focus{top:8px;z-index:100}
 @media(max-width:700px){.md-desk-embed #main-content,.md-desk-embed #md-main{padding:8px!important}}
+/* Keep the opt-in engines readable inside the terminal's flat canvas. */
+.md-desk-embed .instrument-header{padding:14px 16px!important;border-radius:8px!important;border-color:var(--md-border-strong)!important}
+.md-desk-embed .instrument-header h1{font-size:18px!important;line-height:1.4!important}
+.md-desk-embed .instrument-as-of,.md-desk-embed .empty-note{font-size:12px!important;line-height:1.65!important}
+.md-desk-embed button,.md-desk-embed input,.md-desk-embed select{font-size:13px;min-height:34px}
+.md-desk-embed input[type=checkbox],.md-desk-embed input[type=radio]{min-height:0}
+.md-desk-embed table{font-size:12px}
+.md-desk-embed label{line-height:1.6}
+.md-desk-embed button:focus-visible,.md-desk-embed input:focus-visible,.md-desk-embed select:focus-visible,.md-desk-embed a:focus-visible{outline:2px solid #9c87f5;outline-offset:3px}
+@media(max-width:700px){.md-desk-embed input,.md-desk-embed select{font-size:16px;min-height:38px}.md-desk-embed button{min-height:38px}}
+@media(prefers-reduced-motion:reduce){.md-desk-embed *,.md-desk-embed *::before,.md-desk-embed *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
