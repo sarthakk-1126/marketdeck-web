@@ -49,3 +49,11 @@ SG-09A/B/C/E/F satisfied by this production-verified pilot. SG-09D remains OPEN:
 P/E follow-up only: https://github.com/sarthakk-1126/marketdeck-web/issues/69. No broader reconciliation performed. Future full registry re-enumeration must reconcile that lifecycle discrepancy explicitly, not silently admit it.
 
 SG-07C stays paused/frozen; no citation prompts or SG-07D experiment started. Company-reporting study atbf2a6f1 stays rights-paused and unchanged. No second research study or new phase started.
+
+## Final state readback
+
+Roadmap19 readback PASS: only Phase9 section changed; A/B/C/E/F checked, D open, SG07C unchanged. P/E source-registry entry equals immediate pre-deploy baseline exactly; all five non-web accepted envelope files are byte-identical to the private rollback archive.
+
+A separate analytics/privacy PR70 subsequently advanced production to `4b4b58c116aa68e50522368fcaee301db13c80dd`. Its diff touches only privacy HTML, the analytics source helper and its tests, not the VaR HTML/figures/manuscript/results or central release. Fresh bounded current-production browser/HTTP acceptance was rerun; research safeguards and12,889 inventory remain PASS. No analytics/privacy implementation or deployment was performed by this ticket. Release attribution remains PR67/11ba1f9 and publisher16:24:13Z. Any future rollback must preserve these newer legitimate changes; do not blindly reset current production to an older archive.
+
+Final resource readback:8.7GiB available RAM,160GiB free disk,768KiB swap; clean current-production checkout. Post-release report/measurement/capture-harness evidence is on the research evidence branch, not redeployed as another production mutation.
