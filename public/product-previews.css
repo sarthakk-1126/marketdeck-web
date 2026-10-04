@@ -1,0 +1,90 @@
+/* Scoped enhancements; homepage palette and all other sections stay unchanged. */
+.suite-overview-card[data-preview-ready]{
+  --accent:var(--blue);
+  --accent-rgb:89,167,245;
+  min-height:0;
+  padding:0;
+  background:var(--surface);
+  border-color:#354452;
+  box-shadow:none
+}
+.suite-overview-card[data-preview-ready]:before,
+.suite-overview-card[data-preview-ready]:after{display:none}
+.suite-overview-card[data-preview-ready]:is(:hover,:focus-within){
+  transform:none;
+  border-color:var(--blue);
+  box-shadow:none
+}
+.suite-overview-card[data-preview-ready]:nth-child(4){grid-column:1/span 6;min-height:0}
+.suite-overview-card[data-preview-ready]:nth-child(5){grid-column:7/span 6;min-height:0}
+.suite-overview-card[data-preview-ready] .suite-overview-art,
+.suite-overview-card[data-preview-ready] .suite-overview-chips{display:none}
+.suite-overview-card[data-preview-ready] .suite-overview-card-content{
+  max-width:none;
+  width:100%;
+  min-height:0;
+  padding:22px 24px 20px
+}
+.suite-overview-card[data-preview-ready] .suite-overview-icon{
+  width:32px;height:32px;margin-bottom:12px;color:#a3b5ca;border-color:#354452;background:transparent;box-shadow:none
+}
+.suite-overview-card[data-preview-ready] .suite-overview-icon .icon{width:19px;height:19px}
+.suite-overview-card[data-preview-ready] .suite-overview-category{color:#8fa8c3;font-size:8px;margin-bottom:5px}
+.suite-overview-card[data-preview-ready] h3{font-size:24px;line-height:1.15}
+.suite-overview-card[data-preview-ready] .suite-overview-lead{font-size:13px;line-height:1.5;margin-top:7px}
+.suite-overview-card[data-preview-ready] .suite-overview-link{font-size:12px;padding-top:14px;gap:10px}
+.product-preview{width:100%;margin-top:12px}
+.preview-choices{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.preview-choices button,.preview-excerpts button{
+  border:1px solid #354452;border-radius:999px;background:transparent;color:#becada;
+  font-size:11px;line-height:1.2;min-height:32px;padding:6px 12px;white-space:nowrap;
+  transition:background .15s,border-color .15s,color .15s
+}
+.preview-choices button[aria-pressed="true"],.preview-excerpts button[aria-pressed="true"]{
+  background:#24486d;border-color:var(--blue);color:#edf1f6
+}
+.preview-choices button:hover,.preview-excerpts button:hover{border-color:var(--blue)}
+.preview-choices button:focus-visible,.preview-excerpts button:focus-visible{outline-offset:3px}
+.preview-body{width:100%;min-height:106px}
+.preview-note{font-size:10px;line-height:1.5;color:#929eac;margin-top:7px;min-height:15px}
+.preview-table-head{display:flex;justify-content:space-between;color:#a3b5ca;font-size:10px;line-height:1.5;padding-bottom:5px;border-bottom:1px solid var(--line)}
+.preview-company-list{list-style:none;margin:0;padding:0}
+.preview-company-list li{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(35px,1fr) 32px;align-items:center;gap:10px;min-height:28px;font-size:11px;border-bottom:1px solid var(--line)}
+.preview-company-list li:last-child{border-bottom:0}
+.preview-company-list strong{font-size:10px;text-align:right;font-weight:500;color:#d0d8e2}
+.preview-company-list meter{display:block;width:100%;height:7px;appearance:none;border:0;background:#202e40;border-radius:5px;overflow:hidden}
+.preview-company-list meter::-webkit-meter-bar{height:7px;background:#202e40;border:0;border-radius:5px}
+.preview-company-list meter::-webkit-meter-optimum-value{background:var(--blue);border-radius:5px}
+.preview-company-list meter::-moz-meter-bar{background:var(--blue);border-radius:5px}
+.preview-plot{display:block;width:100%;height:98px}
+.preview-chart{position:relative}
+[data-overview-product="charting"] .preview-plot{cursor:crosshair;touch-action:pan-y}
+.preview-axis{display:flex;justify-content:space-between;padding:0 1px;color:#929eac;font-size:10px;line-height:1.5}
+.preview-tooltip{position:absolute;top:0;right:5px;pointer-events:none;font-size:10px;line-height:1.5;color:#d0d8e2;background:var(--surface);padding:0 4px}
+.preview-range-label{display:flex;justify-content:space-between;color:#aab9cb;font-size:10px;line-height:1.4;margin-top:3px}
+.preview-range{display:block;width:100%;height:19px;margin:0;accent-color:var(--blue);cursor:ew-resize}
+.preview-payoff-status{color:#aab9cb;font-size:10px;line-height:1.5}
+[data-overview-product="fno"] .preview-plot{height:72px}
+[data-overview-product="commentary"] .preview-body{min-height:66px;border-top:1px solid var(--line);padding-top:10px}
+.preview-excerpt-top{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:10px;color:#a3b5ca}
+.preview-excerpts{display:flex;gap:5px}
+.preview-excerpts button{border-radius:5px;font-size:10px;padding:5px 9px}
+.preview-excerpt{font-size:13px;line-height:1.6;color:#d0d8e2;margin:9px 0 0;min-height:42px}
+.suite-overview-card[data-preview-ready]:nth-child(n+4) .suite-overview-icon{position:absolute;top:21px;right:24px;margin:0}
+.suite-overview-card[data-preview-ready]:nth-child(n+4) .suite-overview-category{padding-right:44px}
+[data-overview-product="crypto"] .preview-plot{height:72px}
+@media(max-width:1100px){
+  .suite-overview-card[data-preview-ready],.suite-overview-card[data-preview-ready]:nth-child(4){grid-column:auto}
+  .suite-overview-card[data-preview-ready]:nth-child(5){grid-column:1/-1;width:calc(50% - 9px)}
+}
+@media(max-width:700px){
+  .suite-overview-card[data-preview-ready],.suite-overview-card[data-preview-ready]:nth-child(4),.suite-overview-card[data-preview-ready]:nth-child(5){grid-column:auto;width:100%}
+  .suite-overview-card[data-preview-ready] .suite-overview-card-content{padding:19px 20px 18px}
+  .suite-overview-card[data-preview-ready] .suite-overview-icon{position:absolute;top:18px;right:20px;margin:0}
+  .suite-overview-card[data-preview-ready] .suite-overview-category{padding-right:44px}
+  .suite-overview-card[data-preview-ready] h3{font-size:23px;padding-right:38px}
+  .suite-overview-card[data-preview-ready] .suite-overview-lead{font-size:12px}
+  .preview-choices button,.preview-excerpts button{min-height:36px}
+  .suite-overview-card[data-preview-ready]:nth-child(n+4) .suite-overview-icon{top:18px;right:20px}
+}
+@media(prefers-reduced-motion:reduce){.preview-choices button,.preview-excerpts button{transition:none}}
