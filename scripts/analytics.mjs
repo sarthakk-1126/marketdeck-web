@@ -24,6 +24,7 @@ export function analyticsTag(canonicalUrl) {
     allow_ad_personalization_signals: false
   });
 </script>
+<script defer src="https://platform.marketdeck.in/analytics/client.js"></script>
 ${MARKER_END}`;
 }
 
@@ -49,3 +50,4 @@ export function stripAnalytics(html) {
   if (end < 0) throw new Error('Unterminated MarketDeck GA4 block');
   return html.slice(0, start) + html.slice(end + MARKER_END.length);
 }
+

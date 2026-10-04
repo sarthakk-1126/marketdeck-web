@@ -13,6 +13,7 @@ test('injects GA4 once using the canonical URL as page_location', () => {
   assert.match(once, /allow_ad_personalization_signals: false/);
   assert.equal((once.match(/googletagmanager\.com\/gtag\/js/g) || []).length, 1);
   assert.equal(twice, once);
+  assert.equal((once.match(/platform\.marketdeck\.in\/analytics\/client\.js/g) || []).length, 1);
 });
 
 test('does not instrument pages without an approved canonical', () => {
@@ -30,4 +31,6 @@ test('review cleanup removes the analytics block', () => {
   const tagged = injectAnalytics(html);
   const clean = stripAnalytics(tagged);
   assert.equal(clean, html);
+  assert.ok(!clean.includes("analytics/client.js"));
 });
+
