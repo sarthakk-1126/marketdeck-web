@@ -1,55 +1,54 @@
-# MarketDeck Lens — homepage guide and FAQ QA
+# Homepage product-card preview QA
 
-final result: passed
+final result: blocked
 
-## Scope and reference
+## Target and scope
 
-Implement the user-approved floating MarketDeck Lens panel with searchable FAQs, typed guidance and real research links. The first version uses curated knowledge, not a generative model or live company data. Preserve the homepage hero, interactions, calculations, SEO and concurrent admin/server work.
+- Source visual truth: `/workspace/scratch/adf03b8116c5/upload/image(20261004-175404).png` (user-selected playable-preview concept; attached file `libfile_12e02e8054a48191a7552d39f7e6e2a5`).
+- The attachment is a screenshot of the concept with viewer controls overlapping its lower corners. Those viewer controls are not product UI.
+- User overrides: update only the five research-stack cards; retain current site colours and compact sizing; keep the work undeployed until the other deployment is finished.
+- Baseline: `09442cb`, including the merged Research Desk changes.
+- Implementation: homepage served by an isolated local preview rooted at `.preview/cards-site`.
+- Implementation screenshot: unavailable. No screenshot or browser verification is claimed.
+- Intended desktop comparison: 1440 × 1024 CSS pixels, DPR 1, Charting selected with a visible crosshair.
+- Intended responsive checks: 390 and 320 CSS-pixel widths, all five cards, keyboard and touch controls.
+- Source/implementation density normalization and focused/full-view comparison: not performed because the browser cannot load the preview.
 
-Approved source: `/workspace/scratch/4f500b3673a6/generated_images/exec-ad6d87f5-0ee7-49b8-9d5a-79a4cce941ff.png`, 1672 × 941.
+## Blocking finding
 
-Implementation evidence: `.preview/lens-reference-viewport-20261004.jpg`, 1672 × 941, captured from the rendered preview in Chromium at a real 1672 × 941 iframe viewport, 1 CSS pixel per captured pixel. State: Guide open after asking “Help me research TCS”. The panel occupies x=1150, y=83, width=500, height=780, matching the reference frame.
+[P1] Browser-rendered verification is unavailable in this session.
 
-Full comparison: `.preview/lens-comparison-final.jpg`, 3344 × 981, source and implementation side by side at original dimensions. Focused comparison: `.preview/lens-panel-comparison-final.jpg`, 1020 × 820, identical x=1150–1650/y=83–863 crops at 1:1. Both were opened and visually inspected.
+The cloud browser rejected `http://terminal.local:4173/` with `ERR_BLOCKED_BY_CLIENT`, followed by an explicit browser security-policy rejection. No alternate browser surface or navigation workaround was attempted after that policy rejection. Desktop/mobile screenshots, primary browser interactions, console-error inspection, and visual comparison remain required before merge/deployment.
 
-Additional browser evidence: `.preview/lens-desktop-pass2-20261004.jpg`, `.preview/lens-faq-desktop-20261004.jpg`, and `.preview/lens-phone-verified-20261004.jpg`. Phone sheets were exercised in real 320 × 844 and 390 × 844 frame viewports. A 390 × 420 viewport verified the compact layout with FAQ search and three matching results visible.
+## Required fidelity surfaces
 
-## Fidelity review
+- Typography: uses the existing homepage font tokens and icons; rendered wrapping and readability remain unverified.
+- Spacing: card-only styles use 22/24px desktop padding, compact plots, 32px controls; mobile padding 19/20px and controls 36px. Actual layout and overflow remain unverified.
+- Colours: existing `--surface`, `--blue` (#59a7f5), slate labels and borders; no global token changes. Visual comparison remains pending.
+- Assets: existing icon sprite and original artwork retained for the no-JavaScript fallback. The preview charts are functional canvas plots of the bundled fictional datasets and calculated option payoff, not decorative replacements.
+- Copy: existing product names, categories, leads and Explore links retained. Fictional sample labels added directly to the previews; no live feed or actual transcript is claimed.
 
-| Surface | Result |
-| --- | --- |
-| Typography | Existing site font retained. One-line welcome heading, clear identity, readable answer and link hierarchy. Wide-screen heading and label sizing refined after comparison. |
-| Spacing and layout | Fluid 380–500 px desktop frame, three welcome actions, user bubble, boxed guide answer and pinned composer match the approved composition. Phone layout becomes a bottom sheet with safe-area spacing. |
-| Colors | Dark navy surfaces, quiet blue borders, pale text and muted supporting copy align with the mockup and existing homepage. |
-| Assets | Actual MarketDeck M logo and existing icon sprite used in launcher, header and answer avatar. No replacement hero assets or decorative generated imagery. |
-| Copy and behavior | Real company/chart routes and curated explanations replace approximate mockup text. FAQs, reset, source/privacy wording and disabled empty-send state are intentional additions required for a usable guide. |
+## Completed non-browser verification
 
-Intentional deviations: Guide/FAQs navigation and Start again affordances add a slim control strip; welcome disclosure explains curated answers. The site's actual typography, icons and data terminology take precedence over approximate generated text. No unsupported live company figures or fabricated key events are shown.
+- Production bundle/build and review build succeeded.
+- New calculation/data tests: 4/4 passed. Checked sorting, long-call/long-put premium losses, breakevens, covered-call cap and underlying loss, positive finite samples, and date endpoints.
+- Full suite: 100/102 passed. Current-main baseline: 96/98 passed. The same two pre-existing failures occur in both: stale external-script allowlist and stale product-art preview assertions.
+- A portfolio-specific assertion now checks its portfolio section rather than prohibiting educational sample rupee values anywhere on the homepage.
+- JS syntax checks and `git diff --check` passed.
+- Exact normalized HTML comparison: all markup outside the card grid is unchanged, apart from the two new preview asset tags.
+- Existing global CSS/JS, original overview CSS, bot CSS/JS, portfolio CSS/JS and product destinations are byte-identical to baseline.
+- Added JS/model/CSS transfer: 18,188 bytes raw; 5,790 bytes gzip, with no polling, new API calls or dependencies.
 
-## Findings and fixes
+## Comparison history
 
-| Priority | Finding | Fix and post-fix evidence |
-| --- | --- | --- |
-| P2 | Early welcome/answer spacing hid useful choices and crowded the transcript. | Compacted welcome, boxed answer, refined spacing and fluid desktop width. Final full and focused comparisons retain the primary actions and pinned composer. |
-| P2 | Disabling Send after submission lost composer focus. | Return focus to the input after submission. Enter and button submissions exercised in the rendered browser. |
-| P1 | Chart resolver rejects a company name or bare ticker such as TCS. | Use verified NSE symbols, including TCS.NS. Real links resolved to `/screener/company/TCS.NS/` and `/charts/TCS.NS/` with the correct company heading/title. Ambiguous names use product search rather than invented symbols. |
-| P2 | Reduced phone height crowded FAQ results. | Observe visualViewport and use a compact mode below 600 px available height. In the 390 × 420 frame the panel measured 390 × 404 at y=8, with search and matching results usable. |
+No rendered comparison was possible. Do not interpret build or unit-test success as design QA passing.
 
-No open P0, P1 or P2 findings remain.
+## Before deployment
 
-## Functional and regression validation
-
-- Build and syntax checks passed; generated bundles reproduce the tested source. `git diff --check` passed.
-- Lens tests: 8/8 passed. Homepage tests: 12/12 passed.
-- Full existing check: 77/78 passed. The one failure in `tests/product-art.test.mjs` expects a missing `data-preview-src` attribute and also fails on the pre-Lens baseline; unrelated product markup was preserved. Logs: `.preview/lens-final-check.log` and `.preview/lens-baseline.log`.
-- Browser: launcher, close/backdrop, Escape and restored focus, Guide/FAQ arrow-key navigation, reset, typed questions, Send/Enter focus, FAQ category/filter/expand, empty results, unknown-question fallback and real company/chart navigation exercised.
-- Production route construction uses curated same-origin URLs, encoded queries and registered company symbols. Dynamic text uses textContent; transcript is memory-only, capped at 20 exchanges. No API calls, third-party scripts or persisted conversation data.
-- Site-owned browser console error check returned no errors. Extension metadata errors were unrelated to the page.
-
-Limits: native iOS/Android soft keyboards were not directly exercised; reduced available-height behavior was validated in Chromium frames. Cloud Chromium had WebGL disabled and displayed the existing hero poster, so native hero animation was not revalidated here. Hero code is unchanged from the base.
-
-## Deployment boundary
-
-Static homepage markup, Lens stylesheet and bundled module only. Bundle is approximately 24.6 KB and stylesheet approximately 11 KB before transport compression. No paid model dependency, service restart, database, Caddy, firewall, systemd, cron or Compose changes.
-
-Previous hero QA preserved in `docs/qa/market-block-20261002.md`.
+1. Confirm the user's other work/deployment is finished. Keep this draft unmerged in the meantime.
+2. Rebase or merge the latest `main`, retaining concurrent changes.
+3. Open the local preview in an allowed cloud-browser session; capture desktop and phone layouts.
+4. Compare the card grid with the selected concept, allowing the requested current-palette, compact-sizing and unchanged-page adaptations.
+5. Verify all filters, chart pointer/keyboard interaction, strategy switches and range control, source/excerpt switches, BTC/ETH, and Explore destinations.
+6. Check 320/390px overflow, touch scrolling, reduced motion, no-JavaScript fallback and browser console errors.
+7. Fix any P0/P1/P2 findings, re-capture, and update this report to `final result: passed` before merge/deploy.

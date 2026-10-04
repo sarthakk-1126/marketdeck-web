@@ -111,7 +111,9 @@ test('portfolio research has a first-class, lightweight public discovery path', 
   assert.match(html, /href="\/portfolio-flagship\.css\?v=aperture-20261002"/);
   assert.match(html, /src="\/portfolio-flagship\.js\?v=aperture-20261002"/);
   assert.match(readFileSync('public/portfolio-flagship.css', 'utf8'), /prefers-reduced-motion/);
-  assert.doesNotMatch(html, /₹\s*[0-9]|recommended allocation|optimal portfolio/i);
+  const portfolioSection = html.match(/<section id="portfolio-analysis"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(portfolioSection);
+  assert.doesNotMatch(portfolioSection, /₹\s*[0-9]|recommended allocation|optimal portfolio/i);
 });
 test('approved magazine is public while the older draft stays excluded',()=>{
   const issues=JSON.parse(readFileSync('content/briefs.json')).issues;
