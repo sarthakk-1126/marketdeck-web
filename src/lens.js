@@ -75,7 +75,7 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
       empty.append(button); fragment.append(empty);
     }
     faqList.replaceChildren(fragment);
-    faqCount.textContent = `${results.length} ${results.length === 1 ? 'question' : 'questions'}`;
+    faqCount.textContent = `${results.length} ${results.length === 1 ? 'question' : 'questions'}${category === categories[0] ? '' : ` · ${category}`}`;
   }
   for (const label of categories) {
     const button = node('button', 'lens-chip lens-category', label); button.type = 'button';
@@ -147,9 +147,11 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
   const viewport = window.visualViewport;
   const fitViewport = () => {
     if (viewport) { dialog.style.setProperty('--lens-viewport-height', `${Math.round(viewport.height)}px`); dialog.style.setProperty('--lens-viewport-top', `${Math.round(viewport.offsetTop)}px`); }
+    dialog.classList.toggle('lens-compact', (viewport?.height ?? window.innerHeight) < 600 && window.innerWidth <= 650);
   };
   viewport?.addEventListener('resize', fitViewport);
   viewport?.addEventListener('scroll', fitViewport);
+  window.addEventListener('resize', fitViewport, { passive: true });
   fitViewport(); renderFaqs(); syncSend();
   document.body.classList.add('lens-ready'); launcher.hidden = false;
 }

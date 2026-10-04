@@ -123,4 +123,8 @@
   .lens-footer{padding-bottom:calc(10px + env(safe-area-inset-bottom))}
 }
 @media(max-height:600px){.lens-dialog{height:calc(var(--lens-viewport-height,100dvh) - 16px);top:calc(var(--lens-viewport-top,0px) + 8px);bottom:auto}.lens-header{padding-top:10px;padding-bottom:10px}.lens-faq-head{padding-top:12px}.lens-welcome h3{font-size:22px}.lens-scroll{padding-top:16px}.lens-composer-note{margin-top:5px}}
+.lens-dialog.lens-compact{top:calc(var(--lens-viewport-top,0px) + 8px);height:calc(var(--lens-viewport-height,100dvh) - 16px)}
+.lens-dialog.lens-compact .lens-header{padding:8px 14px}
+.lens-dialog.lens-compact .lens-faq-head{padding:10px 18px 12px;flex:none}
+.lens-dialog.lens-compact .lens-faq-head :is(h3,p),.lens-dialog.lens-compact .lens-categories{display:none}
 @media(prefers-reduced-motion:reduce){.lens-launcher-label{transition:none}}
