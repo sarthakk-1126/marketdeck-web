@@ -4,7 +4,9 @@ import {readFileSync,existsSync,mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {inline,parseArticle,illustration,buildArticles,displayDate} from '../scripts/articles.mjs';
-const meta=JSON.parse(readFileSync('content/articles/metadata.json','utf8'));
+// Existing field-guide contracts remain exact. Original research has a separate,
+// stricter result/figure/reproducibility acceptance suite (research.test.mjs).
+const meta=JSON.parse(readFileSync('content/articles/metadata.json','utf8')).filter(a=>!a.originalResearch);
 const isolated=mkdtempSync(join(tmpdir(),'marketdeck-article-tests-'));
 buildArticles({root:isolated,review:false,baseNotes:[]});
 after(()=>rmSync(isolated,{recursive:true,force:true}));
