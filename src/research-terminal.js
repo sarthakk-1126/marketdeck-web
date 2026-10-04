@@ -41,7 +41,7 @@ export function createTerminal(api){
   }else $('[data-fo-frame]').removeAttribute('src');
  }
  const fields={
-  base:['Base EPS / share',0,1e7,.01],growth:['Growth per year (%)',-90,100,.5],discount:['Required return (%)',.1,100,.5],terminal:['Terminal growth (%)',-90,99,.5],years:['Forecast years',1,20,1],multiple:['Exit P/E multiple',.1,200,.5],dividend:['Current dividend / share',0,1e7,.01],shares:['Diluted shares (crore)',.000001,1e8,.01],cash:['Cash & nonoperating assets (₹ Cr)',0,1e12,1],debt:['Debt & other claims (₹ Cr)',0,1e12,1],marginSafety:['Assumed safety buffer (%)',0,80,1]
+  base:['Base EPS / share',0,1e7,.01],growth:['Growth per year (%)',-90,100,.5],discount:['Required return (%)',.1,100,.1],terminal:['Terminal growth (%)',-90,99,.5],years:['Forecast years',1,20,1],multiple:['Exit P/E multiple',.1,200,.1],dividend:['Current dividend / share',0,1e7,.01],shares:['Diluted shares (crore)',.000001,1e8,.01],cash:['Cash & nonoperating assets (₹ Cr)',0,1e12,1],debt:['Debt & other claims (₹ Cr)',0,1e12,1],marginSafety:['Assumed safety buffer (%)',0,80,1]
  };
  function renderValueControls(){
   const a=state.valuation;

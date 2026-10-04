@@ -50,6 +50,9 @@ the same-origin parent; it never exports prices or saved records. GET forms and
 date links retain embed state; other product links open a full workspace tab.
 The embedded stock picker is locked to the outer company navigator. Unsupported
 embedded symbols return 404 instead of silently falling back to an index.
+Embedded historical chains default to the latest cached NSE archive, use the
+actual displayed trading date and return missing-cache states immediately.
+The full historical-chain product retains its existing free archive retrieval.
 
 1. Deploy marketdeck-web assets through its existing workflow.
 2. Deploy charting-v1 and fo-analytics-v1 opt-in views through their workflows.
@@ -65,8 +68,8 @@ Rollback the StockProof template/backend before removing new engine/assets.
 
 - 12 JS calculation tests pass, including independently derived perpetuity,
   enterprise bridge, earnings dividends, reverse solves and filing deltas.
-- StockProof: 48 targeted tests pass; Charting: 44 pass; F&O: 85 tests,
-  77 pass and 8 real-cache checks skip when their archives are absent.
+- StockProof: 48 targeted tests pass; Charting: 44 pass; F&O: 87 tests,
+  79 pass and 8 real-cache checks skip when their archives are absent.
   Tests run in isolated layers over the running application images, without
   production volumes or network access.
 - Two browser scripts pass at 1440×1050 and 390×844: sources, gaps, original
@@ -79,6 +82,15 @@ Rollback the StockProof template/backend before removing new engine/assets.
   attribute check. They are outside this feature.
 - An existing historical-chain archive fetch RuntimeError now becomes an honest
   unavailable-data state, tested without invented expiries or prices.
+- Production checks verified sourced EPS and return/reverse calculations,
+  real company chart controls and indicators, and embedded manual option
+  premium/Greeks/payoff output. Historical chains are checked against the
+  deployment's actual stored archive coverage. The independent Charting
+  fundamentals overlay currently reports HTTP 403; the terminal's Research
+  view supplies its own verified filing context and this change does not
+  modify that engine's internal API credentials.
+- Final browser checks also assert that discount/multiple slider positions
+  agree with typed values; the template refreshes the bundle version.
 
 Run `npm run build:review`, `npm run build`, `npm run check` and
 `node --test tests/research-*.test.mjs`. Browser scripts require
