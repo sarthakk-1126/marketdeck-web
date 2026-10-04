@@ -1,0 +1,10 @@
+.md-desk-embed .suite-sidebar,.md-desk-embed .masthead,.md-desk-embed .local-nav-scrim,.md-desk-embed .md-sidebar,.md-desk-embed .md-header,.md-desk-embed .md-suite-rail,.md-desk-embed .md-local-nav,.md-desk-embed .md-scrim,.md-desk-embed .lens-launcher{display:none!important}
+.md-desk-embed .marketdeck-shell,.md-desk-embed .md-shell{display:block!important;grid-template-columns:minmax(0,1fr)!important}
+.md-desk-embed .marketdeck-workspace,.md-desk-embed .md-main-column{margin:0!important;min-width:0!important}
+.md-desk-embed #main-content,.md-desk-embed #md-main{max-width:none!important;margin:0!important;padding:12px!important;min-width:0!important}
+.md-desk-embed{margin:0!important;min-width:0!important;background:var(--md-bg,var(--bg))!important}
+.md-desk-embed .instrument-header{padding:8px 12px!important;border-radius:0!important}
+.md-desk-embed .instrument-header h1{font-size:20px!important}
+.md-desk-embed .marketdeck-skip,.md-desk-embed .md-skip{position:absolute;top:-80px}
+.md-desk-embed .marketdeck-skip:focus,.md-desk-embed .md-skip:focus{top:8px;z-index:100}
+@media(max-width:700px){.md-desk-embed #main-content,.md-desk-embed #md-main{padding:8px!important}}

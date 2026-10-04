@@ -4,3 +4,5 @@ await build({ entryPoints: ['src/market-block.js'], outfile: 'public/assets/mark
 await build({ entryPoints: ['src/lens.js'], loader: {'.html':'text'}, outfile: 'public/assets/lens.js', bundle: true, format: 'esm', minify: true, target: 'es2022', legalComments: 'linked' });
 
 await build({ entryPoints: ['src/research-desk.js'], outfile: 'public/assets/research-desk.js', bundle: true, format: 'esm', minify: true, target: 'es2022', legalComments: 'linked' });
+await build({ entryPoints: ['src/research-terminal-workspace.js'], outfile: 'public/assets/research-terminal.js', bundle: true, format: 'esm', minify: true, target: 'es2022', legalComments: 'linked' });
+await build({ entryPoints: ['src/research-desk-embed.js'], outfile: 'public/assets/research-desk-embed.js', bundle: true, format: 'esm', minify: true, target: 'es2022', legalComments: 'linked' });
