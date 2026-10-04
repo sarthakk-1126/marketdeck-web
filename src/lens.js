@@ -1,5 +1,13 @@
+import panelMarkup from './lens-panel.html';
+import { searchShortcuts, shortcutGroups, pageContext } from './lens-shortcuts.js';
+import { loadPortfolio } from './lens-portfolio.js';
 import { answerQuestion, categories, searchFaqs } from './lens-knowledge.js';
 
+// A single versioned module mounts the same approved panel in every product shell.
+if (!document.querySelector('#marketdeck-lens')) {
+  const markup = new DOMParser().parseFromString(panelMarkup, 'text/html');
+  document.body.append(...[...markup.body.children].map(el => document.importNode(el, true)));
+}
 const launcher = document.querySelector('[data-lens-launcher]');
 const dialog = document.querySelector('#marketdeck-lens');
 if (launcher && dialog && typeof dialog.showModal === 'function') {
@@ -14,7 +22,11 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
   const faqCount = $('[data-lens-faq-count]');
   const close = $('[data-lens-close]');
   const tabs = [...dialog.querySelectorAll('[role="tab"]')];
-  let context = {}, category = categories[0];
+  let context = {}, category = categories[0], portfolioRequest = null;
+  const toolsSearch = $('#lens-tool-search'), toolsGroup = $('#lens-tool-group');
+  const portfolioBody = $('[data-lens-portfolio-body]');
+  const currentPage = pageContext(location.pathname);
+  $('[data-lens-context]').textContent = `You’re in ${currentPage.label}. One guide across the suite.`;
   const node = (tag, className, text) => {
     const el = document.createElement(tag);
     if (className) el.className = className;
@@ -55,8 +67,8 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
       document.getElementById(tab.getAttribute('aria-controls')).hidden = !active;
     }
     form.hidden = view !== 'guide';
-    $('[data-lens-faq-footer]').hidden = view !== 'faqs';
-    if (focus) (view === 'faqs' ? search : input).focus({ preventScroll: true });
+    $('[data-lens-faq-footer]').hidden = view === 'guide';
+    if (focus) (view === 'faqs' ? search : view === 'tools' ? toolsSearch : view === 'portfolio' ? $('[data-lens-refresh]') : input).focus({ preventScroll: true });
   }
   function renderFaqs() {
     const results = searchFaqs(search.value, category);
@@ -87,12 +99,68 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
     });
     $('[data-lens-categories]').append(button);
   }
+  function renderTools() {
+    const results = searchShortcuts(toolsSearch.value, toolsGroup.value);
+    $('[data-lens-tools-list]').replaceChildren();
+    appendLinks($('[data-lens-tools-list]'), results.map(s => ({...s, detail: `${s.category} · ${s.detail}`})));
+    $('[data-lens-tool-count]').textContent = `${results.length} ${results.length === 1 ? 'shortcut' : 'shortcuts'}`;
+    if (!results.length) $('[data-lens-tools-list]').append(node('p', 'lens-intro', 'No matching tool. Try a product name, calculator or watchlist.'));
+  }
+  for (const group of shortcutGroups) { const option = node('option', '', group); option.value = group; toolsGroup.append(option); }
+  toolsSearch.addEventListener('input', renderTools); toolsGroup.addEventListener('change', renderTools);
+  function clearPortfolio() {
+    portfolioRequest?.abort(); portfolioRequest = null;
+    portfolioBody.replaceChildren(node('p', 'lens-intro', 'Choose Refresh portfolio to read your saved Screener portfolio.'));
+    $('[data-lens-refresh]').disabled = false;
+  }
+  async function refreshPortfolio() {
+    portfolioRequest?.abort(); const controller = new AbortController(); portfolioRequest = controller;
+    const timer = setTimeout(() => controller.abort(), 15000);
+    const refresh = $('[data-lens-refresh]'); refresh.disabled = true;
+    portfolioBody.replaceChildren(node('p', 'lens-intro', 'Reading your saved portfolio…'));
+    try {
+      const result = await loadPortfolio(controller.signal);
+      if (portfolioRequest !== controller || !dialog.open) return;
+      portfolioBody.replaceChildren();
+      if (result.signedOut) {
+        portfolioBody.append(node('h4', '', 'Sign in to see your portfolio.'), node('p', 'lens-intro', 'Your Screener session is required. After signing in, open Lens and choose Portfolio update.'));
+        appendLinks(portfolioBody, [{label:'Sign in to Screener',href:'/screener/accounts/login/?next=%2Fscreener%2Fportfolio%2F',detail:'Your own saved holdings only'}, {label:'Portfolio Analysis',href:'/screener/portfolio-analysis/',detail:'Explore the research tools without account data'}]);
+        return;
+      }
+      const p = result.portfolio;
+      portfolioBody.append(node('h4','lens-portfolio-name',p.name),node('p','lens-intro',p.description));
+      const grid = node('div','lens-portfolio-metrics');
+      for (const metric of p.metrics) {
+        const box = node('div','lens-portfolio-metric'); box.append(node('span','',metric.label),node('strong','',metric.value));
+        if (metric.note) box.append(node('small','',metric.note)); grid.append(box);
+      }
+      portfolioBody.append(grid,node('p','lens-intro', `${p.basis} Refreshed ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}.`));
+      if (p.warning) portfolioBody.append(node('p','lens-portfolio-warning',p.warning));
+      if (p.empty) portfolioBody.append(node('p','lens-intro',p.empty));
+      if (p.holdings.length) portfolioBody.append(node('h4','',`Holdings · ${p.holdings.length} open ${p.holdings.length === 1 ? 'lot' : 'lots'}`));
+      for (const h of p.holdings) {
+        const item = node('details','lens-faq'); item.append(node('summary','',`${h.ticker} · ${h.value}`));
+        const body = node('div','lens-faq-answer'); body.append(node('p','',`${h.name} · ${h.purchase}`));
+        for (const [label,value] of [['Quantity',h.quantity],['Cost',h.cost],['Stored price & source',h.price],['Current value',h.value],['Unrealized gain / loss',h.gain]]) body.append(node('p','',`${label}: ${value}`));
+        appendLinks(body,[{label:'Company research',href:`/screener/search/?q=${encodeURIComponent(h.ticker)}`,detail:'Financials and source traces'}]);
+        item.append(body);portfolioBody.append(item);
+      }
+      appendLinks(portfolioBody,[{label:'Open portfolio / switch portfolio',href:'/screener/portfolio/',detail:'Manage holdings and select another saved portfolio'}, {label:'Transaction history',href:'/screener/portfolio/transactions/',detail:'Review the ledger'}, {label:'Portfolio analysis',href:'/screener/portfolio/metrics/',detail:'Risk, return and diversification'}, {label:'Capital gains',href:'/screener/portfolio/capital-gains/',detail:'Review realized results'}]);
+    } catch (error) {
+      if (portfolioRequest !== controller || !dialog.open) return;
+      portfolioBody.replaceChildren(node('h4','','Portfolio could not be loaded.'), node('p','lens-intro', 'Try Refresh again, or open the portfolio workspace. Your saved ledger has not been changed.'));
+      appendLinks(portfolioBody,[{label:'Open portfolio',href:'/screener/portfolio/',detail:'Read the original workspace'}]);
+    } finally { clearTimeout(timer); if (portfolioRequest === controller) {refresh.disabled = false; portfolioRequest = null;} }
+  }
+  $('[data-lens-refresh]').addEventListener('click', refreshPortfolio);
+  window.addEventListener('pagehide', clearPortfolio);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) clearPortfolio(); });
   function syncSend() { $('[data-lens-send]').disabled = !input.value.trim(); }
   function ask(question) {
     const query = question.trim().slice(0, 280);
     const reply = answerQuestion(query, context);
     if (!reply) return;
-    if (reply.view) { setView(reply.view, true); return; }
+    if (reply.view) { setView(reply.view, true); if (reply.view === 'portfolio') refreshPortfolio(); return; }
     setView('guide');
     context = reply.context ?? {};
     const exchange = node('div', 'lens-exchange');
@@ -114,12 +182,14 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
     close.focus({ preventScroll: true });
   });
   close.addEventListener('click', () => dialog.close());
-  dialog.addEventListener('close', () => { launcher.setAttribute('aria-expanded', 'false'); launcher.focus({ preventScroll: true }); });
+  dialog.addEventListener('close', () => { clearPortfolio(); launcher.setAttribute('aria-expanded', 'false'); launcher.focus({ preventScroll: true }); });
   dialog.addEventListener('click', event => {
     if (event.target === dialog) {
       const rect = dialog.getBoundingClientRect();
       if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
     }
+    const action = event.target.closest('[data-lens-action]');
+    if (action) { setView(action.dataset.lensAction, true); if (action.dataset.lensAction === 'portfolio') refreshPortfolio(); }
     const question = event.target.closest('[data-lens-ask]');
     if (question) ask(question.dataset.lensAsk);
     const link = event.target.closest('a');
@@ -129,7 +199,7 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
   input.addEventListener('input', syncSend);
   search.addEventListener('input', renderFaqs);
   for (const tab of tabs) {
-    tab.addEventListener('click', () => setView(tab.dataset.lensView));
+    tab.addEventListener('click', () => {setView(tab.dataset.lensView); if (tab.dataset.lensView === 'portfolio') refreshPortfolio();});
     tab.addEventListener('keydown', event => {
       if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
       event.preventDefault();
@@ -138,6 +208,7 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
     });
   }
   $('[data-lens-reset]').addEventListener('click', () => {
+    clearPortfolio(); toolsSearch.value = ''; toolsGroup.value = 'All tools'; renderTools();
     context = {}; transcript.replaceChildren(); input.value = ''; search.value = ''; category = categories[0];
     for (const chip of $('[data-lens-categories]').children) chip.setAttribute('aria-pressed', String(chip.textContent === category));
     renderFaqs(); syncSend(); setView('guide'); scroll.scrollTop = 0;
@@ -152,6 +223,6 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
   viewport?.addEventListener('resize', fitViewport);
   viewport?.addEventListener('scroll', fitViewport);
   window.addEventListener('resize', fitViewport, { passive: true });
-  fitViewport(); renderFaqs(); syncSend();
+  fitViewport(); renderTools(); renderFaqs(); syncSend();
   document.body.classList.add('lens-ready'); launcher.hidden = false;
 }
