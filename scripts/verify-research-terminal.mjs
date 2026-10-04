@@ -15,7 +15,10 @@ const value=(key,input)=>page.locator(`[data-value-input="${key}"]`).fill(String
 try{
  await page.goto(origin+'/screener/research-desk/?company=TCS.NS');
  await expect(page.locator('[data-chart] svg')).toBeVisible();
- await page.locator('[data-view="valuation"]').click();await value('base',100);await value('discount',10);
+ await page.locator('[data-view="valuation"]').click();
+ await expect(page.locator('[data-value-slider="discount"]')).toHaveValue('12');
+ await expect(page.locator('[data-value-slider="multiple"]')).toHaveValue('20');
+ await value('base',100);await value('discount',10);
  await expect(page.locator('[data-value-result]')).toContainText('2,000');
  await page.locator('[data-value-price]').fill('2000');await expect(page.locator('[data-value-reverse]')).toContainText('10.00%');
  await value('dividend',10);await expect(page.locator('[data-value-result]')).toContainText('2,050');
