@@ -30,11 +30,10 @@ ${MARKER_END}`;
 
 export function injectAnalytics(html) {
   if (typeof html !== 'string') throw new Error('HTML must be a string');
-  if (html.includes(MARKER_START)) return html;
-
   const match = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"\s*>/i);
   if (!match) return html;
 
+  html = stripAnalytics(html);
   const headIndex = html.indexOf('<head>');
   if (headIndex < 0) throw new Error('Canonical HTML is missing <head>');
 
