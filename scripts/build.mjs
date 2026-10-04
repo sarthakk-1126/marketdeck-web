@@ -39,7 +39,7 @@ const schema = homepageIdentityGraph();
 const companionSection = readFileSync(new URL('../src/companion-section.html', import.meta.url), 'utf8');
 let html = readFileSync(new URL('../src/index.template.html', import.meta.url), 'utf8');
 html=buildEditorial({data,template:html,root:output,review});
-for (const [key, value] of Object.entries({ PRODUCT_TABS: productTabs, PRODUCT_OVERVIEW: productOverview, COMPANION_SECTION: companionSection, COMMUNITY_TABS: communityTabs, COMMUNITY_PANELS: communityPanels, COMMUNITY_LEGEND: communityLegend, CONTACTS: contacts, FOOTER_PRODUCTS: footerProducts, LEGAL: legal, NEWSLETTER: newsletter, NEWSLETTER_NOTE: newsletterNote, SCHEMA: JSON.stringify(schema).replace(/</g, '\\u003c') })) html = html.replaceAll(`{{${key}}}`, value);
+for (const [key, value] of Object.entries({ LENS_PANEL: readFileSync('src/lens-panel.html', 'utf8'), PRODUCT_TABS: productTabs, PRODUCT_OVERVIEW: productOverview, COMPANION_SECTION: companionSection, COMMUNITY_TABS: communityTabs, COMMUNITY_PANELS: communityPanels, COMMUNITY_LEGEND: communityLegend, CONTACTS: contacts, FOOTER_PRODUCTS: footerProducts, LEGAL: legal, NEWSLETTER: newsletter, NEWSLETTER_NOTE: newsletterNote, SCHEMA: JSON.stringify(schema).replace(/</g, '\\u003c') })) html = html.replaceAll(`{{${key}}}`, value);
 if (/\{\{\w+\}\}/.test(html)) throw new Error('Unresolved template token');
 writeFileSync(resolve(output,'index.html'), html);
 
@@ -58,4 +58,5 @@ function rewriteHtmlTree(root, transform) {
 }
 
 rewriteHtmlTree(output, review ? stripAnalytics : injectAnalytics);
+rewriteHtmlTree(output, page => page.includes('/assets/lens.js') ? page : page.replace('</body>', '<link rel="stylesheet" href="/lens.css?v=20261004-suite1"><script type="module" src="/assets/lens.js?v=20261004-suite1"></script></body>'));
 console.log(`Built ${output} (${review?'local editorial review':'production; drafts excluded'})`);

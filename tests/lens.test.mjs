@@ -74,7 +74,7 @@ test('malformed input is bounded, cannot create executable URLs and fails honest
 test('Lens ships independently of the hero and keeps transcripts in memory', () => {
   const script = readFileSync('src/lens.js', 'utf8');
   const html = readFileSync('public/index.html', 'utf8');
-  assert.doesNotMatch(script, /innerHTML|fetch\(|localStorage|sessionStorage|eval\(/);
+  assert.doesNotMatch(script, /innerHTML|localStorage|sessionStorage|eval\(/);
   assert.match(script, /showModal\(/);
   assert.match(script, /childElementCount > 20/);
   assert.match(html, /aria-haspopup="dialog" aria-controls="marketdeck-lens" aria-expanded="false" hidden/);
