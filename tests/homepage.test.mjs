@@ -31,7 +31,9 @@ test('all five product cards open their application routes directly', () => {
   assert.doesNotMatch(html, /class="product-panels"|class="product-rail"/);
   assert.equal(hrefs.some(href => href.startsWith('#product-')), false);
   assert.equal(hrefs.includes('#'), false);
-  assert.equal(/mailto:|<form\b|type="email"/.test(html), false);
+  assert.equal(/mailto:|type="email"/.test(html), false);
+  assert.equal((html.match(/<form\b/g) ?? []).length, 1, 'Only the local Lens question composer is present');
+  assert.match(html, /<form class="lens-composer" data-lens-form>/);
 });
 test('confirmed community accounts link to their official destinations while unverified entries stay muted', () => {
   const expectedCommunityLinks = new Map([

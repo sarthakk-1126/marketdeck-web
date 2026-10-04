@@ -35,6 +35,8 @@
   <script src="/home.js?v=reading-time-20261002" type="module"></script>
   <script src="/portfolio-flagship.js?v=aperture-20261002" defer></script>
   <script src="/companion.js?v=20261002-whatsapp4-responsive" type="module"></script>
+  <link rel="stylesheet" href="/lens.css?v=lens-20261004">
+  <script src="/assets/lens.js?v=lens-20261004" type="module"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -122,5 +124,26 @@
   </main>
   <footer class="site-footer"><div class="container"><div class="footer-main"><div class="footer-brand"><a href="/" class="brand" aria-label="MarketDeck home"><img class="brand-icon" src="/assets/marketdeck-mark.png" width="32" height="32" alt="" aria-hidden="true"><span class="brand-wordmark">Market<span class="brand-deck">Deck</span></span></a><p>Indian markets. A bigger perspective.<br> A brighter investing India.</p><span class="made-in">BUILT WITH INDIA AT THE CENTRE.</span></div><div class="footer-column"><h2>The product suite</h2><ul>{{FOOTER_PRODUCTS}}</ul></div><div class="footer-column"><h2>Explore</h2><ul><li><a href="#approach">Our approach</a></li><li><a href="#intelligence">Intelligence & learning</a></li><li><a href="#bots">Bots &amp; integrations</a></li><li><a href="#community">Community</a></li><li><a href="#contact">Connect with us</a></li></ul></div><div class="footer-message"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#globe"></use></svg><p>One market.<br> More perspective.<br> <span>Your next question.</span></p><a href="#products" class="text-link">Explore MarketDeck <svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow"></use></svg></a></div></div><div class="footer-bottom"><span>© 2026 MarketDeck. All rights reserved.</span><span class="footer-disclaimer">Research and education. Not investment advice.</span><div class="legal-links"><a href="/research-standards/">Research standards</a><a href="/credits/">Asset credits</a>{{LEGAL}}</div></div></div></footer>
   <dialog class="article-dialog" aria-labelledby="reader-title"><div class="reader-toolbar"><span>MARKETDECK INTELLIGENCE</span><button type="button" class="reader-close" aria-label="Close article"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#close"></use></svg></button></div><div class="reader-content"></div></dialog>
+  <button class="lens-launcher" data-lens-launcher type="button" aria-label="Open MarketDeck Lens" aria-haspopup="dialog" aria-controls="marketdeck-lens" aria-expanded="false" hidden><img src="/assets/marketdeck-mark.png" width="34" height="34" alt=""><span class="lens-launcher-label" aria-hidden="true">Ask MarketDeck Lens</span></button>
+  <dialog id="marketdeck-lens" class="lens-dialog" aria-labelledby="lens-title" aria-describedby="lens-description">
+    <header class="lens-header"><img class="lens-mark" src="/assets/marketdeck-mark.png" width="34" height="34" alt=""><div class="lens-identity"><h2 id="lens-title">MarketDeck <span>Lens</span></h2><p>RESEARCH GUIDE</p></div><button class="lens-close" data-lens-close type="button" aria-label="Close MarketDeck Lens"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#close"></use></svg></button></header>
+    <div class="lens-toolbar"><div class="lens-tabs" role="tablist" aria-label="Lens sections"><button id="lens-guide-tab" class="lens-tab" role="tab" type="button" data-lens-view="guide" aria-controls="lens-guide" aria-selected="true">Guide</button><button id="lens-faq-tab" class="lens-tab" role="tab" type="button" data-lens-view="faqs" aria-controls="lens-faqs" aria-selected="false" tabindex="-1">FAQs</button></div><button class="lens-reset" data-lens-reset type="button" aria-label="Clear conversation and start again">Start again</button></div>
+    <section id="lens-guide" class="lens-view" role="tabpanel" aria-labelledby="lens-guide-tab">
+      <div class="lens-scroll" data-lens-scroll>
+        <div class="lens-welcome"><h3>Where would you like to begin?</h3><p id="lens-description" class="lens-sr-only">A curated guide to MarketDeck companies, research concepts, tools and FAQs.</p>
+          <div class="lens-start"><button type="button" data-lens-ask="Research a company"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#building"></use></svg><span>Research a company</span><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow-up"></use></svg></button><button type="button" data-lens-ask="Understand a metric"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#fundamentals"></use></svg><span>Understand a metric</span><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow-up"></use></svg></button><button type="button" data-lens-ask="Find the right tool"><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#layers"></use></svg><span>Find the right tool</span><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow-up"></use></svg></button></div>
+          <p class="lens-hint">A curated site guide. <button class="lens-inline-faq" type="button" data-lens-ask="Browse FAQs">Browse FAQs</button> or type below.</p>
+        </div>
+        <div class="lens-transcript" data-lens-transcript role="log" aria-label="Lens conversation" aria-live="off"></div>
+      </div>
+    </section>
+    <section id="lens-faqs" class="lens-view" role="tabpanel" aria-labelledby="lens-faq-tab" hidden>
+      <div class="lens-faq-head"><h3>A little more clarity.</h3><p>Quick answers. A useful place to go next.</p><label for="lens-faq-search" class="lens-search-label">Search frequently asked questions</label><input id="lens-faq-search" class="lens-faq-search" type="search" placeholder="Try data, account or portfolio…" maxlength="100" autocomplete="off"><div class="lens-categories" data-lens-categories role="group" aria-label="Filter FAQs by topic"></div></div>
+      <div class="lens-faq-scroll"><p class="lens-faq-count" data-lens-faq-count role="status" aria-live="polite"></p><div data-lens-faq-list></div></div>
+    </section>
+    <form class="lens-composer" data-lens-form><label class="lens-sr-only" for="lens-question">Ask MarketDeck Lens</label><div class="lens-input-row"><input id="lens-question" name="question" type="text" placeholder="Ask about MarketDeck or a company…" maxlength="280" autocomplete="off" enterkeyhint="send"><button class="lens-send" data-lens-send type="submit" aria-label="Send question" disabled><svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow"></use></svg></button></div><p class="lens-composer-note">Curated guidance · <a href="/research-standards/">Research, not advice</a></p></form>
+    <div class="lens-footer" data-lens-faq-footer hidden>Curated guidance · <a href="/research-standards/">Research, not advice</a></div>
+    <div class="lens-sr-only" data-lens-status role="status" aria-live="polite" aria-atomic="true"></div>
+  </dialog>
 </body>
 </html>

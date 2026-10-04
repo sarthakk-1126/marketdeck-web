@@ -1,46 +1,55 @@
-# Kinetic Market Block — market identity refinement QA
+# MarketDeck Lens — homepage guide and FAQ QA
 
 final result: passed
 
-## Approved scope
+## Scope and reference
 
-Make the existing emerging candles clearly recognisable as candlesticks, strengthen the decorative price trace, and slow only the interaction ripples by 10–15%. Preserve the approved lighting, 6.2-second automatic cycle, copy, controls, layout, functionality, calculations, data, SEO and concurrent work.
+Implement the user-approved floating MarketDeck Lens panel with searchable FAQs, typed guidance and real research links. The first version uses curated knowledge, not a generative model or live company data. Preserve the homepage hero, interactions, calculations, SEO and concurrent admin/server work.
 
-Base: main `5103465`, including the approved tactile hero (#62) and both Bots carousel corrections (#60 and #61). The approved visual direction comes from the current Kinetic Market Block and the user’s screenshot/lighting/ripple feedback. No new concept or unrelated redesign.
+Approved source: `/workspace/scratch/4f500b3673a6/generated_images/exec-ad6d87f5-0ee7-49b8-9d5a-79a4cce941ff.png`, 1672 × 941.
 
-## Rendered evidence
+Implementation evidence: `.preview/lens-reference-viewport-20261004.jpg`, 1672 × 941, captured from the rendered preview in Chromium at a real 1672 × 941 iframe viewport, 1 CSS pixel per captured pixel. State: Guide open after asking “Help me research TCS”. The panel occupies x=1150, y=83, width=500, height=780, matching the reference frame.
 
-Native Chromium/SwiftShader captures:
-- `.preview/kinetic-desktop-v1.png`: 1712 × 919, brighter steel-blue metal and silver edges.
-- `.preview/kinetic-hover-ripple.png`: 1440 × 900, individual picked tile and nearby local highlights.
-- `.preview/kinetic-phone-ripple.png`: 390 × 844, native phone tap response.
-- `.preview/kinetic-320-v1.png`, `.preview/kinetic-390-v1.png`, `.preview/kinetic-768-v1.png`, `.preview/kinetic-1024-v1.png`: responsive composition, unchanged typography/actions and no overflow.
-- `.preview/ripple-motion-strip.jpg`: actual 400px native renders at elapsed offsets 0, 900, 2400 and 5900ms. Solid → open within the first second → open → solid. Cycle duration 6200ms.
+Full comparison: `.preview/lens-comparison-final.jpg`, 3344 × 981, source and implementation side by side at original dimensions. Focused comparison: `.preview/lens-panel-comparison-final.jpg`, 1020 × 820, identical x=1150–1650/y=83–863 crops at 1:1. Both were opened and visually inspected.
 
-Visually inspected desktop, 320px/390px phone and full-cycle captures. Six candle bodies now float separately along the front edge, narrow in width/depth, and retain visible upper and lower wicks of different lengths. Three teal accents alternate with steel-blue bodies. Candle heights are bounded within the existing camera composition; no hero layout change is needed. The foreground price trace is thicker and unobscured, with quiet axes/ticks and no labels or numbers. Complete sculpture and candle wicks fit inside the existing composition. No remaining material hero findings in the reviewed states.
+Additional browser evidence: `.preview/lens-desktop-pass2-20261004.jpg`, `.preview/lens-faq-desktop-20261004.jpg`, and `.preview/lens-phone-verified-20261004.jpg`. Phone sheets were exercised in real 320 × 844 and 390 × 844 frame viewports. A 390 × 420 viewport verified the compact layout with FAQ search and three matching results visible.
 
-## Interaction and accessibility
+## Fidelity review
 
-Raycasting picks the actual instanced block. That block moves slightly outward; neighbouring tiles receive a bounded travelling ripple and settle through a damped spring. A single instanced lighting attribute produces local blue highlights without extra block meshes or bloom. The existing fill light follows the hit. Ripple travel, fade, expiry and spring settling use a 1.12 timeline factor (12% longer), while the automatic cycle stays at 6200ms.
+| Surface | Result |
+| --- | --- |
+| Typography | Existing site font retained. One-line welcome heading, clear identity, readable answer and link hierarchy. Wide-screen heading and label sizing refined after comparison. |
+| Spacing and layout | Fluid 380–500 px desktop frame, three welcome actions, user bubble, boxed guide answer and pinned composer match the approved composition. Phone layout becomes a bottom sheet with safe-area spacing. |
+| Colors | Dark navy surfaces, quiet blue borders, pale text and muted supporting copy align with the mockup and existing homepage. |
+| Assets | Actual MarketDeck M logo and existing icon sprite used in launcher, header and answer avatar. No replacement hero assets or decorative generated imagery. |
+| Copy and behavior | Real company/chart routes and curated explanations replace approximate mockup text. FAQs, reset, source/privacy wording and disabled empty-send state are intentional additions required for a usable guide. |
 
-Phone tap briefly depresses the selected tile and emits a ripple. Tap state survives the touch pointerleave event. Passive input listeners do not prevent native scrolling; gestures beyond the tap threshold do not emit ripples. Links and buttons are excluded from artwork input. No pointer capture, scroll hijacking or new UI controls.
+Intentional deviations: Guide/FAQs navigation and Start again affordances add a slim control strip; welcome disclosure explains curated answers. The site's actual typography, icons and data terminology take precedence over approximate generated text. No unsupported live company figures or fabricated key events are shown.
 
-The existing motion control, operating-system reduced-motion preference, offscreen/document visibility handling and context-loss fallback remain authoritative. Paused frames are pixel-identical after pointer movement. Initial reduced motion uses a stable open pose. The fallback poster is exported from the same genuine native geometry.
+## Findings and fixes
 
-## Verification
+| Priority | Finding | Fix and post-fix evidence |
+| --- | --- | --- |
+| P2 | Early welcome/answer spacing hid useful choices and crowded the transcript. | Compacted welcome, boxed answer, refined spacing and fluid desktop width. Final full and focused comparisons retain the primary actions and pinned composer. |
+| P2 | Disabling Send after submission lost composer focus. | Return focus to the input after submission. Enter and button submissions exercised in the rendered browser. |
+| P1 | Chart resolver rejects a company name or bare ticker such as TCS. | Use verified NSE symbols, including TCS.NS. Real links resolved to `/screener/company/TCS.NS/` and `/charts/TCS.NS/` with the correct company heading/title. Ambiguous names use product search rather than invented symbols. |
+| P2 | Reduced phone height crowded FAQ results. | Observe visualViewport and use a compact mode below 600 px available height. In the 390 × 420 frame the panel measured 390 × 404 at y=8, with search and matching results usable. |
 
-`npx playwright test --config playwright.kinetic.config.mjs`: 15 passed. Covers shader compilation/errors, bounded buffer, automatic first-second/full-cycle changes, individual desktop tile selection, ripple settlement, frozen paused images, actual phone touch taps and swipe scrolling, CTA handoff, 320/360/390/430/768/1024/1440/1920/2560px widths, reduced motion, blocked module, denied WebGL, save-data and context loss.
+No open P0, P1 or P2 findings remain.
 
-`npm run build`, `npm run build:review`, source syntax and `git diff --check`: passed. `npm run check`: 66/67. The same pre-existing product-art assertion expects absent `data-preview-src` attributes; the unchanged main template also lacks them. Unrelated UI/test left intact.
+## Functional and regression validation
 
-Exact template/generated-HTML comparison against main passes after normalizing only hero script/poster cache versions. Header, hero text/actions/trust copy, below-hero content, SEO metadata/JSON-LD and concurrent Bots CSS/JS are unchanged. Existing layout styles remain unchanged. All changed application code belongs to the hero renderer/controller or its asset cache versions.
+- Build and syntax checks passed; generated bundles reproduce the tested source. `git diff --check` passed.
+- Lens tests: 8/8 passed. Homepage tests: 12/12 passed.
+- Full existing check: 77/78 passed. The one failure in `tests/product-art.test.mjs` expects a missing `data-preview-src` attribute and also fails on the pre-Lens baseline; unrelated product markup was preserved. Logs: `.preview/lens-final-check.log` and `.preview/lens-baseline.log`.
+- Browser: launcher, close/backdrop, Escape and restored focus, Guide/FAQ arrow-key navigation, reset, typed questions, Send/Enter focus, FAQ category/filter/expand, empty results, unknown-question fallback and real company/chart navigation exercised.
+- Production route construction uses curated same-origin URLs, encoded queries and registered company symbols. Dynamic text uses textContent; transcript is memory-only, capped at 20 exchanges. No API calls, third-party scripts or persisted conversation data.
+- Site-owned browser console error check returned no errors. Extension metadata errors were unrelated to the page.
 
-## Resource and deployment boundary
+Limits: native iOS/Android soft keyboards were not directly exercised; reduced available-height behavior was validated in Chromium frames. Cloud Chromium had WebGL disabled and displayed the existing hero poster, so native hero animation was not revalidated here. Hero code is unchanged from the base.
 
-216 existing instanced blocks; six top-front blocks morph into slimmer candlestick bodies and return to neutral full-sized blocks when closed. Existing six wick instances are reused. One lightweight line-segments geometry adds decorative chart axes; no geometry is added per block. At most four ripples. Hover raycasting capped around 30Hz. Existing drawing-buffer caps and slow-GPU scaling retained (650,000 phone pixels; 1,300,000 desktop pixels). No new dependencies, postprocessing or server processes.
+## Deployment boundary
 
-Builds/tests ran locally. Production deployment uses committed static public assets and the existing clean-main fast-forward deploy workflow. No VPS build or shared infrastructure changes. Caddy, Docker Compose, systemd, firewall, cron, databases and other projects untouched. The deployment is a static asset fast-forward; no VPS build or service restart is required.
+Static homepage markup, Lens stylesheet and bundled module only. Bundle is approximately 24.6 KB and stylesheet approximately 11 KB before transport compression. No paid model dependency, service restart, database, Caddy, firewall, systemd, cron or Compose changes.
 
-Cloud browser has WebGL disabled: live visual verification covers its exported poster/HTML/control path. Native 3D and interactions are verified in the local browser against the same assets; do not claim native cloud motion verification.
-
-Production verification is recorded in the merged pull request and final task response.
+Previous hero QA preserved in `docs/qa/market-block-20261002.md`.
