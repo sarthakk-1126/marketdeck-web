@@ -152,5 +152,5 @@ export function createTerminal(api){
   }
  });
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&focus){focus=false;document.body.classList.remove('rt-focus');$('[data-terminal-fullscreen]').textContent='Focus';$('[data-terminal-fullscreen]').setAttribute('aria-pressed','false');}});
- return {reset,restore,exportState,onView,onData,renderValueControls,renderChanges,reviewRequested:()=>review,ratesValid:()=>ratesValid};
+ return {reset,restore,exportState,onView,onData,renderValueControls,renderChanges,showInspector:()=>{if(!state.inspector){state.inspector=true;changed();renderLayout();}},reviewRequested:()=>review,ratesValid:()=>ratesValid};
 }
