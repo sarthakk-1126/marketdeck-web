@@ -1,0 +1,48 @@
+// Isolated preview checks. Embedded engines get their own Django integration
+// checks and production verification; this fixture only tests host wiring.
+import {chromium,expect} from '@playwright/test';
+import {readFileSync,mkdirSync,existsSync} from 'node:fs';
+import {resolve} from 'node:path';
+const origin=process.env.RD_TEST_ORIGIN;if(!origin)throw new Error('Set isolated preview origin.');
+const output=process.env.RD_SCREENSHOT_DIR||'/tmp/terminal-check';mkdirSync(output,{recursive:true});
+const browser=await chromium.launch({headless:true,executablePath:process.env.RD_CHROMIUM});
+const context=await browser.newContext({viewport:{width:1440,height:1050}}),errors=[];
+await context.route('https://marketdeck.in/**',async route=>{const path=new URL(route.request().url()).pathname,file=resolve('public','.'+path);if(existsSync(file))await route.fulfill({path:file});else if(path.startsWith('/screener/static/'))await route.fulfill({response:await context.request.get(origin+path)});else await route.abort();});
+await context.route(origin+'/charts/**',r=>r.fulfill({contentType:'text/html',body:'<!doctype html><title>Isolated engine host fixture</title><p>Chart host fixture</p>'}));
+await context.route(origin+'/futures-and-options/**',r=>r.fulfill({contentType:'text/html',body:'<!doctype html><title>Isolated engine host fixture</title><p>Options host fixture</p>'}));
+const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
+const value=(key,input)=>page.locator(`[data-value-input="${key}"]`).fill(String(input));
+try{
+ await page.goto(origin+'/screener/research-desk/?company=TCS.NS');
+ await expect(page.locator('[data-chart] svg')).toBeVisible();
+ await page.locator('[data-view="valuation"]').click();await value('base',100);await value('discount',10);
+ await expect(page.locator('[data-value-result]')).toContainText('2,000');
+ await page.locator('[data-value-price]').fill('2000');await expect(page.locator('[data-value-reverse]')).toContainText('10.00%');
+ await value('dividend',10);await expect(page.locator('[data-value-result]')).toContainText('2,050');
+ await page.locator('[data-value-return="12"]').click();await expect(page.locator('[data-value-input="discount"]')).toHaveValue('12');
+ await page.locator('[data-value-save]').click();await page.locator('[data-scenario-name]').fill('Manual test scenario');await page.locator('[data-value-save]').click();await expect(page.locator('[data-value-scenarios]')).toContainText('Manual test scenario');
+ await page.locator('[data-value-model="firm"]').click();await value('base',100);await value('shares',10);await value('cash',50);await value('debt',300);await value('growth',0);await value('discount',10);await value('terminal',0);
+ await expect(page.locator('[data-value-result]')).toContainText('₹75');
+ await value('terminal',10);await expect(page.locator('[data-value-result]')).toContainText('Terminal growth must be below');await value('terminal',0);
+ await page.locator('[data-value-model="dividend"]').click();await value('base',5);await expect(page.locator('[data-value-result]')).toContainText('₹50');
+ await page.locator('[data-view="charts"]').click();await expect(page.locator('[data-chart-frame]')).toHaveAttribute('src',/\/charts\/TCS.NS\/\?embed=desk$/);
+ await page.locator('[data-view="derivatives"]').click();await expect(page.locator('[data-fo-frame]')).toHaveAttribute('src',/historical-chain\/\?symbol=TCS&embed=desk$/);
+ await page.locator('[data-fo-mode="strategy"]').click();await expect(page.locator('[data-fo-frame]')).toHaveAttribute('src',/symbol=TCS/);
+ await page.locator('[data-fo-mode="calculator"]').click();await expect(page.locator('[data-fo-status]')).toContainText('Manual inputs');
+ await page.locator('[data-view="explore"]').click();await page.locator('[data-action="pin"]').click();await page.locator('[data-view="thesis"]').click();await page.locator('[data-thesis-add]').click();await page.locator('[data-thesis-field="claim"]').fill('Literal <script> text stays private');await page.locator('[data-thesis-pin]').check();
+ await page.locator('[data-view="changes"]').click();await expect(page.locator('[data-changes-content]')).toContainText('Save this desk');
+ await page.locator('[data-view="valuation"]').click();await page.screenshot({path:output+'/desktop-value.png',fullPage:true});
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.locator('[data-inspector-toggle]').click();await page.locator('[data-split-toggle]').first().click();await expect(page.locator('[data-split-frame]')).toHaveAttribute('src',/TCS.NS/);
+ await page.locator('[data-terminal-fullscreen]').click();await expect(page.locator('body')).toHaveClass(/rt-focus/);await page.keyboard.press('Escape');await expect(page.locator('body')).not.toHaveClass(/rt-focus/);
+ const session=JSON.parse(readFileSync(process.env.RD_TEST_SESSION_FILE,'utf8'));await context.addCookies([{name:'sessionid',value:session.sessionid,url:origin}]);
+ await page.goto(origin+'/screener/research-desk/?company=TCS.NS');await page.locator('[data-view="valuation"]').click();await value('base',100);await value('growth',10);await value('discount',12);await page.locator('[data-value-price]').fill('1800');
+ await page.locator('[data-view="thesis"]').click();await page.locator('[data-thesis-add]').click();await page.locator('[data-thesis-field="claim"]').fill('Private saved terminal thesis');
+ await page.locator('[data-action="save"]').first().click();await expect(page.locator('[data-save-status]')).toHaveText('Saved');const savedUrl=page.url();expect(savedUrl).toContain('desk=');
+ await page.reload();await expect(page.locator('[data-save-status]')).toHaveText('Saved');await expect(page.locator('[data-thesis-field="claim"]')).toHaveValue('Private saved terminal thesis');await page.locator('[data-view="valuation"]').click();await expect(page.locator('[data-value-input="base"]')).toHaveValue('100');await expect(page.locator('[data-value-price]')).toHaveValue('1800');
+ await page.locator('[data-view="changes"]').click();await expect(page.locator('[data-changes-content]')).toContainText('No stored filing changes detected');await page.locator('[data-review-changes]').click();await expect(page.locator('[data-save-status]')).toHaveText('Saved');
+ const mobile=await context.newPage();mobile.on('pageerror',e=>errors.push(e.message));await mobile.setViewportSize({width:390,height:844});await mobile.emulateMedia({reducedMotion:'reduce'});await mobile.goto(savedUrl);
+ await expect(mobile.locator('[data-save-status]')).toHaveText('Saved');await mobile.locator('[data-view="valuation"]').click();await expect(mobile.locator('[data-value-result]')).toContainText('1,827');expect(await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await mobile.screenshot({path:output+'/mobile-value.png',fullPage:true});
+ await mobile.locator('[data-action="sidebar"]').click();await expect(mobile.locator('.rd-sidebar')).toBeVisible();await mobile.keyboard.press('Escape');expect(await mobile.locator('.rd-sidebar').evaluate(e=>getComputedStyle(e).visibility)).toBe('hidden');
+ expect(errors).toEqual([]);console.log(JSON.stringify({valuation:'passed',reverse:'passed',enterpriseBridge:'passed',engineHostWiring:'passed',thesis:'passed',privateRoundtrip:'passed',baselines:'passed',desktop:'passed',mobile:'passed',errors}));
+}finally{await browser.close();}

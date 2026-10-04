@@ -5,7 +5,7 @@ import {resolve} from 'node:path';
 const origin=process.env.RD_TEST_ORIGIN;
 if(!origin)throw new Error('Set RD_TEST_ORIGIN to an isolated Research Desk preview.');
 const output=process.env.RD_SCREENSHOT_DIR||'/tmp/research-desk-verification';mkdirSync(output,{recursive:true});
-const browser=await chromium.launch({headless:true});
+const browser=await chromium.launch({headless:true,executablePath:process.env.RD_CHROMIUM});
 const context=await browser.newContext({viewport:{width:1440,height:1050}});
 const errors=[];
 // Shared shell assets are mirrored locally for the offline preview.
