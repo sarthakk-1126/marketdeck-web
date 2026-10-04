@@ -35,7 +35,7 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
       const a = node('a', 'lens-link'); a.href = href;
       const copy = node('span', 'lens-link-copy');
       copy.append(node('strong', '', label)); if (detail) copy.append(node('small', '', detail));
-      a.append(copy, icon('arrow-up')); list.append(a);
+      a.append(icon(href.startsWith('/charts/') ? 'chart' : href.startsWith('/screener/search/') ? 'building' : 'document'), copy, icon('arrow-up')); list.append(a);
     }
     if (list.childElementCount) parent.append(list);
   }
@@ -98,6 +98,8 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
     const exchange = node('div', 'lens-exchange');
     const user = node('p', 'lens-user', query); user.setAttribute('aria-label', `You: ${query}`);
     const answer = node('div', 'lens-answer');
+    const avatar = node('img', 'lens-answer-mark'); avatar.src = '/assets/marketdeck-mark.png'; avatar.width = 26; avatar.height = 26; avatar.alt = '';
+    answer.append(avatar);
     answer.append(node('span', 'lens-answer-label', 'MARKETDECK LENS'), node('p', '', reply.answer));
     appendLinks(answer, reply.links); appendSuggestions(answer, reply.suggestions);
     exchange.append(user, answer); transcript.append(exchange);
@@ -123,7 +125,7 @@ if (launcher && dialog && typeof dialog.showModal === 'function') {
     const link = event.target.closest('a');
     if (link && new URL(link.href).pathname === '/' && new URL(link.href).hash) dialog.close();
   });
-  form.addEventListener('submit', event => { event.preventDefault(); ask(input.value); });
+  form.addEventListener('submit', event => { event.preventDefault(); ask(input.value); if (!form.hidden) input.focus({ preventScroll: true }); });
   input.addEventListener('input', syncSend);
   search.addEventListener('input', renderFaqs);
   for (const tab of tabs) {

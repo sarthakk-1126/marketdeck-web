@@ -108,9 +108,9 @@ export function answerQuestion(input, context = {}) {
   if (company?.name) {
     const encoded = encodeURIComponent(company.name);
     return {
-      answer: company.known ? 'Start with the company page. Explore financials and source traces, then open the chart for price context. Check the reporting period and data timestamp on each page.' : `Search for “${company.name}” in Screener. A unique match opens its company page; otherwise, you can choose from the matches. The chart search resolves available instruments separately.`,
+      answer: company.known ? 'Start with the company page. Explore financials and source traces, then open the chart for price context.' : `Search for “${company.name}” in Screener. A unique match opens its company page; otherwise, you can choose from the matches. The chart search resolves available instruments separately.`,
       links: [link(company.known ? `Open ${company.name} company` : 'Find company matches', `/screener/search/?q=${encoded}`, 'Financials, filings and fundamental research'), link(company.known ? `View ${company.name} chart` : 'Search in Charting', `/charts/jump/?symbol_input=${encoded}`, 'Price history and technical context')],
-      suggestions: ['Where does the data come from?', 'How are the metrics calculated?'], context: { company: company.name }
+      context: { company: company.name }
     };
   }
   if (context.company && /^(?:its |the |and )?(?:chart|financials|company page)(?: please)?$/.test(q)) return answerQuestion(`Open ${context.company}`, {});
