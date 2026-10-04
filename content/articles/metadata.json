@@ -982,4 +982,29 @@
       "name": "MarketDeck Portfolio Analysis"
     }
   }
+  ,{
+    "slug": "when-var-methods-disagree",
+    "originalResearch": true,
+    "source": "content/articles/when-var-methods-disagree.md",
+    "title": "When Portfolio VaR Methods Disagree: A Reproducible Simulation",
+    "description": "Historical, Gaussian and Cornish-Fisher VaR under controlled skew and fat tails: 96,000 generated estimation/holdout pairs, with full results and reproducible code.",
+    "h1": "When Portfolio VaR Methods Disagree",
+    "coverArt": "/assets/research/var-thresholds.svg",
+    "topics": ["research-craft", "portfolio-analysis"],
+    "modifiedAt": "2026-10-04",
+    "publishedAt": "2026-10-04",
+    "sourceReviewedAt": "2026-10-04",
+    "primaryKeyword": "when VaR methods disagree",
+    "relatedKeywords": ["VaR simulation", "out of sample VaR calibration"],
+    "related": ["portfolio-var-historical-parametric-cornish-fisher"],
+    "takeaways": ["Shape changes tail thresholds even when theoretical variance is identical.", "A larger threshold does not necessarily improve calibration."],
+    "publicationStatus": "published",
+    "approvedAt": "2026-10-04",
+    "sources": [
+      {"id":"S1","title":"NumPy quantile","url":"https://numpy.org/doc/stable/reference/generated/numpy.quantile.html","scope":"Linear quantile convention; no external numerical data.","reviewedAt":"2026-10-04"},
+      {"id":"S2","title":"NIST moments","url":"https://www.itl.nist.gov/div898/handbook/eda/section3/eda35b.htm","scope":"Moment-ratio definitions.","reviewedAt":"2026-10-04"},
+      {"id":"S3","title":"Kupiec 1995","url":"https://fedinprint.org/item/fedgfe/34596/original","scope":"Original work bibliographic record and full-text destination.","reviewedAt":"2026-10-04"},
+      {"id":"S4","title":"Cornish-Fisher expansion","url":"https://www.value-at-risk.net/the-cornish-fisher-expansion/","scope":"Quantile approximation; specified truncation printed in study.","reviewedAt":"2026-10-04"}
+    ]
+  }
 ]

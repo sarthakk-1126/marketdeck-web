@@ -248,6 +248,16 @@
       "approvedAt": "2026-10-01"
     },
     {
+      "slug": "when-var-methods-disagree",
+      "source": "content/articles/when-var-methods-disagree.md",
+      "topics": ["research-craft", "portfolio-analysis"],
+      "coverArt": "/assets/research/var-thresholds.svg",
+      "research": true,
+      "publishedAt": "2026-10-04",
+      "publicationStatus": "published",
+      "approvedAt": "2026-10-04"
+    },
+    {
       "slug": "black-litterman-implied-returns",
       "topics": [
         "portfolio-analysis",

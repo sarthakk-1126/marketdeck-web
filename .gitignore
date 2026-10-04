@@ -6,3 +6,5 @@ Thumbs.db
 !.env.example
 .preview/
 node_modules/
+.evidence/
+scripts/research/__pycache__/
