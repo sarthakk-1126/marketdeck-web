@@ -11,19 +11,19 @@ await context.route('https://marketdeck.in/**',async route=>{const path=new URL(
 await context.route(origin+'/charts/**',r=>r.fulfill({contentType:'text/html',body:'<!doctype html><title>Isolated engine host fixture</title><p>Chart host fixture</p>'}));
 await context.route(origin+'/futures-and-options/**',r=>r.fulfill({contentType:'text/html',body:'<!doctype html><title>Isolated engine host fixture</title><p>Options host fixture</p>'}));
 const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
-const value=(key,input)=>page.locator(`[data-value-input="${key}"]`).fill(String(input));
+const value=async(key,input)=>{const field=page.locator(`[data-value-input="${key}"]`);if(!await field.isVisible())await page.locator("[data-value-advanced]").evaluate(e=>e.open=true);await field.fill(String(input));};
 try{
  await page.goto(origin+'/screener/research-desk/?company=TCS.NS');
  await expect(page.locator('[data-chart] svg')).toBeVisible();
  await page.locator('[data-view="valuation"]').click();
  await expect(page.locator('[data-value-slider="discount"]')).toHaveValue('12');
- await expect(page.locator('[data-value-slider="multiple"]')).toHaveValue('20');
+ await page.locator('[data-value-advanced]').evaluate(e=>e.open=true);await expect(page.locator('[data-value-slider="multiple"]')).toHaveValue('20');
  await value('base',100);await value('discount',10);
  await expect(page.locator('[data-value-result]')).toContainText('2,000');
- await page.locator('[data-value-price]').fill('2000');await expect(page.locator('[data-value-reverse]')).toContainText('10.00%');
+ await page.locator('.vl-reverse').evaluate(e=>e.open=true);await page.locator('[data-value-price]').fill('2000');await expect(page.locator('[data-value-reverse]')).toContainText('10%');
  await value('dividend',10);await expect(page.locator('[data-value-result]')).toContainText('2,050');
- await page.locator('[data-value-return="12"]').click();await expect(page.locator('[data-value-input="discount"]')).toHaveValue('12');
- await page.locator('[data-value-save]').click();await page.locator('[data-scenario-name]').fill('Manual test scenario');await page.locator('[data-value-save]').click();await expect(page.locator('[data-value-scenarios]')).toContainText('Manual test scenario');
+ await page.locator('[data-value-return="12"]').evaluate(e=>e.closest('details').open=true);await page.locator('[data-value-return="12"]').click();await expect(page.locator('[data-value-input="discount"]')).toHaveValue('12');
+ await page.locator('[data-value-save]').click();await page.locator('[data-scenario-name]').fill('Manual test scenario');await page.locator('[data-value-scenario-form] button[type=submit]').click();await expect(page.locator('[data-value-scenarios]')).toContainText('Manual test scenario');
  await page.locator('[data-value-model="firm"]').click();await value('base',100);await value('shares',10);await value('cash',50);await value('debt',300);await value('growth',0);await value('discount',10);await value('terminal',0);
  await expect(page.locator('[data-value-result]')).toContainText('₹75');
  await value('terminal',10);await expect(page.locator('[data-value-result]')).toContainText('Terminal growth must be below');await value('terminal',0);
@@ -36,10 +36,10 @@ try{
  await page.locator('[data-view="changes"]').click();await expect(page.locator('[data-changes-content]')).toContainText('Save this desk');
  await page.locator('[data-view="valuation"]').click();await page.screenshot({path:output+'/desktop-value.png',fullPage:true});
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
- await page.locator('[data-inspector-toggle]').click();await page.locator('[data-split-toggle]').first().click();await expect(page.locator('[data-split-frame]')).toHaveAttribute('src',/TCS.NS/);
+ await page.locator('[data-inspector-toggle]').click();await page.locator('[data-value-evidence-close]').click();await page.locator('[data-split-toggle]').first().click();await expect(page.locator('[data-split-frame]')).toHaveAttribute('src',/TCS.NS/);
  await page.locator('[data-terminal-fullscreen]').click();await expect(page.locator('body')).toHaveClass(/rt-focus/);await page.keyboard.press('Escape');await expect(page.locator('body')).not.toHaveClass(/rt-focus/);
  const session=JSON.parse(readFileSync(process.env.RD_TEST_SESSION_FILE,'utf8'));await context.addCookies([{name:'sessionid',value:session.sessionid,url:origin}]);
- await page.goto(origin+'/screener/research-desk/?company=TCS.NS');await page.locator('[data-view="valuation"]').click();await value('base',100);await value('growth',10);await value('discount',12);await page.locator('[data-value-price]').fill('1800');
+ await page.goto(origin+'/screener/research-desk/?company=TCS.NS');await page.locator('[data-view="valuation"]').click();await value('base',100);await value('growth',10);await value('discount',12);await page.locator('.vl-reverse').evaluate(e=>e.open=true);await page.locator('[data-value-price]').fill('1800');
  await page.locator('[data-view="thesis"]').click();await page.locator('[data-thesis-add]').click();await page.locator('[data-thesis-field="claim"]').fill('Private saved terminal thesis');
  await page.locator('[data-action="save"]').first().click();await expect(page.locator('[data-save-status]')).toHaveText('Saved');const savedUrl=page.url();expect(savedUrl).toContain('desk=');
  await page.reload();await expect(page.locator('[data-save-status]')).toHaveText('Saved');await expect(page.locator('[data-thesis-field="claim"]')).toHaveValue('Private saved terminal thesis');await page.locator('[data-view="valuation"]').click();await expect(page.locator('[data-value-input="base"]')).toHaveValue('100');await expect(page.locator('[data-value-price]')).toHaveValue('1800');

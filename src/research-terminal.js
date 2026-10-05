@@ -1,17 +1,20 @@
 import {valuation,returnTable,sensitivity,impliedGrowth,filingChanges} from './research-valuation.js';
+import {createValueLab} from './research-value-lab.js';
 
 export function createTerminal(api){
  const {$,$$,esc,fmt,dateLabel,changed,toast,getData,getPoint,getPins,getDesk,setView,request,url,showSources}=api;
- const defaults=()=>({version:1,preset:'investing',view:'explore',inspector:true,inspectorWidth:300,split:false,valuation:{model:'earnings',base:null,growth:10,discount:12,terminal:3,years:5,multiple:20,dividend:0,shares:null,cash:0,debt:0,marginSafety:20,price:null,rates:[10,12,15,18]},scenarios:[],thesis:[]});
+ const defaults=()=>({version:1,preset:'investing',view:'explore',inspector:true,inspectorWidth:300,split:false,valuation:{model:'earnings',base:null,growth:10,discount:12,terminal:3,years:5,multiple:20,dividend:0,shares:null,cash:null,debt:null,marginSafety:20,price:null,rates:[10,12,15,18]},scenarios:[],thesis:[]});
  let state=defaults(),foMode='history',review=false,focus=false,renderFrame=null,ratesValid=true;
  const labels={earnings:'Earnings & exit',equity:'Equity cash flow',firm:'Firm DCF',dividend:'Dividends'};
  const safeSource=value=>{const resolved=url(value);return resolved!=='#'&&new URL(resolved,location.origin).origin===location.origin?resolved:null;};
- function restore(raw){state={...defaults(),...(raw||{}),valuation:{...defaults().valuation,...(raw?.valuation||{})}};review=false;ratesValid=true;renderValueControls();renderThesis();renderLayout();}
+ let valueEvidenceOpen=false;
+ const valueLab=createValueLab({...api,getState:()=>state,setValuation:value=>{state.valuation=value;},defaults:()=>defaults().valuation});
+ function restore(raw){state={...defaults(),...(raw||{}),valuation:{...defaults().valuation,...(raw?.valuation||{})}};review=false;ratesValid=true;valueEvidenceOpen=false;valueLab?.resetUI();if(!raw)valueLab?.seedFresh();renderValueControls();renderThesis();renderLayout();}
  function reset(){const layout={preset:state.preset,inspector:state.inspector,inspectorWidth:state.inspectorWidth,split:state.split};restore({...defaults(),...layout});}
  function exportState(){const result=structuredClone(state),ids=new Set(getPins().map(p=>p.id));result.thesis=result.thesis.map(t=>({...t,evidence:t.evidence.filter(id=>ids.has(id))}));return result;}
  function renderLayout(){
-  const workspace=$('[data-workspace]');workspace.dataset.inspector=String(state.inspector);workspace.style.setProperty('--rt-inspector-width',state.inspectorWidth+'px');
-  $('[data-inspector-toggle]').setAttribute('aria-pressed',String(state.inspector));$('[data-split-toggle]').setAttribute('aria-pressed',String(state.split));$('[data-workspace-preset]').value=state.preset;
+  const workspace=$('[data-workspace]');workspace.dataset.inspector=String(state.inspector);workspace.dataset.valueEvidence=String(valueEvidenceOpen&&state.view==='valuation');workspace.style.setProperty('--rt-inspector-width',state.inspectorWidth+'px');
+  $('[data-inspector-toggle]').setAttribute('aria-pressed',String(valueLab&&state.view==='valuation'?valueEvidenceOpen:state.inspector));$('[data-split-toggle]').setAttribute('aria-pressed',String(state.split));$('[data-workspace-preset]').value=state.preset;
   $('[data-inspector-resize]').setAttribute('aria-valuenow',state.inspectorWidth);
   const split=state.split&&!['charts','derivatives'].includes(state.view);$('[data-split-panel]').hidden=!split;$('.rt-stage').dataset.split=String(split);
   if(split)loadFrame($('[data-split-frame]'),getData()?.links.chart_embed);
@@ -44,6 +47,7 @@ export function createTerminal(api){
   base:['Base EPS / share',0,1e7,.01],growth:['Growth per year (%)',-90,100,.5],discount:['Required return (%)',.1,100,.1],terminal:['Terminal growth (%)',-90,99,.5],years:['Forecast years',1,20,1],multiple:['Exit P/E multiple',.1,200,.1],dividend:['Current dividend / share',0,1e7,.01],shares:['Diluted shares (crore)',.000001,1e8,.01],cash:['Cash & nonoperating assets (₹ Cr)',0,1e12,1],debt:['Debt & other claims (₹ Cr)',0,1e12,1],marginSafety:['Assumed safety buffer (%)',0,80,1]
  };
  function renderValueControls(){
+  if(valueLab){valueLab.renderControls();return;}
   const a=state.valuation;
   $('[data-model-tabs]').innerHTML=Object.entries(labels).map(([key,label])=>`<button type="button" data-value-model="${key}" aria-pressed="${a.model===key}">${label}</button>`).join('');
   let names=['base','growth','discount','years'];
@@ -57,6 +61,7 @@ export function createTerminal(api){
   renderValue();
  }
  function renderValue(){
+  if(valueLab){valueLab.render();return;}
   const a=state.valuation,result=valuation(a),target=$('[data-value-result]');
   const formula={earnings:'EPS grows at your assumed rate. Future sale value = forecast EPS × exit multiple. Dividends grow at the same rate. Both dividends and the assumed sale value are discounted at your required equity return.',equity:'Discount free cash flow to equity per share at the required equity return. Terminal value = final-year equity cash flow × (1 + terminal growth) ÷ (required return − terminal growth). No debt is subtracted again.',firm:'Discount free cash flow to the firm (FCFF) at WACC. Equity value per share = (enterprise value + cash/nonoperating assets − debt/other non-equity claims) ÷ diluted shares. All aggregate inputs use crore units.',dividend:'Discount projected dividends per share at the required equity return, including a perpetual dividend-growth terminal value. Dividend growth is your assumption.'}[a.model];
   $('[data-value-formula]').textContent=formula+' Illustrative assumption model; tax, transaction costs and future dilution are excluded. Invalid terminal growth is refused.';
@@ -74,6 +79,7 @@ export function createTerminal(api){
   renderScenarios();
  }
  function renderScenarios(){
+  if(valueLab){valueLab.renderScenarios();return;}
   $('[data-value-scenarios]').innerHTML=state.scenarios.length?`<div class="rt-output-heading"><h3>Kept scenarios</h3><p>Save the desk to keep these with your account.</p></div><div class="rt-saved-scenarios">${state.scenarios.map((s,i)=>{const v=valuation(s.inputs);return `<div><button type="button" data-scenario-restore="${i}"><strong>${esc(s.label)}</strong><span>${esc(labels[s.inputs.model])} · ${v.error?'Incomplete':esc(fmt(v.value,'INR',false))}</span></button><button type="button" data-scenario-remove="${i}" aria-label="Remove ${esc(s.label)}">×</button></div>`;}).join('')}</div>`:'';
  }
  function renderChanges(){
@@ -95,6 +101,7 @@ export function createTerminal(api){
  function onData(){renderEngines();renderChanges();renderThesis();if(state.view==='valuation')renderValue();}
  document.addEventListener('input',event=>{
   const input=event.target;
+  if(valueLab&&(input.closest('[data-valuation-panel]')||input.closest('[data-value-dialog]')))return;
   if(input.matches('[data-value-input],[data-value-slider]')){
    const key=input.dataset.valueInput||input.dataset.valueSlider;state.valuation[key]=input.value===''?null:Number(input.value);
    if(key==='base')$('[data-value-origin]').textContent='Base figure edited by you. All model inputs are your assumptions.';
@@ -117,7 +124,9 @@ export function createTerminal(api){
  });
  document.addEventListener('click',async event=>{
   const button=event.target.closest('button');if(!button)return;
-  if(button.hasAttribute('data-inspector-toggle')){state.inspector=!state.inspector;changed();renderLayout();}
+  if(valueLab&&(button.closest('[data-valuation-panel]')||button.closest('[data-value-dialog]')))return;
+  if(button.hasAttribute('data-inspector-toggle')){if(valueLab&&state.view==='valuation'){valueEvidenceOpen=!valueEvidenceOpen;renderLayout();if(valueEvidenceOpen)$('[data-value-evidence-close]').focus();}else{state.inspector=!state.inspector;changed();renderLayout();}}
+  if(button.hasAttribute('data-value-evidence-close')){valueEvidenceOpen=false;renderLayout();$('[data-inspector-toggle]').focus();}
   if(button.hasAttribute('data-split-toggle')){state.split=!state.split;changed();renderLayout();}
   if(button.hasAttribute('data-terminal-fullscreen')){focus=!focus;document.body.classList.toggle('rt-focus',focus);button.setAttribute('aria-pressed',String(focus));button.textContent=focus?'Exit focus':'Focus';}
   if(button.dataset.valueModel){state.valuation.model=button.dataset.valueModel;state.valuation.base=null;state.valuation.price=null;changed();renderValueControls();}
@@ -152,6 +161,6 @@ export function createTerminal(api){
    const status=frame===$('[data-fo-frame]')?$('[data-fo-status]'):$('[data-chart-status]');status.textContent=`This tool is displaying ${symbol}. Select the matching company above to reconnect your research context.`;
   }
  });
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&focus){focus=false;document.body.classList.remove('rt-focus');$('[data-terminal-fullscreen]').textContent='Focus';$('[data-terminal-fullscreen]').setAttribute('aria-pressed','false');}});
- return {reset,restore,exportState,onView,onData,renderValueControls,renderChanges,showInspector:()=>{if(!state.inspector){state.inspector=true;changed();renderLayout();}},reviewRequested:()=>review,ratesValid:()=>ratesValid};
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&valueEvidenceOpen&&!document.querySelector('dialog[open]')){valueEvidenceOpen=false;renderLayout();$('[data-inspector-toggle]').focus();}if(e.key==='Escape'&&focus){focus=false;document.body.classList.remove('rt-focus');$('[data-terminal-fullscreen]').textContent='Focus';$('[data-terminal-fullscreen]').setAttribute('aria-pressed','false');}});
+ return {reset,restore,exportState,onView,onData,renderValueControls,renderChanges,showInspector:()=>{if(valueLab&&state.view==='valuation'){valueEvidenceOpen=true;renderLayout();}else if(!state.inspector){state.inspector=true;changed();renderLayout();}},reviewRequested:()=>review,ratesValid:()=>valueLab?valueLab.ratesValid():ratesValid};
 }
