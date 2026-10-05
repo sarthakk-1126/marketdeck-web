@@ -39,6 +39,7 @@ try {
  await page.reload();await expect(page.locator('.sl-metrics')).toBeVisible();await page.locator('[data-sl-mode="monitor"]').click();await expect(page.locator('[data-sl-monitor-result]')).toContainText('disabled');
  await page.locator('[data-sl-mode="build"]').click();await page.locator('[data-sl-editor="python"]').click();await expect(page.locator('[data-sl="run"]')).toBeDisabled();
  await page.locator('[data-sl-code]').fill('def decide(history):\n    return history[-1]["close"] > 100\n');await page.locator('[data-sl="save"]').click();await expect(page.locator('[data-sl-save-status]')).toContainText('saved');await page.reload();await page.locator('[data-sl-editor="python"]').click();await expect(page.locator('[data-sl-code]')).toHaveValue(/def decide/);await page.locator('[data-sl-editor="visual"]').click();
+ await page.locator('[data-sl="run"]').click();await expect(page.locator('[data-sl-result-state]')).toContainText('Results match');
  for(const width of [1440,1280,820,390,320]){
   await page.setViewportSize({width,height:1000});await page.emulateMedia({reducedMotion:'reduce'});
   if(width<=820)await page.locator('[data-sl-area="chart"]').click();
