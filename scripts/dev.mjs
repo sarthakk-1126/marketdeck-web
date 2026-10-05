@@ -5,6 +5,8 @@ import { resolve, extname, sep } from 'node:path';
 const root = resolve(process.argv.includes('--review')?'.preview/review':'public');
 const portFlag = process.argv.indexOf('--port');
 const port = Number(portFlag > -1 ? process.argv[portFlag + 1] : 4173);
+const hostFlag = process.argv.indexOf('--host');
+const host = hostFlag > -1 ? process.argv[hostFlag + 1] : '127.0.0.1';
 const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.png': 'image/png', '.mp4': 'video/mp4', '.xml': 'application/xml', '.txt': 'text/plain', '.woff2': 'font/woff2' };
 
 createServer((req, res) => {
@@ -30,4 +32,4 @@ createServer((req, res) => {
     res.writeHead(200, { ...headers, 'Content-Length': size });
     if (req.method === 'HEAD') res.end(); else createReadStream(file).pipe(res);
   }
-}).listen(port, '127.0.0.1', () => console.log(`MarketDeck preview: http://127.0.0.1:${port}`));
+}).listen(port, host, () => console.log(`MarketDeck preview: http://${host}:${port}`));
