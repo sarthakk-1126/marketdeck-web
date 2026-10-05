@@ -5,6 +5,7 @@ import { buildEditorial } from './editorial.mjs';
 import { injectAnalytics, stripAnalytics } from './analytics.mjs';
 import { homepageIdentityGraph } from './structured-identity.mjs';
 import { productPreview } from './product-previews.mjs';
+import { terminalHomepage } from './terminal-discovery.mjs';
 
 export const escapeHtml = (value) => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export const safeUrl = (value) => {
@@ -40,7 +41,7 @@ const schema = homepageIdentityGraph();
 const companionSection = readFileSync(new URL('../src/companion-section.html', import.meta.url), 'utf8');
 let html = readFileSync(new URL('../src/index.template.html', import.meta.url), 'utf8');
 html=buildEditorial({data,template:html,root:output,review});
-for (const [key, value] of Object.entries({ LENS_PANEL: readFileSync('src/lens-panel.html', 'utf8'), PRODUCT_TABS: productTabs, PRODUCT_OVERVIEW: productOverview, COMPANION_SECTION: companionSection, COMMUNITY_TABS: communityTabs, COMMUNITY_PANELS: communityPanels, COMMUNITY_LEGEND: communityLegend, CONTACTS: contacts, FOOTER_PRODUCTS: footerProducts, LEGAL: legal, NEWSLETTER: newsletter, NEWSLETTER_NOTE: newsletterNote, SCHEMA: JSON.stringify(schema).replace(/</g, '\\u003c') })) html = html.replaceAll(`{{${key}}}`, value);
+for (const [key, value] of Object.entries({ TERMINAL_SECTION: terminalHomepage(), LENS_PANEL: readFileSync('src/lens-panel.html', 'utf8'), PRODUCT_TABS: productTabs, PRODUCT_OVERVIEW: productOverview, COMPANION_SECTION: companionSection, COMMUNITY_TABS: communityTabs, COMMUNITY_PANELS: communityPanels, COMMUNITY_LEGEND: communityLegend, CONTACTS: contacts, FOOTER_PRODUCTS: footerProducts, LEGAL: legal, NEWSLETTER: newsletter, NEWSLETTER_NOTE: newsletterNote, SCHEMA: JSON.stringify(schema).replace(/</g, '\\u003c') })) html = html.replaceAll(`{{${key}}}`, value);
 if (/\{\{\w+\}\}/.test(html)) throw new Error('Unresolved template token');
 writeFileSync(resolve(output,'index.html'), html);
 
