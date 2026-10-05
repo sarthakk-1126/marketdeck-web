@@ -2,6 +2,67 @@
 
 final result: passed
 
+
+---
+
+## Books & Investor Methods carousel motion — 2026-10-05
+
+### Source visual truth and implementation evidence
+
+- User-selected attachment: `/workspace/scratch/84c89f25e2c0/upload/image(20261005-104218).png`, 1294 × 462 pixels, including the image-viewer chrome.
+- Clean selected concept: `/workspace/scratch/84c89f25e2c0/generated_images/exec-d0950607-3842-4a0a-bdec-bf39345078d1.png`, 1984 × 793 pixels. The component was normalized from a 1900 × 527 trim.
+- Browser-rendered implementation: Cloud Browser tab 42 at `http://terminal.local:4173/#research-terminal`, Chrome/CDP, 1348 × 900 CSS viewport, DPR 1. The Books state was selected with the real control and visually inspected.
+- Final desktop component capture: `.preview/books-motion-desktop.png`, 1236 × 322 pixels.
+- Final mobile component capture: `.preview/books-motion-mobile.png`, 350 × 468 pixels inside a 390 × 844 CSS viewport, DPR 1.
+- Combined same-input desktop comparison: `.preview/books-motion-comparison.png`, 1236 × 665 pixels. The selected source is above and the implementation is below. The source component was scaled to the implementation width; the implementation intentionally remains 21px shorter to preserve the approved compact homepage footprint.
+
+The Cloud Browser capture is the runtime source of truth for controls, motion, focus and navigation. The saved desktop/mobile captures use the same production HTML/CSS and generated asset with animations disabled for stable visual comparison. The mobile capture selects the Books state in the capture harness; the actual runtime state change was separately exercised in the Cloud Browser.
+
+### Findings and comparison history
+
+- [P1, fixed] The previous Books artwork was a static generic landscape and did not communicate a library or investment method. It was replaced by an original 1700 × 680 transparent open-book illustration showing IDEA → TEST → APPLY, supporting icons, a checklist and an analytical chart.
+- [P1, fixed] The previous 30px transparent chevrons and 6px dots were not discoverable. The final control cluster has labelled `Research Terminal` and `Books` feature selectors, a visible `02 / 02` counter and two 40 × 40 desktop / 36 × 36 mobile outlined arrow buttons with clear accessible names.
+- [P2, fixed] The first rendered implementation left too much empty space between copy and illustration. The post-comparison pass enlarged and shifted the book so its scale and visual weight now match the source while retaining the 322px frame and preventing overflow.
+- [P2, fixed] The first Books heading inherited the former slide's non-blue emphasis. `Test the thinking.` and the Books kicker now use the homepage blue, matching the selected concept and the existing Research Terminal slide.
+
+The final combined comparison shows no remaining actionable P0/P1/P2 mismatch. Intentional differences are limited to keeping the real homepage component 322px tall, using the existing MarketDeck font/tokens, and replacing the concept's tiny secondary dots with the more explicit labelled feature selector and numeric counter.
+
+### Required fidelity surfaces
+
+| Surface | Result |
+| --- | --- |
+| Fonts and typography | Existing MarketDeck font stack and optical hierarchy retained. Desktop title is 40px maximum with 1.06 line height; mobile is 28–34px. Labels, body copy, CTA and trust line remain legible with no truncation in final captures. |
+| Spacing and layout | Desktop frame is 1236 × 322 at the inspected viewport. Copy and book retain distinct columns; controls occupy the upper-right edge without hiding content. Mobile frame is 350 × 468, arrows remain visible, the book remains readable, and document overflow is false. |
+| Colours and tokens | All UI uses existing host variables (`--bg`, `--surface`, `--blue`, `--line`, `--text`, `--muted`) and `color-mix`; no new hardcoded palette or root override. Blue emphasis and restrained glass borders match the selected visual. |
+| Image quality and asset fidelity | Original generated asset is 1700 × 680 sRGBA WebP at about 100KB. It uses no official book cover or copied artwork. Repeated cached layers are clipped from the same asset for page, trace and node motion; no CSS/div illustration substitutes the book. |
+| Copy and content | Existing Books headline, description, CTA, Learning link and 25-guide trust line are unchanged. Both slides remain crawlable HTML. The new figcaption truthfully identifies an original MarketDeck illustration. |
+
+### Motion, accessibility and interaction verification
+
+- Ambient motion is restrained and CSS-only: 4px book float, 2px page breath, one moving evidence trace and sequential IDEA/TEST/APPLY node pulses. Pointer depth remains bounded to 1.8° / 2.4°.
+- Motion runs only when the active slide is visible. It stops offscreen, on an inactive slide, while the user hovers or focuses the carousel, when the tab is hidden, under the global motion pause, and under `prefers-reduced-motion`.
+- Cloud Browser runtime reported `awsAtlasFloat` and `awsAtlasTrace` while visible. The global Disable motion control changed the body to `motion-paused` and the atlas animation to `none`; motion was restored afterward.
+- Next from Books wrapped to Research Terminal. ArrowRight on the focused carousel returned to Books. The active selector and `02 / 02` counter updated together. Existing touch swipe handling remains intact.
+- Desktop arrows measured 40 × 40 CSS pixels. Mobile arrows render at 36 × 36 with the always-visible count; labelled selectors collapse to protect the compact phone layout.
+- Browser DOM exposed both feature buttons, previous/next accessible names, both crawlable slide headings and destinations. Focus outlines use the existing blue token.
+- Cloud Browser console review found no page-origin errors. Logged errors came only from the browser's own extension metadata bridge, outside MarketDeck.
+
+### Automated and scope verification
+
+- Production build: passed.
+- Targeted Learning/carousel tests: 12/12 passed.
+- Full suite: 140/143, exactly matching clean `origin/main` at 140/143. The three inherited failures are the missing review-build draft fixture, the stale analytics allowlist, and the pre-existing product-art preview assertion.
+- Syntax checks and `git diff --check`: passed.
+- Final desktop and 390px mobile captures: no horizontal overflow.
+- Portfolio Analysis section markup is byte-identical to `origin/main`; `portfolio-flagship.css` and `portfolio-flagship.js` are unchanged.
+- No authentication, calculations, platform core, analytics payloads, sitemap, deployment configuration or VPS files changed.
+
+### Follow-up polish
+
+No blocking follow-up remains. A future carousel with more than two features may replace the fixed `02` total with registry-derived text, but doing that now would add complexity without user value.
+
+final result: passed
+
 ## Scope and source visual truth
 
 User-selected playable-preview attachment: `/workspace/scratch/adf03b8116c5/upload/image(20261004-175404).png`, 1099 × 802, with viewer overlays. The clean original of that exact displayed concept is `/workspace/scratch/adf03b8116c5/generated_images/exec-91523bad-6147-4b62-a4db-949c9198ccb7.png`, 1488 × 1057. Both were opened; the clean original was used for comparisons without viewer overlays.

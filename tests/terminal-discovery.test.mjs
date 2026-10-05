@@ -47,10 +47,10 @@ test('homepage inserts a compact flagship between the product suite and Portfoli
  assert.ok(slot>template.indexOf('class="suite-overview-section"'));
  assert.ok(slot<template.indexOf('id="portfolio-analysis"'));
  assert.ok(template.includes('href="/screener/research-terminal/">Research Terminal'));
- assert.ok(template.includes('/workspace-showcase.js?v=20261005-books1'));
+ assert.ok(template.includes('/workspace-showcase.js?v=20261005-books2'));
  const output=read('public/index.html');
  assert.equal((output.match(/id="research-terminal"/g)||[]).length,1);
- assert.equal((output.match(/data-aws-holo(?:[ =])/g)||[]).length,1);
+ assert.equal((output.match(/data-aws-holo(?:[ =])/g)||[]).length,2);
  assert.ok(!output.includes('{{TERMINAL_SECTION}}'));
  assert.equal((output.match(/<link rel="canonical"/g)||[]).length,1);
  assert.equal((output.match(/gtag\('config'/g)||[]).length,1);
