@@ -21,6 +21,7 @@ try{
  await expect(page.locator('[data-value-reference]')).toContainText('Diluted EPS');
  await expect(page.locator('[data-value-forecast] svg')).toBeVisible();
  expect(await page.locator('.rd-evidence-column').isVisible()).toBe(false);
+ const history=data.valuation_reference.points.slice(-5);const reviewIndex=history.findIndex(p=>p.facts.eps.kind==='needs_review');if(reviewIndex>=0){await page.locator(`[data-chart-point="${reviewIndex}"]`).hover();await expect(page.locator('[data-value-chart-readout]')).toContainText('Needs verification');}
  const initial=await page.locator('[data-value-result]').innerText();
  await page.locator('[data-value-slider="growth"]').focus();await page.keyboard.press('ArrowRight');
  await expect(page.locator('[data-value-input="growth"]')).toHaveValue('10.5');
