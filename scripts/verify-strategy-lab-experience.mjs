@@ -24,6 +24,8 @@ try {
  await page.setViewportSize({width:1440,height:1000});
  await page.locator('[data-sl-starter="crossover"]').click();await expect(page.locator('[data-sl-summary]')).not.toContainText('RSI');
  await page.locator('[data-sl-starter="momentum"]').click();
+ await page.locator('[data-sl-edit="entry"]').nth(1).click();const threshold=page.locator('[data-sl-rule="entry"][data-part="right"][data-key="value"]');await threshold.fill('1000000000001');await expect(page.locator('[data-sl="save"]')).toBeDisabled();await expect(page.locator('[data-sl-condition-error]').nth(1)).toContainText('1 trillion');await threshold.fill('50');await expect(page.locator('[data-sl="save"]')).toBeEnabled();
+ await page.locator('[data-sl-edit="entry"]').first().click();const field=page.locator('[data-sl-rule="entry"][data-part="left"][data-key="field"]').first();await field.selectOption('high');await expect(page.locator('[data-sl-condition="entry"]').first()).toContainText('SMA 20 (high)');await field.selectOption('close');await page.locator('[data-sl-starter="momentum"]').click();
  expect(await page.locator('[data-lab-panel] [data-mode]').count()).toBe(0);
  await page.locator('[data-sl="sources"]').first().click();
  await expect(page.locator('[data-sl-readiness]')).toContainText('Built-in history unavailable');
@@ -34,7 +36,8 @@ try {
  await expect(page.locator('[data-sl-import-preview]')).toContainText('220 supplied sessions');
  await page.locator('[data-sl-source]').fill('Synthetic browser QA fixture; not market data');
  await page.locator('[data-sl-basis]').selectOption('raw');await page.locator('[data-sl-actions]').selectOption('none');
- await page.locator('[data-sl-confirm]').check();await page.locator('[data-sl="import-csv"]').click();
+ for(const width of [1440,1280,820,390,320]){await page.setViewportSize({width,height:1000});expect(await page.locator('[data-sl-source-dialog]').evaluate(e=>e.scrollWidth<=e.clientWidth),`import dialog overflow at ${width}`).toBe(true);if(width===390)await page.screenshot({path:output+'/experience-import-390.png',fullPage:true});}
+ await page.setViewportSize({width:1440,height:1000});await page.locator('[data-sl-confirm]').check();await page.locator('[data-sl="import-csv"]').click();
  await expect(page.locator('[data-sl-status]')).toContainText('Imported 220 sessions');
  await page.locator('[data-sl="sources"]').first().click();await page.locator('[data-sl-dataset]').selectOption({index:1});await expect(page.locator('[data-sl-source-dialog]')).not.toBeVisible();
  await page.locator('[data-sl="save"]').click();await expect(page.locator('[data-sl-save-status]')).toContainText('saved');
@@ -57,7 +60,7 @@ try {
  await page.reload();await expect(page.locator('.sl-metrics')).toBeVisible();await page.locator('[data-sl-mode="monitor"]').click();await expect(page.locator('[data-sl-monitor-result]')).toContainText('disabled');
  await page.locator('[data-sl-mode="build"]').click();await page.locator('[data-sl-editor="python"]').click();await expect(page.locator('[data-sl="run"]')).toBeDisabled();
  await page.locator('[data-sl-code]').fill('def decide(history):\n    return history[-1]["close"] > 100\n');await page.locator('[data-sl="save"]').click();await expect(page.locator('[data-sl-save-status]')).toContainText('saved');await page.reload();await page.locator('[data-sl-editor="python"]').click();await expect(page.locator('[data-sl-code]')).toHaveValue(/def decide/);await page.locator('[data-sl-editor="visual"]').click();
- await page.locator('[data-sl-editor="python"]').click();const sourceDownload=page.waitForEvent('download');await page.locator('[data-sl="export-code"]').click();await (await sourceDownload).saveAs(output+'/edited-strategy.py');expect(readFileSync(output+'/edited-strategy.py','utf8')).toContain('def decide');await page.locator('[data-sl-editor="visual"]').click();
+ await page.locator('[data-sl-editor="python"]').click();const sourceDownload=page.waitForEvent('download');await page.locator('[data-sl="export-code"]').click();await (await sourceDownload).saveAs(output+'/edited-strategy.py');expect(readFileSync(output+'/edited-strategy.py','utf8')).toContain('def decide');const visualDownload=page.waitForEvent('download');await page.locator('[data-sl="template"]').click();await (await visualDownload).saveAs(output+'/marketdeck_visual_strategy.py');expect(readFileSync(output+'/marketdeck_visual_strategy.py','utf8').length).toBeLessThanOrEqual(24000);await page.locator('[data-sl="save"]').click();await expect(page.locator('[data-sl-save-status]')).toContainText('saved');await page.locator('[data-sl-editor="visual"]').click();
  await page.locator('[data-sl="run"]').click();await expect(page.locator('[data-sl-result-state]')).toContainText('Results match');
  // Real response delayed while another edit is made: newer draft must survive.
  await page.locator('[data-sl-edit="entry"]').first().click();
@@ -87,6 +90,6 @@ try {
  await page.locator('[data-view="explore"]').click();await expect(page.locator('[data-pins]')).toContainText('Strategy Lab');await page.locator('[data-view="lab"]').click();
  await page.locator('[data-sl="focus-chart"]').focus();await page.keyboard.press('Enter');await expect(page.locator('[data-sl-layout]')).toHaveAttribute('data-focus','chart');await page.keyboard.press('Escape');await expect(page.locator('[data-sl-layout]')).toHaveAttribute('data-focus','');
  expect(errors).toEqual([]);
- const report={passed:true,widths:[1440,1280,820,390,320],workflows:['first-use recipes/readiness','CSV mapping/preview/row errors','save/reopen','run','signal/fill/replay','stale results','independent rule edit','version compare','monitor disable/reopen','one-action pin to research','python edit/export-only','nine-view regression','keyboard replay/focus/help','zoom/pan/reset','reduced motion'],measurements,errors,data:'synthetic QA candles; real local application API; sibling iframe host fixtures'};
+ const report={passed:true,widths:[1440,1280,820,390,320],workflows:['first-use recipes/readiness','CSV mapping/preview/row errors','snapshot selection','save/reopen','edit during save','run','signal/fill/replay','stale results','independent rule edit','version compare','monitor disable/reopen','one-action pin to research','python edit/export/save generated template','nine-view regression','keyboard replay/focus/help','zoom/pan/reset','reduced motion'],measurements,errors,data:'synthetic QA candles; real local application API; sibling iframe host fixtures'};
  writeFileSync(output+'/browser-report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
 }catch(error){await page.screenshot({path:output+'/failure.png',fullPage:true});console.error(error);console.error('page errors',errors);process.exitCode=1;}finally{await browser.close();}
