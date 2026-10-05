@@ -4,7 +4,7 @@ import {createValueLab} from './research-value-lab.js';
 export function createTerminal(api){
  const {$,$$,esc,fmt,dateLabel,changed,toast,getData,getPoint,getPins,getDesk,setView,request,url,showSources}=api;
  const defaults=()=>({version:1,preset:'investing',view:'explore',inspector:true,inspectorWidth:300,split:false,valuation:{model:'earnings',base:null,growth:10,discount:12,terminal:3,years:5,multiple:20,dividend:0,shares:null,cash:null,debt:null,marginSafety:20,price:null,rates:[10,12,15,18]},scenarios:[],thesis:[]});
- let state=defaults(),foMode='history',review=false,focus=false,renderFrame=null,ratesValid=true;
+ let state=defaults(),foMode='history',review=false,focus=false,renderFrame=null,ratesValid=true,lab=null;
  const labels={earnings:'Earnings & exit',equity:'Equity cash flow',firm:'Firm DCF',dividend:'Dividends'};
  const safeSource=value=>{const resolved=url(value);return resolved!=='#'&&new URL(resolved,location.origin).origin===location.origin?resolved:null;};
  let valueEvidenceOpen=false;
@@ -97,7 +97,7 @@ export function createTerminal(api){
   target.innerHTML=state.thesis.length?state.thesis.map((t,i)=>`<article class="rt-thesis-entry"><div class="rt-thesis-heading"><span>RESEARCH QUESTION ${i+1}</span><button type="button" class="rd-icon-button" data-thesis-remove="${i}" aria-label="Remove research question ${i+1}">×</button></div><div class="rt-thesis-grid">${[['claim','My claim or question'],['support','Evidence supporting it'],['counter','Counter-evidence / what is unknown'],['invalidate','What would change my mind?']].map(([key,label])=>`<label class="rt-field">${label}<textarea rows="3" maxlength="500" data-thesis-index="${i}" data-thesis-field="${key}">${esc(t[key])}</textarea></label>`).join('')}</div><fieldset class="rt-evidence-picks"><legend>Link pinned filing evidence</legend>${pins.length?pins.map(p=>`<label><input type="checkbox" data-thesis-index="${i}" data-thesis-pin="${esc(p.id)}" ${t.evidence.includes(p.id)?'checked':''}>${esc(p.period)} · ${esc(p.metrics.map(k=>getData()?.metrics[k]?.label||k).join(', '))}</label>`).join(''):'<p>Inspect a Research chart period and pin an observation to link evidence here.</p>'}</fieldset></article>`).join(''):'<div class="rt-value-empty"><h3>Give your research a question.</h3><p>Add a claim, collect evidence and keep a counterargument beside it.</p></div>';
   $('[data-thesis-add]').disabled=state.thesis.length>=4;
  }
- function onView(view){state.view=view;renderLayout();renderEngines();if(view==='valuation')renderValue();if(view==='changes')renderChanges();if(view==='thesis')renderThesis();}
+ function onView(view){state.view=view;renderLayout();renderEngines();if(view==='valuation')renderValue();if(view==='changes')renderChanges();if(view==='thesis')renderThesis();if(view==='lab'&&api.labURL){import('/assets/strategy-lab.js?v=lab1').then(module=>{lab??=module.createStrategyLab(api);if(state.view==='lab')return lab?.activate();}).catch(e=>toast(e.message));}else lab?.pause();}
  function onData(){renderEngines();renderChanges();renderThesis();if(state.view==='valuation')renderValue();}
  document.addEventListener('input',event=>{
   const input=event.target;
@@ -162,5 +162,5 @@ export function createTerminal(api){
   }
  });
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&valueEvidenceOpen&&!document.querySelector('dialog[open]')){valueEvidenceOpen=false;renderLayout();$('[data-inspector-toggle]').focus();}if(e.key==='Escape'&&focus){focus=false;document.body.classList.remove('rt-focus');$('[data-terminal-fullscreen]').textContent='Focus';$('[data-terminal-fullscreen]').setAttribute('aria-pressed','false');}});
- return {reset,restore,exportState,onView,onData,renderValueControls,renderChanges,showInspector:()=>{if(valueLab&&state.view==='valuation'){valueEvidenceOpen=true;renderLayout();}else if(!state.inspector){state.inspector=true;changed();renderLayout();}},reviewRequested:()=>review,ratesValid:()=>valueLab?valueLab.ratesValid():ratesValid};
+ return {reset,restore,exportState,onView,onData,renderValueControls,renderChanges,labDirty:()=>lab?.isDirty()??false,saveLabDraft:()=>lab?.saveDraft()??true,showInspector:()=>{if(valueLab&&state.view==='valuation'){valueEvidenceOpen=true;renderLayout();}else if(!state.inspector){state.inspector=true;changed();renderLayout();}},reviewRequested:()=>review,ratesValid:()=>valueLab?valueLab.ratesValid():ratesValid};
 }
