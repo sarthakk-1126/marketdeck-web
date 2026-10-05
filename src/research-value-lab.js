@@ -1,0 +1,170 @@
+import {valuation,returnTable,sensitivity,impliedGrowth} from './research-valuation.js';
+import {finite,REFERENCE_KEYS,referencePoints,baseReference,fcffFromComponents,forecast,bridge,comparisonScenarios} from './research-value-math.js';
+
+const LABELS={earnings:'Earnings & exit',firm:'Firm DCF',equity:'Equity cash flow',dividend:'Dividends'};
+const HELP={base:'Start with a filed figure where supported, or enter your own estimate. Keep the units shown.',growth:'Annual growth in your base EPS, cash flow or dividend. Historical growth is context, not a forecast.',discount:'The rate used to discount future value. Firm cash flows use WACC; equity models use your required equity return.',years:'The number of explicit forecast years. The terminal or exit value is calculated after this horizon.',terminal:'Long-run cash-flow growth after the forecast period. It must stay below the discount rate.',multiple:'Your assumed price-to-earnings multiple at the end of the forecast period.',dividend:'Your starting annual dividend per share. This earnings model grows it at the same assumed rate as EPS.',shares:'Your assumed current diluted shares in crore. The filed-profit/EPS reference is only an approximate weighted average.',cash:'Cash and nonoperating assets in ₹ crore. Review operating cash needs before adding all reported cash.',debt:'Debt and other non-equity claims in ₹ crore. The filing reference includes borrowings only.',marginSafety:'An assumed buffer applied to your calculated value. This is not a probability or confidence interval.'};
+const FIELDS={base:[0,1e12,.01],growth:[-90,100,.5],discount:[.1,100,.1],years:[1,20,1],terminal:[-90,99,.5],multiple:[.1,200,.1],dividend:[0,1e7,.01],shares:[.000001,1e8,.01],cash:[0,1e12,1],debt:[0,1e12,1],marginSafety:[0,80,1]};
+const money=v=>finite(v)?'₹'+v.toLocaleString('en-IN',{maximumFractionDigits:2}):'Unavailable';
+const numeral=v=>finite(v)?v.toLocaleString('en-IN',{maximumFractionDigits:2}):'Unavailable';
+const short=v=>finite(v)?new Intl.NumberFormat('en-IN',{notation:'compact',maximumFractionDigits:1}).format(v):'—';
+
+export function createValueLab(api){
+ const {$,$$,esc,dateLabel,changed,toast,getData,getState,setValuation,defaults}=api;
+ if(!$('[data-value-forecast]'))return null; // Older template during deployment.
+ let referenceMode='latest',origin='Your inputs are editable assumptions.',ratesValid=true,animation=null,displayPoints=[],chartSignature='',chartReadouts=[],builder=null,scenarioSnapshot=null;
+ const state=()=>getState(),a=()=>state().valuation,latest=()=>referencePoints(getData()).at(-1);
+ const formattedFact=f=>finite(f?.value)?(f.unit==='crore shares'?numeral(f.value)+' Cr':money(f.value)+(f.unit==='INR crore'?' Cr':' / share')):'Unavailable';
+ function label(key){return {base:{earnings:'Base EPS / share (₹)',firm:'Base firm free cash flow (₹ Cr)',equity:'Equity cash flow / share (₹)',dividend:'Dividend / share (₹)'}[a().model],growth:'Annual growth (%)',discount:a().model==='firm'?'Discount rate / WACC (%)':'Required equity return (%)',years:'Forecast horizon (years)',terminal:'Terminal growth (%)',multiple:'Exit P/E multiple',dividend:'Annual dividend / share (₹)',shares:'Diluted shares (crore)',cash:'Cash & nonoperating assets (₹ Cr)',debt:'Debt & other claims (₹ Cr)',marginSafety:'Safety margin (%)'}[key];}
+ function control(key){
+  const [min,max,step]=FIELDS[key],v=a()[key],slider=['growth','discount','years','multiple','marginSafety'].includes(key);
+  const nominal={growth:[-20,40],discount:[.1,30],years:[1,20],multiple:[.1,60],marginSafety:[0,80]}[key];
+  const range=slider?[Math.min(nominal[0],finite(v)?v:nominal[0]),Math.max(nominal[1],finite(v)?v:nominal[1])]:null;
+  const refKey={cash:'cash',debt:'debt',shares:'shares'}[key],fact=latest()?.facts[refKey];
+  return `<div class="vl-control ${slider?'vl-slider-control':''}"><div class="vl-control-heading"><label for="vl-input-${key}">${esc(label(key))}</label><button class="vl-help" type="button" data-value-help="${key}" aria-label="Explain ${esc(label(key))}" aria-expanded="false" aria-controls="vl-help-${key}">i</button></div><p class="vl-help-copy" id="vl-help-${key}" hidden>${esc(HELP[key])}</p><div class="vl-control-row">${slider?`<input type="range" data-value-slider="${key}" min="${range[0]}" max="${range[1]}" step="${step}" value="${v??range[0]}" aria-label="${esc(label(key))} slider">`:''}<input id="vl-input-${key}" type="number" data-value-input="${key}" value="${v??''}" min="${min}" max="${max}" step="${step}" placeholder="Your estimate" inputmode="decimal"></div>${fact?`<div class="vl-field-reference"><span>${esc(formattedFact(fact))} · ${esc(fact.label)}</span>${finite(fact.value)&&fact.value>=0?`<button class="rd-text-link" type="button" data-value-use-fact="${refKey}">${refKey==='shares'?'Use as estimate':'Use reference'}</button>`:''}${fact.note?`<small>${esc(fact.note)}</small>`:''}</div>`:''}</div>`;
+ }
+ function renderReferences(){
+  const p=latest(),facts=p?.facts||{},keys=a().model==='firm'?['fcff','cfo','cash','debt']:a().model==='earnings'?['eps','cfo']:a().model==='dividend'?['dividend','dividends_paid']:['fcfe','cfo'];
+  $('[data-value-reference]').innerHTML=`<span class="vl-reference-title">Filing references</span><div class="vl-reference-items">${keys.map(key=>{const f=facts[key];return `<div><small>${esc(f?.label||{fcff:'Firm free cash flow',fcfe:'Equity cash flow / share',dividend:'Dividend / share'}[key]||key)}</small><strong>${esc(formattedFact(f))}</strong>${!finite(f?.value)?'<span>Not in stored data</span>':''}</div>`;}).join('')}</div>`;
+  $('[data-value-reference-date]').textContent=p?`${p.label} · ${p.basis} · latest stored annual period`:'No stored annual filing';
+  const ref=baseReference(getData(),a().model,referenceMode),baseFact=facts[REFERENCE_KEYS[a().model]];
+  const history=referencePoints(getData()).slice(-5),historyKey=a().model==='earnings'?'eps':'cfo';
+  const values=history.map(row=>row.facts[historyKey]?.value),max=Math.max(...values.filter(finite).map(Math.abs),1);
+  const mini=history.some(row=>finite(row.facts[historyKey]?.value))?`<div class="vl-spark" aria-label="Recent ${historyKey==='eps'?'EPS':'operating cash-flow'} history">${history.map((row,i)=>`<span style="--vl-bar:${finite(values[i])?Math.max(3,Math.abs(values[i])/max*100):0}%" title="${esc(row.label+': '+formattedFact(row.facts[historyKey]))}"></span>`).join('')}</div>`:'';
+  $('[data-value-base-context]').innerHTML=`${mini}<div><small>${a().model==='firm'?'Operating cash flow · reference only':a().model==='earnings'?'Filed EPS · reference':'Filing context'}</small><strong>${esc(a().model==='firm'?formattedFact(facts.cfo):a().model==='earnings'?formattedFact(baseFact):'Enter your per-share estimate')}</strong></div><p>${esc(ref.reason||`${referenceMode==='average3'?'Three-year mean':'Latest figure'}: ${money(ref.value)}${a().model==='firm'?' Cr':' / share'}. Use it as a starting assumption.`)}</p>`;
+  $('[data-value-seed]').textContent=a().model==='firm'?'Build FCFF':'Use latest';
+  $('[data-value-seed]').disabled=a().model==='firm'?p?.format==='bank':!(baseReference(getData(),a().model).value>0);
+  $('[data-value-average]').disabled=!(baseReference(getData(),a().model,'average3').value>0);
+  $('[data-value-seed]').title=a().model==='firm'&&p?.format==='bank'?'Firm DCF is not a suitable default for bank financial statements. Try the earnings or dividend model.':baseReference(getData(),a().model).reason||'Use the latest available reference';
+  $('[data-value-average]').title=baseReference(getData(),a().model,'average3').reason||'Use a mean of three comparable annual periods';
+  for(const b of $$('[data-value-source]'))b.disabled=!p;
+ }
+ function renderControls(){
+  $('[data-model-tabs]').innerHTML=Object.entries(LABELS).map(([key,text])=>`<button type="button" data-value-model="${key}" aria-pressed="${a().model===key}">${text}</button>`).join('');
+  $('[data-value-controls]').innerHTML=['base','growth','discount','years'].map(control).join('');
+  const advanced=a().model==='earnings'?['multiple','dividend']:['terminal'];if(a().model==='firm')advanced.push('shares','cash','debt');advanced.push('marginSafety');
+  $('[data-value-advanced-controls]').innerHTML=advanced.map(control).join('');
+  // Missing enterprise/equity bridge inputs must remain easy to find.
+  if(a().model==='firm'&&['shares','cash','debt'].some(k=>!finite(a()[k])))$('[data-value-advanced]').open=true;
+  $('[data-value-rates]').value=a().rates.join(', ');$('[data-value-price]').value=a().price??'';
+  $('[data-value-origin]').textContent=origin;
+  render();
+ }
+ function rowsForHistory(key){const p=latest();return referencePoints(getData()).slice(-5).map(row=>({...row,value:row.basis===p?.basis&&row.format===p?.format?row.facts[key]?.value:null}));}
+ function renderChart(){
+  const model=a().model,own=forecast(a()),saved=comparisonScenarios(a(),state().scenarios),hasForecast=own.length>0;
+  // CFO is never drawn as historical FCFF. If FCFF is missing, the chart
+  // deliberately presents CFO as a separately labelled reference history.
+  const refOnly=!hasForecast&&model!=='earnings',historyKey=model==='earnings'?'eps':refOnly?'cfo':REFERENCE_KEYS[model];
+  const history=rowsForHistory(historyKey),usableHistory=history.some(p=>finite(p.value)),shownHistory=usableHistory?history:[];
+  const curves=hasForecast?saved.map((s,i)=>({...s,color:i+1,points:forecast(s.inputs)})):[];
+  const horizon=Math.max(a().years||5,...curves.map(s=>s.inputs.years)),historyCount=shownHistory.length;
+  const title=refOnly?'Operating cash flow · reference only':model==='earnings'?'Earnings, into the future.':'Your cash flow, into the future.';
+  const unit=refOnly||model==='firm'?'₹ Cr':'₹ / share';
+  $('[data-value-chart-title]').textContent=title;
+  $('[data-value-chart-caption]').textContent=refOnly?'Operating cash flow is not FCFF or FCFE. Complete the model to see your forecast.':model==='earnings'?'Filed EPS history · projected EPS from your assumptions':usableHistory?'Forecasts follow your assumptions, not analyst estimates.':'Your base and forecast · comparable historical cash flow is unavailable.';
+  $('[data-value-legend]').innerHTML=`${usableHistory?'<span><i class="vl-history-dot"></i>Filed history</span>':''}${hasForecast?'<span><i></i>Your forecast</span>':''}${curves.map(s=>`<span class="vl-color-${s.color}"><i></i>${esc(s.label)}</span>`).join('')}`;
+  if(!hasForecast&&!usableHistory){$('[data-value-forecast]').innerHTML='<div class="vl-chart-empty"><span aria-hidden="true">⌁</span><strong>Your assumptions shape this chart.</strong><p>Enter a positive base figure, growth and forecast horizon.</p></div>';chartReadouts=[];return;}
+  const W=Math.max(280,Math.min(900,$('[data-value-forecast]').clientWidth||900)),H=W<500?260:320,L=W<500?46:62,R=20,T=28,B=42,span=hasForecast?historyCount+horizon+1:historyCount;
+  const values=[...shownHistory.map(p=>p.value),...own.map(p=>p.value),...curves.flatMap(s=>s.points.map(p=>p.value))].filter(finite);
+  let min=Math.min(0,...values),max=Math.max(0,...values);if(max===min)max=min+1;const padding=(max-min)*.15;max+=padding;if(min<0)min-=padding;
+  const x=i=>L+(i+.5)*(W-L-R)/Math.max(span,1),y=v=>T+(max-v)/(max-min)*(H-T-B),zero=y(0),barWidth=Math.min(46,(W-L-R)/Math.max(span,1)*.58);
+  const poly=points=>points.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' ');
+  const main=own.map(p=>({...p,x:x(historyCount+p.year),y:y(p.value)}));
+  chartReadouts=[...shownHistory.map(p=>({text:`${p.label} · ${formattedFact(p.facts[historyKey])} · ${p.basis} · filed reference`,value:p.value})),...own.map(p=>({text:`${p.year===0?'Your base':'Year '+p.year} · ${model==='earnings'?'Forecast EPS':'Assumed cash flow'} ${money(p.value)}${model==='firm'?' Cr':' / share'}${p.year>0&&model!=='earnings'&&finite(a().discount)?` · discounted ${money(p.value/(1+a().discount/100)**p.year)}${model==='firm'?' Cr':' / share'}`:''}`,value:p.value}))];
+  const ticks=Array.from({length:5},(_,i)=>min+(max-min)*i/4);
+  const bars=shownHistory.map((p,i)=>finite(p.value)?`<rect class="vl-history-bar" x="${x(i)-barWidth/2}" y="${Math.min(zero,y(p.value))}" width="${barWidth}" height="${Math.max(1,Math.abs(zero-y(p.value)))}"/>`:`<text class="vl-missing" x="${x(i)}" y="${zero-8}" text-anchor="middle">—</text>`).join('');
+  const pointHit=(cx,cy,index,text)=>`<circle class="vl-point-hit" data-chart-point="${index}" cx="${cx}" cy="${cy}" r="15" tabindex="0" role="button" aria-label="${esc(text)}"><title>${esc(text)}</title></circle>`;
+  const boundary=historyCount?x(historyCount)-((W-L-R)/Math.max(span,1))/2:L;
+  const labelStep=Math.max(1,Math.ceil(span/(W<500?7:16)));
+  const labels=[...shownHistory.map((p,i)=>({x:x(i),text:i%labelStep===0&&!(W<500&&hasForecast&&i===historyCount-1)?'FY'+p.period.slice(2,4):''})),...own.map(p=>({x:x(historyCount+p.year),text:p.year===0?'Base':p.year===horizon||p.year%labelStep===0?'Y'+p.year:''}))];
+  const signature=model+':'+main.length+':'+historyCount+':'+W;
+  const old=signature===chartSignature?displayPoints:[];chartSignature=signature;cancelAnimationFrame(animation);
+  $('[data-value-forecast]').innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="aspect-ratio:${W} / ${H}" role="group" aria-label="${esc(title)}"><text class="vl-axis-unit" x="${L}" y="15">${unit}</text>${ticks.map(v=>`<line class="vl-grid" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="vl-axis" x="${L-10}" y="${y(v)+4}" text-anchor="end">${short(v)}</text>`).join('')}${bars}${hasForecast?`<line class="vl-boundary" x1="${boundary}" x2="${boundary}" y1="${T}" y2="${H-B}"/><text class="vl-boundary-label" x="${boundary+8}" y="${T+13}">Your forecast →</text>`:''}${curves.map(s=>`<path class="vl-comparison-line vl-color-${s.color}" d="${poly(s.points.map(p=>({x:x(historyCount+p.year),y:y(p.value)})))}"/>`).join('')}${hasForecast?`<path class="vl-forecast-fill" data-vl-area d="${poly(main)} L${main.at(-1).x},${zero} L${main[0].x},${zero} Z"/><path class="vl-forecast-line" data-vl-line d="${poly(main)}"/>${main.map((p,i)=>`<rect class="vl-forecast-bar" data-vl-bar="${i}" x="${p.x-barWidth/2}" y="${Math.min(zero,p.y)}" width="${barWidth}" height="${Math.abs(zero-p.y)}"/><circle class="vl-forecast-point" data-vl-point="${i}" cx="${p.x}" cy="${p.y}" r="3.5"/>`).join('')}`:''}${shownHistory.map((p,i)=>finite(p.value)?pointHit(x(i),y(p.value),i,chartReadouts[i].text):'').join('')}${main.map((p,i)=>pointHit(p.x,p.y,historyCount+i,chartReadouts[historyCount+i].text)).join('')}${labels.map(l=>`<text class="vl-axis vl-axis-x" x="${l.x}" y="${H-15}" text-anchor="middle">${l.text}</text>`).join('')}</svg>`;
+  const update=points=>{displayPoints=points;$('[data-vl-line]')?.setAttribute('d',poly(points));if(points.length)$('[data-vl-area]')?.setAttribute('d',poly(points)+` L${points.at(-1).x},${zero} L${points[0].x},${zero} Z`);points.forEach((p,i)=>{const bar=$(`[data-vl-bar="${i}"]`),point=$(`[data-vl-point="${i}"]`),hit=$(`[data-chart-point="${historyCount+i}"]`);bar?.setAttribute('y',Math.min(zero,p.y));bar?.setAttribute('height',Math.abs(zero-p.y));point?.setAttribute('cy',p.y);hit?.setAttribute('cy',p.y);});};
+  if(main.length&&old.length===main.length&&!matchMedia('(prefers-reduced-motion:reduce)').matches&&main.some((p,i)=>Math.abs(p.y-old[i].y)>.1)){
+   const start=performance.now();update(old.map((p,i)=>({...main[i],y:p.y})));const step=time=>{const t=Math.min(1,(time-start)/220),ease=1-(1-t)**3;update(main.map((p,i)=>({...p,y:old[i].y+(p.y-old[i].y)*ease})));if(t<1)animation=requestAnimationFrame(step);};animation=requestAnimationFrame(step);
+  }else update(main);
+  $('[data-value-chart-readout]').textContent=hasForecast?chartReadouts.at(-1).text:'Hover, focus or tap a filed period to inspect its value.';
+ }
+ function renderResults(){
+  const v=valuation(a()),result=$('[data-value-result]');
+  $('[data-value-input-status]').textContent=v.error||'All required inputs are complete.';
+  $('[data-value-save]').disabled=!!v.error;
+  $('[data-value-mobile-result]').innerHTML=v.error?'<span>Complete the required inputs</span><button type="button" data-value-focus-base>Assumptions ↑</button>':`<span>Your scenario <strong>${esc(money(v.value))} / share</strong></span><button type="button" data-value-focus-base>Edit assumptions ↑</button>`;
+  if(v.error){result.innerHTML=`<div class="vl-result-incomplete"><span class="rd-eyebrow">YOUR SCENARIO</span><h3>Complete your starting assumptions.</h3><p>${esc(v.error)}</p><button type="button" class="rd-text-link" data-value-focus-base>Go to assumptions →</button></div>`;$('[data-value-bridge]').innerHTML='<p class="vl-muted">The calculation will show how cash flows and the terminal or exit value contribute.</p>';for(const selector of ['[data-return-table]','[data-value-sensitivity]','[data-value-cashflows]'])$(selector).innerHTML='<p class="vl-muted">Complete a valid model to inspect these calculations.</p>';}
+  else{
+   result.innerHTML=`<div class="vl-result-band"><div><span class="rd-eyebrow">YOUR SCENARIO VALUE</span><strong>${esc(money(v.value))}<small> / share</small></strong><p>${esc(LABELS[a().model])} · based on your assumptions</p></div><div class="vl-safety"><small>With ${a().marginSafety}% safety margin</small><b>${esc(money(v.adjusted))}</b><small>Terminal / exit contribution ${numeral(v.terminalShare)}%</small></div></div>${v.value<0?'<p class="vl-warning">This model implies negative equity value. Review the cash flows, cash and non-equity claims.</p>':''}`;
+   const parts=bridge(a(),v),total=parts.reduce((sum,p)=>sum+Math.abs(p.value),0)||1;
+   $('[data-value-bridge]').innerHTML=`<div class="vl-bridge-track" aria-hidden="true">${parts.map((p,i)=>`<span class="vl-bridge-${i}" style="flex:${Math.abs(p.value)/total}" title="${esc(p.label)}"></span>`).join('')}</div><div class="vl-bridge-parts">${parts.map((p,i)=>`<div><small><i class="vl-bridge-${i}"></i>${esc(p.label)}</small><strong>${esc(money(p.value))}</strong></div>`).join('')}<div class="vl-bridge-total"><small>Value / share</small><strong>${esc(money(v.value))}</strong></div></div>`;
+   $('[data-return-table]').innerHTML=`<p class="vl-muted">${a().model==='firm'?'WACC assumptions':'Required equity returns'} · choose a rate to apply it.</p><div class="rt-rate-cards">${returnTable(a(),a().rates).map(r=>`<button type="button" data-value-return="${r.discount}" aria-pressed="${r.discount===a().discount}" ${r.error?'disabled':''}><span>${r.discount}%</span><strong>${r.error?'Unavailable':esc(money(r.value))}</strong><small>${esc(r.error||'per share')}</small></button>`).join('')}</div>`;
+   const grid=sensitivity(a()),max=Math.max(...grid.cells.flat().filter(c=>!c.error).map(c=>Math.abs(c.value)),1);
+   $('[data-value-sensitivity]').innerHTML=`<p class="vl-muted">Choose a cell to apply its assumptions.</p><div class="rt-table-scroll"><table class="rt-sensitivity"><caption class="rd-sr">Value per share by growth and discount rate</caption><thead><tr><th scope="col">Rate ↓ / growth →</th>${grid.growths.map(g=>`<th scope="col">${numeral(g)}%</th>`).join('')}</tr></thead><tbody>${grid.rates.map((r,i)=>`<tr><th scope="row">${numeral(r)}%</th>${grid.cells[i].map((c,j)=>`<td><button type="button" data-sensitivity-rate="${r}" data-sensitivity-growth="${grid.growths[j]}" ${c.error?'disabled':''} style="--rt-cell:${c.error?0:Math.min(.35,Math.abs(c.value)/max*.35)}" aria-label="${esc(c.error||`Growth ${grid.growths[j]}%, discount ${r}%, value ${money(c.value)}`)}">${c.error?'—':esc(money(c.value))}</button></td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+   const unit=a().model==='firm'?'₹ Cr':'₹ / share';
+   $('[data-value-cashflows]').innerHTML=`<div class="rt-table-scroll"><table><caption class="rd-sr">Year-by-year valuation in ${unit}</caption><thead><tr><th scope="col">Year</th><th scope="col">${a().model==='earnings'?'Dividends':'Cash flow'} (${unit})</th><th scope="col">Present value (${unit})</th></tr></thead><tbody>${v.flows.map(f=>`<tr><th scope="row">${f.year}</th><td>${numeral(f.amount)}</td><td>${numeral(f.pv)}</td></tr>`).join('')}<tr><th scope="row">${a().model==='earnings'?'Exit value':'Terminal'}</th><td>${numeral(v.terminalValue)}</td><td>${numeral(v.terminalPV)}</td></tr></tbody></table></div>`;
+  }
+  const reverse=impliedGrowth(a(),a().price);$('[data-value-reverse]').innerHTML=reverse.error?`<p class="vl-muted">${esc(reverse.error)}</p>`:`<strong>${numeral(reverse.growth)}%<small> implied annual growth</small></strong><p class="vl-muted">At ${a().discount}% discount over ${a().years} years. This is a solved assumption, not a forecast.</p>`;
+  $('[data-value-formula]').textContent={earnings:'Future EPS × your exit multiple, plus forecast dividends, discounted at your required equity return.',firm:'FCFF discounted at WACC. Equity value = enterprise value + cash/nonoperating assets − debt/other claims. Divide by your diluted share count. Aggregate inputs use crore.',equity:'FCFE per share discounted at your required equity return. Debt is not deducted again.',dividend:'Forecast dividends discounted at your required equity return, with a perpetual dividend-growth terminal value.'}[a().model]+' Tax adjustments are reflected in your cash-flow estimate; transaction costs and future dilution are excluded.';
+ }
+ function renderScenarios(){
+  const matches=comparisonScenarios(a(),state().scenarios),current=valuation(a()),all=[...matches.map(s=>({label:s.label,value:s.result.value,index:s.index})),...(!current.error?[{label:'Current case',value:current.value}]:[])];
+  let range='';if(all.length>1){const low=Math.min(...all.map(s=>s.value)),high=Math.max(...all.map(s=>s.value)),span=high-low||1;range=`<div class="vl-scenario-range" aria-label="Values from your scenarios"><div class="vl-range-track" aria-hidden="true">${all.map(s=>`<i style="left:${8+(s.value-low)/span*84}%"></i>`).join('')}</div><div class="vl-range-labels">${all.map(s=>`<span>${esc(s.label)}<strong>${esc(money(s.value))}</strong></span>`).join('')}</div><p class="vl-muted">Your scenario outcomes · not a confidence interval.</p></div>`;}
+  $('[data-value-scenarios]').innerHTML=range+(state().scenarios.length?`<div class="vl-kept-heading"><h3>Kept scenarios</h3><small>Same-model cases overlay the chart.</small></div><div class="rt-saved-scenarios">${state().scenarios.map((s,i)=>{const v=valuation(s.inputs);return `<div><button type="button" data-scenario-restore="${i}"><strong>${esc(s.label)}</strong><span>${esc(LABELS[s.inputs.model])} · ${v.error?'Incomplete':esc(money(v.value))+' / share'}</span></button><button type="button" data-scenario-remove="${i}" aria-label="Remove ${esc(s.label)}">×</button></div>`;}).join('')}</div>`:'<p class="vl-scenario-hint">Keep another case to compare assumptions and overlay its forecast.</p>');
+ }
+ function render(){
+  renderReferences();renderChart();renderResults();renderScenarios();
+  $('[data-value-advanced-summary]').textContent=(a().model==='earnings'?`Exit ${numeral(a().multiple)}×`:`Terminal growth ${numeral(a().terminal)}%`)+` · safety margin ${numeral(a().marginSafety)}%`;
+  $('[data-value-explanation]').textContent='Higher growth increases projected '+(a().model==='earnings'?'EPS':'cash flow')+'. A higher discount rate reduces its present value.';
+ }
+ function openDialog(name){const d=$(`[data-value-dialog="${name}"]`);if(!d.open)d.showModal();return d;}
+ function showSources(){
+  const p=latest();if(!p)return;
+  const average=referenceMode==='average3'?baseReference(getData(),a().model,'average3'):null;
+  const history=average?.value>0?`<details class="vl-detail" open><summary>Three-year starting reference · ${esc(money(average.value))}</summary><dl class="vl-source-list">${average.points.map(row=>{const f=row.facts[REFERENCE_KEYS[a().model]];return `<div><dt>${esc(row.label)} · ${esc(row.basis)}</dt><dd><strong>${esc(formattedFact(f))}</strong><p>${esc(f.source||'Stored annual filing')} · published ${esc(dateLabel(row.published_at))} · stored ${esc(dateLabel(row.fetched_at))}</p></dd></div>`;}).join('')}</dl></details>`:'';
+  $('[data-value-source-content]').innerHTML=`<p>${esc(getData().company.name)} · ${esc(p.label)} · ${esc(p.basis)}</p><p class="vl-muted">Published ${esc(dateLabel(p.published_at))} · stored ${esc(dateLabel(p.fetched_at))}</p><p>These are filing references. Your model inputs remain editable assumptions.</p>${history}<dl class="vl-source-list">${Object.entries(p.facts).map(([key,f])=>`<div><dt>${esc(f.label)} <small>${esc(f.kind||'filed')}</small></dt><dd><strong>${esc(formattedFact(f))}</strong><p>${esc(f.source||f.reason||'Not available in stored data')}</p>${f.note?`<p>${esc(f.note)}</p>`:''}</dd></div>`).join('')}</dl><div class="rd-dialog-actions">${[['profit-loss','Profit & loss'],['cash-flow','Cash flow'],['balance-sheet','Balance sheet']].map(([key,text])=>`<a class="rd-button" href="${esc(api.url(getData().links[key]))}" target="_blank" rel="noopener">${text} ↗</a>`).join('')}</div>`;openDialog('source');
+ }
+ function openBuilder(){
+  const p=latest();if(p?.format==='bank')return toast('Try an earnings or dividend model for bank financial statements.');
+  builder={ebit:finite(p?.facts.ebit?.value)?p.facts.ebit.value:null,da:finite(p?.facts.da?.value)?p.facts.da.value:null,tax:null,capex:null,workingCapital:null};
+  const labels={ebit:'EBIT (₹ Cr)',tax:'Operating tax rate (%)',da:'Depreciation & amortisation (₹ Cr)',capex:'Capital expenditure (₹ Cr)',workingCapital:'Change in non-cash working capital (₹ Cr)'};
+  $('[data-value-builder-context]').textContent=p?`${p.label} · ${p.basis}. Filed EBIT and depreciation are filled where available. Review and edit them.`:'No filing reference available. All components are your estimates.';
+  $('[data-value-builder-controls]').innerHTML=Object.keys(builder).map(key=>`<label class="rt-field" for="vl-build-${key}">${labels[key]}<input id="vl-build-${key}" type="number" data-value-builder-input="${key}" value="${builder[key]??''}" step="any" ${['tax','da','capex'].includes(key)?'min="0"':''} ${key==='tax'?'max="100"':''} placeholder="Your estimate" required><small>${['ebit','da'].includes(key)&&finite(p?.facts[key]?.value)?'Filed reference · editable':'Your assumption'}</small></label>`).join('');renderBuilder();openDialog('builder');
+ }
+ function renderBuilder(){const r=fcffFromComponents(builder);$('[data-value-builder-result]').textContent=r.error||`Calculated FCFF: ${money(r.value)} Cr${r.value<=0?' · the constant-growth model requires a positive base.':''}`;$('[data-value-builder-use]').disabled=!!r.error||r.value<=0;}
+ function applyReference(mode){const ref=baseReference(getData(),a().model,mode);if(!(ref.value>0))return toast(ref.reason||'A positive reference is unavailable.');referenceMode=mode;a().base=ref.value;origin=`Starting assumption from ${ref.points.map(p=>p.label).join(', ')} · ${ref.points[0].basis}. Review and edit it.`;changed();renderControls();}
+ function updateInput(input){
+  const key=input.dataset.valueInput||input.dataset.valueSlider;if(!FIELDS[key])return;
+  a()[key]=input.value===''?null:Number(input.value);if(key==='base'){origin='Base figure edited by you. Model inputs are your assumptions.';referenceMode='latest';$('[data-value-origin]').textContent=origin;}
+  const partner=$(`[data-${input.dataset.valueInput?'value-slider':'value-input'}="${key}"]`);if(partner){if(partner.type==='range'&&finite(a()[key])){partner.min=Math.min(Number(partner.min),a()[key]);partner.max=Math.max(Number(partner.max),a()[key]);}partner.value=input.value;}
+  changed();render();
+ }
+ document.addEventListener('input',event=>{
+  const input=event.target;if(input.matches('[data-value-input],[data-value-slider]'))updateInput(input);
+  if(input.matches('[data-value-price]')){a().price=input.value===''?null:Number(input.value);changed();renderResults();}
+  if(input.matches('[data-value-rates]')){const values=input.value.split(',').map(v=>v.trim()).filter(Boolean).map(Number);ratesValid=values.length>=1&&values.length<=6&&new Set(values).size===values.length&&values.every(v=>finite(v)&&v>=.1&&v<=100);$('[data-value-rates-error]').textContent=ratesValid?'':'Use one to six distinct rates from 0.1% to 100%.';if(ratesValid){a().rates=values;changed();renderResults();}}
+  if(input.matches('[data-value-builder-input]')){builder[input.dataset.valueBuilderInput]=input.value===''?null:Number(input.value);renderBuilder();}
+ });
+ document.addEventListener('click',event=>{
+  const b=event.target.closest('button');if(!b)return;
+  if(b.dataset.valueModel){a().model=b.dataset.valueModel;a().base=null;a().price=null;origin='Choose a reference where available, or enter your estimate.';referenceMode='latest';displayPoints=[];changed();renderControls();$(`[data-value-model="${a().model}"]`).focus();}
+  if(b.hasAttribute('data-value-source'))showSources();
+  if(b.hasAttribute('data-value-seed'))a().model==='firm'?openBuilder():applyReference('latest');
+  if(b.hasAttribute('data-value-average'))applyReference('average3');
+  if(b.dataset.valueUseFact){const key=b.dataset.valueUseFact,f=latest()?.facts[key];if(finite(f?.value)&&f.value>=0){a()[key]=f.value;origin=`${f.label} used as an editable estimate. Review its scope in the filing references.`;changed();renderControls();$(`[data-value-input="${key}"]`).focus();}}
+  if(b.hasAttribute('data-value-reset')){setValuation({...defaults(),model:a().model});referenceMode='latest';origin='Inputs reset. Choose a starting reference or enter your estimate.';ratesValid=true;changed();renderControls();}
+  if(b.dataset.valueReturn){a().discount=Number(b.dataset.valueReturn);changed();renderControls();$('[data-value-input="discount"]').focus();}
+  if(b.hasAttribute('data-sensitivity-rate')){a().discount=Number(b.dataset.sensitivityRate);a().growth=Number(b.dataset.sensitivityGrowth);changed();renderControls();$('[data-value-input="growth"]').focus();}
+  if(b.hasAttribute('data-value-save')){if(valuation(a()).error)return;if(state().scenarios.length>=3)return toast('Keep up to three scenarios. Remove one to add another.');scenarioSnapshot=structuredClone(a());$('[data-scenario-name]').value='Case '+(state().scenarios.length+1);openDialog('scenario');$('[data-scenario-name]').select();}
+  if(b.hasAttribute('data-scenario-restore')){const s=state().scenarios[Number(b.dataset.scenarioRestore)];if(!s)return;setValuation(structuredClone(s.inputs));origin=`Restored ${s.label}. These are your saved assumptions.`;referenceMode='latest';ratesValid=true;changed();renderControls();$('[data-value-input="base"]').focus();}
+  if(b.hasAttribute('data-scenario-remove')){state().scenarios.splice(Number(b.dataset.scenarioRemove),1);changed();render();}
+  if(b.dataset.valueHelp){const content=$('#vl-help-'+b.dataset.valueHelp);content.hidden=!content.hidden;b.setAttribute('aria-expanded',String(!content.hidden));}
+  if(b.hasAttribute('data-value-open-calculation')){const detail=$('[data-value-calculation]');detail.open=true;detail.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});detail.querySelector('summary').focus();}
+  if(b.hasAttribute('data-value-focus-base'))$('[data-value-input="base"]').focus();
+  if(b.hasAttribute('data-value-dialog-close'))b.closest('dialog').close();
+ });
+ $('[data-value-scenario-form]').addEventListener('submit',event=>{event.preventDefault();const name=$('[data-scenario-name]').value.trim();if(!name||!scenarioSnapshot||valuation(scenarioSnapshot).error)return;if(state().scenarios.length>=3)return toast('Remove a kept scenario before adding another.');state().scenarios.push({label:name.slice(0,40),inputs:scenarioSnapshot});scenarioSnapshot=null;changed();$('[data-value-dialog="scenario"]').close();render();toast('Scenario kept. Save the desk to retain it.');});
+ $('[data-value-builder-form]').addEventListener('submit',event=>{event.preventDefault();const r=fcffFromComponents(builder);if(r.error||r.value<=0)return;a().base=r.value;origin='FCFF calculated from the components you reviewed. Tax and reinvestment inputs are your assumptions.';changed();$('[data-value-dialog="builder"]').close();renderControls();});
+ const graph=$('[data-value-forecast]');const inspect=event=>{const p=event.target.closest('[data-chart-point]');if(!p)return;const readout=chartReadouts[Number(p.dataset.chartPoint)];if(readout)$('[data-value-chart-readout]').textContent=readout.text;};graph.addEventListener('pointerover',inspect);graph.addEventListener('focusin',inspect);graph.addEventListener('click',inspect);graph.addEventListener('keydown',event=>{if(['Enter',' '].includes(event.key)&&event.target.matches('[data-chart-point]')){event.preventDefault();inspect(event);}});
+ let graphWidth=0;new ResizeObserver(entries=>{const width=entries[0].contentRect.width;if(width>0&&Math.abs(width-graphWidth)>1){graphWidth=width;renderChart();}}).observe(graph);
+ document.addEventListener('keydown',event=>{if(event.key==='Escape')for(const b of $$('[data-value-help][aria-expanded="true"]')){$('#vl-help-'+b.dataset.valueHelp).hidden=true;b.setAttribute('aria-expanded','false');}});
+ return {render,renderControls,renderScenarios,ratesValid:()=>ratesValid,seedFresh(){const ref=baseReference(getData(),'earnings');if(ref.value>0){a().base=ref.value;origin=`Starting EPS from ${ref.points[0].label} · ${ref.points[0].basis}. Growth and discount rates are editable assumptions.`;}},resetUI(){referenceMode='latest';origin='Saved or starting inputs are your editable assumptions.';ratesValid=true;displayPoints=[];chartSignature='';cancelAnimationFrame(animation);}};
+}
