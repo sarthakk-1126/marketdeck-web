@@ -1006,5 +1006,127 @@
       {"id":"S3","title":"Kupiec 1995","url":"https://fedinprint.org/item/fedgfe/34596/original","scope":"Original work bibliographic record and full-text destination.","reviewedAt":"2026-10-04"},
       {"id":"S4","title":"Cornish-Fisher expansion","url":"https://www.value-at-risk.net/the-cornish-fisher-expansion/","scope":"Quantile approximation; specified truncation printed in study.","reviewedAt":"2026-10-04"}
     ]
+  },
+{
+  "slug": "investing-book-to-research-workflow",
+  "title": "How to Apply Investing Books to Stock Research",
+  "h1": "One idea. One question. A note you can revisit.",
+  "description": "Turn an investing-book idea into a research question, evidence packet and worked exercise. Includes cash-conversion and valuation examples for Indian-market research.",
+  "topics": [
+    "research-craft",
+    "equities",
+    "india"
+  ],
+  "coverArt": "/assets/books-method-atlas.webp",
+  "source": "content/articles/investing-book-to-research-workflow.md",
+  "modifiedAt": "2026-10-05",
+  "publishedAt": "2026-10-05",
+  "sourceReviewedAt": "2026-10-05",
+  "primaryKeyword": "How to Apply Investing Books to Stock Research",
+  "relatedKeywords": [],
+  "related": [
+    "five-research-lenses",
+    "business-before-the-stock",
+    "strategy-backtest-research-checklist"
+  ],
+  "takeaways": [
+    "Choose one question before collecting ratios.",
+    "Keep the author’s idea separate from your application.",
+    "Record evidence that could change your view."
+  ],
+  "publicationStatus": "published",
+  "approvedAt": "2026-10-05",
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Harriman House: The Psychology of Money",
+      "url": "https://www.harriman-house.com/authors/morgan-housel/the-psychology-of-money/9780857197689",
+      "scope": "Publisher description of the book; not verification of every chapter or an endorsement of our exercise.",
+      "reviewedAt": "2026-10-05"
+    },
+    {
+      "id": "S2",
+      "title": "Aswath Damodaran: Narrative and Numbers companion",
+      "url": "https://pages.stern.nyu.edu/adamodar/New_Home_Page/numbers&narrative.htm",
+      "scope": "Author material connecting business narratives and valuation; worked examples here are original MarketDeck applications.",
+      "reviewedAt": "2026-10-05"
+    },
+    {
+      "id": "S3",
+      "title": "NSE: Corporate Financial Results",
+      "url": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results",
+      "scope": "Official discovery route for issuer financial results; no company data is reproduced in this article.",
+      "reviewedAt": "2026-10-05"
+    },
+    {
+      "id": "S4",
+      "title": "SEC: Beginners’ Guide to Financial Statements",
+      "url": "https://www.sec.gov/about/reports-publications/investorpubsbegfinstmtguide",
+      "scope": "General educational statement distinctions, not Indian accounting law.",
+      "reviewedAt": "2026-10-05"
+    }
+  ],
+  "tool": {
+    "url": "/screener/learning/books/",
+    "name": "Books & Investor Methods",
+    "label": "Explore the bookshelf"
   }
+},
+{
+  "slug": "strategy-backtest-research-checklist",
+  "title": "Strategy Backtesting Checklist: Data, Costs & Overfitting",
+  "h1": "Define the experiment before trusting the curve.",
+  "description": "Review strategy backtests: data, signal timing, fills, costs and overfitting. Includes a worked cost example and current MarketDeck coding-workspace limits.",
+  "topics": [
+    "research-craft",
+    "ai-quant"
+  ],
+  "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+  "source": "content/articles/strategy-backtest-research-checklist.md",
+  "modifiedAt": "2026-10-05",
+  "publishedAt": "2026-10-05",
+  "sourceReviewedAt": "2026-10-05",
+  "primaryKeyword": "Strategy Backtesting Checklist: Data, Costs & Overfitting",
+  "relatedKeywords": [],
+  "related": [
+    "five-research-lenses",
+    "business-before-the-stock",
+    "investing-book-to-research-workflow"
+  ],
+  "takeaways": [
+    "Separate a signal from a possible fill.",
+    "Reconcile costs and record every research attempt.",
+    "A code editor or saved rule is not a verified result."
+  ],
+  "publicationStatus": "published",
+  "approvedAt": "2026-10-05",
+  "sources": [
+    {
+      "id": "S1",
+      "title": "MarketDeck Research Terminal",
+      "url": "https://marketdeck.in/screener/research-terminal/",
+      "scope": "Product overview. Capability statements additionally checked against deployed Strategy Lab contract and release documentation on 5 October 2026; no arbitrary Python execution or automatic built-in history is claimed.",
+      "reviewedAt": "2026-10-05"
+    },
+    {
+      "id": "S2",
+      "title": "Bailey, Borwein, López de Prado and Zhu: The Probability of Backtest Overfitting",
+      "url": "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
+      "scope": "February 2015 revised author manuscript. Supports the selection/overfitting concern; the proposed estimator is neither implemented nor independently reproduced here.",
+      "reviewedAt": "2026-10-05"
+    },
+    {
+      "id": "S3",
+      "title": "NSE Data Sharing & Usage Policy",
+      "url": "https://www.nseindia.com/static/market-data/nse-data-policy",
+      "scope": "Official policy explaining that data uses and distribution depend on applicable terms; no application-specific licence is asserted.",
+      "reviewedAt": "2026-10-05"
+    }
+  ],
+  "tool": {
+    "url": "/screener/research-terminal/",
+    "name": "MarketDeck Research Terminal",
+    "label": "Explore Research Terminal"
+  }
+}
 ]

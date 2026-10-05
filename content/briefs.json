@@ -1,6 +1,51 @@
 {
   "issues": [
     {
+      "id": "investing-research-workbook-05",
+      "title": "From Book Idea to Research Experiment",
+      "slug": "investing-research-workbook",
+      "edition": "Fieldnotes 05 · The research workbook",
+      "summary": "A six-page investing research workbook: define a question, build an evidence packet, challenge a business story and specify a test before trusting a result. Original fictional case and review prompts.",
+      "cover": "/intelligence/issues/investing-research-workbook/cover.webp",
+      "pdfPath": "/intelligence/issues/investing-research-workbook/marketdeck-brief.pdf",
+      "pageCount": 6,
+      "sourceReviewedAt": "2026-10-05",
+      "publicationStatus": "published",
+      "approvedAt": "2026-10-05",
+      "publishedAt": "2026-10-05",
+      "source": "content/issues/investing-research-workbook.json",
+      "assets": "content/issues/investing-research-workbook",
+      "lastUpdated": "2026-10-05",
+      "pdfEdition": "1.0",
+      "topics": [
+        "research-craft",
+        "equities",
+        "ai-quant"
+      ],
+      "coverBackground": "public/assets/books-method-atlas.webp",
+      "relatedLinks": [
+        {
+          "label": "Books & Investor Methods",
+          "url": "/screener/learning/books/"
+        },
+        {
+          "label": "Research Terminal",
+          "url": "/screener/research-terminal/"
+        },
+        {
+          "label": "How to Apply Investing Books to Stock Research",
+          "url": "/intelligence/notes/investing-book-to-research-workflow/"
+        },
+        {
+          "label": "Strategy Backtesting Checklist: Data, Costs & Overfitting",
+          "url": "/intelligence/notes/strategy-backtest-research-checklist/"
+        }
+      ],
+      "seoTitle": "Investing Research Workbook: Book Ideas to Testable Questions",
+      "seoDescription": "A practical six-page research workbook with a fictional company case, evidence checklist, valuation sensitivity and strategy-test specification. Read online or download the PDF.",
+      "embeddedFonts": true
+    },
+    {
       "id": "pe-ratio-valuation-04",
       "title": "P/E Ratio Valuation: What a Stock Multiple Is Really Pricing In",
       "slug": "pe-ratio-valuation-india-2026",
@@ -250,7 +295,10 @@
     {
       "slug": "when-var-methods-disagree",
       "source": "content/articles/when-var-methods-disagree.md",
-      "topics": ["research-craft", "portfolio-analysis"],
+      "topics": [
+        "research-craft",
+        "portfolio-analysis"
+      ],
       "coverArt": "/assets/research/var-thresholds.svg",
       "research": true,
       "publishedAt": "2026-10-04",
@@ -267,6 +315,29 @@
       "source": "content/articles/black-litterman-implied-returns.md",
       "publicationStatus": "published",
       "approvedAt": "2026-10-01"
+    },
+    {
+      "slug": "investing-book-to-research-workflow",
+      "topics": [
+        "research-craft",
+        "equities",
+        "india"
+      ],
+      "coverArt": "/assets/books-method-atlas.webp",
+      "source": "content/articles/investing-book-to-research-workflow.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-10-05"
+    },
+    {
+      "slug": "strategy-backtest-research-checklist",
+      "topics": [
+        "research-craft",
+        "ai-quant"
+      ],
+      "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+      "source": "content/articles/strategy-backtest-research-checklist.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-10-05"
     }
   ]
 }
