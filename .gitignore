@@ -7,4 +7,5 @@ Thumbs.db
 .preview/
 node_modules/
 .evidence/
-scripts/research/__pycache__/
+__pycache__/
+*.py[cod]
