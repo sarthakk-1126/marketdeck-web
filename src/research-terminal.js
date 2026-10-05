@@ -1,7 +1,7 @@
 import {valuation,returnTable,sensitivity,impliedGrowth,filingChanges} from './research-valuation.js';
 
 export function createTerminal(api){
- const {$,$$,esc,fmt,dateLabel,changed,toast,getData,getPoint,getPins,getDesk,setView,request,url}=api;
+ const {$,$$,esc,fmt,dateLabel,changed,toast,getData,getPoint,getPins,getDesk,setView,request,url,showSources}=api;
  const defaults=()=>({version:1,preset:'investing',view:'explore',inspector:true,inspectorWidth:300,split:false,valuation:{model:'earnings',base:null,growth:10,discount:12,terminal:3,years:5,multiple:20,dividend:0,shares:null,cash:0,debt:0,marginSafety:20,price:null,rates:[10,12,15,18]},scenarios:[],thesis:[]});
  let state=defaults(),foMode='history',review=false,focus=false,renderFrame=null,ratesValid=true;
  const labels={earnings:'Earnings & exit',equity:'Equity cash flow',firm:'Firm DCF',dividend:'Dividends'};
@@ -52,7 +52,7 @@ export function createTerminal(api){
   const target=$('[data-value-controls]');
   target.innerHTML=names.map(key=>{let [label,min,max,step]=fields[key];if(key==='base'){label={earnings:'Base EPS / share (₹)',equity:'Equity cash flow / share (₹)',firm:'Base firm free cash flow (₹ Cr)',dividend:'Current dividend / share (₹)'}[a.model];max=a.model==='firm'?1e12:1e7;}if(key==='discount')label=a.model==='firm'?'Firm discount rate / WACC (%)':'Required equity return (%)';const slider=['growth','discount','years','multiple','marginSafety'].includes(key);return `<label class="rt-field">${esc(label)}<input type="number" data-value-input="${key}" value="${a[key]??''}" min="${min}" max="${max}" step="${step}" placeholder="Enter your assumption">${slider?`<input type="range" data-value-slider="${key}" min="${min}" max="${max}" step="${step}" value="${a[key]??min}" aria-label="${esc(label)} slider">`:''}</label>`;}).join('');
   $('[data-value-rates]').value=a.rates.join(', ');$('[data-value-price]').value=a.price??'';
-  $('[data-value-seed]').hidden=a.model!=='earnings';
+  $('[data-value-seed]').hidden=a.model!=='earnings';if($('[data-value-source]'))$('[data-value-source]').hidden=a.model!=='earnings';
   $('[data-value-origin]').textContent=a.model==='firm'?'FCFF, cash and debt use ₹ crore; shares use crore. All inputs are your assumptions.':'Per-share inputs are your assumptions. Filed EPS can seed the earnings model when available.';
   renderValue();
  }
@@ -121,7 +121,8 @@ export function createTerminal(api){
   if(button.hasAttribute('data-split-toggle')){state.split=!state.split;changed();renderLayout();}
   if(button.hasAttribute('data-terminal-fullscreen')){focus=!focus;document.body.classList.toggle('rt-focus',focus);button.setAttribute('aria-pressed',String(focus));button.textContent=focus?'Exit focus':'Focus';}
   if(button.dataset.valueModel){state.valuation.model=button.dataset.valueModel;state.valuation.base=null;state.valuation.price=null;changed();renderValueControls();}
-  if(button.hasAttribute('data-value-seed')){const point=getPoint(),eps=point?.values.diluted_eps;if(!Number.isFinite(eps)||eps<=0)return toast('A positive diluted EPS is not available in this selected filing. Enter your own assumption.');state.valuation.base=eps;changed();renderValueControls();$('[data-value-origin]').textContent=`Seeded from filed EPS: ${point.label} · ${point.basis} · published ${dateLabel(point.published_at)}. ${point.sources.diluted_eps}. You can edit this assumption.`;}
+  if(button.hasAttribute('data-value-source'))showSources?.(['diluted_eps']);
+  if(button.hasAttribute('data-value-seed')){const point=getPoint(),eps=point?.values.diluted_eps;if(!Number.isFinite(eps)||eps<=0)return toast('A positive diluted EPS is not available in this selected filing. Enter your own assumption.');state.valuation.base=eps;changed();renderValueControls();$('[data-value-origin]').textContent=`Seeded from filed EPS: ${point.label} · ${point.basis} · published ${dateLabel(point.published_at)}. Source: diluted EPS in the selected annual filing. You can edit this assumption.`;}
   if(button.dataset.valueReturn){state.valuation.discount=Number(button.dataset.valueReturn);changed();renderValueControls();}
   if(button.hasAttribute('data-sensitivity-rate')){state.valuation.discount=Number(button.dataset.sensitivityRate);state.valuation.growth=Number(button.dataset.sensitivityGrowth);changed();renderValueControls();}
   if(button.hasAttribute('data-value-save')){
@@ -152,5 +153,5 @@ export function createTerminal(api){
   }
  });
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&focus){focus=false;document.body.classList.remove('rt-focus');$('[data-terminal-fullscreen]').textContent='Focus';$('[data-terminal-fullscreen]').setAttribute('aria-pressed','false');}});
- return {reset,restore,exportState,onView,onData,renderValueControls,renderChanges,reviewRequested:()=>review,ratesValid:()=>ratesValid};
+ return {reset,restore,exportState,onView,onData,renderValueControls,renderChanges,showInspector:()=>{if(!state.inspector){state.inspector=true;changed();renderLayout();}},reviewRequested:()=>review,ratesValid:()=>ratesValid};
 }
