@@ -1,20 +1,14 @@
 // Loopback candidate QA. Analytics requests are blocked; no account writes occur.
 import {chromium, expect} from '@playwright/test';
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
-const origin=process.env.RTD_QA_ORIGIN||'http://127.0.0.1:4176';
+import {origin,wirePreview} from './terminal-discovery-fixture.mjs';
 const out='../evidence';mkdirSync(out,{recursive:true});
 const browser=await chromium.launch({headless:true});
 const all=[];
 try{
  for(const width of [1440,1024,390]){
   const ctx=await browser.newContext({viewport:{width,height:900},reducedMotion:'no-preference'});
-  await ctx.route(/google-analytics\.com|googletagmanager\.com|platform\.marketdeck\.in\/analytics\//,r=>r.abort());
-  // Shared public shell assets resolve locally; no production telemetry or data.
-  await ctx.route('https://marketdeck.in/**',async route=>{
-   const url=new URL(route.request().url());
-   const response=await ctx.request.get(origin+url.pathname+url.search);
-   await route.fulfill({response});
-  });
+  await wirePreview(ctx);
   const page=await ctx.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
   for(const [name,path] of [['home','/'],['landing','/screener/research-terminal/']]){
    const response=await page.goto(origin+path,{waitUntil:'networkidle',timeout:45000});
@@ -53,7 +47,7 @@ try{
   await ctx.close();
  }
  const nojs=await browser.newContext({viewport:{width:390,height:844},javaScriptEnabled:false});
- await nojs.route(/google-analytics\.com|googletagmanager\.com|platform\.marketdeck\.in\/analytics\//,r=>r.abort());
+ await wirePreview(nojs);
  const page=await nojs.newPage();
  for(const path of ['/','/screener/research-terminal/']){
   await page.goto(origin+path,{waitUntil:'networkidle'});
