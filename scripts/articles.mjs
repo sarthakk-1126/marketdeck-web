@@ -34,7 +34,14 @@ const rect=(x,y,w,h,fill='#163653')=>`<rect x="${x}" y="${y}" width="${w}" heigh
 const line=(x,y,xx,yy,c='#456987')=>`<path d="M${x} ${y} L${xx} ${yy}" fill="none" stroke="${c}" stroke-width="3"/>`;
 export function illustration(a){
  let art='',title='',desc='';const id=a.slug;
- if(id==='business-before-the-stock'){
+ if(id==='investing-book-to-research-workflow'||id==='strategy-backtest-research-checklist'){
+  const books=id==='investing-book-to-research-workflow';
+  title=books?'From an idea to a reviewable research note':'From a rule to an inspectable experiment';
+  desc=books?'An original conceptual workflow: state one question, gather dated evidence, then record a calculation and an alternative explanation. This is not an author’s complete method.':'An original conceptual workflow: define rules and data, inspect a signal and possible fill, then compare costs and recorded attempts. No market data or returns are depicted.';
+  const steps=books?[['QUESTION','One idea','What could prove it wrong?'],['EVIDENCE','Dated inputs','Source, period and units'],['REVIEW','Next observation','Keep alternatives visible']]:[['SPECIFY','Rules + data','State timing and costs'],['INSPECT','Signal to fill','Trace an event by hand'],['COMPARE','All attempts','Keep selection visible']];
+  steps.forEach((v,i)=>{const x=40+i*309;art+=rect(x,166,264,177)+tx(x+18,205,v[0],17,'#9bc7ed')+tx(x+18,252,v[1],27,'#edf1f6')+tx(x+18,299,v[2],17);if(i<2)art+=line(x+268,253,x+300,253);});
+  art+=tx(40,417,'MarketDeck educational workflow · conceptual illustration · no performance claim',17);
+ }else if(id==='business-before-the-stock'){
   title='Profit and the cash-conversion bridge';desc='Hypothetical bridge: profit 100, depreciation plus 20, receivables minus 50, inventory minus 30, payables plus 10, operating-cash proxy 50. Figures in crore; other adjustments excluded.';
   const starts=[0,100,70,40,40,0],ends=[100,120,120,70,50,50],labs=['Profit','Depreciation','Receivables','Inventory','Payables','Cash proxy'],vs=['100','+20','−50','−30','+10','50'];
   for(let i=0;i<6;i++){const x=48+i*145,y=350-ends[i]*1.65;art+=rect(x,y,108,(ends[i]-starts[i])*1.65,i===5?'#6cb7f4':i===2||i===3?'#4a6076':'#254e70')+tx(x+9,y-14,vs[i],26,'#edf1f6')+tx(x,386,labs[i],18);}

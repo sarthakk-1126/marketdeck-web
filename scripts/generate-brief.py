@@ -25,22 +25,32 @@ c=Canvas(str(target),pagesize=(595.28,841.89),pageCompression=1)
 c.setTitle('The MarketDeck Brief - '+issue['title']+' - '+issue['publicationStatus'].upper())
 c.setAuthor('MarketDeck')
 sources={s['id']:s for s in content['sources']}
+regular,bold='Helvetica','Helvetica-Bold'
+if issue.get('embeddedFonts'):
+    import reportlab
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    fonts=Path(reportlab.__file__).parent/'fonts'
+    pdfmetrics.registerFont(TTFont('BriefSans',str(fonts/'Vera.ttf')))
+    pdfmetrics.registerFont(TTFont('BriefSansBold',str(fonts/'VeraBd.ttf')))
+    regular,bold='BriefSans','BriefSansBold'
+
 for index,page in enumerate(content['pages']):
     cover=index==0
     bg='#080c12' if cover else '#f4f2ed'; fg='#edf1f6' if cover else '#15202c'; muted='#b5c0cc' if cover else '#455463'
     c.setFillColor(HexColor(bg));c.rect(0,0,595.28,841.89,fill=1,stroke=0)
     c.setFillColor(HexColor('#3997f2'));c.rect(40,792,29,3,fill=1,stroke=0)
-    c.setFillColor(HexColor(muted));c.setFont('Helvetica',8);c.drawString(80,791,page['kicker'])
+    c.setFillColor(HexColor(muted));c.setFont(regular,8);c.drawString(80,791,page['kicker'])
     status_label='PUBLISHED EDITION' if issue['publicationStatus']=='published' else 'EDITORIAL DRAFT'
-    c.setFont('Helvetica',7.5);c.drawRightString(554,791,status_label)
+    c.setFont(regular,7.5);c.drawRightString(554,791,status_label)
     y=760
-    def para(text,size=11,leading=16,color=fg,font='Helvetica',space=10):
+    def para(text,size=11,leading=16,color=fg,font=regular,space=10):
         global y
         p=Paragraph(text,ParagraphStyle('p',fontName=font,fontSize=size,leading=leading,textColor=HexColor(color),spaceAfter=space))
         _,h=p.wrap(515,800)
         if y-h<58:raise ValueError(f'Page {index+1} overflow: {text[:60]}')
         p.drawOn(c,40,y-h);y-=h+space
-    para(escape(page['title']),32 if cover else 29,36 if cover else 33,font='Helvetica-Bold',space=17)
+    para(escape(page['title']),32 if cover else 29,36 if cover else 33,font=bold,space=17)
     para(escape(page['intro']),13,19,color=muted,space=22)
     if cover:
         c.saveState()
@@ -50,13 +60,17 @@ for index,page in enumerate(content['pages']):
         c.restoreState()
         y-=179
     for section in page['sections']:
-        para(escape(section['title']),12,16,font='Helvetica-Bold',space=7)
+        para(escape(section['title']),12,16,font=bold,space=7)
         if 'text' in section:para(escape(section['text']),10.5 if index!=5 else 10,15 if index!=5 else 14,space=14)
         for item in section.get('items',[]):para('&#8226; '+escape(item),10.5 if index!=5 else 10,15 if index!=5 else 14,space=6)
     para('Sources: '+(', '.join(f'<link href="{escape(sources[s]["url"])}">{s}</link>' for s in page['sourceIds']) or 'Original editorial introduction')+'. Reviewed '+issue['sourceReviewedAt']+'.',8,11,color=muted,space=10)
     para(escape(page['callout']),9,13,color=muted,space=0)
+    if page.get('responsePrompt'):
+        c.setFillColor(HexColor(muted));c.setFont(regular,8);c.drawString(40,180,page['responsePrompt'])
+        c.setStrokeColor(HexColor('#c6cbd0'))
+        for line_y in (159,135,111,87):c.line(40,line_y,555,line_y)
     c.setStrokeColor(HexColor('#293846'));c.line(40,43,555,43)
-    c.setFillColor(HexColor(muted));c.setFont('Helvetica',8);c.drawString(40,27,f'MARKETDECK / THE BRIEF / {status_label}');c.drawRightString(555,27,f'{index+1:02d} / {len(content["pages"]):02d}')
+    c.setFillColor(HexColor(muted));c.setFont(regular,8);c.drawString(40,27,f'MARKETDECK / THE BRIEF / {status_label}');c.drawRightString(555,27,f'{index+1:02d} / {len(content["pages"]):02d}')
     c.showPage()
 c.save()
 count=len(PdfReader(target).pages)

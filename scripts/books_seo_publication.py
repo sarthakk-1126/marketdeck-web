@@ -89,11 +89,11 @@ def candidate(baseline, source, revision, timestamp):
         copy.deepcopy(row) for row in source["records"]
         if row.get("canonical_url") in URLS
     ]
+    if len({row["canonical_url"] for row in selected}) != len(selected):
+        raise ValueError("duplicate_approved_identity")
     if len(selected) != len(URLS):
         found = {row.get("canonical_url") for row in selected}
         raise ValueError("missing_approved_url:" + sorted(URLS - found)[0])
-    if len({row["canonical_url"] for row in selected}) != len(selected):
-        raise ValueError("duplicate_approved_identity")
 
     required = {
         "repository": "stockproof",
@@ -118,14 +118,11 @@ def candidate(baseline, source, revision, timestamp):
             identity = ("screener:learning_book", "SP-17 learning_book_guide")
         else:
             route = {
-                "/methods/": "screener:learning_method",
-                "/paths/": "screener:learning_path",
-                "/compare/": "screener:learning_comparison",
+                "/methods/": ("screener:learning_method", "SP-17 learning_methods"),
+                "/paths/": ("screener:learning_path", "SP-17 learning_paths"),
+                "/compare/": ("screener:learning_comparison", "SP-17 learning_compare"),
             }
-            identity = (
-                next(value for marker, value in route.items() if marker in url),
-                "SP-17 learning_topic_guide",
-            )
+            identity = next(value for marker, value in route.items() if marker in url)
         if (row.get("route_name"), row.get("page_family")) != identity:
             raise ValueError("unexpected_route_identity:" + url)
 
@@ -153,7 +150,7 @@ def candidate(baseline, source, revision, timestamp):
     return result
 
 
-def publication(args):
+def publication(args, producer="stockproof", approved_urls=URLS):
     sys.path.insert(0, args.tools)
     from publisher import (
         PRODUCERS, admit_inventories, build_xml_release, load_inventory,
@@ -169,16 +166,16 @@ def publication(args):
         for owner in PRODUCERS
     }
     before = admit_inventories(inventories, ())
-    candidate_inventory = load_inventory(args.candidate, "stockproof")
-    inventories["stockproof"] = candidate_inventory
+    candidate_inventory = load_inventory(args.candidate, producer)
+    inventories[producer] = candidate_inventory
     after = admit_inventories(inventories, ())
 
     old_urls = {row["url"] for rows in before.values() for row in rows}
     new_urls = {row["url"] for rows in after.values() for row in rows}
-    if new_urls - old_urls != URLS or old_urls - new_urls:
+    if new_urls - old_urls != approved_urls or old_urls - new_urls:
         raise ValueError("unexpected_canonical_delta")
     for group in before:
-        if [row for row in after[group] if row["url"] not in URLS] != before[group]:
+        if [row for row in after[group] if row["url"] not in approved_urls] != before[group]:
             raise ValueError("unrelated_family_change:" + group)
 
     root_before = sha256((public / "sitemap.xml").read_bytes())
@@ -219,7 +216,7 @@ def publication(args):
         "validation_result": result["validation_result"],
         "previous_url_count": len(old_urls),
         "new_url_count": len(new_urls),
-        "added": sorted(URLS),
+        "added": sorted(approved_urls),
         "root_sha256": result["root_sha256"],
     }))
 

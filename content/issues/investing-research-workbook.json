@@ -1,0 +1,250 @@
+{
+  "title": "From Book Idea to Research Experiment",
+  "pages": [
+    {
+      "kicker": "FIELDNOTES 05 / RESEARCH WORKBOOK",
+      "title": "From book idea to research experiment",
+      "intro": "Six pages to turn a reading session into a question you can investigate. Work through a fictional case; keep your own answers private.",
+      "sections": [
+        {
+          "title": "How to use this edition",
+          "text": "Choose one idea from Books & Investor Methods. Complete the prompts in order, then decide whether the output belongs in a qualitative research note or a precisely specified historical test."
+        },
+        {
+          "title": "What you will produce",
+          "items": [
+            "A question with a possible disconfirming observation.",
+            "An evidence packet with dates, units and reporting basis.",
+            "A next action that follows from the uncertainty."
+          ]
+        }
+      ],
+      "callout": "MarketDeck original, AI-assisted educational workbook. No investment recommendation, book reproduction or claimed strategy performance.",
+      "sourceIds": []
+    },
+    {
+      "kicker": "01 / DEFINE",
+      "title": "A question that can be wrong",
+      "intro": "Fictional Cedar Instruments sells industrial equipment. Its sales are growing, but you do not yet know whether the growth creates cash.",
+      "sections": [
+        {
+          "title": "Start with a narrow claim",
+          "text": "Working claim: Cedar can finance its expansion without persistent new borrowing. This is a research hypothesis, not a conclusion. Do not replace it with the looser claim that Cedar is a quality business."
+        },
+        {
+          "title": "Write before opening the chart",
+          "items": [
+            "What does expansion mean: sales, units, capacity or per-share earnings?",
+            "Over what period should the evidence be compared?",
+            "What observation would make you weaken or reject the claim?"
+          ]
+        },
+        {
+          "title": "Choose a reading lens",
+          "text": "Use the library to choose a relevant guide. A behaviour-focused book may help examine your attachment to the story; a valuation guide may help expose model assumptions. Neither supplies Cedar evidence. Housel’s publisher describes a behaviour-focused collection, while Damodaran’s author materials connect stories and valuation numbers. [S1] [S2]"
+        },
+        {
+          "title": "Your response",
+          "text": "Write the question in one sentence, then write the strongest alternative explanation. Keep both visible through the exercise."
+        }
+      ],
+      "callout": "A useful question leaves room for an answer you did not hope to find.",
+      "sourceIds": [
+        "S1",
+        "S2"
+      ],
+      "responsePrompt": "YOUR RESEARCH NOTES / Complete offline; keep personal details private"
+    },
+    {
+      "kicker": "02 / TRACE",
+      "title": "Build the evidence packet",
+      "intro": "The exercise figures are invented. For a real Indian company, begin with issuer filings and an official exchange discovery route. [S3]",
+      "sections": [
+        {
+          "title": "Record the observation",
+          "items": [
+            "Company identity and whether the statement is standalone or consolidated.",
+            "Reporting period, publication date, currency and units.",
+            "Document link and note or page supporting each material figure."
+          ]
+        },
+        {
+          "title": "Cedar’s fictional starting facts",
+          "text": "Annual profit rises from INR 40 crore to INR 50 crore. Operating cash falls from INR 48 crore to INR 30 crore. Profit grew 25%; cash divided by reported profit fell from 1.20 to 0.60. This ratio is a descriptive check, not a complete cash-flow valuation."
+        },
+        {
+          "title": "Investigate the bridge",
+          "text": "An additional INR 22 crore is tied up in receivables and inventory. List two explanations: planned production ahead of orders, or slower collections and unsold stock. Decide what disclosure could distinguish them."
+        },
+        {
+          "title": "Do not repair uncertainty with guesses",
+          "text": "A blank is not zero. A standalone result is not interchangeable with a consolidated result. Keep period-end balance-sheet observations separate from flows measured across the year. [S4]"
+        }
+      ],
+      "callout": "Prompt: name one missing piece of evidence and explain exactly which claim depends on it.",
+      "sourceIds": [
+        "S3",
+        "S4"
+      ],
+      "responsePrompt": "YOUR RESEARCH NOTES / Complete offline; keep personal details private"
+    },
+    {
+      "kicker": "03 / CHALLENGE",
+      "title": "Make the story pay rent",
+      "intro": "A business story becomes more useful when it creates observable expectations. The following exercise is MarketDeck’s application, not an author’s complete method.",
+      "sections": [
+        {
+          "title": "Translate one assumption",
+          "text": "Suppose Cedar’s expansion story requires operating margin to rise from 12% to 16%. Write the mechanism: product mix, utilization, pricing or lower input cost. Then ask which mechanism could reverse and which company disclosure could test it."
+        },
+        {
+          "title": "Stress a valuation estimate",
+          "text": "Use a fictional base value of INR 200 per share and price of INR 150. The gap relative to estimated value is 25%. A downside estimate of INR 140 instead places price about 7.1% above that estimate. The arithmetic does not validate either value."
+        },
+        {
+          "title": "Questions for your notebook",
+          "items": [
+            "Which assumption creates most of the difference between the values?",
+            "Does the growth path require more investment or borrowing?",
+            "Could dilution change the per-share claim?",
+            "What evidence would justify revising the estimate?"
+          ]
+        },
+        {
+          "title": "Keep the attribution clear",
+          "text": "Damodaran’s companion materials connect narratives and numbers. [S2] Cedar, the chosen margins and the sensitivity values are original hypothetical teaching inputs."
+        }
+      ],
+      "callout": "Prompt: replace one confident adjective in your note with a number, a source and a stated limitation.",
+      "sourceIds": [
+        "S2"
+      ],
+      "responsePrompt": "YOUR RESEARCH NOTES / Complete offline; keep personal details private"
+    },
+    {
+      "kicker": "04 / SPECIFY",
+      "title": "Does this idea belong in code?",
+      "intro": "Some questions belong in a research memo. A historical strategy test requires observable rules, timing and data that can support them.",
+      "sections": [
+        {
+          "title": "Write an experiment contract",
+          "items": [
+            "Instrument or historical universe; dataset identity and period.",
+            "Input availability, session calendar and action treatment.",
+            "Signal time, possible fill time and missing-data rule.",
+            "Position sizing, cash constraints, fees and slippage.",
+            "Comparison purpose and reserved evaluation period."
+          ]
+        },
+        {
+          "title": "A small timing check",
+          "text": "A fictional condition becomes true after Monday closes at INR 100. Tuesday opens at INR 103. Under a next-open rule, do not pretend the purchase occurred at Monday’s close. If Tuesday’s price is absent, apply the declared missing-data rule; do not invent a fill."
+        },
+        {
+          "title": "Record the attempts",
+          "text": "Write every parameter variation and why you tried it. Repeatedly selecting the strongest historical result can create an overfitting problem. Bailey and co-authors study this selection risk; this workbook does not implement their estimator or replicate their research. [S5]"
+        },
+        {
+          "title": "Current workspace boundary",
+          "text": "As checked on 5 October 2026, MarketDeck supports a bounded visual workflow and Python editing/export. Arbitrary in-app Python execution and automatic built-in history remain unavailable. Read the current readiness messages. [S6]"
+        }
+      ],
+      "callout": "Prompt: trace one signal and one possible fill by hand before interpreting an equity curve.",
+      "sourceIds": [
+        "S5",
+        "S6"
+      ],
+      "responsePrompt": "YOUR RESEARCH NOTES / Complete offline; keep personal details private"
+    },
+    {
+      "kicker": "05 / REVIEW",
+      "title": "Close the loop with evidence",
+      "intro": "Your output is a reviewable research artifact. It can end with an unresolved question; it does not need a trade or a confident valuation.",
+      "sections": [
+        {
+          "title": "The one-page handoff",
+          "items": [
+            "Question: what were you trying to understand?",
+            "Lens: which book idea or method helped frame it?",
+            "Evidence: which dated observations matter?",
+            "Calculation: which inputs and definitions were used?",
+            "Alternative: what else could explain the pattern?",
+            "Trigger: what event or disclosure warrants an update?"
+          ]
+        },
+        {
+          "title": "Cedar’s provisional conclusion",
+          "text": "Profit growth alone does not establish that expansion funds itself. Operating cash weakened and working capital increased. The next step is to examine collections, inventory ageing and the next comparable period. This conclusion describes the fictional evidence; it is not a judgement about a real issuer."
+        },
+        {
+          "title": "Continue in MarketDeck",
+          "text": "Choose your next guide at marketdeck.in/screener/learning/books/ and inspect the workspace at marketdeck.in/screener/research-terminal/. The online edition links the longer book-to-research and backtest-checklist articles."
+        },
+        {
+          "title": "Scope and sources",
+          "text": "This AI-assisted MarketDeck workbook uses original synthetic examples. Sources support the bounded statements marked above, not the invented case. Source links are clickable in the PDF and listed in the HTML edition. No human expert review or independent strategy replication is claimed."
+        }
+      ],
+      "callout": "Keep personal reflections, uploaded data and account details in your private workspace.",
+      "sourceIds": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "responsePrompt": "YOUR RESEARCH NOTES / Complete offline; keep personal details private"
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Harriman House: The Psychology of Money",
+      "url": "https://www.harriman-house.com/authors/morgan-housel/the-psychology-of-money/9780857197689",
+      "scope": "Publisher description of the book; not verification of every chapter or an endorsement of our exercise.",
+      "reviewedAt": "2026-10-05",
+      "publicationDate": "Not asserted; living resource or book description"
+    },
+    {
+      "id": "S2",
+      "title": "Aswath Damodaran: Narrative and Numbers companion",
+      "url": "https://pages.stern.nyu.edu/adamodar/New_Home_Page/numbers&narrative.htm",
+      "scope": "Author material connecting business narratives and valuation; worked examples here are original MarketDeck applications.",
+      "reviewedAt": "2026-10-05",
+      "publicationDate": "Not asserted; living resource or book description"
+    },
+    {
+      "id": "S3",
+      "title": "NSE: Corporate Financial Results",
+      "url": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results",
+      "scope": "Official discovery route for issuer financial results; no company data is reproduced in this article.",
+      "reviewedAt": "2026-10-05",
+      "publicationDate": "Not asserted; living resource or book description"
+    },
+    {
+      "id": "S4",
+      "title": "SEC: Beginners’ Guide to Financial Statements",
+      "url": "https://www.sec.gov/about/reports-publications/investorpubsbegfinstmtguide",
+      "scope": "General educational statement distinctions, not Indian accounting law.",
+      "reviewedAt": "2026-10-05",
+      "publicationDate": "Not asserted; living resource or book description"
+    },
+    {
+      "id": "S5",
+      "title": "Bailey, Borwein, López de Prado and Zhu: The Probability of Backtest Overfitting",
+      "url": "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
+      "scope": "February 2015 revised author manuscript. Supports the selection/overfitting concern; the proposed estimator is neither implemented nor independently reproduced here.",
+      "reviewedAt": "2026-10-05",
+      "publicationDate": "2015-02-27"
+    },
+    {
+      "id": "S6",
+      "title": "MarketDeck Research Terminal",
+      "url": "https://marketdeck.in/screener/research-terminal/",
+      "scope": "Product overview. Capability statements additionally checked against deployed Strategy Lab contract and release documentation on 5 October 2026; no arbitrary Python execution or automatic built-in history is claimed.",
+      "reviewedAt": "2026-10-05",
+      "publicationDate": "Not asserted; living resource or book description"
+    }
+  ]
+}
