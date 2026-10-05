@@ -6,23 +6,28 @@ import {workspaceShowcase,LIVE_WORKSPACES} from '../scripts/workspace-showcase.m
 
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 
-test('compact showcase exposes only the real live workspace',()=>{
+test('compact showcase exposes the live Research Terminal and Learning destinations',()=>{
   const html=workspaceShowcase();
-  assert.equal(LIVE_WORKSPACES.length,1);
-  assert.ok(html.includes('data-workspace-count="1"'));
+  assert.equal(LIVE_WORKSPACES.length,2);
+  assert.ok(html.includes('data-workspace-count="2"'));
   assert.ok(html.includes('data-workspace-slide="research-terminal"'));
+  assert.ok(html.includes('data-workspace-slide="books"'));
   assert.ok(html.includes('href="/screener/research-terminal/"'));
   assert.ok(html.includes('href="/screener/research-desk/"'));
+  assert.ok(html.includes('href="/screener/learning/books/"'));
   for(const fake of ['Book Strategy','Bots & Coding','Quant Code','Coming soon'])assert.ok(!html.includes(fake),fake);
 });
 
-test('compact folio has a real asset and no invented data or redundant carousel chrome',()=>{
+test('both slides have crawlable HTML and original illustration',()=>{
   const html=workspaceShowcase();
   assert.ok(html.includes('/assets/research-folio.webp'));
   assert.ok(statSync(new URL('../public/assets/research-folio.webp',import.meta.url)).size<220000);
   assert.ok(html.includes('No live data.'));
   assert.ok(!html.includes('aws-footer'));
-  assert.equal((html.match(/<h2\b/g)||[]).length,1);
+  assert.equal((html.match(/<h2\b/g)||[]).length,2);
+  assert.ok(html.includes('/screener/static/screener/images/learning/psychology-money.webp'));
+  assert.ok(html.includes('data-aws-dot="0"'));
+  assert.ok(html.includes('data-aws-dot="1"'));
   assert.ok(!html.includes('?company='));
   assert.ok(!html.includes('sessionid'));
   assert.ok(!html.includes('target price'));
@@ -46,8 +51,8 @@ test('3d runtime is local-only and has no continuous render loop',()=>{
 
 test('homepage loads only the compact showcase assets',()=>{
   const template=read('src/index.template.html');
-  assert.ok(template.includes('/workspace-showcase.css?v=20261005-folio1'));
-  assert.ok(template.includes('/workspace-showcase.js?v=20261005-folio1'));
+  assert.ok(template.includes('/workspace-showcase.css?v=20261005-books1'));
+  assert.ok(template.includes('/workspace-showcase.js?v=20261005-books1'));
   assert.ok(!template.includes('/terminal-discovery.css?v=20261005-1'));
   assert.ok(!template.includes('/terminal-discovery.js?v=20261005-1'));
   const output=read('public/index.html');
