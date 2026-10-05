@@ -12,6 +12,8 @@ export function displayDate(v){
  return new Intl.DateTimeFormat('en-IN',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(`${v}T00:00:00Z`));
 }
 function url(v){if(/^\/(?!\/)[a-zA-Z0-9/_@.#-]*$/.test(v)&&!v.split('/').includes('..'))return v;const u=new URL(v);if(u.protocol!=='https:'||u.username||u.password)throw Error('Unsafe article URL');return u.href;}
+// Shared with the source-owned SEO inventory exporter; identical validation.
+export {url as articleUrl};
 export function inline(v,sources){
  const rx=/\[([^\]\n]+)\]\(([^\s)]+)\)|\[(S\d+)\]/g;let out='',at=0;
  for(const m of v.matchAll(rx)){out+=E(v.slice(at,m.index));if(m[3]){if(!sources.some(s=>s.id===m[3]))throw Error('Unknown reference '+m[3]);out+=`<a class="a-cite" href="#source-${m[3]}" aria-label="Source ${m[3]}">[${m[3]}]</a>`;}else out+=`<a href="${E(url(m[2]))}">${E(m[1])}</a>`;at=m.index+m[0].length;}
