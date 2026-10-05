@@ -1,0 +1,104 @@
+[
+  {
+    "page": "home",
+    "width": 1440,
+    "status": 200,
+    "canonical": "https://marketdeck.in/",
+    "bytes": 93423,
+    "svgCount": 2,
+    "interaction": "PASS",
+    "reducedMotion": "PASS",
+    "overflow": false
+  },
+  {
+    "page": "landing",
+    "width": 1440,
+    "status": 200,
+    "canonical": "https://marketdeck.in/screener/research-terminal/",
+    "bytes": 32536,
+    "svgCount": 2,
+    "interaction": "PASS",
+    "reducedMotion": "PASS",
+    "overflow": false
+  },
+  {
+    "page": "workspace-handoff",
+    "width": 1440,
+    "noindex": true,
+    "canonicalCount": 0
+  },
+  {
+    "page": "home",
+    "width": 1024,
+    "status": 200,
+    "canonical": "https://marketdeck.in/",
+    "bytes": 93423,
+    "svgCount": 2,
+    "interaction": "PASS",
+    "reducedMotion": "PASS",
+    "overflow": false
+  },
+  {
+    "page": "landing",
+    "width": 1024,
+    "status": 200,
+    "canonical": "https://marketdeck.in/screener/research-terminal/",
+    "bytes": 32536,
+    "svgCount": 2,
+    "interaction": "PASS",
+    "reducedMotion": "PASS",
+    "overflow": false
+  },
+  {
+    "page": "workspace-handoff",
+    "width": 1024,
+    "noindex": true,
+    "canonicalCount": 0
+  },
+  {
+    "page": "home",
+    "width": 390,
+    "status": 200,
+    "canonical": "https://marketdeck.in/",
+    "bytes": 93423,
+    "svgCount": 2,
+    "interaction": "PASS",
+    "reducedMotion": "PASS",
+    "overflow": false
+  },
+  {
+    "page": "landing",
+    "width": 390,
+    "status": 200,
+    "canonical": "https://marketdeck.in/screener/research-terminal/",
+    "bytes": 32536,
+    "svgCount": 2,
+    "interaction": "PASS",
+    "reducedMotion": "PASS",
+    "overflow": false
+  },
+  {
+    "page": "workspace-handoff",
+    "width": 390,
+    "noindex": true,
+    "canonicalCount": 0
+  },
+  {
+    "page": "landing-nojs",
+    "pass": true
+  },
+  {
+    "asset": "terminal-discovery.css",
+    "status": 200,
+    "bytes": 16977,
+    "sha256": "b9d50818aa1d122633719bd11451d563529504bd9b6e3cafa8f57075b3ce714e",
+    "exactBytes": true
+  },
+  {
+    "asset": "terminal-discovery.js",
+    "status": 200,
+    "bytes": 3267,
+    "sha256": "71227e3022602f9209b4771c83bc2b176b1505756109e8c71f4f7fb9d08b2ebf",
+    "exactBytes": true
+  }
+]
