@@ -65,3 +65,12 @@ Production and review builds pass. New tests 4/4 pass; full suite 100/102 versus
 - [ ] Merge the exact reviewed head and verify the production workflow and served assets.
 
 P3 follow-up: optional finer chart axis labels can be revisited only if users need them. No additional layout work is required for this release.
+
+
+---
+
+## Research Terminal compact folio — 2026-10-05
+
+The current homepage-only folio QA and all five required fidelity surfaces are recorded in [the detailed report](docs/qa/research-folio-20261005.md). Source visual, rendered desktop/phone/tablet captures, full and focused comparisons, fixed P2 history, interaction checks, console review and baseline test comparison are included. Desktop frame: 322px. Typical phone frame: 388–407px. Portfolio markup and assets are byte-identical.
+
+final result: passed
