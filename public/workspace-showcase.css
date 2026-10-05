@@ -17,21 +17,24 @@
 .aws-slide.is-active{opacity:1;visibility:visible}
 .aws-shell:focus-visible{outline:2px solid var(--aws-accent);outline-offset:3px}
 .aws-books{isolation:isolate}
-.aws-books .aws-kicker>span:first-child{color:var(--verified-ink)}
-.aws-books .aws-copy h2 em{color:var(--verified-ink)}
-.aws-learning-art{position:relative;min-width:0;height:264px;margin:0;display:grid;place-items:center}
-.aws-learning-paper{position:absolute;inset:13px 2% 26px 4%;border:1px solid color-mix(in srgb,var(--aws-accent) 14%,var(--aws-line));border-radius:16px;background:linear-gradient(145deg,var(--aws-surface),color-mix(in srgb,var(--aws-accent) 7%,var(--aws-bg)));transform:rotate(-3deg);box-shadow:0 12px 28px color-mix(in srgb,var(--aws-text) 9%,transparent)}
-.aws-learning-art img{position:relative;display:block;max-width:95%;max-height:235px;width:auto;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 10px 25px color-mix(in srgb,var(--aws-text) 17%,transparent);transform:rotate(2deg)}
-.aws-learning-art figcaption{position:absolute;right:8px;bottom:-2px;color:var(--aws-muted);font-size:9px;line-height:1.5}
-.aws-controls{position:absolute;z-index:3;right:20px;top:12px;display:flex;align-items:center;gap:5px}
-.aws-arrow,.aws-pagination button{display:grid;place-items:center;width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:var(--aws-muted);cursor:pointer}
-.aws-arrow{font-size:25px;line-height:1}
-.aws-arrow:hover,.aws-pagination button:hover{color:var(--aws-accent);background:color-mix(in srgb,var(--aws-accent) 8%,transparent)}
+.aws-books .aws-kicker>span:first-child{color:var(--aws-accent)}
+.aws-books .aws-copy h2 em{color:var(--aws-accent)}
+.aws-controls{position:absolute;z-index:3;right:20px;top:14px;display:flex;align-items:center;gap:8px}
+.aws-pagination{display:flex;gap:3px;padding:3px;border:1px solid color-mix(in srgb,var(--aws-accent) 34%,var(--aws-line));border-radius:999px;background:color-mix(in srgb,var(--aws-surface) 90%,transparent);box-shadow:0 8px 24px color-mix(in srgb,var(--aws-bg) 62%,transparent);backdrop-filter:blur(10px)}
+.aws-pagination button{display:grid;place-items:center;min-width:96px;height:30px;padding:0 14px;border:0;border-radius:999px;background:transparent;color:var(--aws-muted);font:600 10px/1 var(--font);cursor:pointer;transition:color .2s ease,background .2s ease,box-shadow .2s ease}
+.aws-pagination button:last-child{min-width:58px}
+.aws-pagination [aria-current="true"]{color:var(--aws-accent);background:color-mix(in srgb,var(--aws-accent) 12%,var(--aws-surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--aws-accent) 10%,transparent)}
+.aws-count{display:flex;align-items:center;gap:5px;min-width:47px;color:var(--aws-muted);font-size:10px;font-variant-numeric:tabular-nums}
+.aws-count strong{color:var(--aws-text);font-weight:650}
+.aws-count i{opacity:.5;font-style:normal}
+.aws-arrow{display:grid;place-items:center;width:40px;height:40px;padding:0;border:1px solid color-mix(in srgb,var(--aws-accent) 48%,var(--aws-line));border-radius:50%;background:color-mix(in srgb,var(--aws-surface) 92%,transparent);color:var(--aws-text);cursor:pointer;box-shadow:0 8px 22px color-mix(in srgb,var(--aws-bg) 62%,transparent);transition:border-color .2s ease,color .2s ease,background .2s ease,transform .2s ease}
+.aws-arrow .icon{width:17px;height:17px;stroke-width:2}
+.aws-prev .icon{transform:rotate(90deg)}
+.aws-next .icon{transform:rotate(-90deg)}
+.aws-arrow:hover,.aws-pagination button:hover{color:var(--aws-accent);border-color:var(--aws-accent);background:color-mix(in srgb,var(--aws-accent) 10%,var(--aws-surface))}
+.aws-arrow:hover{transform:translateY(-1px)}
 .aws-controls button:focus-visible{outline:2px solid var(--aws-accent);outline-offset:2px}
-.aws-controls button:disabled{cursor:default}
-.aws-pagination{display:flex;gap:1px}
-.aws-pagination span{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45}
-.aws-pagination [aria-current="true"] span{opacity:1;transform:scale(1.3)}
+.aws-controls button:disabled{cursor:default;opacity:.72}
 .aws-slide{display:grid;grid-template-columns:minmax(0,.46fr) minmax(0,.54fr);align-items:center;gap:18px;min-height:320px;padding:28px 34px}
 .aws-copy{position:relative;z-index:1;min-width:0}
 .aws-kicker{display:flex;align-items:center;gap:18px;margin-bottom:17px;line-height:1.5}
@@ -60,11 +63,28 @@
 .aws-folio-value{clip-path:ellipse(6% 3.3% at 52% 35%)}
 .aws-folio-thesis{clip-path:ellipse(5% 3.3% at 73% 31%)}
 .aws-folio figcaption{position:absolute;bottom:-2px;right:0;color:var(--aws-muted);font-size:9px;line-height:1.5;letter-spacing:.02em}
+.aws-learning-atlas{position:relative;height:264px;min-width:0;margin:0;perspective:1200px}
+.aws-atlas-stage{--aws-rx:0deg;--aws-ry:0deg;position:absolute;inset:8px -24px -6px -120px;transform:rotateX(var(--aws-rx)) rotateY(var(--aws-ry));transform-style:preserve-3d;transition:transform .35s cubic-bezier(.2,.75,.2,1)}
+.aws-atlas-art{position:absolute;width:100%;aspect-ratio:1700/680;left:50%;top:50%;transform:translate(-50%,-50%);isolation:isolate;will-change:transform}
+.aws-atlas-art img{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;user-select:none}
+.aws-atlas-page{clip-path:polygon(47% 10%,92% 14%,97% 78%,52% 91%);transform-origin:50% 76%;opacity:.96}
+.aws-atlas-trace{opacity:0;filter:brightness(1.9) saturate(1.35) drop-shadow(0 0 5px var(--aws-accent));clip-path:circle(2.7% at 30% 34%)}
+.aws-atlas-node{opacity:0;filter:brightness(1.75) saturate(1.25) drop-shadow(0 0 8px var(--aws-accent))}
+.aws-atlas-idea{clip-path:circle(7.5% at 30% 34%)}
+.aws-atlas-test{clip-path:circle(7.5% at 52% 38%)}
+.aws-atlas-apply{clip-path:circle(7.5% at 76% 34%)}
+.aws-learning-atlas figcaption{position:absolute;right:2px;bottom:-2px;color:var(--aws-muted);font-size:9px;line-height:1.5;letter-spacing:.02em}
 .aws-entered:not(.aws-settled) .aws-folio-page{animation:awsPageLift .85s cubic-bezier(.2,.75,.2,1) both}
 .aws-visible .aws-folio-light{animation:awsEvidenceTrace 10s linear infinite}
 .aws-visible .aws-folio-fundamentals{animation:awsStation 10s ease-in-out infinite;animation-delay:1.3s}
 .aws-visible .aws-folio-value{animation:awsStation 10s ease-in-out infinite;animation-delay:2.5s}
 .aws-visible .aws-folio-thesis{animation:awsStation 10s ease-in-out infinite;animation-delay:3.8s}
+.aws-visible .aws-atlas-art{animation:awsAtlasFloat 7s ease-in-out infinite}
+.aws-visible .aws-atlas-page{animation:awsAtlasPage 5.8s ease-in-out infinite}
+.aws-visible .aws-atlas-trace{animation:awsAtlasTrace 8s cubic-bezier(.45,0,.35,1) infinite}
+.aws-visible .aws-atlas-idea{animation:awsAtlasNode 8s ease-in-out infinite;animation-delay:.6s}
+.aws-visible .aws-atlas-test{animation:awsAtlasNode 8s ease-in-out infinite;animation-delay:2.2s}
+.aws-visible .aws-atlas-apply{animation:awsAtlasNode 8s ease-in-out infinite;animation-delay:4s}
 @keyframes awsPageLift{0%{transform:translateY(5px) rotate(-.6deg);filter:brightness(.8)}60%{transform:translateY(-3px) rotate(.2deg);filter:brightness(1.12)}100%{transform:none;filter:none}}
 @keyframes awsEvidenceTrace{
   0%,5%{opacity:0;clip-path:circle(1.8% at 27% 59%)}
@@ -76,10 +96,21 @@
   50%,100%{opacity:0;clip-path:circle(1.8% at 84% 34%)}
 }
 @keyframes awsStation{0%,7%,100%{opacity:0}2%,4%{opacity:.8}}
-.motion-paused .aws-folio-art img,.aws-motion-off .aws-folio-art img{animation:none!important}
-.motion-paused .aws-folio-stage,.aws-motion-off .aws-folio-stage{transform:none!important;transition:none!important}
+@keyframes awsAtlasFloat{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,calc(-50% - 4px))}}
+@keyframes awsAtlasPage{0%,100%{transform:none;filter:none}50%{transform:translateY(-2px) rotateX(1.2deg);filter:brightness(1.04)}}
+@keyframes awsAtlasTrace{
+  0%,8%{opacity:0;clip-path:circle(2.7% at 27% 34%)}
+  14%{opacity:.9;clip-path:circle(2.7% at 31% 34%)}
+  38%{opacity:.9;clip-path:circle(2.7% at 52% 38%)}
+  63%{opacity:.9;clip-path:circle(2.7% at 76% 34%)}
+  70%,100%{opacity:0;clip-path:circle(2.7% at 80% 34%)}
+}
+@keyframes awsAtlasNode{0%,8%,23%,100%{opacity:0}12%,18%{opacity:.72}}
+.motion-paused .aws-folio-art img,.aws-motion-off .aws-folio-art img,.motion-paused .aws-atlas-art,.motion-paused .aws-atlas-art img,.aws-motion-off .aws-atlas-art,.aws-motion-off .aws-atlas-art img{animation:none!important}
+.motion-paused .aws-folio-stage,.aws-motion-off .aws-folio-stage,.motion-paused .aws-atlas-stage,.aws-motion-off .aws-atlas-stage{transform:none!important;transition:none!important}
 @media(max-width:1080px){
   .aws-slide{padding:24px;gap:12px;grid-template-columns:minmax(0,.48fr) minmax(0,.52fr)}
+  .aws-atlas-stage{inset:26px -22px 4px -30px}
   .aws-copy h2{font-size:32px}
   .aws-kicker{gap:10px}
   .aws-kicker>span:last-child{padding-left:10px}
@@ -94,11 +125,12 @@
   .aws-slide{grid-template-columns:1fr;min-height:0;padding:21px 22px 16px;gap:10px}
   .aws-track{display:grid;min-height:0}
   .aws-slide{position:relative;inset:auto;grid-area:1/1;min-height:0}
-  .aws-controls{right:10px;top:8px}
-  .aws-kicker{padding-right:90px}
-  .aws-learning-art{height:140px}
-  .aws-learning-paper{inset:2px 7% 16px 7%}
-  .aws-learning-art img{max-height:125px}
+  .aws-controls{right:10px;top:8px;gap:6px}
+  .aws-pagination{display:none}
+  .aws-count{min-width:42px;font-size:9px}
+  .aws-arrow{width:36px;height:36px}
+  .aws-arrow .icon{width:15px;height:15px}
+  .aws-kicker{padding-right:132px}
   .aws-kicker{margin-bottom:12px}
   .aws-copy h2{font-size:clamp(28px,5vw,34px);margin-bottom:10px}
   .aws-copy>p{font-size:13px;line-height:1.55}
@@ -112,6 +144,10 @@
   .aws-folio-stage{inset:-2px -12px 8px -8px;transform:none!important;transition:none}
   .aws-folio-art{max-width:320px}
   .aws-folio figcaption{font-size:8px}
+  .aws-learning-atlas{height:148px}
+  .aws-atlas-stage{inset:0 -12px 3px -10px;transform:none!important;transition:none}
+  .aws-atlas-art{max-width:520px}
+  .aws-learning-atlas figcaption{font-size:8px}
   .aws-entered:not(.aws-settled) .aws-folio-page{animation:none}
 }
 @media(max-width:380px){
@@ -124,8 +160,8 @@
   .aws-primary{gap:8px;padding:10px}
   .aws-actions .icon{width:15px;height:15px}
   .aws-folio{height:132px}
-  .aws-learning-art{height:130px}
-  .aws-learning-art img{max-height:115px}
+  .aws-learning-atlas{height:134px}
+  .aws-atlas-stage{inset:0 -8px 2px -8px}
 }
 @media(max-width:340px){
   .aws-copy>p{font-size:12px}
@@ -135,7 +171,8 @@
 }
 @media(prefers-reduced-motion:reduce){
   .aws-slide{transition:none}
-  .aws-folio-art img{animation:none!important}
-  .aws-folio-stage{transform:none!important;transition:none!important}
+  .aws-folio-art img,.aws-atlas-art,.aws-atlas-art img{animation:none!important}
+  .aws-folio-stage,.aws-atlas-stage{transform:none!important;transition:none!important}
   .aws-actions a{transition:none}
+  .aws-controls button{transition:none}
 }

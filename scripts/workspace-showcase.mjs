@@ -4,8 +4,11 @@ export const LIVE_WORKSPACES = Object.freeze([
   { id: 'books', label: 'Books & Investor Methods', landing: '/screener/learning/books/' }
 ]);
 const arrow = '<svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#arrow"></use></svg>';
+const chevron = '<svg class="icon" aria-hidden="true"><use href="/assets/icons.svg#chevron"></use></svg>';
 const artwork = '/assets/research-folio.webp';
 const image = cls => `<img class="${cls}" src="${artwork}" width="1721" height="914" loading="lazy" decoding="async" alt="" draggable="false">`;
+const atlas = '/assets/books-method-atlas.webp';
+const atlasImage = cls => `<img class="${cls}" src="${atlas}" width="1700" height="680" loading="lazy" decoding="async" alt="" draggable="false">`;
 export function workspaceShowcase() {
   return `<section class="aws-shell" id="research-terminal" role="region" aria-roledescription="carousel" aria-label="Research and Learning" tabindex="0" data-advanced-workspaces data-workspace-count="2">
     <div class="container aws-frame">
@@ -46,20 +49,29 @@ export function workspaceShowcase() {
           </div>
           <small>25 book guides. Original MarketDeck interpretations.</small>
         </div>
-        <figure class="aws-learning-art" aria-label="Original MarketDeck artwork from the illustrated Learning reader.">
-          <div class="aws-learning-paper" aria-hidden="true"></div>
-          <img src="/screener/static/screener/images/learning/psychology-money.webp" width="1200" height="800" loading="lazy" decoding="async" alt="">
-          <figcaption>Illustrated learning guides · not official book covers</figcaption>
+        <figure class="aws-learning-atlas" data-aws-holo aria-label="Original MarketDeck illustration of an open investment guide connecting an idea to testing and application.">
+          <div class="aws-atlas-stage" data-aws-holo-stage aria-hidden="true">
+            <div class="aws-atlas-art">
+              ${atlasImage('aws-atlas-base')}
+              ${atlasImage('aws-atlas-page')}
+              ${atlasImage('aws-atlas-trace')}
+              ${atlasImage('aws-atlas-node aws-atlas-idea')}
+              ${atlasImage('aws-atlas-node aws-atlas-test')}
+              ${atlasImage('aws-atlas-node aws-atlas-apply')}
+            </div>
+          </div>
+          <figcaption>Idea → test → apply · original MarketDeck illustration</figcaption>
         </figure>
       </article>
       </div>
       <div class="aws-controls" data-aws-controls aria-label="Carousel controls">
-        <button type="button" class="aws-arrow" data-aws-prev aria-label="Previous slide" disabled>‹</button>
-        <div class="aws-pagination" aria-label="Choose slide">
-          <button type="button" data-aws-dot="0" aria-label="Show Research Terminal" aria-current="true" disabled><span></span></button>
-          <button type="button" data-aws-dot="1" aria-label="Show Books and Investor Methods" disabled><span></span></button>
+        <div class="aws-pagination" aria-label="Choose feature">
+          <button type="button" data-aws-dot="0" aria-label="Show Research Terminal" aria-current="true" disabled><span>Research Terminal</span></button>
+          <button type="button" data-aws-dot="1" aria-label="Show Books and Investor Methods" disabled><span>Books</span></button>
         </div>
-        <button type="button" class="aws-arrow" data-aws-next aria-label="Next slide" disabled>›</button>
+        <span class="aws-count" aria-hidden="true"><strong data-aws-current>01</strong><i>/</i><span>02</span></span>
+        <button type="button" class="aws-arrow aws-prev" data-aws-prev aria-label="Previous feature" disabled>${chevron}</button>
+        <button type="button" class="aws-arrow aws-next" data-aws-next aria-label="Next feature" disabled>${chevron}</button>
         <span class="sr-only" role="status" data-aws-status aria-live="polite"></span>
       </div>
     </div>

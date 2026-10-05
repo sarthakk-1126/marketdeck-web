@@ -14,6 +14,7 @@
     };
     const motionOff = () => !!(reduced?.matches || document.hidden ||
       (folio.closest?.('[data-workspace-slide]') && !folio.closest('[data-workspace-slide]').classList.contains('is-active')) ||
+      folio.closest?.('[data-advanced-workspaces]')?.classList.contains('aws-interacting') ||
       document.body.classList.contains('motion-paused') ||
       document.documentElement.classList.contains('motion-paused'));
     const sync = () => {
@@ -65,10 +66,16 @@
     const prev = root.querySelector('[data-aws-prev]');
     const next = root.querySelector('[data-aws-next]');
     const status = root.querySelector('[data-aws-status]');
-    const folio = root.querySelector('[data-aws-holo]');
+    const holos = [...root.querySelectorAll('[data-aws-holo]')];
+    const current = root.querySelector('[data-aws-current]');
     if (slides.length !== 2 || dots.length !== 2 || !prev || !next) return;
     let index = 0, visible = false, hovered = false, focused = false;
     let cooldown = false, timer = null, cooldownTimer = null, startX = null;
+    const syncHolos = () => holos.forEach(holo => holo.dispatchEvent?.(new window.Event('aws:slidechange')));
+    const syncInteraction = () => {
+      root.classList.toggle('aws-interacting', hovered || focused);
+      syncHolos();
+    };
     const paused = () => !visible || hovered || focused || cooldown || document.hidden ||
       reduced?.matches || document.body.classList.contains('motion-paused') ||
       document.documentElement.classList.contains('motion-paused');
@@ -89,8 +96,9 @@
         if (i === index) dot.setAttribute('aria-current', 'true');
         else dot.removeAttribute('aria-current');
       });
+      if (current) current.textContent = String(index + 1).padStart(2, '0');
       if (manual && status) status.textContent = index === 0 ? 'Research Terminal, slide 1 of 2' : 'Books and Investor Methods, slide 2 of 2';
-      folio?.dispatchEvent?.(new window.Event('aws:slidechange'));
+      syncHolos();
       schedule();
     };
     const interact = () => {
@@ -111,11 +119,11 @@
         show(index + (event.key === 'ArrowRight' ? 1 : -1));
       }
     });
-    root.addEventListener('pointerenter', () => { hovered = true; stop(); });
-    root.addEventListener('pointerleave', () => { hovered = false; schedule(); });
-    root.addEventListener('focusin', () => { focused = true; stop(); });
+    root.addEventListener('pointerenter', () => { hovered = true; syncInteraction(); stop(); });
+    root.addEventListener('pointerleave', () => { hovered = false; syncInteraction(); schedule(); });
+    root.addEventListener('focusin', () => { focused = true; syncInteraction(); stop(); });
     root.addEventListener('focusout', event => {
-      if (!root.contains(event.relatedTarget)) { focused = false; schedule(); }
+      if (!root.contains(event.relatedTarget)) { focused = false; syncInteraction(); schedule(); }
     });
     root.addEventListener('pointerdown', event => {
       if (event.pointerType === 'touch') { startX = event.clientX; interact(); }
