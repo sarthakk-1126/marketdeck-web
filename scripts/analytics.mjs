@@ -24,7 +24,7 @@ export function analyticsTag(canonicalUrl) {
     allow_ad_personalization_signals: false
   });
 </script>
-<script defer src="https://platform.marketdeck.in/analytics/client.js"></script>
+<script defer src="https://platform.marketdeck.in/analytics/client.js?v=0f09e60c20f8"></script>
 ${MARKER_END}`;
 }
 
