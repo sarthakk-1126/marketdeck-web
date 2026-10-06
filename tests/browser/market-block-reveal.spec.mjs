@@ -73,11 +73,11 @@ for(const width of [320,390,1440])test(`five real block presses reveal and reass
   expect(errors).toEqual([]);await context.close();
 });
 
-test('empty space and drags do not count; keyboard reveal escapes and restores focus',async({page})=>{
+test('empty space and short gestures do not count; keyboard reveal escapes and restores focus',async({page})=>{
   const canvas=await setup(page),box=await canvas.boundingBox();
   await page.mouse.click(box.x+box.width*.96,box.y+box.height*.05);await page.waitForTimeout(100);
   await expect(canvas).toHaveAttribute('data-presses','0');
-  await page.mouse.move(box.x+box.width*.55,box.y+box.height*.72);await page.mouse.down();await page.mouse.move(box.x+box.width*.75,box.y+box.height*.72);await page.mouse.up();
+  await page.mouse.move(box.x+box.width*.55,box.y+box.height*.72);await page.mouse.down();await page.mouse.move(box.x+box.width*.55+14,box.y+box.height*.72);await page.mouse.up();
   await page.waitForTimeout(100);await expect(canvas).toHaveAttribute('data-presses','0');
   const trigger=page.getByRole('button',{name:/Interactive market sculpture/});await trigger.focus();
   for(let i=1;i<=5;i++){await page.keyboard.press('Enter');await expect(canvas).toHaveAttribute('data-presses',String(i));}
