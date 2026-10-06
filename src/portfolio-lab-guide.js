@@ -35,5 +35,5 @@ export function createPortfolioGuide(root) {
  video.addEventListener('error',()=>{dialog.querySelector('[data-pl-guide-error]').hidden=false;});
  dialog.addEventListener('close',()=>{video.pause();clearSeek();opener?.focus();});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)video.pause();});
- return {close};
+ return {close,open(mode='read',button=null){opener=button;show(mode);if(!dialog.open)dialog.showModal();}};
 }
