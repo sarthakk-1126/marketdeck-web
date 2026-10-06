@@ -1,12 +1,17 @@
 import {valuation,returnTable,sensitivity,impliedGrowth,filingChanges} from './research-valuation.js';
 import {createValueLab} from './research-value-lab.js';
 
+export function terminalToolSource(value,origin){
+ if(typeof value!=='string'||!value.trim()||value==='#')return null;
+ try{const source=new URL(value,origin);return ['http:','https:'].includes(source.protocol)&&!source.username&&!source.password&&source.origin===new URL(origin).origin?source.href:null;}catch{return null;}
+}
+
 export function createTerminal(api){
  const {$,$$,esc,fmt,dateLabel,changed,toast,getData,getPoint,getPins,getDesk,setView,request,url,showSources}=api;
  const defaults=()=>({version:1,preset:'investing',view:'explore',inspector:true,inspectorWidth:300,split:false,valuation:{model:'earnings',base:null,growth:10,discount:12,terminal:3,years:5,multiple:20,dividend:0,shares:null,cash:null,debt:null,marginSafety:20,price:null,rates:[10,12,15,18]},scenarios:[],thesis:[]});
  let state=defaults(),foMode='history',review=false,focus=false,renderFrame=null,ratesValid=true,lab=null;
  const labels={earnings:'Earnings & exit',equity:'Equity cash flow',firm:'Firm DCF',dividend:'Dividends'};
- const safeSource=value=>{const resolved=url(value);return resolved!=='#'&&new URL(resolved,location.origin).origin===location.origin?resolved:null;};
+ const safeSource=value=>terminalToolSource(value,location.origin);
  let valueEvidenceOpen=false;
  const valueLab=createValueLab({...api,getState:()=>state,setValuation:value=>{state.valuation=value;},defaults:()=>defaults().valuation});
  function restore(raw){state={...defaults(),...(raw||{}),valuation:{...defaults().valuation,...(raw?.valuation||{})}};review=false;ratesValid=true;valueEvidenceOpen=false;valueLab?.resetUI();if(!raw)valueLab?.seedFresh();renderValueControls();renderThesis();renderLayout();}
@@ -97,7 +102,7 @@ export function createTerminal(api){
   target.innerHTML=state.thesis.length?state.thesis.map((t,i)=>`<article class="rt-thesis-entry"><div class="rt-thesis-heading"><span>RESEARCH QUESTION ${i+1}</span><button type="button" class="rd-icon-button" data-thesis-remove="${i}" aria-label="Remove research question ${i+1}">×</button></div><div class="rt-thesis-grid">${[['claim','My claim or question'],['support','Evidence supporting it'],['counter','Counter-evidence / what is unknown'],['invalidate','What would change my mind?']].map(([key,label])=>`<label class="rt-field">${label}<textarea rows="3" maxlength="500" data-thesis-index="${i}" data-thesis-field="${key}">${esc(t[key])}</textarea></label>`).join('')}</div><fieldset class="rt-evidence-picks"><legend>Link pinned filing evidence</legend>${pins.length?pins.map(p=>`<label><input type="checkbox" data-thesis-index="${i}" data-thesis-pin="${esc(p.id)}" ${t.evidence.includes(p.id)?'checked':''}>${esc(p.period)} · ${esc(p.metrics.map(k=>getData()?.metrics[k]?.label||k).join(', '))}</label>`).join(''):'<p>Inspect a Research chart period and pin an observation to link evidence here.</p>'}</fieldset></article>`).join(''):'<div class="rt-value-empty"><h3>Give your research a question.</h3><p>Add a claim, collect evidence and keep a counterargument beside it.</p></div>';
   $('[data-thesis-add]').disabled=state.thesis.length>=4;
  }
- function onView(view){state.view=view;renderLayout();renderEngines();if(view==='valuation')renderValue();if(view==='changes')renderChanges();if(view==='thesis')renderThesis();if(view==='lab'&&api.labURL){const path=$('[data-lab-panel]')?.dataset.slSchema==='2'?'/assets/strategy-lab-experience.js?v=lab5':'/assets/strategy-lab.js?v=lab1';import(path).then(module=>{lab??=module.createStrategyLab(api);if(state.view==='lab')return lab?.activate();}).catch(e=>toast(e.message));}else lab?.pause();}
+ function onView(view){state.view=view;renderLayout();renderEngines();if(view==='valuation')renderValue();if(view==='changes')renderChanges();if(view==='thesis')renderThesis();if(view==='lab'&&api.labURL){const path=$('[data-lab-panel]')?.dataset.slSchema==='2'?'/assets/strategy-lab-experience.js?v=portfolio1':'/assets/strategy-lab.js?v=lab1';import(path).then(module=>{lab??=module.createStrategyLab(api);if(state.view==='lab')return lab?.activate();}).catch(e=>toast(e.message));}else lab?.pause();}
  function onData(){renderEngines();renderChanges();renderThesis();if(state.view==='valuation')renderValue();}
  document.addEventListener('input',event=>{
   const input=event.target;
