@@ -37,7 +37,7 @@ test('review cleanup removes the analytics block', () => {
 
 test('upgrades an existing canonical analytics block without changing page content', () => {
   const html = '<html><head><link rel="canonical" href="https://marketdeck.in/intelligence/"></head><body>Lens and research stay intact</body></html>';
-  const old = injectAnalytics(html).replace('<script defer src="https://platform.marketdeck.in/analytics/client.js?v=0f09e60c20f8"></script>\n', '');
+  const old = injectAnalytics(html).replace('<script defer src="https://platform.marketdeck.in/analytics/client.0f09e60c20f8.js"></script>\n', '');
   const upgraded = injectAnalytics(old);
   assert.equal((upgraded.match(/analytics\/client\.js/g) || []).length, 1);
   assert.equal(stripAnalytics(upgraded), html);
