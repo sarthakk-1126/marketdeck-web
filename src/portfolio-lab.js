@@ -134,7 +134,7 @@ export function createPortfolioLab(api,root) {
   }).catch(error=>say(error.message));
  });
  root.addEventListener('input',event=>{const el=event.target;
-  if(el.matches('[data-pl-weight],[data-pl-number]')){try{selected=el.dataset.plWeight??el.dataset.plNumber;const value=Number(el.value),next=el.matches('[data-pl-number]')?Math.round(value*100):value;if(el.value===''||!Number.isFinite(value))throw Error('Enter a numeric allocation.');if(el.matches('[data-pl-number]')&&Math.abs(value*100-next)>1e-7)throw Error('Use at most two decimal places for allocation percentages.');spec=adjustWeight(spec,selected,next);edited();}catch(error){syncInputs();say(error.message);}return;}
+  if(el.matches('[data-pl-weight],[data-pl-number]')){try{selected=el.dataset.plWeight??el.dataset.plNumber;const value=Number(el.value),next=el.matches('[data-pl-number]')?Math.round(value*100):value;if(el.value===''||!Number.isFinite(value))throw Error('Enter a numeric allocation.');if(el.matches('[data-pl-number]')&&Math.abs(value*100-next)>1e-7)throw Error('Use at most two decimal places for allocation percentages.');spec=adjustWeight(spec,selected,next);edited();}catch(error){render();say(error.message);}return;}
   if(el.matches('[data-pl-shock],[data-pl-shock-number]')){const value=el.value;q('[data-pl-shock]').value=value;q('[data-pl-shock-number]').value=value;q('[data-pl-shock-output]').textContent=value+'%';return;}
   if(el.matches('[data-pl-name],[data-pl-note]')&&snapshot&&!snapshot.practice){dirty=true;draftRevision++;render();}
  });
