@@ -13,7 +13,7 @@ test('injects GA4 once using the canonical URL as page_location', () => {
   assert.match(once, /allow_ad_personalization_signals: false/);
   assert.equal((once.match(/googletagmanager\.com\/gtag\/js/g) || []).length, 1);
   assert.equal(twice, once);
-  assert.match(once, /#md-analytics-preferences\\s*\\{\\s*position:\\s*static\\s*!important/);
+  assert.match(once, /#md-analytics-preferences\s*\{\s*position:\s*static\s*!important/);
   assert.equal((once.match(/platform\.marketdeck\.in\/analytics\/client(?:\.[a-f0-9]+)?\.js/g) || []).length, 1);
 });
 
