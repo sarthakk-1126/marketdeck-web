@@ -24,7 +24,17 @@ export function analyticsTag(canonicalUrl) {
     allow_ad_personalization_signals: false
   });
 </script>
-<script defer src="https://platform.marketdeck.in/analytics/client.0f09e60c20f8.js"></script>
+<style id="md-analytics-preferences-placement">
+#md-analytics-preferences {
+  position: static !important;
+  inset: auto !important;
+  z-index: auto !important;
+  display: flex !important;
+  justify-content: center;
+  margin: 2rem auto 1rem;
+}
+</style>
+<script defer src="https://platform.marketdeck.in/analytics/client.js"></script>
 ${MARKER_END}`;
 }
 
