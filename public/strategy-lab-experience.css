@@ -35,3 +35,29 @@
 .sl-analysis-definition h4{font-size:18px;line-height:1.4;margin:10px 0 8px}.sl-analysis-definition>p,.sl-analysis-definition li{font-size:12px;line-height:1.75;color:var(--rd-muted)}.sl-analysis-definition ol{padding-left:20px;margin:12px 0}.sl-analysis-definition li+li{margin-top:8px}.sl-analysis-boundary{padding:11px 12px;border-left:2px solid var(--rd-cyan);background:color-mix(in srgb,var(--rd-cyan) 5%,transparent);color:var(--rd-muted);font-size:12px;line-height:1.7}.sl-analysis-boundary strong{color:var(--rd-text)}.sl-analysis-reference{stroke:var(--sl-amber);stroke-width:2;stroke-dasharray:6 4;color:var(--sl-amber)}.sl-outcome-list{display:grid;gap:8px;margin:14px 0}.sl-outcome-list article{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;padding:9px 10px;border:1px solid var(--sl-quiet);border-radius:7px}.sl-outcome-list article span{text-align:right;color:var(--rd-text);font-variant-numeric:tabular-nums}.sl-outcome-list article small{grid-column:1/-1;color:var(--rd-muted);overflow-wrap:anywhere}.sl-result-actions{display:flex;gap:12px;align-items:center}.sl-analysis-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}.sl-analysis-metrics dd{font-size:20px!important}
 @media(max-width:1000px){.sl-analysis-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:820px){.sl-analysis-definition li,.sl-analysis-definition>p,.sl-analysis-boundary{font-size:13px}.sl-result-actions{align-items:flex-end;flex-direction:column;gap:5px}.sl-outcome-list article{font-size:13px}}
+
+.sl-passport{margin:14px 0 18px;padding:0 12px 12px;border:1px solid var(--sl-quiet);border-radius:8px;background:color-mix(in srgb,var(--md-surface-2) 52%,transparent);min-width:0}
+.sl-experience .sl-passport>summary{display:flex;flex-wrap:wrap;align-items:center;gap:5px 12px;min-height:44px;font-size:13px;color:var(--rd-text)}
+.sl-passport>summary span{font-size:11px;color:var(--rd-muted);overflow-wrap:anywhere}
+.sl-experience .sl-passport h4{font-size:12px;margin:16px 0 6px;color:var(--rd-text)}
+.sl-passport-intro{font-size:11px;line-height:1.7;color:var(--rd-muted);margin:4px 0 12px}
+.sl-passport-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px;margin:0}
+.sl-passport-grid>div{min-width:0;padding:8px 0;border-top:1px solid var(--sl-quiet)}
+.sl-passport-grid dt{font-size:10px;color:var(--rd-muted);line-height:1.5}
+.sl-passport-grid dd{margin:2px 0 0;color:var(--rd-text);font-size:11px;line-height:1.6;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.sl-comparison-marker{fill:var(--sl-amber);stroke:var(--rd-text);stroke-width:1.3}
+.sl-comparison-report,.sl-comparison-refused{margin:12px 0;padding:12px;border:1px solid var(--sl-quiet);border-radius:8px;min-width:0}
+.sl-comparison-report>p,.sl-comparison-refused>p{font-size:12px;line-height:1.75;color:var(--rd-muted)}
+.sl-experience .sl-comparison-report h4{font-size:12px;margin:14px 0 6px}
+.sl-comparison-refused{border-color:color-mix(in srgb,var(--sl-amber) 50%,var(--sl-quiet));background:color-mix(in srgb,var(--sl-amber) 5%,transparent)}
+.sl-comparison-refused>strong{font-size:13px;color:var(--sl-amber)}
+.sl-comparison-refused li{font-size:11px;line-height:1.7;overflow-wrap:anywhere}
+.sl-comparison-events{min-width:650px}
+.sl-comparison-events th,.sl-comparison-events td{white-space:normal;min-width:76px}
+.sl-comparison-events th:first-child{min-width:115px}
+.sl-experience :focus-visible{outline:2px solid var(--rd-cyan);outline-offset:2px}
+.sl-experience .sl-passport summary:focus-visible{outline-offset:0}
+.sl-experience .sl-passport-grid dd,.sl-experience .sl-passport-grid dt{overflow-wrap:anywhere}
+@media(max-width:520px){.sl-passport{padding:0 10px 10px}.sl-passport-grid{grid-template-columns:minmax(0,1fr)}.sl-comparison-report,.sl-comparison-refused{padding:10px}.sl-comparison-events{min-width:590px}}
+
+.sl-comparison-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.sl-comparison-summary article{min-width:0;padding:10px;border:1px solid var(--sl-quiet);border-radius:7px}.sl-comparison-summary strong{font-size:11px}.sl-comparison-summary p{font-size:10px;line-height:1.6;color:var(--rd-muted);overflow-wrap:anywhere;margin:6px 0 0}@media(max-width:520px){.sl-comparison-summary{grid-template-columns:minmax(0,1fr)}}
