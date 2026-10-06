@@ -13,7 +13,7 @@ test('injects GA4 once using the canonical URL as page_location', () => {
   assert.match(once, /allow_ad_personalization_signals: false/);
   assert.equal((once.match(/googletagmanager\.com\/gtag\/js/g) || []).length, 1);
   assert.equal(twice, once);
-  assert.equal((once.match(/platform\.marketdeck\.in\/analytics\/client\.js/g) || []).length, 1);
+  assert.equal((once.match(/platform\.marketdeck\.in\/analytics\/client(?:\.[a-f0-9]+)?\.js/g) || []).length, 1);
 });
 
 test('does not instrument pages without an approved canonical', () => {
@@ -37,9 +37,9 @@ test('review cleanup removes the analytics block', () => {
 
 test('upgrades an existing canonical analytics block without changing page content', () => {
   const html = '<html><head><link rel="canonical" href="https://marketdeck.in/intelligence/"></head><body>Lens and research stay intact</body></html>';
-  const old = injectAnalytics(html).replace('<script defer src="https://platform.marketdeck.in/analytics/client.js?v=0f09e60c20f8"></script>\n', '');
+  const old = injectAnalytics(html).replace('<script defer src="https://platform.marketdeck.in/analytics/client.0f09e60c20f8.js"></script>\n', '');
   const upgraded = injectAnalytics(old);
-  assert.equal((upgraded.match(/analytics\/client\.js/g) || []).length, 1);
+  assert.equal((upgraded.match(/analytics\/client(?:\.[a-f0-9]+)?\.js/g) || []).length, 1);
   assert.equal(stripAnalytics(upgraded), html);
   assert.equal(injectAnalytics(upgraded), upgraded);
 });
