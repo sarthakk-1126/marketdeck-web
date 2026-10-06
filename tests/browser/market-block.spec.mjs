@@ -5,6 +5,7 @@ test('3D sculpture compiles, animates, pauses and preserves the product handoff'
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
   await page.route('https://www.googletagmanager.com/**',r=>r.fulfill({status:200,contentType:'text/javascript',body:''}));
+  await page.route('https://platform.marketdeck.in/analytics/**',r=>r.fulfill({status:200,contentType:'text/javascript',body:''}));
   await page.setViewportSize({width:1712,height:919});await page.goto('/');
   await expect(page.locator('.hero')).toHaveAttribute('data-renderer','webgl');
   const canvas=page.locator('.earth-canvas');
@@ -103,6 +104,11 @@ for(const width of [320,360,390,430,768,1024,1440,1920,2560]) test(`sculpture co
       return {overflow:document.documentElement.scrollWidth>innerWidth,canvas:rect('.earth-canvas').toJSON(),trust:rect('.hero-trust').toJSON(),actions:[...document.querySelectorAll('.hero-actions .button')].map(b=>b.getBoundingClientRect().height)};
     });
     expect(layout.overflow).toBe(false);expect(layout.canvas.width).toBeGreaterThan(0);
+    const charge=page.locator('.market-block-charge');
+    await expect(charge).toBeVisible();await expect(charge.locator('.market-charge-segment')).toHaveCount(5);
+    const chargeBox=await charge.locator('.market-charge-meter').boundingBox();
+    expect(chargeBox.x).toBeGreaterThanOrEqual(0);
+    expect(chargeBox.x+chargeBox.width).toBeLessThanOrEqual(width+1);
     if(width<651){expect(layout.canvas.top).toBeGreaterThan(layout.trust.bottom);expect(layout.actions.every(h=>h>=44)).toBe(true);}
     if([320,390,768,1024].includes(width))await page.screenshot({path:`.preview/kinetic-${width}-v1.png`,fullPage:width<800});
 });
@@ -118,6 +124,7 @@ test('reduced motion, denied WebGL and blocked module keep useful HTML and the s
     await expect(page.getByRole('heading',{level:1})).toBeVisible();
     await expect(page.locator('.hero')).toHaveAttribute('data-renderer',mode==='reduced'?'webgl':mode==='save-data'||mode==='webgl'?'poster':'failed');
     if(mode!=='reduced')expect(await page.locator('.earth-image').evaluate(i=>i.complete&&i.naturalWidth>0)).toBe(true);
+    await expect(page.locator('.market-block-charge')).toBeHidden();
     if(mode==='reduced'){await expect(page.locator('body')).toHaveClass(/motion-paused/);await expect(page.locator('.market-story')).not.toHaveClass(/story-enabled/);}
     await page.getByRole('link',{name:'Explore the suite',exact:true}).click();await expect(page.locator('#tab-charting')).toBeVisible();
     await context.close();

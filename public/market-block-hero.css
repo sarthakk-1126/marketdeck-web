@@ -2,7 +2,7 @@
 .market-block-hero .earth-scene {
   inset:0 -5% 0 auto;
   width:64%;
-  height:100%;
+  height:calc(100% - 54px);
   transform:none;
   will-change:auto;
 }
@@ -17,12 +17,37 @@
 .market-block-hero .earth-shade { display:none; }
 .market-block-hero .earth-coordinates { display:none; }
 .market-block-hero .earth-caption {
-  top:auto;bottom:72px;right:24%;
+  top:auto;bottom:60px;right:24%;
   font-size:7px;letter-spacing:1.4px;color:#7f99b1;
 }
 .market-block-hero .hero-content { z-index:1; }
 .market-block-hero .hero-bottom { z-index:2; }
 .market-block-hero .earth-scene:focus-visible { outline:1px solid #729dc7;outline-offset:-20px; }
+.market-block-hero { overflow:clip;touch-action:pan-y pinch-zoom; }
+.market-block-hero.is-pulling { cursor:grabbing;user-select:none; }
+.market-block-charge {
+  position:absolute;right:-5%;bottom:58px;width:64%;z-index:0;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  pointer-events:none;color:#b2c5d9;
+}
+.market-block-charge[hidden] { display:none; }
+.market-charge-meter { display:flex;align-items:center;gap:16px;min-height:16px; }
+.market-charge-track { display:flex;gap:8px; }
+.market-charge-segment {
+  width:32px;height:6px;border-radius:999px;background:#263d56;
+  box-shadow:inset 0 1px 0 #b7d9ff0c;
+  transition:background .22s ease,box-shadow .22s ease;
+}
+.market-charge-segment.is-filled {
+  background:linear-gradient(90deg,#339cf0,#68c9ff);
+  box-shadow:0 0 10px #329fff42,inset 0 1px 0 #d6f1ff38;
+}
+.market-charge-fraction { display:flex;gap:6px;font:11px/1 var(--mono);font-variant-numeric:tabular-nums;color:#b2c5d9; }
+.market-charge-count { color:#dfebf7; }
+.market-charge-divider { color:#637f9b; }
+.market-charge-hint { margin:0;color:#8da6be;font-size:10px;line-height:1.5;letter-spacing:.025em; }
+.market-charge-hint span { margin-inline:5px;color:#4b6d8b; }
+@media(prefers-reduced-motion:reduce) { .market-charge-segment { transition:none; } }
 /* The existing renderer temporarily fills the viewport; no second WebGL context. */
 .market-block-reveal {
   --reveal:0;--quote:0;--burst:0;--launch:0;
@@ -88,6 +113,7 @@
   .market-block-hero .hero-actions { gap:8px; }
   .market-block-hero .hero-actions .button { padding-inline:13px; }
   .market-block-hero .earth-caption { right:21%; }
+  .market-block-charge { right:-8%;width:61%; }
 }
 @media (max-width:999px) {
   .market-block-hero { display:flex;flex-direction:column;min-height:0; }
@@ -98,6 +124,7 @@
     width:100%;height:420px;flex:none;margin-top:5px;
   }
   .market-block-hero .earth-caption { bottom:17px;right:50%;transform:translateX(50%);white-space:nowrap; }
+  .market-block-charge { order:2;position:relative;right:auto;bottom:auto;width:100%;margin:10px 0 4px;flex:none; }
   .market-block-hero .hero-bottom { order:3;position:relative;inset:auto;padding-top:16px;padding-bottom:20px; }
 }
 @media (max-width:650px) {

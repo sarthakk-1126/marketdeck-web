@@ -4,6 +4,18 @@ const smooth = x => {x=clamp(x);return x*x*(3-2*x);};
 export function startExperience() {
   const hero=document.querySelector('.hero'), scene=document.querySelector('.earth-scene');
   const button=document.querySelector('.motion-toggle');
+  const charge=document.querySelector('.market-block-charge');
+  if(charge&&matchMedia('(pointer:coarse)').matches)charge.querySelector('.market-charge-hint').textContent='Tap to reveal · Pull sideways to charge';
+  const meter=charge?.querySelector('[role="progressbar"]'),segments=charge?[...charge.querySelectorAll('.market-charge-segment')]:[];
+  function updateCharge({count,total=5,revealing=false}){
+    if(!charge)return;
+    charge.dataset.charge=String(count);
+    meter.setAttribute('aria-valuenow',String(count));
+    meter.setAttribute('aria-valuetext',revealing?'Quote revealed':`${count} of ${total}. ${total-count} more interactions to reveal a quote.`);
+    charge.querySelector('.market-charge-count').textContent=String(count);
+    segments.forEach((segment,i)=>segment.classList.toggle('is-filled',i<count));
+    charge.querySelector('[role="status"]').textContent=revealing?'Quote revealed':count?`${count} of ${total} charged.`:'';
+  }
   const reduce=matchMedia('(prefers-reduced-motion: reduce)'),desktop=matchMedia('(min-width: 1000px) and (min-height: 650px)');
   const canvas=document.createElement('canvas');canvas.className='earth-canvas';canvas.setAttribute('aria-hidden','true');scene.append(canvas);
   let paused=false,seen=false;
@@ -14,6 +26,7 @@ export function startExperience() {
     if(event==='start'){
       const rect=scene.getBoundingClientRect();
       if(off()||rect.bottom<0||rect.top>innerHeight)return null;
+      cancelGesture(true);
       revealFocus=document.activeElement;revealActive=true;
       revealDialog=document.createElement('dialog');revealDialog.className='market-block-reveal';
       revealDialog.setAttribute('aria-label','A moment of market perspective');
@@ -64,7 +77,7 @@ export function startExperience() {
     const previousHeight=story.offsetHeight,top=story.getBoundingClientRect().top+scrollY,previousScroll=scrollY;
     storyEnabled=desktop.matches&&!off();
     story.classList.toggle('story-enabled',storyEnabled);
-    if(!storyEnabled){cards.forEach(c=>{c.style.transform='';c.style.opacity='';});gallery.inert=false;gallery.style.opacity='';heading.style.opacity='';copy.style.transform='';copy.style.opacity='';scene.style.opacity='';hero.querySelector('.hero-bottom').style.opacity='';
+    if(!storyEnabled){cards.forEach(c=>{c.style.transform='';c.style.opacity='';});gallery.inert=false;gallery.style.opacity='';heading.style.opacity='';copy.style.transform='';copy.style.opacity='';scene.style.opacity='';if(charge)charge.style.opacity='';hero.querySelector('.hero-bottom').style.opacity='';
       if(previousScroll>top+previousHeight-innerHeight)window.scrollBy({top:story.offsetHeight-previousHeight,behavior:'instant'});
       else if(progress>.2)gallery.scrollIntoView({behavior:'instant',block:'start'});
     }
@@ -84,6 +97,7 @@ export function startExperience() {
     copy.style.opacity=String(1-smooth(progress/.23));
     hero.querySelector('.hero-bottom').style.opacity=String(1-smooth(progress/.18));
     scene.style.opacity=String(1-smooth((progress-.55)/.43)*.96);
+    if(charge)charge.style.opacity=String(1-smooth(progress/.22));
     heading.style.opacity=String(smooth((progress-.58)/.25));
     gallery.inert=progress<.70;
     const dock=smooth((progress-.55)/.45);
@@ -112,7 +126,9 @@ export function startExperience() {
   function request(){if(!raf&&!dead&&!document.hidden&&(visible||revealActive))raf=requestAnimationFrame(frame);}
   function interrupt(){interrupted=true;hero.dataset.interrupted='true';request();}
   function apply(){
+    cancelGesture(true);
     if(off())globe?.returnReveal(true);
+    if(charge)charge.hidden=off()||!globe;
     scene.tabIndex=off()?-1:0;
     document.body.classList.toggle('motion-paused',off());document.body.classList.toggle('motion-enabled',!off());
     button.hidden=false;button.setAttribute('aria-pressed',String(off()));button.setAttribute('aria-label',off()?'Enable motion':'Disable motion');
@@ -125,42 +141,73 @@ export function startExperience() {
   desktop.addEventListener('change',configureStory);
   hero.addEventListener('pointermove',e=>{if(off()||e.pointerType==='touch')return;targetX=e.clientX/bounds.width-.5;targetY=(e.clientY-(bounds.top-scrollY))/bounds.height-.5;request();},{passive:true});
   hero.addEventListener('pointerleave',()=>{targetX=targetY=0;request();});
-  // Resolve artwork input from the hero so the decorative canvas never covers
-  // links. Taps are passive and a scroll gesture never becomes an art interaction.
+  // Resolve input from the hero so the decorative canvas never covers links.
+  // CSS allows native vertical panning and pinch zoom; horizontal touch pulls
+  // capture the pointer only after the visitor deliberately starts dragging.
+  const scenePoint=e=>{
+    const rect=scene.getBoundingClientRect();
+    return {x:(e.clientX-rect.left)/rect.width*2-1,y:1-(e.clientY-rect.top)/rect.height*2};
+  };
   const artPoint=e=>{
     if(e.target.closest('a,button,input,select,textarea')||off()||revealActive)return null;
-    const rect=scene.getBoundingClientRect();
-    const u=(e.clientX-rect.left)/rect.width,v=(e.clientY-rect.top)/rect.height;
-    return u>=0&&u<=1&&v>=0&&v<=1?{x:u*2-1,y:1-v*2}:null;
+    const point=scenePoint(e);
+    return Math.abs(point.x)<=1&&Math.abs(point.y)<=1?point:null;
   };
+  let gesture=null;
+  function cancelGesture(immediate=false){
+    const previous=gesture;gesture=null;
+    if(previous||immediate)globe?.cancelPull(immediate);
+    hero.classList.remove('is-pulling');
+    if(previous&&hero.hasPointerCapture(previous.id))hero.releasePointerCapture(previous.id);
+    request();
+  }
   hero.addEventListener('pointermove',e=>{
+    if(gesture?.id===e.pointerId){
+      const dx=e.clientX-gesture.x,dy=e.clientY-gesture.y,distance=Math.hypot(dx,dy);
+      gesture.distance=Math.max(gesture.distance,distance);
+      if(off()||revealActive||Math.abs(scrollY-gesture.scroll)>3){cancelGesture();return;}
+      if(!gesture.dragging&&distance>10){
+        if(!gesture.prepared||e.pointerType==='touch'&&Math.abs(dy)>Math.abs(dx)*.85){cancelGesture();return;}
+        gesture.dragging=true;hero.setPointerCapture(e.pointerId);hero.classList.add('is-pulling');
+      }
+      if(gesture.dragging){globe?.movePull(scenePoint(e));request();return;}
+    }
     if(e.pointerType==='touch'||off())return;
     globe?.setPointer(artPoint(e));request();
   },{passive:true});
   hero.addEventListener('pointerleave',()=>globe?.setPointer(null));
-  let touchStart;
   hero.addEventListener('pointerdown',e=>{
-    if(e.button!==0||off()||!artPoint(e))return;
-    touchStart={id:e.pointerId,x:e.clientX,y:e.clientY,scroll:scrollY,at:performance.now()};
+    if(!e.isPrimary){cancelGesture();return;}
+    const point=artPoint(e);
+    if(e.button!==0||!point)return;
+    if(gesture)cancelGesture();
+    gesture={id:e.pointerId,x:e.clientX,y:e.clientY,scroll:scrollY,at:performance.now(),distance:0,dragging:false,prepared:!!globe?.beginPull(point)};
   },{passive:true});
-  hero.addEventListener('pointerup',e=>{
-    if(!touchStart||touchStart.id!==e.pointerId)return;
-    const gesture=touchStart;touchStart=null;
-    if(Math.hypot(e.clientX-gesture.x,e.clientY-gesture.y)>10||Math.abs(scrollY-gesture.scroll)>3||performance.now()-gesture.at>600)return;
+  window.addEventListener('pointerup',e=>{
+    if(!gesture||gesture.id!==e.pointerId)return;
+    const finished=gesture;gesture=null;hero.classList.remove('is-pulling');
+    if(hero.hasPointerCapture(e.pointerId))hero.releasePointerCapture(e.pointerId);
+    const distance=Math.hypot(e.clientX-finished.x,e.clientY-finished.y),scrolled=Math.abs(scrollY-finished.scroll)>3;
+    if(finished.dragging){globe?.endPull(!scrolled&&!off()&&finished.distance>=24);request();return;}
+    globe?.endPull(false);
+    if(distance>10||scrolled||performance.now()-finished.at>600)return;
     const point=artPoint(e);if(point){globe?.tap(point);request();}
   },{passive:true});
-  hero.addEventListener('pointercancel',()=>{touchStart=null;},{passive:true});
+  window.addEventListener('pointercancel',e=>{if(gesture?.id===e.pointerId)cancelGesture();},{passive:true});
+  hero.addEventListener('lostpointercapture',e=>{if(gesture?.id===e.pointerId)cancelGesture();},{passive:true});
+  hero.addEventListener('dragstart',e=>{if(gesture)e.preventDefault();});
   scene.addEventListener('keydown',e=>{
     if(off()||!['Enter',' '].includes(e.key)||e.repeat)return;
     e.preventDefault();globe?.press();request();
   });
-  window.addEventListener('scroll',()=>{if(scrollY>12)interrupt();if(revealActive)globe?.returnReveal();request();},{passive:true});
+  window.addEventListener('scroll',()=>{if(gesture)cancelGesture();if(scrollY>12)interrupt();if(revealActive)globe?.returnReveal();request();},{passive:true});
   document.addEventListener('pointerdown',interrupt,{passive:true});
   document.addEventListener('keydown',interrupt);
-  window.addEventListener('resize',()=>{dirty=true;request();},{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0;}else{last=0;request();}});
+  window.addEventListener('resize',()=>{cancelGesture();dirty=true;request();},{passive:true});
+  window.addEventListener('blur',()=>cancelGesture());
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelGesture();cancelAnimationFrame(raf);raf=0;}else{last=0;request();}});
   new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible||revealActive)request();else{cancelAnimationFrame(raf);raf=0;}},{rootMargin:'100px'}).observe(hero);
-  function fail(reason){if(revealActive)globe?.returnReveal(true);hero.dataset.renderer=reason;scene.classList.remove('globe-ready');scene.tabIndex=-1;scene.setAttribute('aria-hidden','true');globe?.dispose();globe=null;canvas.remove();cancelAnimationFrame(raf);raf=0;}
+  function fail(reason){cancelGesture(true);if(revealActive)globe?.returnReveal(true);if(charge)charge.hidden=true;hero.dataset.renderer=reason;scene.classList.remove('globe-ready');scene.tabIndex=-1;scene.setAttribute('aria-hidden','true');globe?.dispose();globe=null;canvas.remove();cancelAnimationFrame(raf);raf=0;}
   // Essentials are painted first. A static sculpture serves data-saving connections.
   hero.dataset.renderer='poster';
   document.body.classList.toggle('motion-paused',off());document.body.classList.toggle('motion-enabled',!off());button.hidden=false;
@@ -179,17 +226,18 @@ export function startExperience() {
     hero.dataset.renderer='loading';
     let abandoned=false;
     const timeout=setTimeout(()=>{abandoned=true;fail('timeout');},12000);
-    import('/assets/market-block.js?v=reading-time-20261002').then(m=>m.createMarketBlock(canvas,fail,reveal)).then(instance=>{
+    import('/assets/market-block.js?v=elastic-pull-20261006').then(m=>m.createMarketBlock(canvas,fail,reveal,updateCharge)).then(instance=>{
       clearTimeout(timeout);if(dead||abandoned){instance.dispose();return;}globe=instance;measure();
       if(performance.now()-started>1800)interrupted=true;
       start=performance.now();hero.dataset.intro=seen?'return':interrupted?'skipped':'fresh';
       try{sessionStorage.setItem('marketdeck:intro-seen','true');}catch{}
       globe.render({entrance:seen||interrupted||off()?1:0,moving:!off()});
       hero.dataset.renderer='webgl';scene.classList.add('globe-ready');request();
-      scene.removeAttribute('aria-hidden');scene.setAttribute('role','button');scene.tabIndex=off()?-1:0;scene.setAttribute('aria-label','Interactive market sculpture. Press five times to reveal an investor quote.');
+      if(charge)charge.hidden=off();
+      scene.removeAttribute('aria-hidden');scene.setAttribute('role','button');scene.tabIndex=off()?-1:0;scene.setAttribute('aria-label','Interactive market sculpture. Press five times to reveal an investor quote. You can also pull individual blocks.');
     }).catch(()=>{clearTimeout(timeout);fail('failed');});
   }));
-  window.addEventListener('pagehide',e=>{cancelAnimationFrame(raf);raf=0;if(!e.persisted){dead=true;globe?.dispose();}});
+  window.addEventListener('pagehide',e=>{cancelGesture();cancelAnimationFrame(raf);raf=0;if(!e.persisted){dead=true;globe?.dispose();}});
   window.addEventListener('pageshow',()=>{dirty=true;request();});
   return {setProgress(p){progress=p;request();},request,off,desktop};
 }

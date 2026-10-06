@@ -4,7 +4,7 @@ import { nextMarketQuote } from './market-quotes.js';
 
 // Decorative sculpture, never a representation of live prices. The existing
 // experience controller owns the clock, visibility and visitor motion preference.
-export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
+export async function createMarketBlock(canvas, onFailure, onReveal=()=>null, onCharge=()=>{}) {
   const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true, powerPreference:'low-power'});
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -67,7 +67,7 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
     const height=[.28,.52,.35,.72,.44,.82][ix];
     const color=new THREE.Color().setScalar(.88+((ix*7+iy*3+iz)%9)*.017);
     const tint=new THREE.Color(ix%2===0?0x77edcc:0xd6e8ff).multiplyScalar(1.25);
-    voxels.push({ix,iy,iz,index,candle,height,color,tint,x:(ix-2.5)*pitch,y:(iy-2.5)*pitch,z:(iz-2.5)*pitch,offset:0,velocity:0,normal:new THREE.Vector3(0,0,1),angle:index/216*Math.PI*2+iz*.11,band:.95+(iy%3)*.09+(iz<3?.38:0)});
+    voxels.push({ix,iy,iz,index,candle,height,color,tint,x:(ix-2.5)*pitch,y:(iy-2.5)*pitch,z:(iz-2.5)*pitch,offset:0,velocity:0,pull:new THREE.Vector3(),pullVelocity:new THREE.Vector3(),normal:new THREE.Vector3(0,0,1),angle:index/216*Math.PI*2+iz*.11,band:.95+(iy%3)*.09+(iz<3?.38:0)});
     blocks.setColorAt(index,color);
   }
   const candleColor=new THREE.Color();
@@ -123,11 +123,50 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
   const revealPace=1;
   let presses=0,lastPress=-100000,cooldown=0,reveal=null;
   const stagePoint=new THREE.Vector3(),stageRotation=new THREE.Quaternion();
+  const pullPlane=new THREE.Plane(),pullPoint=new THREE.Vector3(),pullTarget=new THREE.Vector3();
+  let pull=null,pendingPull=null,interactive=false,chargeState='';
   function setPointer(point){
-    pointerActive=!!point;if(point)pointer.set(point.x,point.y);
+    pointerActive=!!point&&!pull?.active;if(point)pointer.set(point.x,point.y);
   }
   function tap(point){if(reveal)return;setPointer(point);pendingTap=true;}
   function press(){if(!reveal)pendingKey=true;}
+  function beginPull(point){
+    if(disposed||!interactive||reveal||!point)return false;
+    sculpture.updateMatrixWorld(true);camera.updateMatrixWorld(true);
+    raycaster.setFromCamera(new THREE.Vector2(point.x,point.y),camera);
+    const hit=raycaster.intersectObject(blocks,false)[0];
+    if(!hit)return false;
+    pull={v:voxels[hit.instanceId],normal:hit.face.normal.clone().normalize(),origin:hit.point.clone(),rotation:sculpture.quaternion.clone().invert(),scale:sculpture.scale.x,target:new THREE.Vector3(),active:false,peak:0};
+    // A camera-facing plane makes the picked tile follow the hand. Only its
+    // translation changes; the existing geometry, material and renderer stay shared.
+    pullPlane.setFromNormalAndCoplanarPoint(camera.getWorldDirection(pullPoint),hit.point);
+    return true;
+  }
+  function movePull(point){
+    if(!pull||!point||!interactive||reveal)return;
+    pointer.set(point.x,point.y);raycaster.setFromCamera(pointer,camera);
+    if(!raycaster.ray.intersectPlane(pullPlane,pullPoint))return;
+    pullPoint.sub(pull.origin).applyQuaternion(pull.rotation).divideScalar(pull.scale);
+    const distance=pullPoint.length();
+    // Progressive resistance caps the translation below one block width, even
+    // when a captured pointer is dragged far beyond the sculpture.
+    const amount=.30*(1-Math.exp(-distance/.30));
+    pull.target.copy(pullPoint).multiplyScalar(distance?amount/distance:0);
+    pull.peak=Math.max(pull.peak,amount);pull.active=true;pointerActive=false;
+  }
+  function endPull(completed=false){
+    const valid=!!(pull?.active&&pull.peak>=.09&&completed&&interactive&&!reveal);
+    if(valid)pendingPull={v:pull.v,normal:pull.normal.clone()};
+    pull=null;hover=null;pointerActive=false;return valid;
+  }
+  function cancelPull(immediate=false){
+    endPull(false);pendingPull=null;
+    if(immediate)voxels.forEach(v=>{v.pull.set(0,0,0);v.pullVelocity.set(0,0,0);});
+  }
+  function notifyCharge(){
+    const state=`${presses}:${!!reveal}`;
+    if(state!==chargeState){chargeState=state;onCharge({count:presses,total:5,revealing:!!reveal});}
+  }
   function returnReveal(immediate=false){
     if(!reveal)return;
     if(immediate){finishReveal();return;}
@@ -136,7 +175,7 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
   function finishReveal(){
     const pose=reveal.pose;reveal=null;elapsed=pose;presses=0;cooldown=elapsed+1800;
     pointerActive=false;hover=null;pendingTap=pendingKey=false;ripples.length=0;
-    voxels.forEach(v=>{v.offset=v.velocity=0;});
+    cancelPull(true);voxels.forEach(v=>{v.offset=v.velocity=0;});
     onReveal('end');
   }
   function registerPress(){
@@ -145,7 +184,7 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
     lastPress=elapsed;presses++;
     if(presses===5){
       const origin=onReveal('start',nextMarketQuote());
-      if(origin){reveal={at:elapsed,pose:elapsed,origin,amount:0};hover=null;pointerActive=false;}
+      if(origin){reveal={at:elapsed,pose:elapsed,origin,amount:0};hover=null;pointerActive=false;cancelPull(true);}
       else presses=0;
     }
   }
@@ -171,6 +210,7 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
   }
   function render({progress=0,entrance=1,time=0,x=0,y=0,moving=true}={}){
     if(disposed||renderer.getContext().isContextLost())return;
+    interactive=moving;
     const start=performance.now();
     const dt=previous&&moving?Math.min(100,Math.max(0,time-previous))/1000:0;
     if(!painted&&!moving)elapsed=2200; // Accessible static pose also exports the poster.
@@ -216,18 +256,23 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
     sculpture.scale.setScalar((1+Math.min(progress,.5)*.06)*(1-pressure*.035-anticipation*.075));
     rim.intensity=1.6+burst*1.1;fill.intensity=3+burst*2.8;
     stageRotation.copy(sculpture.quaternion).invert();
+    let completedPull=false;
     if(moving&&!reveal){
       sculpture.updateMatrixWorld(true);camera.updateMatrixWorld(true);
+      if(pendingPull){
+        const released=pendingPull;pendingPull=null;
+        emit(released.v,released.normal);registerPress();completedPull=true;
+      }
       // Touch releases also fire pointerleave. Keep the queued tap independent
       // of hover so it survives until the next shared animation frame.
       if((pointerActive||pendingTap)&&(pendingTap||elapsed-lastPick>=33)){
         raycaster.setFromCamera(pointer,camera);pickedHit=raycaster.intersectObject(blocks,false)[0];lastPick=elapsed;
       }
       const hit=pointerActive||pendingTap?pickedHit:null;
-      const next=hit?voxels[hit.instanceId]:null;
+      const next=pull?.active?pull.v:hit?voxels[hit.instanceId]:null;
       if(next||pendingKey){
         const selected=pendingKey?voxels[122]:next;
-        const normal=pendingKey?new THREE.Vector3(0,0,1):hit.face.normal.clone().normalize();
+        const normal=pendingKey?new THREE.Vector3(0,0,1):pull?.active?pull.normal:hit.face.normal.clone().normalize();
         if(pendingTap||pendingKey||next!==hover&&elapsed-lastRipple>100)emit(selected,normal,pendingTap||pendingKey);
         selected.normal.copy(normal);
         if(hit)hitLight.copy(hit.point).addScaledVector(normal.clone().transformDirection(sculpture.matrixWorld),.9);
@@ -235,11 +280,11 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
       }else hitLight.set(2,-.6,3);
       hover=pendingTap?null:next;
       if(pendingTap||pendingKey){pendingTap=pendingKey=false;pointerActive=false;canvas.dataset.interaction='tap';}
-      else canvas.dataset.interaction=hover?'hover':'idle';
+      else canvas.dataset.interaction=pull?.active?'pulling':completedPull?'pull':hover?'hover':'idle';
       fill.position.lerp(hitLight,1-Math.exp(-dt*12));
       for(let i=ripples.length-1;i>=0;i--)if(elapsed-ripples[i].at>1400*ripplePace)ripples.splice(i,1);
     }
-    let maxOffset=0;
+    let maxOffset=0,maxPull=0;
     for(const v of voxels){
       const rowOpen=opening(v.ix*.045+v.iy*.025);
       const front=v.iz>=3;
@@ -283,9 +328,20 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
         const springDt=dt/ripplePace;
         const steps=Math.max(1,Math.ceil(springDt/.016)),step=springDt/steps;
         for(let n=0;n<steps;n++){v.velocity+=(target-v.offset)*240*step;v.velocity*=Math.exp(-24*step);v.offset+=v.velocity*step;}
+        pullTarget.set(0,0,0);
+        if(pull?.active){
+          const distance=(v.ix-pull.v.ix)**2+(v.iy-pull.v.iy)**2+(v.iz-pull.v.iz)**2;
+          const influence=v===pull.v?1:.22*Math.exp(-distance*.85);
+          pullTarget.copy(pull.target).multiplyScalar(influence);
+          glint+=influence*.30;
+        }
+        for(let n=0;n<steps;n++){
+          v.pullVelocity.addScaledVector(pullTarget,280*step).addScaledVector(v.pull,-280*step).multiplyScalar(Math.exp(-26*step));
+          v.pull.addScaledVector(v.pullVelocity,step);
+        }
         touchLight.setX(v.index,Math.min(.9,glint));
       }
-      transform.position.addScaledVector(v.normal,v.offset);
+      transform.position.addScaledVector(v.normal,v.offset).add(v.pull);
       if(reveal){
         const halfHeight=Math.max(6.25/2,6.25/(2*width/height));
         const angle=v.angle+scatter*.22+Math.sin((elapsed-reveal.at)*.00045+v.iy)*.012*scatter;
@@ -302,6 +358,7 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
         touchLight.setX(v.index,Math.min(.85,pressure*.28+scatter*.14+burst*.5+anticipation*.34));
       }
       maxOffset=Math.max(maxOffset,Math.abs(v.offset));
+      maxPull=Math.max(maxPull,v.pull.length());
       transform.updateMatrix();blocks.setMatrixAt(v.index,transform.matrix);
       if(v.candle){
         const upperWick=(.19+v.ix%3*.04)*rowOpen,lowerWick=(.20+(v.ix+1)%3*.04)*rowOpen;
@@ -333,6 +390,9 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
     canvas.dataset.cycle=String(cycleMs);
     canvas.dataset.presses=String(presses);
     canvas.dataset.reveal=reveal?'active':'idle';
+    canvas.dataset.pull=pull?.active?String(pull.v.index):'';
+    canvas.dataset.pullDisplacement=maxPull.toFixed(4);
+    notifyCharge();
   }
   const lost=event=>{event.preventDefault();onFailure('context-lost');};
   canvas.addEventListener('webglcontextlost',lost);
@@ -344,5 +404,5 @@ export async function createMarketBlock(canvas, onFailure, onReveal=()=>null) {
     blocks.dispose();wicks.dispose();resources.forEach(resource=>resource.dispose());
     environment.dispose();renderer.dispose();
   }
-  return {resize,render,setPointer,tap,press,returnReveal,dispose};
+  return {resize,render,setPointer,tap,press,beginPull,movePull,endPull,cancelPull,returnReveal,dispose};
 }
