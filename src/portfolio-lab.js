@@ -1,13 +1,15 @@
 import {adjustWeight,setShocks,remix} from './portfolio-lab-allocation.js';
 import {createPortfolioGuide} from './portfolio-lab-guide.js';
+import {ideaNames,createComparisonState,copyComparisonIdea,undoComparisonAction,comparisonSamples,renderComparisonCards,comparisonChart} from './portfolio-lab-comparison.js';
 
 export function createPortfolioLab(api,root) {
  const {esc,request,csrf}=api;
  const base=new URL('../portfolio-lab/',new URL(api.labURL,location.origin)).pathname;
  let snapshot=null,token=null,spec=null,result=null,experiment=null,versions=[],selected=null,dirty=false,
      view='mix',sequence=0,draftRevision=0,sourceSequence=0,loadPromise=null,loaded=false,timer=null,pending=false,saving=false,
-     basketItems=[],catalogItems=[],catalogSequence=0,catalogTimer=null,undo=null,year=5;
+     basketItems=[],catalogItems=[],catalogSequence=0,catalogTimer=null,undo=null,year=5,comparison=null,comparisonMeasure='value';
  const basketsEnabled=!!root.closest('[data-portfolio-baskets-enabled]');
+ const comparisonEnabled=basketsEnabled&&!!root.closest('[data-portfolio-comparison-enabled]');
  const q=s=>root.querySelector(s),qa=s=>[...root.querySelectorAll(s)];
  const pct=bps=>(bps/100).toLocaleString('en-IN',{maximumFractionDigits:2})+'%';
  const money=value=>{const match=String(value).match(/^(-?)(\d+)(?:\.(\d+))?$/);if(!match)return 'Unavailable';return match[1]+'₹'+BigInt(match[2]).toLocaleString('en-IN')+(match[3]?'.'+match[3].slice(0,2).padEnd(2,'0'):'');};
@@ -28,11 +30,36 @@ export function createPortfolioLab(api,root) {
  <section class="pl-card pl-compare" data-pl-compare hidden><div class="pl-card-head"><h3>Keep your research trail.</h3><span>Each version keeps its own baseline and assumptions</span></div><div data-pl-versions></div></section>
  <details class="pl-basis"><summary>Sources, dates &amp; what these results mean</summary><p data-pl-basis></p><div data-pl-sources></div><p>These are allocation and arithmetic shock experiments. Historical volatility, drawdowns and strategy returns need separately supported data and are not calculated in this release.</p></details></section>`;
  const guide=basketsEnabled?createPortfolioGuide(root):null;
+ q('.pl-layout').insertAdjacentHTML('beforebegin',`<section class="pl-live-compare" data-pl-live-compare hidden aria-label="Live idea comparison"><div class="pl-card-head"><div><span class="pl-eyebrow">ONE STARTING IDEA · TWO EXPERIMENTS</span><h3>What would you change?</h3><p class="pl-help">Choose an experiment, then use the editor below. Save each idea as a private version; the three-card workspace stays in this tab.</p></div></div><div class="pl-idea-cards" data-pl-idea-cards></div><div class="pl-comparison-actions"><button type="button" data-pl-comparison-action="duplicate">Duplicate to Experiment 2</button><button type="button" data-pl-comparison-action="reset">Reset selected idea</button><button type="button" data-pl-comparison-action="undo" disabled>Undo comparison action</button><button type="button" data-pl-comparison-action="clear">Discard experiments</button><label>Chart shows<select data-pl-comparison-measure aria-label="Comparison chart measure"><option value="value">Assumed value</option><option value="today_value">Today’s rupees</option></select></label></div><p class="pl-help" data-pl-comparison-help role="status"></p></section>`);
  q('.pl-editor').insertAdjacentHTML('afterbegin',`<div class="pl-remix" ${basketsEnabled?'':'hidden'}><button type="button" data-pl-action="equal">Equal weights</button><button type="button" data-pl-action="shuffle">Shuffle weights</button><button type="button" data-pl-action="undo" disabled>Undo mix</button></div><p class="pl-help" ${basketsEnabled?'':'hidden'}>Remix unlocked assets; cash stays fixed. Random weights are experiments, not recommendations.</p>`);
  q('[data-pl-sectors]').insertAdjacentHTML('beforebegin',`<div class="pl-growth-controls" data-pl-growth-controls hidden><div class="pl-growth-inputs"><label>Monthly contribution · ₹<input type="number" data-pl-monthly min="0" max="1000000" step="100" value="0"></label><label>Assumed inflation · %<input type="number" data-pl-inflation min="0" max="20" step="0.1" value="0"></label></div><label>Time horizon <output data-pl-horizon-output>5 years</output><input type="range" data-pl-horizon min="1" max="30" step="1" value="5" aria-label="Time horizon in years"></label><div class="pl-growth-inputs"><label>Assumed net annual return · %<input type="number" data-pl-all-rate min="-100" max="100" step="0.5" value="0"></label><button type="button" data-pl-action="all-rate">Apply to all assets</button></div><p class="pl-help">Set a different return beside each asset if you wish. Returns are your assumptions, after fund expenses and including distributions. Monthly additions occur at month end; cash earns 0%. No rebalancing or purchases are simulated.</p><label>Inspect year <output data-pl-year-output>5</output><input type="range" data-pl-year min="0" max="5" step="1" value="5" aria-label="Inspect projected year"></label><div data-pl-growth-readout aria-live="polite"></div></div>`);
- function setPending(value){pending=value;q('[data-pl-update]').textContent=value?'Updating…':'Ready';root.dataset.pending=String(value);q('[data-pl-readings]').hidden=value||view==='growth';q('[data-pl-growth-readout]').hidden=value;qa('[data-pl-action="save"]').forEach(b=>b.disabled=value||saving||!snapshot||snapshot.practice||!api.authenticated());}
+ const comparing=()=>view==='compare'&&comparisonEnabled;
+ function setPending(value){pending=value;q('[data-pl-update]').textContent=value?'Updating…':'Ready';root.dataset.pending=String(value);q('[data-pl-readings]').hidden=value||view==='growth'||comparing();q('[data-pl-growth-readout]').hidden=value||comparing();qa('[data-pl-action="save"]').forEach(b=>b.disabled=value||saving||!snapshot||snapshot.practice||!api.authenticated());}
  async function post(operation,body){return request(base+operation+'/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':csrf},body:JSON.stringify(body)});}
- const privateDirty=()=>dirty&&!snapshot?.practice&&api.authenticated();
+ const privateDirty=()=>api.authenticated()&&((dirty&&!snapshot?.practice)||comparison?.slots.slice(1).some(s=>s.dirty&&!s.snapshot.practice));
+ const captureIdea=()=>structuredClone({snapshot,token,specification:spec,preview:result,dirty,undo,name:q('[data-pl-name]').value,note:q('[data-pl-note]').value,ack:q('[data-pl-ack]').checked});
+ function syncIdea(){if(comparison)comparison.slots[comparison.active]=captureIdea();}
+ function renderComparison(){
+  q('[data-pl-growth-readout]').hidden=pending||comparing();
+  q('[data-pl-live-compare]').hidden=!comparing()||!comparison;if(!comparing()||!comparison)return;
+  syncIdea();q('[data-pl-idea-cards]').innerHTML=renderComparisonCards(comparison,{esc,money,pct,year,pending});
+  const target=comparison.active===1?2:1;
+  q('[data-pl-comparison-action="duplicate"]').textContent='Duplicate to '+ideaNames[target];
+  for(const button of qa('[data-pl-comparison-action]'))button.disabled=saving||(pending&&!(['retry','clear'].includes(button.dataset.plComparisonAction)&&comparison.error))||(button.dataset.plComparisonAction==='undo'&&!comparison.undo);
+  q('[data-pl-comparison-help]').textContent='Editing '+ideaNames[comparison.active]+'. The starting idea stays fixed. Returns are your assumptions, not a forecast.';
+  q('.pl-editor .pl-card-head h3').textContent=ideaNames[comparison.active]+' · your mix';
+  q('[data-pl-save-help]').textContent=snapshot.practice?'Fictional practice ideas cannot be saved.':!api.authenticated()?'Sign in to save this idea privately.':'Save '+ideaNames[comparison.active]+' as a private version. Other ideas stay in this tab.';
+ }
+ function chooseIdea(index){
+  if(![1,2].includes(index))return;
+  if(pending||saving){say('Wait for the latest calculation or save before switching ideas.');return;}
+  syncIdea();comparison.active=index;restoreIdea();q('[data-pl-idea="'+index+'"]').focus({preventScroll:true});q('[data-pl-idea="'+index+'"]').closest('article').scrollIntoView({block:'nearest',inline:'nearest'});
+ }
+ function restoreIdea(){
+  const slot=structuredClone(comparison.slots[comparison.active]);
+  selectSource({snapshot:slot.snapshot,token:slot.token,preview:slot.preview},true,true);
+  dirty=slot.dirty;undo=slot.undo;draftRevision++;q('[data-pl-name]').value=slot.name;q('[data-pl-note]').value=slot.note;q('[data-pl-ack]').checked=slot.ack;q('[data-pl-action="undo"]').disabled=!undo;render();
+ }
  function remember(){undo=structuredClone(spec);q('[data-pl-action="undo"]').disabled=false;}
  function picked(){q('[data-pl-picked]').innerHTML=basketItems.map(a=>`<div><span><strong>${esc(a.ticker)}</strong><small>${esc(a.name)}</small></span><button type="button" data-pl-remove="${a.id}" aria-label="Remove ${esc(a.ticker)} from basket" ${spec?.locked.includes(a.id)?'disabled':''}>×</button></div>`).join('');q('[data-pl-action="apply-basket"]').disabled=!basketItems.length;q('[data-pl-action="apply-basket"]').textContent=snapshot?.source_kind==='basket'?'Update basket':'Create basket';}
  function catalogRender(){q('[data-pl-search-results]').innerHTML=catalogItems.map(a=>`<button type="button" data-pl-add="${a.id}" ${!a.eligible||basketItems.some(b=>b.id===a.id)?'disabled':''}><span class="pl-asset-kind">${esc(a.kind==='fund'?'Mutual fund':a.kind.toUpperCase())}</span><strong>${esc(a.ticker)}</strong><span>${esc(a.name)}</span><small>${esc(a.reason||a.category||a.sector)}</small><i aria-hidden="true">${basketItems.some(b=>b.id===a.id)?'✓':'＋'}</i></button>`).join('');}
@@ -63,12 +90,14 @@ export function createPortfolioLab(api,root) {
     if(previous.projection)previous.projection.rates=Object.fromEntries(ids.map(key=>[key,previous.projection.rates[key]??'0']));
     r.preview=(await post('preview',{token:r.token,specification:previous})).preview;if(id!==sourceSequence)return;
    }
-   selectSource(r,keep);dirty=true;draftRevision++;q('[data-pl-builder]').hidden=true;setView('mix');
+   const retainComparison=!!comparison&&keep;
+   selectSource(r,keep,retainComparison);dirty=true;draftRevision++;if(retainComparison)comparison.response=null;q('[data-pl-builder]').hidden=true;setView(retainComparison?'compare':'mix');
    say('Custom basket ready. Reference prices are dated information; your budget, weights and returns are hypothetical. New assets in an edited basket start at 0%; use Equal weights or fund them from cash.');
   }catch(error){if(id===sourceSequence)say(error.message);}finally{if(id===sourceSequence)root.removeAttribute('aria-busy');}
  }
  function ensureProjection(){spec.projection??={years:5,monthly:'0',inflation_pct:'0',rates:Object.fromEntries(snapshot.assets.map(a=>[a.id,'0']))};}
  function growthReadout(){
+  if(comparing()){renderComparison();q('[data-pl-year-output]').textContent=String(year);canvas();return;}
   const p=result?.projection;if(!p||pending){q('[data-pl-growth-readout]').innerHTML='';return;}
   const point=p.points[Math.min(year,p.points.length-1)];
   q('[data-pl-growth-readout]').innerHTML=`<div class="pl-growth-summary"><span>YEAR ${point.month/12} · UNDER YOUR ASSUMPTIONS</span><strong>${money(point.value)}</strong><div><span>Money added <b>${money(point.contributed)}</b></span><span>Assumed growth <b>${money(point.growth)}</b></span><span>In today’s rupees <b>${money(point.today_value)}</b></span></div></div>`;
@@ -94,7 +123,8 @@ export function createPortfolioLab(api,root) {
   q('[data-pl-reopen]').hidden=!experiments.experiments.length;
   if(!portfolios.portfolios.length)say('No saved portfolio yet. Try the practice basket or add holdings in Portfolio.');
  }
- function selectSource(r,keep=false){
+ function selectSource(r,keep=false,preserveComparison=false){
+  if(!preserveComparison){comparison=null;comparisonMeasure='value';q('[data-pl-comparison-measure]').value='value';}
   sequence++;clearTimeout(timer);snapshot=r.snapshot;token=r.token;result=r.preview;spec=result?structuredClone(result.specification):null;
   selected=snapshot.assets[0]?.id??null;dirty=false;undo=null;q('[data-pl-action="undo"]').disabled=true;
   if(!keep){experiment=null;versions=[];q('[data-pl-name]').value=snapshot.practice?'Practice experiment':snapshot.source_name+' · what if';q('[data-pl-note]').value='';}
@@ -116,8 +146,8 @@ export function createPortfolioLab(api,root) {
   for(const input of qa('[data-pl-weight]')){input.value=spec.weights[input.dataset.plWeight];input.disabled=spec.locked.includes(input.dataset.plWeight);}
   for(const input of qa('[data-pl-number]')){input.value=spec.weights[input.dataset.plNumber]/100;input.disabled=spec.locked.includes(input.dataset.plNumber);}
   for(const input of qa('[data-pl-lock]'))input.checked=spec.locked.includes(input.dataset.plLock);
-  for(const el of qa('[data-pl-return-row]'))el.hidden=view!=='growth';
-  if(spec.projection){q('[data-pl-monthly]').value=spec.projection.monthly;q('[data-pl-inflation]').value=spec.projection.inflation_pct;q('[data-pl-horizon]').value=spec.projection.years;q('[data-pl-horizon-output]').textContent=spec.projection.years+(spec.projection.years===1?' year':' years');q('[data-pl-year]').max=spec.projection.years;year=Math.min(year,spec.projection.years);q('[data-pl-year]').value=year;for(const el of qa('[data-pl-return]'))el.value=spec.projection.rates[el.dataset.plReturn];}
+  for(const el of qa('[data-pl-return-row]'))el.hidden=view!=='growth'&&!comparing();
+  if(spec.projection){q('[data-pl-monthly]').value=spec.projection.monthly;q('[data-pl-inflation]').value=spec.projection.inflation_pct;q('[data-pl-horizon]').value=spec.projection.years;q('[data-pl-horizon-output]').textContent=spec.projection.years+(spec.projection.years===1?' year':' years');const horizon=comparing()&&comparison?Math.max(...comparison.slots.map(s=>s.specification.projection.years)):spec.projection.years;q('[data-pl-year]').max=horizon;year=Math.min(year,horizon);q('[data-pl-year]').value=year;q('[data-pl-year-output]').textContent=String(year);for(const el of qa('[data-pl-return]'))el.value=spec.projection.rates[el.dataset.plReturn];}
   q('[data-pl-cash]').textContent=pct(spec.cash_bps);q('[data-pl-transfer]').value=spec.transfer_mode;
   q('[data-pl-transfer-help]').textContent=spec.transfer_mode==='cash'?'Other holdings stay fixed. Increases use available hypothetical cash.':'Other allocated, unlocked holdings adjust proportionally. Hypothetical cash stays fixed.';
   for(const el of qa('[data-pl-row]'))el.dataset.selected=String(el.dataset.plRow===selected);
@@ -128,6 +158,11 @@ export function createPortfolioLab(api,root) {
   return snapshot.assets.map((a,i)=>{const fraction=weights[a.id]/10000,segment=`<circle cx="180" cy="180" r="${radius}" fill="none" stroke="${colour(i)}" stroke-width="${width}" stroke-dasharray="${fraction*circumference} ${circumference}" stroke-dashoffset="${-offset*circumference}" transform="rotate(-90 180 180)" class="pl-arc" ${width>7?`data-pl-select="${a.id}"`:""} opacity="${selected===a.id?1:.55}"/>`;offset+=fraction;return segment;}).join('')+(cash?`<circle cx="180" cy="180" r="${radius}" fill="none" stroke="var(--rd-muted)" stroke-width="${width}" stroke-dasharray="${cash/10000*circumference} ${circumference}" stroke-dashoffset="${-offset*circumference}" transform="rotate(-90 180 180)" opacity=".4"/>`:'');
  }
  function canvas(){
+  if(comparing()){
+   q('[data-pl-chart-title]').textContent='Three ideas. One clear view.';q('[data-pl-chart-label]').textContent='YOUR ASSUMPTIONS · NOT A FORECAST';
+   if(comparison?.error){q('[data-pl-chart]').innerHTML='<div class="pl-chart-wait">We couldn’t update the comparison.<br><button type="button" data-pl-comparison-action="retry">Try again</button></div>';return;}
+   q('[data-pl-chart]').innerHTML=pending||!comparison?.response?'<div class="pl-chart-wait">Checking all three ideas…</div>':comparisonChart(comparison.response,{money,year,measure:comparisonMeasure});return;
+  }
   const before=Object.fromEntries(result.holdings.map(h=>[h.id,h.baseline_bps]));
   if(view==='growth'){growthCanvas();return;}
   if(view==='shocks'){
@@ -145,24 +180,38 @@ export function createPortfolioLab(api,root) {
    q('[data-pl-map-name]').textContent=a?.kind==='fund'?a.name.split(' · ')[0].slice(0,24):a?.ticker.replace(/\.NS$/,'')??'Selected holding';q('[data-pl-map-weight]').textContent=pct(spec.weights[selected]??0);
   }
  }
- function render(){if(!spec||!result)return;q('[data-pl-action="reset"]').textContent=experiment?'Discard edits':'Reset mix';syncInputs();canvas();
+ function render(){if(!spec||!result)return;syncIdea();q('.pl-editor .pl-card-head h3').textContent='Your proposed mix';q('[data-pl-action="reset"]').textContent=experiment?'Discard edits':'Reset mix';syncInputs();canvas();
   q('[data-pl-largest]').textContent=pct(result.proposed.largest_holding_bps);q('[data-pl-largest-before]').textContent='Baseline '+pct(result.baseline.largest_holding_bps);
   q('[data-pl-cash-value]').textContent=money(result.scenario.cash_value);
-  q('[data-pl-sectors]').innerHTML=pending||view==='growth'?'':`<span class="pl-eyebrow">${snapshot.source_kind==='basket'?'ASSET GROUPS · NO LOOK-THROUGH':'PROPOSED SECTOR MIX'}</span>${result.proposed.sectors.filter(s=>s.weight_bps).map(s=>`<div><span>${esc(s.name)}</span><i><b style="width:${s.weight_bps/100}%"></b></i><strong>${pct(s.weight_bps)}</strong></div>`).join('')}`;
+  q('[data-pl-sectors]').innerHTML=pending||view==='growth'||comparing()?'':`<span class="pl-eyebrow">${snapshot.source_kind==='basket'?'ASSET GROUPS · NO LOOK-THROUGH':'PROPOSED SECTOR MIX'}</span>${result.proposed.sectors.filter(s=>s.weight_bps).map(s=>`<div><span>${esc(s.name)}</span><i><b style="width:${s.weight_bps/100}%"></b></i><strong>${pct(s.weight_bps)}</strong></div>`).join('')}`;
   const a=snapshot.assets.find(a=>a.id===selected),h=result.holdings.find(h=>h.id===selected);
   q('[data-pl-inspector-title]').textContent=a?.name??'Select a holding';
   q('[data-pl-inspector]').innerHTML=`<p class="pl-inspector-sector">${esc(a?.sector)}</p><div class="pl-change"><span>${pct(h?.baseline_bps??0)}<small>baseline</small></span><i aria-hidden="true">→</i><span>${pct(spec.weights[selected]??0)}<small>proposed</small></span></div>${pending?'<p>Results are updating for your latest edit.</p>':`<p>${view==='shocks'?`${esc(a.ticker)} has a ${esc(h.shock_pct)}% assumed price move. Its proposed value change is ${money(h.proposed_impact)}.`:`This holding is ${pct(h.proposed_bps)} of your research mix, compared with ${pct(h.baseline_bps)} in the frozen baseline.`}</p><div class="pl-effect"><small>${view==='shocks'?'Portfolio shock impact difference':'Proposed allocation value'}</small><strong>${money(view==='shocks'?result.scenario.impact_difference:h.proposed_value)}</strong><span>${view==='shocks'?'Proposed minus baseline; under your assumptions.':'Hypothetical allocation; no transaction created.'}</span></div>`}`;
   if(snapshot.source_kind==='basket')q('[data-pl-inspector]').insertAdjacentHTML('beforeend',`<div class="pl-reference"><small>${a.kind==='fund'?'Stored NAV':a.kind==='etf'?'Stored exchange close':'Stored reference price'}</small><strong>${a.price===null?'Unavailable':money(a.price)}</strong><span>${esc(a.price_as_of??a.price_reason)}${a.age_days!==undefined?' · '+a.age_days+' '+(a.age_days===1?'day':'days')+' old':''}</span><p>${esc(a.kind==='fund'?[a.plan,a.option].filter(Boolean).join(' · '):a.kind==='etf'?'ETF exchange price; NAV is a different measure.':'Reference information, not a live executable quote.')}</p></div>`);
   if(view==='growth'&&!pending&&result.projection){const asset=result.projection.assets.find(v=>v.id===selected);q('[data-pl-inspector]').insertAdjacentHTML('beforeend',`<div class="pl-reference"><small>At year ${spec.projection.years} · your ${esc(asset.annual_pct)}% assumption</small><strong>${money(asset.value)}</strong><span>Includes this asset’s share of monthly contributions. Not a forecast.</span></div>`);growthReadout();}
-  q('[data-pl-save-help]').textContent=snapshot.practice?'Fictional practice inputs cannot be saved as real portfolio research.':!api.authenticated()?'Sign in to save this custom basket privately.':experiment?`Private experiment · ${dirty?'unsaved edits':'saved v'+experiment.revision}`:'Save a private experiment and keep its frozen baseline.';
+  q('[data-pl-save-help]').textContent=snapshot.practice?'Fictional practice inputs cannot be saved as real portfolio research.':!api.authenticated()?'Sign in to save this custom basket privately.':experiment?`Private experiment · ${dirty?'unsaved edits':'saved v'+experiment.revision}`:'Save a private experiment and keep its frozen baseline.';renderComparison();
  }
- function edited(){dirty=true;draftRevision++;sequence++;setPending(true);render();clearTimeout(timer);const id=sequence;timer=setTimeout(()=>calculate(id),160);}
+ function edited(){dirty=true;draftRevision++;sequence++;if(comparison){comparison.response=null;comparison.error=null;}setPending(true);render();clearTimeout(timer);const id=sequence;timer=setTimeout(()=>calculate(id),160);}
  async function calculate(id){
-  const body=JSON.stringify(spec);
-  try{const r=await post('preview',{token,specification:spec});if(id!==sequence||body!==JSON.stringify(spec))return;result=r.preview;spec=structuredClone(result.specification);setPending(false);render();say('Updated for your assumptions. Recorded holdings are unchanged.');}
-  catch(error){if(id!==sequence)return;setPending(true);q('[data-pl-update]').textContent='Needs attention';say(error.message);}
+  syncIdea();const body=JSON.stringify(spec),live=comparing()&&comparison;
+  try{
+   const r=await post(live?'compare':'preview',live?{ideas:comparisonSamples(comparison)}:{token,specification:spec});
+   if(id!==sequence||body!==JSON.stringify(spec))return;
+   if(live){comparison.response=r.comparison;for(let i=0;i<3;i++){comparison.slots[i].preview=r.comparison.previews[i];comparison.slots[i].specification=structuredClone(r.comparison.previews[i].specification);}result=r.comparison.previews[comparison.active];}
+   else result=r.preview;
+   spec=structuredClone(result.specification);setPending(false);render();say('Updated for your assumptions. Recorded holdings are unchanged.');
+  }
+  catch(error){if(id!==sequence)return;setPending(true);q('[data-pl-update]').textContent='Needs attention';if(comparing()&&comparison){comparison.error=error.message;render();}say(error.message);}
  }
- function setView(next){view=next;qa('[data-pl-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.plView===view)));q('[data-pl-shock-controls]').hidden=view!=='shocks';q('[data-pl-growth-controls]').hidden=view!=='growth';q('[data-pl-mix-legend]').hidden=view==='growth';q('[data-pl-readings]').hidden=pending||view==='growth';q('[data-pl-compare]').hidden=view!=='compare';if(view==='growth'&&spec&&!spec.projection){ensureProjection();edited();}else if(result)render();}
+ function setView(next){
+  view=next;qa('[data-pl-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.plView===view)));
+  q('[data-pl-shock-controls]').hidden=view!=='shocks';q('[data-pl-growth-controls]').hidden=view!=='growth'&&!comparing();q('[data-pl-mix-legend]').hidden=view==='growth'||comparing();q('[data-pl-readings]').hidden=pending||view==='growth'||comparing();q('[data-pl-compare]').hidden=view!=='compare';
+  if(comparing()&&spec){
+   if(!spec.projection){ensureProjection();dirty=true;draftRevision++;}
+   comparison??=createComparisonState(captureIdea());comparison.error=null;syncIdea();
+   sequence++;clearTimeout(timer);setPending(true);render();const id=sequence;timer=setTimeout(()=>calculate(id),160);
+  }else if(view==='growth'&&spec&&!spec.projection){ensureProjection();edited();}else if(result)render();
+ }
  async function load(kind){
   if(saving){say('Wait for the save to finish before loading another source.');return;}
   if(privateDirty()){say('Save or reset the current research copy before loading another source.');return;}
@@ -180,7 +229,7 @@ export function createPortfolioLab(api,root) {
  async function useVersion(number){
   if(saving){say('Wait for the save to finish before switching versions.');return;}
   const generation=++sourceSequence;sequence++;clearTimeout(timer);
-  try{const r=await request(base+'experiment/'+experiment.id+'/?version='+number);if(generation!==sourceSequence)return;const v=r.versions.find(v=>v.number===number);experiment=r.experiment;versions=r.versions;selectSource({snapshot:v.snapshot,token:r.token,preview:v.result},true);q('[data-pl-note]').value=v.note;dirty=true;draftRevision++;renderVersions();render();say('Loaded saved version '+number+' as a new draft, including its original instruments and baseline. Earlier versions remain unchanged.');}
+  try{const r=await request(base+'experiment/'+experiment.id+'/?version='+number);if(generation!==sourceSequence)return;const v=r.versions.find(v=>v.number===number);experiment=r.experiment;versions=r.versions;selectSource({snapshot:v.snapshot,token:r.token,preview:v.result},true);q('[data-pl-note]').value=v.note;dirty=true;draftRevision++;renderVersions();setView(view);say('Loaded saved version '+number+' as a new draft, including its original instruments and baseline. Earlier versions remain unchanged.');}
   catch(error){if(generation===sourceSequence)say(error.message);}
  }
  async function save(){
@@ -189,9 +238,23 @@ export function createPortfolioLab(api,root) {
   saving=true;setPending(pending);say('Saving a private version…');
   try{const r=await post(experiment?'experiment/'+experiment.id:'experiments',body);experiment=r.experiment;versions.unshift(r.version);if(savedDraftRevision===draftRevision)dirty=false;renderVersions();render();await lists();say('Saved private version '+r.version.number+'. Its valuation baseline stays frozen.');return !dirty;}
   catch(error){say(error.message);return false;}
-  finally{saving=false;setPending(pending);}
+  finally{saving=false;setPending(pending);render();}
  }
  root.addEventListener('click',event=>{
+  const idea=event.target.closest('[data-pl-idea]');if(idea&&comparison){chooseIdea(Number(idea.dataset.plIdea));return;}
+  const compareAction=event.target.closest('[data-pl-comparison-action]')?.dataset.plComparisonAction;
+  if(compareAction&&comparison){
+   if(saving||(pending&&!(compareAction==='retry'||compareAction==='clear') )){say('Wait for the latest calculation or save.');return;}
+   if(compareAction==='retry'){comparison.error=null;sequence++;clearTimeout(timer);setPending(true);render();calculate(sequence);return;}
+   syncIdea();
+   if(compareAction==='clear'){
+    const starting=structuredClone(comparison.slots[0]);comparison=null;
+    selectSource({snapshot:starting.snapshot,token:starting.token,preview:starting.preview},true);
+    dirty=starting.dirty;q('[data-pl-name]').value=starting.name;q('[data-pl-note]').value=starting.note;setView('growth');say('Local comparison drafts discarded. Saved versions are unchanged.');return;
+   }
+   comparison=compareAction==='undo'?undoComparisonAction(comparison):copyComparisonIdea(comparison,compareAction==='reset'?0:comparison.active,compareAction==='reset'?comparison.active:comparison.active===1?2:1);
+   restoreIdea();setView('compare');return;
+  }
   const add=event.target.closest('[data-pl-add]');if(add){if(basketItems.length>=25){say('A basket supports at most 25 assets.');return;}const asset=catalogItems.find(a=>a.id===add.dataset.plAdd);if(asset?.eligible&&!basketItems.some(a=>a.id===asset.id)){basketItems.push({...asset});picked();catalogRender();}return;}
   const remove=event.target.closest('[data-pl-remove]');if(remove){if(spec?.locked.includes(remove.dataset.plRemove)){say('Unlock this asset before removing it.');return;}basketItems=basketItems.filter(a=>a.id!==remove.dataset.plRemove);picked();catalogRender();return;}
   const select=event.target.closest('[data-pl-select]');if(select){selected=select.dataset.plSelect;render();return;}
@@ -207,7 +270,7 @@ export function createPortfolioLab(api,root) {
    if(action==='all-rate'){ensureProjection();const value=q('[data-pl-all-rate]').value;if(value===''||!Number.isFinite(Number(value))||Number(value)<-100||Number(value)>100)throw Error('Enter an assumed annual return from −100% to +100%.');remember();spec.projection.rates=Object.fromEntries(snapshot.assets.map(a=>[a.id,value]));edited();return;}
    if(action==='practice'||action==='load')return load(action);
    if(action==='save')return save();
-   if(action==='reset'){if(!snapshot)return;if(saving){say('Wait for the save to finish before discarding edits.');return;}if(experiment&&versions.length){const id=++sourceSequence;sequence++;clearTimeout(timer);const r=await request(base+'experiment/'+experiment.id+'/');if(id!==sourceSequence)return;experiment=r.experiment;versions=r.versions;const latest=versions[0];selectSource({snapshot:latest.snapshot,token:r.token,preview:latest.result},true);q('[data-pl-name]').value=experiment.name;q('[data-pl-note]').value=latest.note;renderVersions();setPending(false);renderHoldings();render();say('Unsaved edits discarded. Restored the latest saved version.');}else{remember();spec={weights:Object.fromEntries(result.holdings.map(h=>[h.id,h.baseline_bps])),cash_bps:0,shocks:{},transfer_mode:'cash',locked:[],...(spec.projection?{projection:structuredClone(spec.projection)}:{})};renderHoldings();edited();dirty=false;}return;}
+   if(action==='reset'){if(!snapshot)return;if(saving){say('Wait for the save to finish before discarding edits.');return;}if(experiment&&versions.length){const id=++sourceSequence;sequence++;clearTimeout(timer);const r=await request(base+'experiment/'+experiment.id+'/');if(id!==sourceSequence)return;experiment=r.experiment;versions=r.versions;const latest=versions[0];selectSource({snapshot:latest.snapshot,token:r.token,preview:latest.result},true);q('[data-pl-name]').value=experiment.name;q('[data-pl-note]').value=latest.note;renderVersions();setPending(false);renderHoldings();setView(view);say('Unsaved edits discarded. Restored the latest saved version.');}else{remember();spec={weights:Object.fromEntries(result.holdings.map(h=>[h.id,h.baseline_bps])),cash_bps:0,shocks:{},transfer_mode:'cash',locked:[],...(spec.projection?{projection:structuredClone(spec.projection)}:{})};renderHoldings();edited();dirty=false;}return;}
    if(action==='apply-shock'){if(q('[data-pl-shock-number]').value==='')throw Error('Enter your assumed price move before applying it.');const target=q('[data-pl-target]').value,ids=snapshot.assets.filter(a=>target==='all'||target==='holding:'+a.id||target==='sector:'+a.sector).map(a=>a.id);spec=setShocks(spec,ids,Number(q('[data-pl-shock-number]').value));edited();}
    if(action==='clear-shocks'){spec=setShocks(spec,snapshot.assets.map(a=>a.id),0);edited();}
   }).catch(error=>say(error.message));
@@ -220,7 +283,7 @@ export function createPortfolioLab(api,root) {
   if(el.matches('[data-pl-shock],[data-pl-shock-number]')){const value=el.value;q('[data-pl-shock]').value=value;q('[data-pl-shock-number]').value=value;q('[data-pl-shock-output]').textContent=value+'%';return;}
   if(el.matches('[data-pl-name],[data-pl-note]')&&snapshot&&!snapshot.practice){dirty=true;draftRevision++;render();}
  });
- root.addEventListener('change',event=>{const el=event.target;if(el.matches('[data-pl-kind]')){catalogItems=[];catalogRender();catalogSequence++;clearTimeout(catalogTimer);searchCatalog();}if(el.matches('[data-pl-transfer]')){remember();spec.transfer_mode=el.value;edited();}if(el.matches('[data-pl-lock]')){remember();const id=el.dataset.plLock;spec.locked=el.checked?[...new Set([...spec.locked,id])]:spec.locked.filter(k=>k!==id);edited();}if(el.matches('[data-pl-experiment]'))open(el.value);});
+ root.addEventListener('change',event=>{const el=event.target;if(el.matches('[data-pl-kind]')){catalogItems=[];catalogRender();catalogSequence++;clearTimeout(catalogTimer);searchCatalog();}if(el.matches('[data-pl-comparison-measure]')){comparisonMeasure=el.value;canvas();}if(el.matches('[data-pl-transfer]')){remember();spec.transfer_mode=el.value;edited();}if(el.matches('[data-pl-lock]')){remember();const id=el.dataset.plLock;spec.locked=el.checked?[...new Set([...spec.locked,id])]:spec.locked.filter(k=>k!==id);edited();}if(el.matches('[data-pl-experiment]'))open(el.value);});
  root.addEventListener('pointerover',event=>{const dot=event.target.closest('[data-pl-year-dot]');if(dot&&!pending){year=Number(dot.dataset.plYearDot);q('[data-pl-year]').value=year;growthReadout();}});
  window.addEventListener('beforeunload',event=>{if(privateDirty()){event.preventDefault();event.returnValue='';}});
  return {pause:()=>guide?.close(),activate(){if(loaded)return;loadPromise??=lists().then(()=>loaded=true).catch(error=>{loadPromise=null;say(error.message);});return loadPromise;},isDirty:privateDirty,save,render,isActive:()=>!root.hidden};
