@@ -1,3 +1,4 @@
+import {createPortfolioLab} from './portfolio-lab.js';
 import {parseCSV,csvBars,csvEnvelope,columns} from './strategy-lab-import.js';
 const operand = (kind, period, field='close', value) => kind==='constant'?{kind,value}:{kind,field,...(period?{period}: {})};
 const row = (left,op,right) => ({left,op,right});
@@ -323,5 +324,18 @@ export function createStrategyLab(api) {
  let resizeFrame;window.addEventListener('resize',()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(render);});
  window.addEventListener('beforeunload',event=>{if((dirty||assumptionsDirty)&&(project||touched)){event.preventDefault();event.returnValue='';}});
  const guide=document.createElement('details');guide.innerHTML='<summary>Python SDK contract &amp; troubleshooting</summary><p class="sl-note">Website execution is unavailable. The generated file targets CPython 3.12 and uses no third-party packages.</p><p class="sl-note">Call decide(history, state, dataset_identity) with only completed history through the decision date. It returns typed entry and exit intents, evidence, bounded state, structured diagnostics and pinned runtime identities. It never returns an order, fill, size, fee, slippage, return or equity value.</p><pre>import json\nfrom marketdeck_visual_strategy import decide\n\nwith open("completed-prefix.json", encoding="utf-8") as f:\n    history = json.load(f)\nidentity = {"snapshot_id": "...", "fingerprint": "...", "completed_through": history["completed_through"]}\nprint(decide(history, state={}, dataset_identity=identity))</pre><p class="sl-note">Warm-up, missing data and unsupported fields appear as diagnostics. Edited arbitrary Python is custom code: MarketDeck saves and exports it, but does not validate, run, or convert it back to visual rules.</p><p class="sl-note">Tab inserts four spaces. Escape, then Tab leaves the editor. An external runtime must enforce its own resource limits.</p>';q('[data-sl-python]').append(guide);
- renderRules();saveState();return {activate,pause,saveDraft,isDirty:()=>(dirty||assumptionsDirty)&&(!!project||touched)};
+ // Keep the assets-first rollout compatible with the previous backend page.
+ if(!root.closest('[data-portfolio-lab-enabled]')){renderRules();saveState();return {activate,pause,saveDraft,isDirty:()=>(dirty||assumptionsDirty)&&(!!project||touched)};}
+ const companyArea=document.createElement('div');companyArea.dataset.labCompanyArea='';
+ while(root.firstChild)companyArea.append(root.firstChild);
+ const portfolioArea=document.createElement('div');portfolioArea.className='pl-root';portfolioArea.hidden=true;
+ const labTabs=document.createElement('div');labTabs.className='pl-mode-tabs';labTabs.setAttribute('role','group');labTabs.setAttribute('aria-label','Lab research workspace');
+ labTabs.innerHTML='<button type="button" data-lab-workspace="company" aria-pressed="true">Company research</button><button type="button" data-lab-workspace="portfolio" aria-pressed="false">Portfolio playground <span>NEW</span></button>';
+ root.append(labTabs,companyArea,portfolioArea);
+ const portfolio=createPortfolioLab(api,portfolioArea);
+ let portfolioActive=false;
+ labTabs.addEventListener('click',event=>{const button=event.target.closest('[data-lab-workspace]');if(!button)return;portfolioActive=button.dataset.labWorkspace==='portfolio';companyArea.hidden=portfolioActive;portfolioArea.hidden=!portfolioActive;if(portfolioActive){pause();portfolio.activate();}for(const b of labTabs.querySelectorAll('button'))b.setAttribute('aria-pressed',String((b.dataset.labWorkspace==='portfolio')===portfolioActive));const u=new URL(location.href);if(portfolioActive)u.searchParams.set('lab_mode','portfolio');else u.searchParams.delete('lab_mode');history.replaceState(null,'',u);});
+ if(new URL(location.href).searchParams.get('lab_mode')==='portfolio')labTabs.querySelector('[data-lab-workspace="portfolio"]').click();
+ async function saveLabDrafts(){if(portfolio.isDirty()&&!await portfolio.save())return false;if((dirty||assumptionsDirty)&&(project||touched)&&!await saveDraft())return false;return true;}
+ renderRules();saveState();return {activate:()=>{activate();if(portfolioActive)return portfolio.activate();},pause,saveDraft:saveLabDrafts,isDirty:()=>portfolio.isDirty()||((dirty||assumptionsDirty)&&(!!project||touched))};
 }
