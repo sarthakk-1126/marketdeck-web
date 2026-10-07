@@ -337,8 +337,46 @@ export function createStrategyLab(api) {
  root.append(labTabs,orientation,companyArea,portfolioArea);
  const portfolio=createPortfolioLab(api,portfolioArea);
  let portfolioActive=false;
+ const questionHome=document.createElement('section');
+ questionHome.className='lab-question-home';questionHome.setAttribute('aria-labelledby','lab-question-title');
+ questionHome.innerHTML='<span class="pl-eyebrow">START WITH A QUESTION</span><h2 id="lab-question-title" tabindex="-1">What would you like to investigate?</h2><p>Pick an idea. The relevant tools will appear when you need them.</p><div class="lab-question-rows"><button type="button" data-lab-goal="analysis"><span aria-hidden="true">⌁</span><strong>Explore a stock idea</strong><small>See what happened after a defined price event.</small><i aria-hidden="true">↗</i></button><button type="button" data-lab-goal="strategy"><span aria-hidden="true">◇</span><strong>Test trading rules</strong><small>Define buying and selling rules, then inspect a simulation.</small><i aria-hidden="true">↗</i></button><button type="button" data-lab-goal="portfolio"><span aria-hidden="true">◫</span><strong>Try portfolio choices</strong><small>Change a mix, a price assumption or a saving plan.</small><i aria-hidden="true">↗</i></button></div><div class="lab-question-links"><button type="button" data-lab-goal="recent">Continue saved work</button><button type="button" data-lab-goal="detailed">Open detailed workspace</button></div>';
+ const taskBar=document.createElement('div');taskBar.className='lab-task-bar';taskBar.hidden=true;
+ taskBar.innerHTML='<button type="button" data-lab-home>← Choose another question</button><span data-lab-task-name></span>';
+ root.prepend(taskBar);root.prepend(questionHome);
+ function openHome(){
+  portfolio.pause();pause();portfolioActive=false;companyArea.hidden=true;portfolioArea.hidden=true;
+  questionHome.hidden=false;taskBar.hidden=true;labTabs.hidden=true;orientation.hidden=true;
+  root.dataset.taskRoute='true';const u=new URL(location.href);u.searchParams.delete('lab_mode');u.searchParams.delete('lab_task');history.replaceState(null,'',u);
+  questionHome.querySelector('h2').focus({preventScroll:true});
+ }
+ function chooseGoal(goal){
+  if(goal==='detailed'||goal==='recent'){
+   questionHome.hidden=true;taskBar.hidden=true;labTabs.hidden=false;orientation.hidden=false;root.dataset.taskRoute='false';
+   labTabs.querySelector('[data-lab-workspace="company"]').click();
+   if(goal==='recent')q('[data-sl-project]')?.focus({preventScroll:true});
+   return;
+  }
+  questionHome.hidden=true;taskBar.hidden=false;labTabs.hidden=true;orientation.hidden=true;root.dataset.taskRoute='true';
+  taskBar.querySelector('[data-lab-task-name]').textContent=goal==='portfolio'?'Portfolio questions':goal==='analysis'?'Stock observations · current workspace':'Trading rules · current workspace';
+  if(goal==='portfolio'){
+   labTabs.querySelector('[data-lab-workspace="portfolio"]').click();portfolio.showTasks();
+  }else{
+   labTabs.querySelector('[data-lab-workspace="company"]').click();
+   const type=q('[data-sl-project-type]');
+   if(type.disabled&&type.value!==goal)q('[data-sl="new"]').click();
+   if(!type.disabled&&type.value!==goal){type.value=goal;type.dispatchEvent(new Event('change',{bubbles:true}));}
+   else if(type.disabled&&type.value!==goal)status('Save or finish the current project first, then start a new '+(goal==='analysis'?'stock observation':'trading rule')+'.');
+  }
+ }
+ questionHome.addEventListener('click',event=>{const button=event.target.closest('[data-lab-goal]');if(button)chooseGoal(button.dataset.labGoal);});
+ taskBar.addEventListener('click',event=>{if(event.target.closest('[data-lab-home]'))openHome();});
  labTabs.addEventListener('click',event=>{const button=event.target.closest('[data-lab-workspace]');if(!button)return;portfolioActive=button.dataset.labWorkspace==='portfolio';orientation.textContent=portfolioActive?'Portfolio playground explores several assets together: change a mix, try a price move or compare your own growth assumptions.':'Company research studies one company: observe historical events or test explicit trading rules on permitted data.';companyArea.hidden=portfolioActive;portfolioArea.hidden=!portfolioActive;if(portfolioActive){pause();portfolio.activate();}else portfolio.pause();for(const b of labTabs.querySelectorAll('button'))b.setAttribute('aria-pressed',String((b.dataset.labWorkspace==='portfolio')===portfolioActive));const u=new URL(location.href);if(portfolioActive)u.searchParams.set('lab_mode','portfolio');else u.searchParams.delete('lab_mode');history.replaceState(null,'',u);});
- if(new URL(location.href).searchParams.get('lab_mode')==='portfolio')labTabs.querySelector('[data-lab-workspace="portfolio"]').click();
+ const params=new URLSearchParams(location.search);
+ if(params.get('lab_mode')==='portfolio'){
+  questionHome.hidden=true;labTabs.querySelector('[data-lab-workspace="portfolio"]').click();
+  if(params.get('lab_task')==='saving'){taskBar.hidden=false;labTabs.hidden=true;orientation.hidden=true;root.dataset.taskRoute='true';taskBar.querySelector('[data-lab-task-name]').textContent='Monthly saving';portfolio.startTask('growth');}
+ }else if(params.has('lab_project')||params.has('lab_run')||params.has('lab_event'))questionHome.hidden=true;
+ else{companyArea.hidden=true;labTabs.hidden=true;orientation.hidden=true;root.dataset.taskRoute='true';}
  async function saveLabDrafts(){if(portfolio.isDirty()&&!await portfolio.save())return false;if((dirty||assumptionsDirty)&&(project||touched)&&!await saveDraft())return false;return true;}
  renderRules();saveState();return {activate:()=>{activate();if(portfolioActive)return portfolio.activate();},pause:()=>{pause();portfolio.pause();},saveDraft:saveLabDrafts,isDirty:()=>portfolio.isDirty()||((dirty||assumptionsDirty)&&(!!project||touched))};
 }
