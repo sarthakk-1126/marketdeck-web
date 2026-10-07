@@ -80,3 +80,19 @@ is unchanged.
 Google decides what it indexes, so no change can guarantee that every URL
 will be indexed. The aim is to stop spending crawl budget on duplicates and
 utility URLs, so the distinctive pages get crawled first.
+
+## Priority sitemap (added 7 October 2026)
+
+`public/priority-sitemap.xml` lists 162 key pages:
+* the homepage and all Intelligence pages;
+* the Screener landings, including portfolio analysis, the research terminal,
+  learning books, methods and paths, sector hubs and preset screens;
+* the fund and ETF hubs and the category pages;
+* the Charts, F&O, Commentary and Crypto landings and tools.
+
+Every URL was taken from the live sitemap index and re-verified as 200,
+self-canonical and without `noindex`. The file is a subset of the main
+index and is declared in `robots.txt`. Submit it separately in Search
+Console; the Page indexing report filtered to this sitemap then gives an
+exact indexed/not-indexed count for the pages that matter most. It must be
+updated by hand when a key page is added or retired.

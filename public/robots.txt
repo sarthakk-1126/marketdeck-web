@@ -39,3 +39,4 @@ Disallow: /screener/learning/*/notes/
 Disallow: /screener/learning/notes/
 
 Sitemap: https://marketdeck.in/sitemap.xml
+Sitemap: https://marketdeck.in/priority-sitemap.xml
