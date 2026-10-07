@@ -96,3 +96,52 @@ index and is declared in `robots.txt`. Submit it separately in Search
 Console; the Page indexing report filtered to this sitemap then gives an
 exact indexed/not-indexed count for the pages that matter most. It must be
 updated by hand when a key page is added or retired.
+
+## Search Console exports (7 October 2026)
+
+**Indexed pages.** The "Indexed" export is capped at 1,000 rows, so it is a
+sample of the 1,434 indexed pages, not the full list. URL Inspection
+separately confirms that `/screener/portfolio-analysis/` is indexed.
+
+* **By family:** fund detail 383; company overview 147; statements 110;
+  peers 76; quality score 74; charts 62; other Screener 45; preset screens
+  25; Intelligence 21; crypto coins 20; fund hubs 18; crypto pages 10;
+  F&O 5; Commentary 2.
+* **Last crawl date:** most indexed pages were last crawled on 24–30
+  September (461 on 26 September alone). Few have been crawled since.
+* **Priority pages:** only 52 of the 162 appear in the sample. None of the
+  26 learning-book, method or path pages appears, and neither do most F&O
+  tools, several crawlable crypto tools, or the newer Intelligence notes.
+  Most of these were published after the late-September crawl burst.
+* **Junk URLs in the index:** 73 `www.` URLs (now 301s) and about 35
+  `?range=` variants. There are also 33 redirect-only URLs:
+  `/screener/prefs/...?next=` (18), `/screener/accounts/login/?next=` (11)
+  and `/screener/register/?next=` (6). Google kept these 302 sources as
+  aliases of the destination page.
+
+**Crawl stats.**
+* Crawl requests per day: 1,829 on 25 September (the sitemap launch), then
+  82–560 a day since.
+* Average response time: 516–3,139 ms. Crawl capacity falls when the
+  server is slow.
+* Responses: 20% of crawl requests were redirects (12.6% 302, 7.4% 301)
+  and 79% were 200s.
+* Hosts: `platform.marketdeck.in` received 374 requests and `www` received
+  287 ("problems in the past").
+
+**Causes this confirms**
+1. Every page links to Sign in, Sign up and the Cr/Bn toggles with
+   `?next=<current page>`. That creates a unique redirect URL for each of
+   about 13k pages, which accounts for most of "Page with redirect" and the
+   indexed junk.
+2. Each companies directory page made about 980 database queries and took
+   3.2–3.8 s. These are the main crawl path to the company pages.
+3. Crawl demand stays low on a new domain: about 100 fetches a day against
+   12.9k sitemap URLs.
+
+**Fixes made in `stockproof`** (branch `claude/cool-rubin-fuf7g7`)
+* The directory now uses batch snapshot and pending-update reads: 5 data
+  queries instead of about 980. On production data the snapshot and pending
+  results matched the old path for all 486 companies.
+* `rel="nofollow"` is now on every login, register and preference link (28
+  links in 23 templates).
