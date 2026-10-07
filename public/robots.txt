@@ -15,13 +15,14 @@ Allow: /
 
 User-agent: *
 Allow: /
-# Crawl-budget hygiene: account, preference and state-changing Screener
-# routes only ever redirect to login or back to the page they came from.
+# Crawl-budget hygiene: private, account and state-changing Screener routes.
 # None of these prefixes matches a sitemap URL. Note /screener/portfolio/
 # does not match the public /screener/portfolio-analysis/ landing.
-Disallow: /screener/prefs/
-Disallow: /screener/register/
-Disallow: /screener/accounts/
+# /screener/prefs/, /screener/register/ and /screener/accounts/ are
+# deliberately NOT disallowed: some of those redirect URLs are already in
+# Google's index, and Google must be able to recrawl them to drop them
+# (login/register send X-Robots-Tag: noindex). Their links carry
+# rel="nofollow" in stockproof instead.
 Disallow: /screener/admin/
 Disallow: /screener/api/
 Disallow: /screener/watchlist/

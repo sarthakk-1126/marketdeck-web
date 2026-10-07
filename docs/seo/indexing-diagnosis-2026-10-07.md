@@ -145,3 +145,34 @@ separately confirms that `/screener/portfolio-analysis/` is indexed.
   results matched the old path for all 486 companies.
 * `rel="nofollow"` is now on every login, register and preference link (28
   links in 23 templates).
+
+## Corrections after external review (7 October 2026)
+
+* **Robots rules.** Disallowing `/screener/prefs/`, `/screener/register/` and
+  `/screener/accounts/` stopped Google from recrawling redirect URLs it had
+  already indexed. Google cannot see a `noindex` it is blocked from fetching,
+  and a blocked URL can stay in results. Those three prefixes are now
+  crawlable again. Their links stay `rel="nofollow"`, which is only a hint
+  to Google. The private routes (portfolio, watchlist, export, notes, and
+  similar) stay disallowed.
+* **Removals.** The six prefix removals suggested earlier are withdrawn. A
+  removal hides a URL for about six months and is not a permanent cleanup,
+  and one prefix request already covers both the `www` and non-`www`
+  variants. The 33 junk URLs are a small share of the index sample, so the
+  plan is to let Google recrawl and drop them, then check them one by one
+  with URL Inspection.
+* **Priority sitemap.** It exists to measure indexing of the 163 key pages.
+  Submitting it does not make Google crawl or index them any sooner.
+* **`/explore/`.** It is now in the main web inventory as WEB-06. It reaches
+  the main sitemap index only when the inventory is next published.
+* **Fund duplicates.** The claim that the duplicate reports are mostly
+  Direct/Regular fund siblings is still a hypothesis. It needs the affected
+  URLs from Search Console (or the Search Console API) to confirm.
+* **Caching.** Preset-screen rows are cached only for signed-out visitors.
+  Market-breadth results are cached for every visitor, signed in or not,
+  because they are identical for everyone. The earlier summary said
+  signed-in users always see live results, which was wrong for market
+  breadth.
+* **Success measure.** Count distinct public URLs that are crawled and
+  indexed after Google has revisited them. Speed and link improvements do
+  not establish indexing on their own.
