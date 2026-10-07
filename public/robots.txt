@@ -15,5 +15,27 @@ Allow: /
 
 User-agent: *
 Allow: /
+# Crawl-budget hygiene: account, preference and state-changing Screener
+# routes only ever redirect to login or back to the page they came from.
+# None of these prefixes matches a sitemap URL. Note /screener/portfolio/
+# does not match the public /screener/portfolio-analysis/ landing.
+Disallow: /screener/prefs/
+Disallow: /screener/register/
+Disallow: /screener/accounts/
+Disallow: /screener/admin/
+Disallow: /screener/api/
+Disallow: /screener/watchlist/
+Disallow: /screener/portfolio/
+Disallow: /screener/export/
+Disallow: /screener/formulas/
+Disallow: /screener/notes/
+Disallow: /screener/share/
+Disallow: /screener/research-desk/state/
+Disallow: /screener/research-desk/lab/
+Disallow: /screener/research-desk/portfolio-lab/
+Disallow: /screener/company/*/export/
+Disallow: /screener/company/*/notes/
+Disallow: /screener/learning/*/notes/
+Disallow: /screener/learning/notes/
 
 Sitemap: https://marketdeck.in/sitemap.xml
