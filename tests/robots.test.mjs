@@ -35,8 +35,7 @@ test('public acquisition pages stay crawlable', () => {
 
 test('account, preference and state-changing routes are not crawled', () => {
   for (const path of [
-    '/screener/prefs/currency-unit/billion/?next=/screener/company/IGL.NS/', '/screener/register/?next=/screener/',
-    '/screener/accounts/login/?next=/screener/funds/1/', '/screener/portfolio/metrics/', '/screener/watchlist/',
+    '/screener/portfolio/metrics/', '/screener/watchlist/',
     '/screener/company/ONGC.NS/export/csv/', '/screener/company/ONGC.NS/notes/add/', '/screener/research-desk/state/',
   ]) assert.ok(!allowed(path), `${path} should be disallowed`);
 });
@@ -56,6 +55,13 @@ test('priority sitemap lists unique, crawlable, clean marketdeck.in pages', () =
   }
   for (const key of ['https://marketdeck.in/', 'https://marketdeck.in/intelligence/', 'https://marketdeck.in/screener/portfolio-analysis/', 'https://marketdeck.in/screener/learning/books/'])
     assert.ok(locs.includes(key), `${key} missing`);
+});
+
+test('already-indexed redirect URLs stay crawlable so Google can drop them', () => {
+  for (const path of [
+    '/screener/prefs/currency-unit/billion/?next=/screener/company/IGL.NS/', '/screener/register/?next=/screener/',
+    '/screener/accounts/login/?next=/screener/funds/1/',
+  ]) assert.ok(allowed(path), `${path} must stay crawlable until Google drops it`);
 });
 
 test('sitemaps stay declared and model-training opt-outs remain', () => {
