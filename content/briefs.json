@@ -1,6 +1,48 @@
 {
   "issues": [
     {
+      "id": "rolling-returns-fieldnotes-06",
+      "title": "Rolling Returns vs Trailing Returns: The Mutual Fund Comparison Guide",
+      "slug": "rolling-returns-vs-trailing-returns-india-2026",
+      "edition": "Fieldnotes 06 · Mutual fund research",
+      "summary": "Rolling returns vs trailing returns for Indian mutual funds: six illustrated pages with NAV calculations, benchmark rules, pitfalls and a reusable research checklist.",
+      "cover": "/intelligence/issues/rolling-returns-vs-trailing-returns-india-2026/cover.svg",
+      "pdfPath": null,
+      "pageCount": 6,
+      "sourceReviewedAt": "2026-10-10",
+      "publicationStatus": "published",
+      "approvedAt": "2026-10-10",
+      "publishedAt": "2026-10-10",
+      "source": "content/issues/rolling-returns-vs-trailing-returns-india-2026.json",
+      "assets": "content/issues/rolling-returns-vs-trailing-returns-india-2026",
+      "lastUpdated": "2026-10-10",
+      "topics": [
+        "portfolio-analysis",
+        "india",
+        "research-craft"
+      ],
+      "relatedLinks": [
+        {
+          "label": "Explore mutual fund research",
+          "url": "/screener/funds/"
+        },
+        {
+          "label": "XIRR vs Portfolio Return",
+          "url": "/intelligence/notes/xirr-vs-portfolio-return/"
+        },
+        {
+          "label": "Portfolio Analysis",
+          "url": "/screener/portfolio-analysis/"
+        },
+        {
+          "label": "Editorial standards",
+          "url": "/intelligence/editorial-policy/"
+        }
+      ],
+      "seoTitle": "Rolling Returns vs Trailing Returns in Mutual Funds — India Guide",
+      "seoDescription": "Learn rolling returns vs trailing returns for Indian mutual funds. Worked NAV examples, benchmark matching, annualised formulas and a six-page research checklist."
+    },
+    {
       "id": "investing-research-workbook-05",
       "title": "From Book Idea to Research Experiment",
       "slug": "investing-research-workbook",
@@ -338,6 +380,17 @@
       "source": "content/articles/strategy-backtest-research-checklist.md",
       "publicationStatus": "published",
       "approvedAt": "2026-10-05"
+    },
+    {
+      "slug": "open-interest-in-options-india",
+      "topics": [
+        "fno",
+        "india"
+      ],
+      "coverArt": "/assets/products/editorial-v2/fno.webp",
+      "source": "content/articles/open-interest-in-options-india.md",
+      "publicationStatus": "published",
+      "approvedAt": "2026-10-10"
     }
   ]
 }
