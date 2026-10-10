@@ -13,8 +13,8 @@ after(()=>rmSync(isolated,{recursive:true,force:true}));
 const get=a=>readFileSync(`${isolated}/intelligence/notes/${a.slug}/index.html`,'utf8');
 const root='https://marketdeck.in';
 const apps=new Set(['/screener/research-terminal/','/screener/learning/books/','/screener/learning/methods/margin-of-safety/','/screener/learning/methods/valuation-story-to-numbers/','/screener/learning/books/psychology-money/','/screener/learning/books/intelligent-investor/','/screener/learning/books/little-valuation/','/screener/learning/paths/beginner-investing-books/','/','/screener/','/screener/portfolio-analysis/','/screener/methodology/','/charts/','/futures-and-options/','/commentary/','/crypto/']);
-test('sixteen substantial source-backed guides cover the intended editorial categories without duplicate targets',()=>{
- assert.equal(meta.length,16);assert.equal(new Set(meta.map(a=>a.slug)).size,16);assert.equal(new Set(meta.map(a=>a.primaryKeyword.toLowerCase())).size,16);
+test('seventeen substantial source-backed guides cover the intended editorial categories without duplicate targets',()=>{
+ assert.equal(meta.length,17);assert.equal(new Set(meta.map(a=>a.slug)).size,16);assert.equal(new Set(meta.map(a=>a.primaryKeyword.toLowerCase())).size,16);
  for(const required of ['ai-quant','equities','fno','technical-analysis','india','crypto','research-craft','portfolio-analysis'])assert.ok(meta.some(a=>a.topics.includes(required)),required);
  for(const a of meta){const md=readFileSync(a.source,'utf8');assert.ok(md.split(/\s+/).length>=1500,a.slug);assert.ok(a.sources.length>=3);assert.equal(a.publicationStatus,'published');assert.ok(a.approvedAt);assert.equal((md.match(/\[\[figure\]\]/g)||[]).length,1);assert.equal(new Set(a.sources.map(s=>s.id)).size,a.sources.length);for(const m of md.matchAll(/\[(S\d+)\]/g))assert.ok(a.sources.some(s=>s.id===m[1]),a.slug+':'+m[1]);}
 });
