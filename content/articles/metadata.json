@@ -981,8 +981,8 @@
       "label": "Explore Portfolio Analysis",
       "name": "MarketDeck Portfolio Analysis"
     }
-  }
-  ,{
+  },
+  {
     "slug": "when-var-methods-disagree",
     "originalResearch": true,
     "source": "content/articles/when-var-methods-disagree.md",
@@ -990,143 +990,247 @@
     "description": "Historical, Gaussian and Cornish-Fisher VaR under controlled skew and fat tails: 96,000 generated estimation/holdout pairs, with full results and reproducible code.",
     "h1": "When Portfolio VaR Methods Disagree",
     "coverArt": "/assets/research/var-thresholds.svg",
-    "topics": ["research-craft", "portfolio-analysis"],
+    "topics": [
+      "research-craft",
+      "portfolio-analysis"
+    ],
     "modifiedAt": "2026-10-04",
     "publishedAt": "2026-10-04",
     "sourceReviewedAt": "2026-10-04",
     "primaryKeyword": "when VaR methods disagree",
-    "relatedKeywords": ["VaR simulation", "out of sample VaR calibration"],
-    "related": ["portfolio-var-historical-parametric-cornish-fisher"],
-    "takeaways": ["Shape changes tail thresholds even when theoretical variance is identical.", "A larger threshold does not necessarily improve calibration."],
+    "relatedKeywords": [
+      "VaR simulation",
+      "out of sample VaR calibration"
+    ],
+    "related": [
+      "portfolio-var-historical-parametric-cornish-fisher"
+    ],
+    "takeaways": [
+      "Shape changes tail thresholds even when theoretical variance is identical.",
+      "A larger threshold does not necessarily improve calibration."
+    ],
     "publicationStatus": "published",
     "approvedAt": "2026-10-04",
     "sources": [
-      {"id":"S1","title":"NumPy quantile","url":"https://numpy.org/doc/stable/reference/generated/numpy.quantile.html","scope":"Linear quantile convention; no external numerical data.","reviewedAt":"2026-10-04"},
-      {"id":"S2","title":"NIST moments","url":"https://www.itl.nist.gov/div898/handbook/eda/section3/eda35b.htm","scope":"Moment-ratio definitions.","reviewedAt":"2026-10-04"},
-      {"id":"S3","title":"Kupiec 1995","url":"https://fedinprint.org/item/fedgfe/34596/original","scope":"Original work bibliographic record and full-text destination.","reviewedAt":"2026-10-04"},
-      {"id":"S4","title":"Cornish-Fisher expansion","url":"https://www.value-at-risk.net/the-cornish-fisher-expansion/","scope":"Quantile approximation; specified truncation printed in study.","reviewedAt":"2026-10-04"}
+      {
+        "id": "S1",
+        "title": "NumPy quantile",
+        "url": "https://numpy.org/doc/stable/reference/generated/numpy.quantile.html",
+        "scope": "Linear quantile convention; no external numerical data.",
+        "reviewedAt": "2026-10-04"
+      },
+      {
+        "id": "S2",
+        "title": "NIST moments",
+        "url": "https://www.itl.nist.gov/div898/handbook/eda/section3/eda35b.htm",
+        "scope": "Moment-ratio definitions.",
+        "reviewedAt": "2026-10-04"
+      },
+      {
+        "id": "S3",
+        "title": "Kupiec 1995",
+        "url": "https://fedinprint.org/item/fedgfe/34596/original",
+        "scope": "Original work bibliographic record and full-text destination.",
+        "reviewedAt": "2026-10-04"
+      },
+      {
+        "id": "S4",
+        "title": "Cornish-Fisher expansion",
+        "url": "https://www.value-at-risk.net/the-cornish-fisher-expansion/",
+        "scope": "Quantile approximation; specified truncation printed in study.",
+        "reviewedAt": "2026-10-04"
+      }
     ]
   },
-{
-  "slug": "investing-book-to-research-workflow",
-  "title": "How to Apply Investing Books to Stock Research",
-  "h1": "One idea. One question. A note you can revisit.",
-  "description": "Turn an investing-book idea into a research question, evidence packet and worked exercise. Includes cash-conversion and valuation examples for Indian-market research.",
-  "topics": [
-    "research-craft",
-    "equities",
-    "india"
-  ],
-  "coverArt": "/assets/books-method-atlas.webp",
-  "source": "content/articles/investing-book-to-research-workflow.md",
-  "modifiedAt": "2026-10-05",
-  "publishedAt": "2026-10-05",
-  "sourceReviewedAt": "2026-10-05",
-  "primaryKeyword": "How to Apply Investing Books to Stock Research",
-  "relatedKeywords": [],
-  "related": [
-    "five-research-lenses",
-    "business-before-the-stock",
-    "strategy-backtest-research-checklist"
-  ],
-  "takeaways": [
-    "Choose one question before collecting ratios.",
-    "Keep the author’s idea separate from your application.",
-    "Record evidence that could change your view."
-  ],
-  "publicationStatus": "published",
-  "approvedAt": "2026-10-05",
-  "sources": [
-    {
-      "id": "S1",
-      "title": "Harriman House: The Psychology of Money",
-      "url": "https://www.harriman-house.com/authors/morgan-housel/the-psychology-of-money/9780857197689",
-      "scope": "Publisher description of the book; not verification of every chapter or an endorsement of our exercise.",
-      "reviewedAt": "2026-10-05"
-    },
-    {
-      "id": "S2",
-      "title": "Aswath Damodaran: Narrative and Numbers companion",
-      "url": "https://pages.stern.nyu.edu/adamodar/New_Home_Page/numbers&narrative.htm",
-      "scope": "Author material connecting business narratives and valuation; worked examples here are original MarketDeck applications.",
-      "reviewedAt": "2026-10-05"
-    },
-    {
-      "id": "S3",
-      "title": "NSE: Corporate Financial Results",
-      "url": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results",
-      "scope": "Official discovery route for issuer financial results; no company data is reproduced in this article.",
-      "reviewedAt": "2026-10-05"
-    },
-    {
-      "id": "S4",
-      "title": "SEC: Beginners’ Guide to Financial Statements",
-      "url": "https://www.sec.gov/about/reports-publications/investorpubsbegfinstmtguide",
-      "scope": "General educational statement distinctions, not Indian accounting law.",
-      "reviewedAt": "2026-10-05"
+  {
+    "slug": "investing-book-to-research-workflow",
+    "title": "How to Apply Investing Books to Stock Research",
+    "h1": "One idea. One question. A note you can revisit.",
+    "description": "Turn an investing-book idea into a research question, evidence packet and worked exercise. Includes cash-conversion and valuation examples for Indian-market research.",
+    "topics": [
+      "research-craft",
+      "equities",
+      "india"
+    ],
+    "coverArt": "/assets/books-method-atlas.webp",
+    "source": "content/articles/investing-book-to-research-workflow.md",
+    "modifiedAt": "2026-10-05",
+    "publishedAt": "2026-10-05",
+    "sourceReviewedAt": "2026-10-05",
+    "primaryKeyword": "How to Apply Investing Books to Stock Research",
+    "relatedKeywords": [],
+    "related": [
+      "five-research-lenses",
+      "business-before-the-stock",
+      "strategy-backtest-research-checklist"
+    ],
+    "takeaways": [
+      "Choose one question before collecting ratios.",
+      "Keep the author’s idea separate from your application.",
+      "Record evidence that could change your view."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-10-05",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "Harriman House: The Psychology of Money",
+        "url": "https://www.harriman-house.com/authors/morgan-housel/the-psychology-of-money/9780857197689",
+        "scope": "Publisher description of the book; not verification of every chapter or an endorsement of our exercise.",
+        "reviewedAt": "2026-10-05"
+      },
+      {
+        "id": "S2",
+        "title": "Aswath Damodaran: Narrative and Numbers companion",
+        "url": "https://pages.stern.nyu.edu/adamodar/New_Home_Page/numbers&narrative.htm",
+        "scope": "Author material connecting business narratives and valuation; worked examples here are original MarketDeck applications.",
+        "reviewedAt": "2026-10-05"
+      },
+      {
+        "id": "S3",
+        "title": "NSE: Corporate Financial Results",
+        "url": "https://www.nseindia.com/companies-listing/corporate-filings-financial-results",
+        "scope": "Official discovery route for issuer financial results; no company data is reproduced in this article.",
+        "reviewedAt": "2026-10-05"
+      },
+      {
+        "id": "S4",
+        "title": "SEC: Beginners’ Guide to Financial Statements",
+        "url": "https://www.sec.gov/about/reports-publications/investorpubsbegfinstmtguide",
+        "scope": "General educational statement distinctions, not Indian accounting law.",
+        "reviewedAt": "2026-10-05"
+      }
+    ],
+    "tool": {
+      "url": "/screener/learning/books/",
+      "name": "Books & Investor Methods",
+      "label": "Explore the bookshelf"
     }
-  ],
-  "tool": {
-    "url": "/screener/learning/books/",
-    "name": "Books & Investor Methods",
-    "label": "Explore the bookshelf"
-  }
-},
-{
-  "slug": "strategy-backtest-research-checklist",
-  "title": "Strategy Backtesting Checklist: Data, Costs & Overfitting",
-  "h1": "Define the experiment before trusting the curve.",
-  "description": "Review strategy backtests: data, signal timing, fills, costs and overfitting. Includes a worked cost example and current MarketDeck coding-workspace limits.",
-  "topics": [
-    "research-craft",
-    "ai-quant"
-  ],
-  "coverArt": "/assets/products/editorial-v2/stockproof.webp",
-  "source": "content/articles/strategy-backtest-research-checklist.md",
-  "modifiedAt": "2026-10-05",
-  "publishedAt": "2026-10-05",
-  "sourceReviewedAt": "2026-10-05",
-  "primaryKeyword": "Strategy Backtesting Checklist: Data, Costs & Overfitting",
-  "relatedKeywords": [],
-  "related": [
-    "five-research-lenses",
-    "business-before-the-stock",
-    "investing-book-to-research-workflow"
-  ],
-  "takeaways": [
-    "Separate a signal from a possible fill.",
-    "Reconcile costs and record every research attempt.",
-    "A code editor or saved rule is not a verified result."
-  ],
-  "publicationStatus": "published",
-  "approvedAt": "2026-10-05",
-  "sources": [
-    {
-      "id": "S1",
-      "title": "MarketDeck Research Terminal",
-      "url": "https://marketdeck.in/screener/research-terminal/",
-      "scope": "Product overview. Capability statements additionally checked against deployed Strategy Lab contract and release documentation on 5 October 2026; no arbitrary Python execution or automatic built-in history is claimed.",
-      "reviewedAt": "2026-10-05"
-    },
-    {
-      "id": "S2",
-      "title": "Bailey, Borwein, López de Prado and Zhu: The Probability of Backtest Overfitting",
-      "url": "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
-      "scope": "February 2015 revised author manuscript. Supports the selection/overfitting concern; the proposed estimator is neither implemented nor independently reproduced here.",
-      "reviewedAt": "2026-10-05"
-    },
-    {
-      "id": "S3",
-      "title": "NSE Data Sharing & Usage Policy",
-      "url": "https://www.nseindia.com/static/market-data/nse-data-policy",
-      "scope": "Official policy explaining that data uses and distribution depend on applicable terms; no application-specific licence is asserted.",
-      "reviewedAt": "2026-10-05"
+  },
+  {
+    "slug": "strategy-backtest-research-checklist",
+    "title": "Strategy Backtesting Checklist: Data, Costs & Overfitting",
+    "h1": "Define the experiment before trusting the curve.",
+    "description": "Review strategy backtests: data, signal timing, fills, costs and overfitting. Includes a worked cost example and current MarketDeck coding-workspace limits.",
+    "topics": [
+      "research-craft",
+      "ai-quant"
+    ],
+    "coverArt": "/assets/products/editorial-v2/stockproof.webp",
+    "source": "content/articles/strategy-backtest-research-checklist.md",
+    "modifiedAt": "2026-10-05",
+    "publishedAt": "2026-10-05",
+    "sourceReviewedAt": "2026-10-05",
+    "primaryKeyword": "Strategy Backtesting Checklist: Data, Costs & Overfitting",
+    "relatedKeywords": [],
+    "related": [
+      "five-research-lenses",
+      "business-before-the-stock",
+      "investing-book-to-research-workflow"
+    ],
+    "takeaways": [
+      "Separate a signal from a possible fill.",
+      "Reconcile costs and record every research attempt.",
+      "A code editor or saved rule is not a verified result."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-10-05",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "MarketDeck Research Terminal",
+        "url": "https://marketdeck.in/screener/research-terminal/",
+        "scope": "Product overview. Capability statements additionally checked against deployed Strategy Lab contract and release documentation on 5 October 2026; no arbitrary Python execution or automatic built-in history is claimed.",
+        "reviewedAt": "2026-10-05"
+      },
+      {
+        "id": "S2",
+        "title": "Bailey, Borwein, López de Prado and Zhu: The Probability of Backtest Overfitting",
+        "url": "https://www.davidhbailey.com/dhbpapers/backtest-prob.pdf",
+        "scope": "February 2015 revised author manuscript. Supports the selection/overfitting concern; the proposed estimator is neither implemented nor independently reproduced here.",
+        "reviewedAt": "2026-10-05"
+      },
+      {
+        "id": "S3",
+        "title": "NSE Data Sharing & Usage Policy",
+        "url": "https://www.nseindia.com/static/market-data/nse-data-policy",
+        "scope": "Official policy explaining that data uses and distribution depend on applicable terms; no application-specific licence is asserted.",
+        "reviewedAt": "2026-10-05"
+      }
+    ],
+    "tool": {
+      "url": "/screener/research-terminal/",
+      "name": "MarketDeck Research Terminal",
+      "label": "Explore Research Terminal"
     }
-  ],
-  "tool": {
-    "url": "/screener/research-terminal/",
-    "name": "MarketDeck Research Terminal",
-    "label": "Explore Research Terminal"
+  },
+  {
+    "slug": "open-interest-in-options-india",
+    "title": "Open Interest in Options: OI, Volume & 4 Buildup Patterns Explained",
+    "h1": "OI is the inventory. Price is the observation.",
+    "description": "What is open interest in NIFTY options? Learn OI vs volume, long buildup, short covering, PCR and common option-chain mistakes with worked examples.",
+    "topics": [
+      "fno",
+      "india"
+    ],
+    "coverArt": "/assets/products/editorial-v2/fno.webp",
+    "source": "content/articles/open-interest-in-options-india.md",
+    "modifiedAt": "2026-10-10",
+    "publishedAt": "2026-10-10",
+    "sourceReviewedAt": "2026-10-10",
+    "primaryKeyword": "open interest in options",
+    "relatedKeywords": [
+      "what is open interest in stock market",
+      "long buildup short buildup short covering long unwinding",
+      "OI change vs volume NIFTY option chain",
+      "open interest PCR meaning"
+    ],
+    "related": [
+      "iv-rank-vs-iv-percentile-nifty-options",
+      "call-option-vs-put-option-india",
+      "support-vs-resistance-stock-charts"
+    ],
+    "takeaways": [
+      "Open interest counts outstanding contracts, not directional conviction.",
+      "Price and OI quadrants are heuristics—not proof of traders' positions.",
+      "Check the expiry, baseline, unit, freshness and related option-chain context."
+    ],
+    "publicationStatus": "published",
+    "approvedAt": "2026-10-10",
+    "sources": [
+      {
+        "id": "S1",
+        "title": "NSE F&O Trading Regulations — Open Interest Definition",
+        "url": "https://nsearchives.nseindia.com/web/sites/default/files/inline-files/NSEFOregulations_8.pdf",
+        "scope": "Section 1.3.37: outstanding contracts, with one contract side counted; definitions, not market predictions.",
+        "reviewedAt": "2026-10-10"
+      },
+      {
+        "id": "S2",
+        "title": "NSE India — Equity Derivatives Market Information",
+        "url": "https://www.nseindia.com/static/products-services/equity-derivatives-index-information",
+        "scope": "Exchange display of contract volume and open-interest fields; current values are not reproduced.",
+        "reviewedAt": "2026-10-10"
+      },
+      {
+        "id": "S3",
+        "title": "NSE India — Equity Derivatives Contract Information",
+        "url": "https://www.nseindia.com/static/products-services/equity-derivatives-contract-information",
+        "scope": "Official route to current contract specifications; do not infer lot size or expiry weekday.",
+        "reviewedAt": "2026-10-10"
+      },
+      {
+        "id": "S4",
+        "title": "SEBI Investor — Understanding Derivatives",
+        "url": "https://investor.sebi.gov.in/understanding_derivatives.html",
+        "scope": "Investor risk context; does not endorse or validate price/OI heuristics.",
+        "reviewedAt": "2026-10-10"
+      }
+    ],
+    "tool": {
+      "url": "/futures-and-options/analytics/chain/",
+      "label": "Explore F&O option-chain research",
+      "name": "MarketDeck F&O Analytics"
+    }
   }
-}
 ]
