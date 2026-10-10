@@ -137,7 +137,10 @@
       "sourceIds": [
         "S1",
         "S2"
-      ]
+      ],
+      "figure": "/intelligence/issues/rolling-returns-vs-trailing-returns-india-2026/nav-windows.svg",
+      "figureAlt": "Illustrative NAV line: 100, 110, 99 and 118.8 at annual endpoints, with one-year returns +10%, -10%, +20%",
+      "figureCaption": "Illustrative NAVs only; not actual mutual-fund performance. End-year trailing 1Y return is +20%, while earlier windows include -10%."
     },
     {
       "kicker": "03 / BUILD A FAIR COMPARISON",
