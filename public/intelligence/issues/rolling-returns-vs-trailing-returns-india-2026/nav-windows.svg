@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480" viewBox="0 0 960 480" role="img" aria-labelledby="t d"><title id="t">One-year trailing return versus multiple rolling windows</title><desc id="d">Hypothetical NAV observations 100, 110, 99 and 118.8 at annual endpoints. The 3 one-year windows return plus ten percent, minus ten percent, and plus twenty percent. They are not actual mutual fund results.</desc>
+<rect width="960" height="480" fill="#f8f5ed"/><text x="42" y="47" font-family="Georgia,serif" fill="#142c3b" font-size="29">One series. Three different holding-period experiences.</text>
+<text x="42" y="78" font-family="Arial,sans-serif" fill="#5d7476" font-size="16">HYPOTHETICAL YEAR-END NAV / NO MARKET DATA</text><path d="M65 360 H910" stroke="#c5c9bf" stroke-width="2"/>
+<g fill="#0d2938" font-family="Arial,sans-serif" font-size="19"><text x="78" y="399">Y0 · 100</text><text x="316" y="399">Y1 · 110</text><text x="553" y="399">Y2 · 99</text><text x="789" y="399">Y3 · 118.8</text></g>
+<path d="M105 267 L335 199 L571 275 L820 135" fill="none" stroke="#163a51" stroke-width="5"/>
+<g fill="#163a51" stroke="#f8f5ed" stroke-width="4"><circle cx="105" cy="267" r="8"/><circle cx="335" cy="199" r="8"/><circle cx="571" cy="275" r="8"/><circle cx="820" cy="135" r="8"/></g>
+<g font-family="Arial,sans-serif" font-weight="700" font-size="19"><text x="177" y="208" fill="#367364">+10%</text><text x="424" y="265" fill="#a05e62">−10%</text><text x="681" y="176" fill="#367364">+20%</text></g>
+<rect x="615" y="315" width="267" height="43" fill="#e6e6dd" rx="4"/><text x="628" y="342" font-family="Arial,sans-serif" fill="#263c47" font-size="17">Last 1-year trailing: +20%</text>
+<text x="50" y="448" font-family="Arial,sans-serif" fill="#63757a" font-size="15">Overlapping daily or monthly windows would require more observations and exact dates.</text></svg>
