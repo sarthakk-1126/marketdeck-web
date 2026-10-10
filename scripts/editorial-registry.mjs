@@ -68,7 +68,7 @@ export function validateIssueCandidate(issue,{exists=existsSync,readJson=readJso
   const slug=editorialSlug(issue?.slug);
   if(typeof issue.source!=='string'||!/^content\/issues\/[a-z0-9]+(?:-[a-z0-9]+)*\.json$/.test(issue.source)||issue.source.includes('..'))throw new Error('invalid_issue_source_path');
   if(typeof issue.assets!=='string'||basename(issue.assets)!==slug)throw new Error('invalid_issue_assets_path');
-  localPath(issue.cover);localPath(issue.pdfPath);
+  localPath(issue.cover);if(issue.pdfPath)localPath(issue.pdfPath);
   if(!Number.isInteger(issue.pageCount)||issue.pageCount<1)throw new Error('invalid_issue_page_count');
   if(!exists(resolve(issue.source)))throw new Error('missing_issue_source');
   const source=readJson(issue.source);
@@ -76,7 +76,7 @@ export function validateIssueCandidate(issue,{exists=existsSync,readJson=readJso
   if(!Array.isArray(source.sources))throw new Error('invalid_issue_sources');
   if(requireAssets){
     const names=new Set([issue.pdfPath,issue.cover,...source.pages.map(p=>p.figure)].filter(Boolean).map(p=>p.split('/').pop()));
-    names.add('marketdeck-brief.pdf');
+    if(issue.pdfPath)names.add('marketdeck-brief.pdf');
     for(const name of names)if(!exists(resolve(issue.assets,name)))throw new Error('missing_editorial_asset');
   }
   if(issue.lastUpdated!=null)strictDate(issue.lastUpdated,'invalid_issue_last_updated');
