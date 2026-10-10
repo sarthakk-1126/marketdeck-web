@@ -48,6 +48,7 @@ export function exploreGroups(){
     ['Magazine',[
       ['/intelligence/issues/','Magazine archive'],['/intelligence/issues/ai-in-indian-finance-2026/','AI in Indian Finance 2026'],
       ['/intelligence/issues/agentic-trading-frontier-2026/','The Agentic Trading Frontier 2026'],['/intelligence/issues/investing-research-workbook/','Investing research workbook'],
+      ['/intelligence/issues/rolling-returns-vs-trailing-returns-india-2026/','Rolling vs trailing mutual fund returns'],
       ['/intelligence/methodology/','Calculation methodology'],['/intelligence/editorial-policy/','Editorial policy'],
     ]],
     ['Investing bookshelf',[

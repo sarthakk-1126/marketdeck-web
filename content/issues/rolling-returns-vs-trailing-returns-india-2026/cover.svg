@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="594" viewBox="0 0 420 594" role="img" aria-labelledby="title description">
+<title id="title">The MarketDeck Brief: Rolling Returns versus Trailing Returns</title><desc id="description">Editorial magazine cover with cream paper, deep navy typography and three intersecting historical return paths. Illustrated method only; no market data.</desc>
+<rect width="420" height="594" fill="#f6f3e9"/><rect x="19" y="19" width="382" height="556" fill="none" stroke="#c0b9a8" stroke-width="1.2"/>
+<text x="38" y="52" fill="#0e2634" font-family="Georgia,serif" font-size="21">MarketDeck<tspan fill="#bd8f55">.</tspan></text><text x="275" y="50" fill="#526373" font-family="Arial,sans-serif" font-size="9.5" letter-spacing="1.8">THE BRIEF / 06</text>
+<line x1="38" y1="69" x2="382" y2="69" stroke="#122d3e" stroke-width="1.2"/>
+<text x="38" y="123" fill="#bc8d55" font-family="Arial,sans-serif" font-size="10" letter-spacing="2.1">FUND RESEARCH / INDIA</text>
+<text x="35" y="169" fill="#0e2634" font-family="Georgia,serif" font-size="39">Rolling</text><text x="35" y="211" fill="#0e2634" font-family="Georgia,serif" font-size="39">Returns</text><text x="35" y="248" fill="#748b91" font-family="Georgia,serif" font-size="25" font-style="italic">versus</text><text x="35" y="294" fill="#0e2634" font-family="Georgia,serif" font-size="39">Trailing</text><text x="35" y="336" fill="#0e2634" font-family="Georgia,serif" font-size="39">Returns</text>
+<text x="37" y="372" fill="#506a72" font-family="Arial,sans-serif" font-size="11">One endpoint. Many possible histories.</text>
+<rect x="37" y="394" width="345" height="131" rx="2" fill="#e7e7dd"/>
+<g stroke="#d0d5cf" stroke-width="1"><line x1="53" y1="424" x2="365" y2="424"/><line x1="53" y1="457" x2="365" y2="457"/><line x1="53" y1="489" x2="365" y2="489"/></g>
+<path d="M53 497 L143 443 L242 486 L365 415" stroke="#12364d" stroke-width="3.5" fill="none"/>
+<path d="M53 495 L143 446" stroke="#a98053" stroke-width="3.5" fill="none"/>
+<path d="M143 446 L242 486" stroke="#9c6f71" stroke-width="3.5" fill="none"/>
+<path d="M242 486 L365 415" stroke="#3e796b" stroke-width="3.5" fill="none"/>
+<g fill="#12364d"><circle cx="53" cy="497" r="5"/><circle cx="143" cy="443" r="5"/><circle cx="242" cy="486" r="5"/><circle cx="365" cy="415" r="5"/></g>
+<text x="54" y="412" fill="#5b6e75" font-family="Arial,sans-serif" font-size="8">ILLUSTRATIVE NAV PATH</text>
+<line x1="38" y1="542" x2="382" y2="542" stroke="#b9baa9"/><text x="38" y="559" fill="#253e46" font-family="Arial,sans-serif" font-size="10" letter-spacing="1.1">A SIX-PAGE RESEARCH FIELD GUIDE</text>
+</svg>

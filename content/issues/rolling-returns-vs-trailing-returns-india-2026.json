@@ -1,0 +1,263 @@
+{
+  "title": "Rolling Returns vs Trailing Returns: The Mutual Fund Comparison Guide",
+  "sources": [
+    {
+      "id": "S1",
+      "title": "AMFI / Mutual Funds Sahi Hai — What Are Trailing and Rolling Returns?",
+      "url": "https://www.mutualfundssahihai.com/en/what-trailing-and-rolling-returns-mutual-funds",
+      "publicationDate": "Living educational resource; publication date not asserted",
+      "reviewedAt": "2026-10-10"
+    },
+    {
+      "id": "S2",
+      "title": "AMFI — Understanding Net Asset Value (NAV)",
+      "url": "https://www.amfiindia.com/investor/knowledge-center-info?zoneName=NetAssetValueNAV",
+      "publicationDate": "Living knowledge-center resource; publication date not asserted",
+      "reviewedAt": "2026-10-10"
+    },
+    {
+      "id": "S3",
+      "title": "SEBI — Mutual Fund Performance and NAV Disclosures",
+      "url": "https://www.sebi.gov.in/sebi_data/commondocs/siep_h.html",
+      "publicationDate": "Legacy SEBI investor material; verify current rules separately",
+      "reviewedAt": "2026-10-10"
+    },
+    {
+      "id": "S4",
+      "title": "SEBI — Mutual Fund Investments: Risk Disclosure",
+      "url": "https://www.sebi.gov.in/sebi_data/commondocs/cirann2_h.html",
+      "publicationDate": "Legacy regulator risk-factor text; not current legal compliance advice",
+      "reviewedAt": "2026-10-10"
+    },
+    {
+      "id": "S5",
+      "title": "MarketDeck — Mutual Fund Research",
+      "url": "https://marketdeck.in/screener/funds/",
+      "publicationDate": "Live product route; tools and data availability can change",
+      "reviewedAt": "2026-10-10"
+    }
+  ],
+  "pages": [
+    {
+      "kicker": "THE MARKETDECK BRIEF / FIELDNOTES 06",
+      "title": "One return number cannot tell the whole story",
+      "intro": "A practical six-page guide to trailing returns, rolling return windows, benchmark matching and honest comparisons for Indian mutual fund research.",
+      "sections": [
+        {
+          "title": "The cover question",
+          "text": "A mutual fund factsheet may report a strong one-year or three-year return, yet an investor entering at a different date could have experienced a very different holding-period return. The question is not whether the published number is wrong; it is what start and end dates it represents. Trailing returns summarize one chosen endpoint. Rolling returns repeat the calculation across many endpoints. [S1]"
+        },
+        {
+          "title": "What this issue will let you do",
+          "items": [
+            "Read one trailing return without confusing it with the history of possible experiences.",
+            "Calculate small rolling windows from clearly labelled fictional NAV observations.",
+            "Compare a scheme with a genuinely comparable benchmark and plan.",
+            "Record missing history, risk and uncertainty rather than making claims from one top-performing interval."
+          ]
+        },
+        {
+          "title": "Why MarketDeck is publishing it",
+          "text": "MarketDeck connects company, fund and portfolio research. Here we focus on a repeatable evaluation method, not a ranking of mutual funds or an investment recommendation. Published 10 October 2026. Illustrations and example NAVs are invented; they are not fund performance records."
+        }
+      ],
+      "callout": "CORE IDEA / One point-to-point return is a snapshot. A distribution of rolling returns helps reveal how dependent that result is on the chosen entry date.",
+      "sourceIds": [
+        "S1",
+        "S2",
+        "S4"
+      ]
+    },
+    {
+      "kicker": "01 / DEFINE THE MEASURES",
+      "title": "Trailing is a snapshot; rolling is a distribution",
+      "intro": "Both approaches describe realized historical return, but they sample history differently.",
+      "sections": [
+        {
+          "title": "Trailing return: fixed endpoint",
+          "text": "For a chosen measurement date, a trailing three-year return uses the NAV at that date and the NAV three years earlier. For a lump-sum investment with no intervening investor cash flows, its annualised growth rate is (NAV_end / NAV_start) raised to the power of one divided by elapsed years, minus one. The value shifts when the endpoint shifts. If a reviewer measures from a market trough or peak, that endpoint can dominate the headline. [S1]"
+        },
+        {
+          "title": "Rolling return: move the observation window",
+          "text": "Choose a holding period such as one, three or five years, then calculate an annualised return for every eligible start/end pair advanced at a defined cadence: daily, weekly or monthly, depending on available comparable observations. A rolling-return study creates a series of holding-period outcomes. Report the window length, observation cadence and date range; otherwise two rolling studies cannot be compared fairly."
+        },
+        {
+          "title": "What a rolling-return average does not tell you",
+          "items": [
+            "The arithmetic mean of overlapping windows is not what one real investor necessarily earned.",
+            "Overlapping windows share observations and are not independent samples.",
+            "A narrow return range in one historical period does not establish future consistency.",
+            "Rolling 3-year scheme returns should not be compared with a 1-year benchmark return."
+          ]
+        },
+        {
+          "title": "Where NAV comes from",
+          "text": "AMFI defines NAV as the value per mutual-fund unit and notes that open-ended scheme NAVs are generally published after the trading day. For performance analysis, verify the correct scheme, plan and growth/distribution option and note any continuity adjustments. Do not silently join two different plans because their fund names are similar. [S2]"
+        }
+      ],
+      "callout": "READER CHECK / Ask: which dates, what plan, which option, what holding-period length, and what data corrections?",
+      "sourceIds": [
+        "S1",
+        "S2"
+      ]
+    },
+    {
+      "kicker": "02 / WORKED NAV LAB",
+      "title": "A 20% trailing year can conceal a -10% window",
+      "intro": "Four fictional NAV observations show why a single attractive final-year result is incomplete.",
+      "sections": [
+        {
+          "title": "The invented data",
+          "items": [
+            "End of Year 0: NAV 100.00",
+            "End of Year 1: NAV 110.00",
+            "End of Year 2: NAV 99.00",
+            "End of Year 3: NAV 118.80"
+          ]
+        },
+        {
+          "title": "Calculate each one-year window",
+          "text": "Year 0 → 1: (110 / 100 − 1) × 100 = +10%. Year 1 → 2: (99 / 110 − 1) × 100 = -10%. Year 2 → 3: (118.80 / 99 − 1) × 100 = +20%. The trailing one-year return at the end of Year 3 is +20%, but the three possible non-overlapping one-year windows in this intentionally tiny example include a negative interval."
+        },
+        {
+          "title": "Compare a longer fixed window",
+          "text": "The one fixed three-year CAGR from 100.00 to 118.80 equals (118.8 / 100)^(1/3) − 1, approximately +5.92% per year. This example uses annual endpoints to keep the arithmetic inspectable. A professional rolling analysis normally samples many more eligible observations and specifies exact dates and day-count conventions."
+        },
+        {
+          "title": "What not to infer",
+          "items": [
+            "The average of +10%, -10% and +20% is about +6.67%; it is not the compound annual return across all three years.",
+            "The same underlying fund cannot deliver all three one-year results to one investor who bought once and held across a single uninterrupted three-year interval.",
+            "Three windows are not enough to estimate an empirical probability of loss with precision.",
+            "No Indian fund or benchmark produced these observations; they are an original instructional exercise."
+          ]
+        }
+      ],
+      "callout": "THE REVEAL / Last-year return +20%. One earlier one-year window -10%. Both can be true without contradiction.",
+      "sourceIds": [
+        "S1",
+        "S2"
+      ],
+      "figure": "/intelligence/issues/rolling-returns-vs-trailing-returns-india-2026/nav-windows.svg",
+      "figureAlt": "Illustrative NAV line: 100, 110, 99 and 118.8 at annual endpoints, with one-year returns +10%, -10%, +20%",
+      "figureCaption": "Illustrative NAVs only; not actual mutual-fund performance. End-year trailing 1Y return is +20%, while earlier windows include -10%."
+    },
+    {
+      "kicker": "03 / BUILD A FAIR COMPARISON",
+      "title": "The benchmark has to answer the same question",
+      "intro": "Fund rankings can become meaningless when the data windows, share classes or benchmarks differ.",
+      "sections": [
+        {
+          "title": "Match the comparison perimeter",
+          "text": "Use the same beginning and ending dates for the fund and benchmark series. If the fund NAV is for a direct-plan growth option but another figure uses regular-plan NAV, the cost structure and distributions may differ. Check whether the benchmark is a price index or a total-return index where dividends are reinvested. The two approaches can give materially different return histories."
+        },
+        {
+          "title": "Use the same calculation for both",
+          "text": "Compute the scheme and benchmark return at every eligible aligned window. If a benchmark launched after the scheme or a series has gaps, disclose the overlapping window and reduce both consistently. Do not add fictitious observations to give the impression of a complete record. Some shorter-history schemes cannot support five-year rolling analysis."
+        },
+        {
+          "title": "Summaries worth reporting",
+          "items": [
+            "Median rolling return: the middle observed window, not a forecast.",
+            "Minimum and maximum: the range of observed holding-period outcomes.",
+            "Fraction of negative windows: a descriptive share of the chosen historical sample.",
+            "Share of aligned periods when the scheme beat the same-period benchmark, with explicit period definition.",
+            "Observation count, overlap and date span: necessary context for every summary."
+          ]
+        },
+        {
+          "title": "Sources and fund facts",
+          "text": "SEBI's investor resources explain that scheme performance is reflected in NAV history and that disclosed performance should be read along with expense and scheme information. The source is an older educational document, so use current scheme disclosures for contemporary terms. [S3]"
+        },
+        {
+          "title": "Why the choice of plan matters",
+          "text": "Mutual fund plans, options, expense ratios and reinvestment conventions can produce distinct observed unit-value series. A methodologically sophisticated analysis of the wrong plan is still the wrong analysis. Put source and plan labels next to every table, not only in a footer."
+        }
+      ],
+      "callout": "GOOD COMPARISON / Same instrument definition. Same dates. Same return convention. Same time horizon. Honest missing-data handling.",
+      "sourceIds": [
+        "S2",
+        "S3"
+      ]
+    },
+    {
+      "kicker": "04 / APPLY THE LESSON",
+      "title": "A fund research process you can repeat",
+      "intro": "Move from the headline return to a reproducible record, whether using MarketDeck or a spreadsheet.",
+      "sections": [
+        {
+          "title": "Begin with the fund directory",
+          "text": "Open MarketDeck's [Mutual Fund Research] only after checking that your chosen scheme and plan are present in the current fund directory. The public directory and fund pages can support exploration, but do not assert that a rolling-return engine exists unless the selected page actually exposes one. MarketDeck's existing XIRR and portfolio analysis tools answer different cash-flow questions. [S5]"
+        },
+        {
+          "title": "Create a data note",
+          "items": [
+            "Full scheme and plan name, growth/distribution option and source URL.",
+            "NAV observation dates, missing dates and any corporate or distribution adjustments.",
+            "Benchmark identity and whether it is total-return or price-only.",
+            "Holding period (one, three or five years) and observation step (monthly, weekly or daily).",
+            "Annualisation method, summary statistics and dates of the best/worst observed windows."
+          ]
+        },
+        {
+          "title": "Make the conclusion falsifiable",
+          "text": "Instead of writing 'this is a consistent fund,' write 'within the stated 2019–2026 monthly-sampled three-year rolling windows, the return distribution and aligned benchmark comparisons had these measured properties.' The narrower sentence is more useful because a later researcher can repeat or challenge it."
+        },
+        {
+          "title": "Bring risk back into the conversation",
+          "text": "A good rolling-return table should not substitute for drawdown, fund mandate, concentration, expense structure, liquidity or personal suitability. Mutual funds carry market risk; historical returns do not guarantee future results. [S4]"
+        },
+        {
+          "title": "A practical distinction from SIP XIRR",
+          "text": "Rolling lump-sum returns and a specific investor's SIP XIRR do not answer the same question. SIP XIRR reflects the sizes and dates of actual contributions and any withdrawals. A rolling-return analysis describes a sequence of hypothetical holding-period entry dates. Conflating them can create precise but meaningless cross-investor comparisons."
+        }
+      ],
+      "callout": "MARKETDECK RESEARCH ROUTE / Explore the fund directory for scheme evidence, then take dated observations into a documented rolling-window calculation. Never treat a missing product feature as available.",
+      "sourceIds": [
+        "S4",
+        "S5"
+      ]
+    },
+    {
+      "kicker": "05 / TAKEAWAY & METHOD",
+      "title": "Keep the distribution, not only the headline",
+      "intro": "The strongest result of a rolling study is a clearer picture of what historical outcomes depended on.",
+      "sections": [
+        {
+          "title": "The five-question final checklist",
+          "items": [
+            "Do the fund and benchmark have exactly the same eligible measurement windows?",
+            "Have you labelled the scheme plan, option, benchmark type and NAV source?",
+            "Are the window length and sampling step explicit and repeatable?",
+            "Do the tables show median, range, losses and data limitations, not just the highest observed return?",
+            "Have you separated historical description from future expected performance?"
+          ]
+        },
+        {
+          "title": "Why a single trailing return stays useful",
+          "text": "Trailing return remains an efficient answer to one question: how did the scheme perform over the specified period ending on this date? It is easy to audit when exact endpoints and distributions are handled correctly. Rolling returns complement it by reducing dependence on just one starting point. Neither measure replaces judgment about risks and mandate."
+        },
+        {
+          "title": "Research further with MarketDeck",
+          "text": "Open MarketDeck's mutual-fund directory to review available fund information, its portfolio research tools for differently defined investor-level and portfolio-level questions, and its [XIRR vs Portfolio Return] learning note for the distinction between dated investor cash flows and reconstructed portfolio history. This issue is not a performance endorsement. [S5]"
+        },
+        {
+          "title": "Original methodology",
+          "text": "Every NAV amount in this edition is fictional. The fixed yearly-period return is (ending NAV / starting NAV) − 1. The three-year CAGR is (118.80 / 100.00)^(1/3) − 1 ≈ 5.92% per year. No observed Indian mutual-fund return, scheme ranking, forward estimate or independent replication is claimed. No current tax rules are discussed."
+        },
+        {
+          "title": "Sources and editorial boundaries",
+          "text": "Primary educational sources include AMFI's discussion of trailing and rolling returns and its NAV definition, with supplementary legacy regulator explanations of performance disclosure and market risk. These support definitions and methodological precautions, not endorsement of MarketDeck or any particular scheme. Read MarketDeck's editorial standards for AI-assistance and source-review boundaries."
+        }
+      ],
+      "callout": "CONCLUSION / One return tells you about one interval. A documented rolling distribution tells you how much that story varied across historical windows.",
+      "sourceIds": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ]
+    }
+  ]
+}
