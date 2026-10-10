@@ -108,6 +108,22 @@ export function illustration(a){
   boxes.forEach(([x,y,w,h,l,v])=>{art+=rect(x,y,w,h,x===674?'#254e70':'#163653')+tx(x+18,y+36,l,15,'#9bc7ed')+tx(x+18,y+84,v,28,'#edf1f6');});
   art+=line(286,227,360,227,'#72b9f9')+line(600,227,674,227,'#72b9f9');
   art+=`<rect x="298" y="342" width="364" height="66" rx="8" fill="#2e1f2b" stroke="#6b4458"/>`+tx(334,382,'STOP BEFORE TARGET WEIGHTS',18,'#f3b7ca')+tx(249,447,'Return implications only · no allocation, tilt or recommended mix',17);
+ }else if(id==='open-interest-in-options-india'){
+  title='Four price and open-interest observations';
+  desc='Original schematic: price rises with OI rises is commonly labelled long buildup; price falls with OI rises short buildup; price rises with OI falls short covering; price falls with OI falls long unwinding. These are descriptive heuristics, not proof of market participant intent or trade signals.';
+  const observations=[
+    {x:34,y:132,price:'PRICE UP',oi:'OI UP',label:'LONG BUILDUP',c:'#376e64'},
+    {x:500,y:132,price:'PRICE DOWN',oi:'OI UP',label:'SHORT BUILDUP',c:'#915d57'},
+    {x:34,y:291,price:'PRICE UP',oi:'OI DOWN',label:'SHORT COVERING',c:'#376e64'},
+    {x:500,y:291,price:'PRICE DOWN',oi:'OI DOWN',label:'LONG UNWINDING',c:'#915d57'}
+  ];
+  observations.forEach(v=>{
+    art+=rect(v.x,v.y,426,138,'#162c3d');
+    art+=`<rect x="${v.x+12}" y="${v.y+15}" width="6" height="106" fill="${v.c}"/>`;
+    art+=tx(v.x+36,v.y+47,v.label,22,'#f4f4f0');
+    art+=tx(v.x+36,v.y+95,v.price+'  /  '+v.oi,20,'#acc0c8');
+  });
+  art+=tx(38,467,'Context only · use comparable instrument, timestamp and contract units',15,'#9fb6c6');
  }else if(id==='evaluate-ai-trading-agents'){
   title='A result has four layers to verify';desc='Proposed assessment framework: evidence checks sources and time; analysis checks units and calculations; decision checks rules and limits; operations checks authoritative state and retries. Each layer can fail independently.';
   const labels=[['01 / EVIDENCE','Source & time','Late document'],['02 / ANALYSIS','Units & maths','Wrong denominator'],['03 / DECISION','Rules & limits','Exposure breach'],['04 / OPERATIONS','State & retries','Duplicate action']];
